@@ -210,6 +210,9 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
               'Fehler: Zu diesen Daten gibt es kein Revier!',
               context,
             );
+            setState(() {
+              _isLoading = false;
+            });
           }
         },
         padding: const EdgeInsets.all(15.0),

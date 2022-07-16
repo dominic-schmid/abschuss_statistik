@@ -116,18 +116,25 @@ class RequestMethods {
     );
 
     dom.Document html = dom.Document.html(response.body);
-    debugPrint(response.body);
+    //debugPrint(response.body);
 
     //print(response.headers);
 
-    print(html.querySelectorAll('link'));
+    List<KillEntry> kills = [];
+    dom.Element? table = html.querySelector('#dataTables');
+    if (table != null) {
+      final entries = table
+          .querySelectorAll('tr'); //.map((e) => e.innerHtml.trim()).toList();
+      print('${entries.length} rows loaded');
 
-    print(html.querySelector('tBody'));
+      entries.forEach((e) {
+        KillEntry? k = KillEntry.fromEntry(e);
+        if (k != null) {
+          kills.add(k);
+        }
+      });
+    }
 
-    final entries =
-        html.querySelectorAll('tr').map((e) => e.innerHtml.trim()).toList();
-    print(entries);
-
-    return [];
+    return kills;
   }
 }

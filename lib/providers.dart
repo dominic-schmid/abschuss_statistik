@@ -17,17 +17,17 @@ class CookieProvider with ChangeNotifier {
   }
 
   Future<void> refreshCredentials(String revier, String passwort) async {
-    if (revier.isNotEmpty && passwort.isNotEmpty) {
-      await saveCredentialsToPrefs(revier, passwort);
-      print('Provider read Credentials: `$revier` `$passwort`');
+    await saveCredentialsToPrefs(revier, passwort);
+    print('Provider read Credentials: `$revier` `$passwort`');
 
-      _revier = revier;
-      _passwort = passwort;
-      notifyListeners();
-    }
+    _revier = revier;
+    _passwort = passwort;
+    notifyListeners();
   }
 
-  Future<void> readPrefsOrUpdate() async {
+  // Returns the new cookie if success, empty means wrong credentials or no prefs found
+  Future<String> readPrefsOrUpdate() async {
+    String res = "";
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String revierLogin = prefs.getString('revierLogin') ?? "";
@@ -40,15 +40,16 @@ class CookieProvider with ChangeNotifier {
       _revier = revierLogin;
       _passwort = revierPasswort;
       if (cookie.isEmpty) {
-        await refreshCookie();
+        res = await refreshCookie();
       } else {
         _cookie = cookie;
       }
     } else {
-      await refreshCookie();
+      res = await refreshCookie();
     }
 
     notifyListeners();
+    return res;
   }
 
   Future<String> refreshCookie() async {
@@ -70,7 +71,7 @@ class CookieProvider with ChangeNotifier {
     }
 
     String cookie = await RequestMethods.refreshCookie(_revier, _passwort);
-    if (cookie.isNotEmpty && cookie != _cookie /* Should never happen */) {
+    if (cookie.isNotEmpty) {
       print('Saving to prefs.. New provider cookie: $cookie');
       _cookie = cookie;
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -78,6 +79,7 @@ class CookieProvider with ChangeNotifier {
       prefs.setString('cookie', cookie);
       notifyListeners(); // Notifies everyone using this provider to update their value
     }
+    // Else login failed, maybe wrong credentials
 
     return cookie;
   }

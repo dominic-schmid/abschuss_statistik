@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:html/dom.dart' as dom;
+import 'package:jagdverband_scraper/utils.dart';
+
 class KillEntry {
   final int nummer;
   final String wildart;
@@ -7,7 +11,7 @@ class KillEntry {
   final String zeit;
   final String alter;
   final String alterw;
-  final double gewicht;
+  final double? gewicht;
   final String erleger;
   final String begleiter;
   final String ursache;
@@ -15,6 +19,8 @@ class KillEntry {
   final String urpsrungszeichen;
   final String oertlichkeit;
   final Map<String, String>? jagdaufseher;
+  IconData icon = Icons.question_mark;
+  Color color = Colors.grey;
 
   KillEntry(
     this.nummer,
@@ -33,40 +39,109 @@ class KillEntry {
     this.begleiter = "",
     this.urpsrungszeichen = "",
     this.jagdaufseher,
-  });
+  }) {
+    switch (ursache) {
+      case 'erlegt':
+        icon = Icons.person;
+        break;
+      case 'Fallwild':
+        icon = Icons.cloudy_snowing;
+        break;
+      case 'Straßenunfall':
+        icon = Icons.car_crash;
+        break;
+      case 'Hegeabschuss':
+        icon = Icons.admin_panel_settings_outlined;
+        break;
+    }
 
-  static KillEntry fromEntry(String htmlRow) {
-    return KillEntry(
-      0,
-      "ich",
-      "du",
-      "heute",
-      "zmorgate",
-      "boh",
-      "mein",
-      "dohoam",
-    );
+    switch (wildart) {
+      case 'Rehwild':
+        color = rehwildFarbe;
+        break;
+      case 'Rotwild':
+        color = rotwildFarbe;
+        break;
+      case 'Gamswild':
+        color = gamswildFarbe;
+        break;
+      case 'Steinwild':
+        color = steinwildFarbe;
+        break;
+      case 'Schwarzwild':
+        color = schwarzwildFarbe;
+        break;
+      case 'Spielhahn':
+        color = spielhahnFarbe;
+        break;
+      case 'Steinhuhn':
+        color = steinhuhnFarbe;
+        break;
+      case 'Schneehuhn':
+        color = schneehuhnFarbe;
+        break;
+      case 'Murmeltier':
+        color = murmeltierFarbe;
+        break;
+      case 'Dachs':
+        color = dachsFarbe;
+        break;
+      case 'Fuchs':
+        color = fuchsFarbe;
+        break;
+      case 'Schneehase':
+        color = schneehaseFarbe;
+        break;
+      case 'Andere Wildart':
+        color = wildFarbe;
+        break;
+    }
   }
 
-  //  "fortlnummer": int(cols[0].text),
-  //         "wildart": cols[1].text,
-  //         "geschlecht": cols[2].text,
-  //         "hegein/gebiet/revierteil": uncoalesce(cols[3].text),
-  //         "datum": cols[4].text[:10],
-  //         "zeit": cols[4].text[10:],
-  //         "alter":  uncoalesce(cols[5].text.strip()),
-  //         "alter w":  uncoalesce(cols[6].text.strip()),
-  //         "gewicht": float(str(cols[7].text).replace(',', '.')) if cols[7].text != "" else None,
-  //         #"gewicht":  uncoalesce(cols[7].text),
-  //         "erleger":  uncoalesce(cols[8].text), # Immer ***********
-  //         "begleiter": uncoalesce(cols[9].text),
-  //         "ursache": uncoalesce(cols[10].text),
-  //         "verwendung": uncoalesce(cols[11].text),
-  //         "ursprungszeichen": uncoalesce(cols[12].text),
-  //         "oertlichkeit": str(cols[13].text).removesuffix('Auf Karte anzeigen'),
-  //         "jagdaufseher":  {} if len(cols[14].text) < 20 else {
-  //             "datum": cols[14].text[:10] ,
-  //             "zeit": cols[14].text[11:19],
-  //             "aufseher": cols[14].text[19:]
-  //         }
+  static KillEntry? fromEntry(dom.Element e) {
+    try {
+      //debugPrint('PARSING: ${htmlRow.length}');
+      // dom.DocumentFragment r = dom.DocumentFragment.html(htmlRow);
+      // print(r.attributes);
+
+      // print(r.children);
+      var cols = e.querySelectorAll('td');
+
+      print('COLS: ${cols.elementAt(14).text}');
+      print('COLS HTML: ${cols.elementAt(14).innerHtml}');
+
+      return KillEntry(
+        int.parse(cols.elementAt(0).text), // Nummer
+        cols.elementAt(1).text, // Wildart
+        cols.elementAt(2).text, // Geschlecht
+        cols.elementAt(4).text.substring(0, 10), // Datum
+        cols.elementAt(4).querySelector('small')!.text, // Zeit
+        cols.elementAt(10).text, // Ursache
+        cols.elementAt(11).text, // Verwendung
+        cols
+            .elementAt(13)
+            .text
+            .replaceFirst('Auf Karte anzeigen', ''), // Örtlichkeit
+        hegeinGebietRevierteil: cols.elementAt(3).text,
+        alter: cols.elementAt(5).text,
+        alterw: cols.elementAt(6).text,
+        gewicht: double.tryParse(cols.elementAt(7).text),
+        erleger: cols.elementAt(8).text,
+        begleiter: cols.elementAt(9).text,
+
+        urpsrungszeichen: cols.elementAt(12).text,
+        jagdaufseher: cols.elementAt(14).text.length > 20
+            ? {
+                'datum': cols.elementAt(14).text.substring(0, 10),
+                'zeit': cols.elementAt(14).text.substring(11, 19),
+                'aufseher': cols.elementAt(14).text.substring(19),
+              }
+            : null,
+
+        // Oertlichkeit
+      );
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 }

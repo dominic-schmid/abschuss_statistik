@@ -44,3 +44,17 @@ showSnackBar(String content, BuildContext context, {int duration = 1500}) {
     ),
   );
 }
+
+const rehwildFarbe = Color.fromRGBO(73, 130, 5, 1);
+const rotwildFarbe = Color.fromRGBO(230, 74, 25, 1);
+const gamswildFarbe = Color.fromRGBO(0, 183, 195, 1);
+const steinwildFarbe = Color.fromRGBO(55, 71, 79, 1);
+const schwarzwildFarbe = Color.fromRGBO(35, 35, 35, 1);
+const spielhahnFarbe = Color.fromRGBO(255, 235, 59, 1);
+const steinhuhnFarbe = Color.fromRGBO(0, 137, 123, 1);
+const schneehuhnFarbe = Color.fromRGBO(116, 77, 169, 1);
+const murmeltierFarbe = Color.fromRGBO(136, 14, 79, 1);
+const dachsFarbe = Color.fromRGBO(66, 66, 66, 1);
+const fuchsFarbe = Color.fromRGBO(255, 140, 0, 1);
+const schneehaseFarbe = Color.fromRGBO(107, 105, 214, 1);
+const wildFarbe = Color.fromRGBO(16, 137, 62, 1);
