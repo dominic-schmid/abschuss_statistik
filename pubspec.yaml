@@ -30,11 +30,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-  flutter_inappwebview: ^5.4.3+7
-  flutter_webview_plugin: ^0.4.0
   html: ^0.15.0
   http: ^0.13.4
-  webview_flutter: ^3.0.4
+  provider: ^6.0.3
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_lints: ^2.0.0
