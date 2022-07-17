@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/main.dart';
 import 'package:jagdverband_scraper/providers.dart';
@@ -7,21 +8,21 @@ import 'package:jagdverband_scraper/widgets/filter_chip_data.dart';
 import 'package:provider/provider.dart';
 
 import 'models/kill_entry.dart';
+import 'package:intl/intl.dart';
 
 class KillsScreen extends StatefulWidget {
-  final String revier;
-  final String passwort;
-
-  const KillsScreen({Key? key, required this.revier, required this.passwort})
-      : super(key: key);
+  const KillsScreen({Key? key}) : super(key: key);
 
   @override
   State<KillsScreen> createState() => _KillsScreenState();
 }
 
 class _KillsScreenState extends State<KillsScreen> {
+  final TextEditingController controller = TextEditingController();
+
   bool _isLoading = true;
   int _currentYear = 2022;
+  Sorting _currentSorting = Sorting.datum;
 
   List<KillEntry> kills = [];
   List<KillEntry> filteredKills = [];
@@ -31,17 +32,30 @@ class _KillsScreenState extends State<KillsScreen> {
   List<FilterChipData> verwendungChips = FilterChipData.allVerwendung.toList();
 
   loadCookieAndKills() async {
-    await Provider.of<CookieProvider>(context, listen: false)
-        .readPrefsOrUpdate()
-        .then((cookie) => RequestMethods.loadKills(
-                    '5991d3756866e88e2922a3b1873ffbb3', _currentYear)
-                .then((kills) {
-              if (!mounted) return;
-              setState(() {
-                this.kills = kills;
-                _isLoading = false;
-              });
-            }));
+    String? cookie = await Provider.of<CookieProvider>(context, listen: false)
+        .readPrefsOrUpdate();
+
+    print('Kills screen found cookie $cookie');
+
+    if (cookie != null && cookie.isNotEmpty) {
+      List<KillEntry>? kills =
+          await RequestMethods.loadKills(cookie, _currentYear)
+              .timeout(const Duration(seconds: 10));
+
+      // Cookie isn't valid (anymore)
+      if (kills == null) {
+        if (!mounted) return;
+        await Provider.of<CookieProvider>(context, listen: false)
+            .refreshCookie();
+        //.timeout(const Duration(seconds: 10));
+      }
+
+      this.kills = kills!;
+    }
+    if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+    });
     // String cookie =
     //     Provider.of<CookieProvider>(context, listen: false).getCookie;
     // print('Init state found cookie $cookie');
@@ -84,18 +98,55 @@ class _KillsScreenState extends State<KillsScreen> {
     return filtered;
   }
 
+  void sortListBy(Sorting s) {
+    switch (s) {
+      case Sorting.datum:
+        filteredKills.sort((a, b) => b.datetime.compareTo(a.datetime));
+        break;
+      case Sorting.nummer:
+        filteredKills.sort((a, b) => a.nummer.compareTo(b.nummer));
+        break;
+      case Sorting.wildart:
+        filteredKills.sort((a, b) => a.wildart.compareTo(b.wildart));
+        break;
+      case Sorting.geschlecht:
+        filteredKills.sort((a, b) => a.geschlecht.compareTo(b.geschlecht));
+        break;
+      case Sorting.gewicht:
+        filteredKills.sort((a, b) {
+          if (a.gewicht != null && b.gewicht != null) {
+            return b.gewicht!.compareTo(a.gewicht!);
+          } else if (a.gewicht != null) {
+            return -1;
+          } else if (b.gewicht != null) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        break;
+      case Sorting.ursache:
+        filteredKills.sort((a, b) => a.ursache.compareTo(b.ursache));
+        break;
+      case Sorting.verwendung:
+        filteredKills.sort((a, b) => a.verwendung.compareTo(b.verwendung));
+        break;
+    }
+  }
+
   Future<void> refresh(int year) async {
+    showSnackBar('Not implemented', context);
     setState(() {
       _isLoading = true;
     });
     await Provider.of<CookieProvider>(context, listen: false)
         .readPrefsOrUpdate()
         .then((cookie) =>
-            RequestMethods.loadKills('5991d3756866e88e2922a3b1873ffbb3', year)
+            RequestMethods.loadKills('d3eb45567f24feb21551f6c171f8fb8a', year)
                 .then((kills) {
               if (!mounted) return;
               setState(() {
-                this.kills = kills;
+                this.kills = kills!;
                 _isLoading = false;
               });
             }));
@@ -113,13 +164,24 @@ class _KillsScreenState extends State<KillsScreen> {
 
     filteredKills = chipFilter(kills);
 
+    filteredKills = filteredKills.where((k) {
+      if (controller.text.isEmpty) {
+        return true;
+      } else {
+        String query = controller.text.toLowerCase();
+        return k.contains(query);
+      }
+    }).toList();
+
+    sortListBy(_currentSorting);
+
     return Scaffold(
       appBar: AppBar(
         title: GestureDetector(
             onTap: () {
               print(loadCredentialsFromPrefs());
             },
-            child: const Text('324 - Terenten')), // TODO get from loaded page
+            child: const Text('Terenten')), // TODO get from loaded page
         //backgroundColor: Colors.green,
         actions: buildActionButtons(),
       ),
@@ -159,14 +221,21 @@ class _KillsScreenState extends State<KillsScreen> {
           //     }),
           //   ),
           // ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: w * 0.02),
-            child: Wrap(
-              alignment: WrapAlignment.spaceEvenly,
-              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: buildActionChips(),
-            ),
+          ExpansionTile(
+            childrenPadding: const EdgeInsets.all(0),
+            title: buildSearchbar(),
+            initiallyExpanded: true,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: w * 0.02),
+                child: Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
+                  children: buildActionChips(),
+                ),
+              ),
+            ],
           ),
+
           _isLoading
               ? const Center(
                   child: CircularProgressIndicator(color: Colors.green))
@@ -174,6 +243,36 @@ class _KillsScreenState extends State<KillsScreen> {
                   ? Expanded(child: buildNoDataFound())
                   : Expanded(flex: 9, child: buildKillEntries(filteredKills)),
         ],
+      ),
+    );
+  }
+
+  Widget buildSearchbar() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: TextField(
+        focusNode: FocusNode(canRequestFocus: false),
+        autofocus: false,
+        style: const TextStyle(color: Colors.green),
+        controller: controller,
+        decoration: InputDecoration(
+          // enabledBorder: InputBorder.none,
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.green, width: 1),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.green, width: 1),
+          ),
+          prefixIcon: const Icon(
+            Icons.search,
+            color: Colors.green,
+          ),
+          prefixIconColor: Colors.green,
+          hintText: '${kills.length} Abschüsse filtern',
+        ),
+        onChanged: (query) => setState(() {
+          //this.query = query;
+        }),
       ),
     );
   }
@@ -296,6 +395,30 @@ class _KillsScreenState extends State<KillsScreen> {
               setState(() {});
             }),
       ),
+      Padding(
+        padding: chipPadding,
+        child: ActionChip(
+            avatar: const CircleAvatar(
+              backgroundColor: Colors.transparent,
+              child: Icon(
+                Icons.sort,
+                color: steinhuhnFarbe,
+                size: 18,
+              ),
+            ),
+            backgroundColor: steinhuhnFarbe.withOpacity(0.25),
+            labelStyle: const TextStyle(color: steinhuhnFarbe),
+            label: const Text('Sortierung'),
+            onPressed: () async {
+              await showModalBottomSheet(
+                  context: context,
+                  shape: modalShape,
+                  builder: (BuildContext context) {
+                    return buildSortierungModalSheet();
+                  });
+              setState(() {});
+            }),
+      ),
     ];
   }
 
@@ -304,18 +427,18 @@ class _KillsScreenState extends State<KillsScreen> {
       IconButton(
         onPressed: () async {
           await showAlertDialog(
-              title: 'Abmelden',
-              description: 'Möchtest du dich wirklich abmelden?',
-              yesOption: 'Ja',
-              noOption: 'Nein',
-              onYes: () async {
-                await deletePrefs();
-                if (!mounted) return;
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => MyApp()));
-              },
-              icon: Icons.warning,
-              context: context);
+            title: 'Abmelden',
+            description: 'Möchtest du dich wirklich abmelden?',
+            yesOption: 'Ja',
+            noOption: 'Nein',
+            onYes: () async {
+              await deletePrefs();
+              await Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => MyApp()));
+            },
+            icon: Icons.warning,
+            context: context,
+          );
         },
         icon: const Icon(Icons.logout),
       ),
@@ -359,6 +482,43 @@ class _KillsScreenState extends State<KillsScreen> {
         ),
       );
     }
+    return SingleChildScrollView(
+      child: Column(
+        children: buttonList,
+      ),
+    );
+  }
+
+  Widget buildSortierungModalSheet() {
+    List<Widget> buttonList = [];
+    double w = MediaQuery.of(context).size.width;
+
+    for (var i in Sorting.values) {
+      buttonList.add(
+        MaterialButton(
+          minWidth: w,
+          onPressed: () {
+            _currentSorting = i;
+
+            Navigator.of(context).pop();
+            sortListBy(_currentSorting);
+          },
+          elevation: 2,
+          padding:
+              EdgeInsets.symmetric(horizontal: w * 0.3, vertical: w * 0.02),
+          child: Text(
+            describeEnum(i),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight:
+                  i == _currentSorting ? FontWeight.bold : FontWeight.normal,
+              color: i == _currentSorting ? Colors.green : Colors.black,
+            ),
+          ),
+        ),
+      );
+    }
+    for (int i = 2022; i >= 2000; i--) {}
     return SingleChildScrollView(
       child: Column(
         children: buttonList,
@@ -490,27 +650,29 @@ class _KillsScreenState extends State<KillsScreen> {
   }
 
   Widget buildNoDataFound() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 44,
-              backgroundColor: Colors.transparent,
-              child: Image.asset('assets/shooter.png'),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Hier gibt es nichts zu sehen...',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 18,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 44,
+                backgroundColor: Colors.transparent,
+                child: Image.asset('assets/shooter.png'),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              const Text(
+                'Hier gibt es nichts zu sehen...',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -558,7 +720,7 @@ class _KillsScreenState extends State<KillsScreen> {
             }
 
             KillEntry k = kills.elementAt(index - 1);
-            String key = '${k.nummer}-${k.datum}';
+            String key = '${k.nummer}-${k.datetime.toIso8601String()}';
             return KillListEntry(key: Key(key), kill: k);
           }),
         ),
@@ -610,6 +772,9 @@ class KillListEntryState extends State<KillListEntry> {
                 : k.alterw;
 
     double w = MediaQuery.of(context).size.width;
+
+    String date = DateFormat('dd.MM.yy').format(k.datetime);
+    String time = DateFormat('kk:mm').format(k.datetime);
     return Container(
       margin: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: 3),
       decoration: BoxDecoration(
@@ -655,7 +820,7 @@ class KillListEntryState extends State<KillListEntry> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(k.geschlecht),
-              Text('${k.datum}'),
+              Text('${date}'),
             ],
           ),
           expandedAlignment: Alignment.topLeft,
@@ -668,7 +833,7 @@ class KillListEntryState extends State<KillListEntry> {
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
             k.alter.isEmpty ? Container() : Text(k.hegeinGebietRevierteil),
-            k.zeit == '00:00' ? Container() : Text('Uhrzeit: ${k.zeit}'),
+            time == '00:00' ? Container() : Text('Uhrzeit: ${time}'),
             k.alter.trim().isEmpty ? Container() : Text('Alter: ${k.alter}'),
             k.alterw.isEmpty ? Container() : Text('Alter W: ${k.alterw}'),
             k.gewicht == null ? Container() : Text('Gewicht: ${k.gewicht} kg'),
@@ -679,6 +844,7 @@ class KillListEntryState extends State<KillListEntry> {
             k.urpsrungszeichen.isEmpty
                 ? Container()
                 : Text('Urpsrungszeichen: ${k.urpsrungszeichen}'),
+            Text(k.datetime.toLocal().toIso8601String()),
           ],
         ),
       ),

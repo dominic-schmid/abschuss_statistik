@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
 import 'dart:async';
-import 'package:jagdverband_scraper/kills_screen.dart';
 import 'package:jagdverband_scraper/providers.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'kills_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,29 +40,17 @@ class MyApp extends StatelessWidget {
         //darkTheme: ThemeData.dark(),
         //themeMode: ThemeMode.dark,
 
-        home: FutureBuilder<Map<String, String>?>(
+        home: FutureBuilder<bool>(
             future:
-                loadCredentialsFromPrefs(), // Loads creds and cookie from storage
+                validCredentialsSaved(), // Loads creds and cookie from storage
             builder: ((context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasData) {
-                  Map<String, String>? creds = snapshot.data;
-                  if (creds == null) {
-                    showSnackBar(
-                        'Fehler: Gespeicherte Daten fehlerhaft', context);
-                    return CredentialsScreen();
-                  }
-
-                  if (!creds.containsKey('revierLogin') ||
-                      !creds.containsKey('revierPasswort')) {
-                    return CredentialsScreen();
-                  }
-
-                  return KillsScreen(
-                    revier: creds['revierLogin']!,
-                    passwort: creds['revierPasswort']!,
-                  );
+                if (snapshot.hasData && snapshot.data!) {
+                  return const KillsScreen();
                 } else {
+                  // showSnackBar(
+                  //     'Fehler: Gespeicherte Daten fehlerhaft oder nicht vorhanden!',
+                  //     context);
                   return CredentialsScreen();
                 }
               }

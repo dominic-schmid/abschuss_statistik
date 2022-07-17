@@ -22,15 +22,14 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
 
   Future<bool> verify(String revierLogin, String revierPasswort) async {
     if (!mounted) return false;
-    setState(() {
-      _isLoading = true;
-    });
     // verify written login data
     await Provider.of<CookieProvider>(context, listen: false)
-        .refreshCredentials(revierLogin, revierPasswort);
+        .writeCredentials(revierLogin, revierPasswort);
 
+    if (!mounted) return false;
     String cookie = await Provider.of<CookieProvider>(context, listen: false)
-        .refreshCookie(); // Loads creds from prefs and refreshes cookei
+            .readPrefsOrUpdate() ??
+        ""; // Loads creds from prefs and refreshes cookei
 
     return cookie
         .isNotEmpty; // If cookie is not empty -> login successfull and cookie saved in provider
@@ -157,6 +156,8 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
+            textInputAction: TextInputAction.go,
+            onSubmitted: (_) => login(),
             controller: _passwortController,
             obscureText: true,
             style: TextStyle(
@@ -179,6 +180,37 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
     );
   }
 
+  void login() async {
+    String revier = _revierController.text;
+    String pass = _passwortController.text;
+    if (revier.isEmpty || pass.isEmpty) {
+      showSnackBar('Du musst beide Felder Angeben!', context, duration: 2500);
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+    bool login = await verify(revier, pass);
+
+    if (!mounted) return;
+    if (login) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const KillsScreen(),
+        ),
+      );
+    } else {
+      showSnackBar(
+        'Fehler: Zu diesen Daten gibt es kein Revier!',
+        context,
+      );
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   Widget _buildLoginBtn() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 25.0),
@@ -186,34 +218,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
       child: MaterialButton(
         elevation: 5.0,
         onPressed: () async {
-          String revier = _revierController.text;
-          String pass = _passwortController.text;
-          if (revier.isEmpty || pass.isEmpty) {
-            showSnackBar('Du musst beide Felder Angeben!', context);
-            return;
-          }
-
-          bool login = await verify(revier, pass);
-
-          if (!mounted) return;
-          if (login) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => KillsScreen(
-                  revier: revier,
-                  passwort: pass,
-                ),
-              ),
-            );
-          } else {
-            showSnackBar(
-              'Fehler: Zu diesen Daten gibt es kein Revier!',
-              context,
-            );
-            setState(() {
-              _isLoading = false;
-            });
-          }
+          login();
         },
         padding: const EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(

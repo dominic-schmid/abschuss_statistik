@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'request_methods.dart';
 
 Future<void> saveCredentialsToPrefs(
     String revierLogin, String revierPasswort) async {
@@ -7,6 +10,30 @@ Future<void> saveCredentialsToPrefs(
 
   prefs.setString('revierLogin', revierLogin);
   prefs.setString('revierPasswort', revierPasswort);
+}
+
+// Returns the new cookie if success, empty means wrong credentials or no prefs found
+// Should either return a valid cookie or null if you need to be logged out
+Future<bool> validCredentialsSaved() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  // Otherwise read prefs and check if that cookie is valid
+  String revierLogin = prefs.getString('revierLogin') ?? "";
+  String revierPasswort = prefs.getString('revierPasswort') ?? "";
+  String cookie = prefs.getString('cookie') ?? "";
+  print('Initial prefs: `$revierLogin` `$revierPasswort` `$cookie`');
+
+  if (revierLogin.isNotEmpty && revierPasswort.isNotEmpty) {
+    String cookie =
+        await RequestMethods.getCookieFromLogin(revierLogin, revierPasswort);
+    if (cookie.isNotEmpty) {
+      await prefs.setString('cookie', cookie);
+      return true;
+    }
+    return false;
+  }
+
+  return false; // This means no valid creds are saved and we need to login again
 }
 
 Future<Map<String, String>?> loadCredentialsFromPrefs() async {
@@ -34,6 +61,7 @@ Future<void> deletePrefs() async {
 
   await prefs.remove('revierLogin');
   await prefs.remove('revierPasswort');
+  await prefs.remove('cookie');
 }
 
 showSnackBar(String content, BuildContext context, {int duration = 1500}) {
@@ -121,3 +149,13 @@ const verkaufFarbe = Color.fromRGBO(63, 81, 181, 1);
 const nichtVerwertbarFarbe = Color.fromRGBO(97, 97, 97, 1);
 const nichtGefundenFarbe = Color.fromRGBO(0, 121, 107, 1);
 const nichtBekanntFarbe = Color.fromRGBO(233, 30, 99, 1);
+
+enum Sorting {
+  datum,
+  nummer,
+  wildart,
+  geschlecht,
+  gewicht,
+  ursache,
+  verwendung,
+}

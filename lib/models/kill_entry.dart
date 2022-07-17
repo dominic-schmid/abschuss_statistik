@@ -7,8 +7,7 @@ class KillEntry {
   final String wildart;
   final String geschlecht;
   final String hegeinGebietRevierteil;
-  final String datum;
-  final String zeit;
+
   final String alter;
   final String alterw;
   final double? gewicht;
@@ -19,18 +18,27 @@ class KillEntry {
   final String urpsrungszeichen;
   final String oertlichkeit;
   final Map<String, String>? jagdaufseher;
+  DateTime datetime = DateTime.now();
   IconData icon = Icons.question_mark;
   Color color = Colors.grey;
 
-  KillEntry(
-    this.nummer,
-    this.wildart,
-    this.geschlecht,
-    this.datum,
-    this.zeit,
-    this.ursache,
-    this.verwendung,
-    this.oertlichkeit, {
+  // DateTime parseDateTime(String d, String t) {
+  //   int yy = int.parse(datum.substring(6));
+  //   int mo = int.parse(datum.substring(3, 5));
+  //   int dd = int.parse(datum.substring(0, 2));
+  //   int hh24 = int.parse(zeit.substring(0, 2));
+  //   int mi = int.parse(zeit.substring(3));
+  //   return DateTime(yy, mo, dd, hh24, mi);
+  // }
+
+  KillEntry({
+    required this.nummer,
+    required this.wildart,
+    required this.geschlecht,
+    required this.datetime,
+    required this.ursache,
+    required this.verwendung,
+    required this.oertlichkeit,
     this.hegeinGebietRevierteil = "",
     this.alter = "",
     this.alterw = "",
@@ -40,6 +48,7 @@ class KillEntry {
     this.urpsrungszeichen = "",
     this.jagdaufseher,
   }) {
+    // datetime = parseDateTime(datum, zeit);
     switch (ursache) {
       case 'erlegt':
         icon = Icons.person;
@@ -107,6 +116,18 @@ class KillEntry {
     }
   }
 
+  bool contains(String q) {
+    return wildart.toLowerCase().contains(q) ||
+        geschlecht.toLowerCase().contains(q) ||
+        oertlichkeit.toLowerCase().contains(q) ||
+        verwendung.toLowerCase().contains(q) ||
+        ursache.toLowerCase().contains(q) ||
+        datetime.toString().contains(q) ||
+        gewicht.toString().contains(q) ||
+        alter.toLowerCase().contains(q) ||
+        alterw.toLowerCase().contains(q);
+  }
+
   static KillEntry? fromEntry(dom.Element e) {
     try {
       //debugPrint('PARSING: ${htmlRow.length}');
@@ -116,15 +137,24 @@ class KillEntry {
       // print(r.children);
       var cols = e.querySelectorAll('td');
 
+      String datum = cols.elementAt(4).text.substring(0, 10);
+      String zeit = cols.elementAt(4).querySelector('small')!.text;
+
+      int yy = int.parse(datum.substring(6));
+      int mo = int.parse(datum.substring(3, 5));
+      int dd = int.parse(datum.substring(0, 2));
+      int hh24 = int.parse(zeit.substring(0, 2));
+      int mi = int.parse(zeit.substring(3));
+      DateTime datetime = DateTime(yy, mo, dd, hh24, mi);
+
       return KillEntry(
-        int.parse(cols.elementAt(0).text), // Nummer
-        cols.elementAt(1).text, // Wildart
-        cols.elementAt(2).text, // Geschlecht
-        cols.elementAt(4).text.substring(0, 10), // Datum
-        cols.elementAt(4).querySelector('small')!.text, // Zeit
-        cols.elementAt(10).text, // Ursache
-        cols.elementAt(11).text, // Verwendung
-        cols
+        nummer: int.parse(cols.elementAt(0).text), // Nummer
+        wildart: cols.elementAt(1).text, // Wildart
+        geschlecht: cols.elementAt(2).text, // Geschlecht
+        datetime: datetime,
+        ursache: cols.elementAt(10).text, // Ursache
+        verwendung: cols.elementAt(11).text, // Verwendung
+        oertlichkeit: cols
             .elementAt(13)
             .text
             .replaceFirst('Auf Karte anzeigen', ''), // Örtlichkeit
