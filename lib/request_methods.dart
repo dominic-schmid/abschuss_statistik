@@ -64,9 +64,10 @@ class RequestMethods {
     // If cookie found, try login using that cookie, otherwise refresh it and save it
   }
 
-  static Future<List<KillEntry>> loadKills(String cookie) async {
+  static Future<List<KillEntry>> loadKills(String cookie, int year) async {
     //{'fe_typo_user': cookie},
-    final url = Uri.parse('$_baseURL?id=4&no_cache=1');
+
+    final url = Uri.parse('$_baseURL?id=4&tx_jvdb_pi1[filter-year]=$year');
 
     //_headers.putIfAbsent('cookie', () => 'fe_typo_user=$cookie;');
 
@@ -125,14 +126,15 @@ class RequestMethods {
     if (table != null) {
       final entries = table
           .querySelectorAll('tr'); //.map((e) => e.innerHtml.trim()).toList();
-      print('${entries.length} rows loaded');
+      print('${entries.length} kill entries loaded');
 
-      entries.forEach((e) {
+      // Sublist 1 because the first element is the table header
+      for (dom.Element e in entries.sublist(1)) {
         KillEntry? k = KillEntry.fromEntry(e);
         if (k != null) {
           kills.add(k);
         }
-      });
+      }
     }
 
     return kills;

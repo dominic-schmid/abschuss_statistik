@@ -53,6 +53,15 @@ class KillEntry {
       case 'Hegeabschuss':
         icon = Icons.admin_panel_settings_outlined;
         break;
+      case 'Protokoll / beschlagnahmt':
+        icon = Icons.list_alt;
+        break;
+      case 'vom Zug überfahren':
+        icon = Icons.train;
+        break;
+      case 'Freizone':
+        icon = Icons.forest;
+        break;
     }
 
     switch (wildart) {
@@ -106,9 +115,6 @@ class KillEntry {
 
       // print(r.children);
       var cols = e.querySelectorAll('td');
-
-      print('COLS: ${cols.elementAt(14).text}');
-      print('COLS HTML: ${cols.elementAt(14).innerHtml}');
 
       return KillEntry(
         int.parse(cols.elementAt(0).text), // Nummer

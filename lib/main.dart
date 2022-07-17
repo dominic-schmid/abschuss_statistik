@@ -35,7 +35,9 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.green,
         ),
-        themeMode: ThemeMode.dark,
+        //darkTheme: ThemeData.dark(),
+        //themeMode: ThemeMode.dark,
+
         home: FutureBuilder<Map<String, String>?>(
             future:
                 loadCredentialsFromPrefs(), // Loads creds and cookie from storage

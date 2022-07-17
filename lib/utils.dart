@@ -45,12 +45,60 @@ showSnackBar(String content, BuildContext context, {int duration = 1500}) {
   );
 }
 
+Future<dynamic> showAlertDialog({
+  required String title,
+  required String description,
+  required String yesOption,
+  required String noOption,
+  required VoidCallback? onYes,
+  required IconData icon,
+  required BuildContext context,
+}) {
+  // set up the buttons
+  Widget cancelButton = MaterialButton(
+    child: Text(noOption),
+    onPressed: () {
+      Navigator.of(context).pop(false);
+    },
+  );
+  Widget continueButton = MaterialButton(
+    onPressed: () {
+      if (onYes != null) {
+        onYes();
+      }
+      Navigator.of(context).pop(true);
+    },
+    child: Text(yesOption),
+  );
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Row(
+      children: [
+        Icon(icon),
+        Text(title),
+      ],
+    ),
+    content: Text(description),
+    actions: [
+      yesOption.isNotEmpty ? continueButton : Container(),
+      cancelButton,
+    ],
+  );
+  // show the dialog
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
 const rehwildFarbe = Color.fromRGBO(73, 130, 5, 1);
 const rotwildFarbe = Color.fromRGBO(230, 74, 25, 1);
 const gamswildFarbe = Color.fromRGBO(0, 183, 195, 1);
 const steinwildFarbe = Color.fromRGBO(55, 71, 79, 1);
 const schwarzwildFarbe = Color.fromRGBO(35, 35, 35, 1);
-const spielhahnFarbe = Color.fromRGBO(255, 235, 59, 1);
+const spielhahnFarbe = Color.fromRGBO(255, 87, 34, 1);
 const steinhuhnFarbe = Color.fromRGBO(0, 137, 123, 1);
 const schneehuhnFarbe = Color.fromRGBO(116, 77, 169, 1);
 const murmeltierFarbe = Color.fromRGBO(136, 14, 79, 1);

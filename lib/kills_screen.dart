@@ -21,16 +21,18 @@ class KillsScreen extends StatefulWidget {
 
 class _KillsScreenState extends State<KillsScreen> {
   bool _isLoading = true;
+  int _currentYear = 2022;
 
   List<KillEntry> kills = [];
+  List<KillEntry> filteredKills = [];
 
   List<FilterChipData> chips = FilterChipData.all.toList();
 
   loadCookieAndKills() async {
     await Provider.of<CookieProvider>(context, listen: false)
         .readPrefsOrUpdate()
-        .then((cookie) =>
-            RequestMethods.loadKills('5991d3756866e88e2922a3b1873ffbb3')
+        .then((cookie) => RequestMethods.loadKills(
+                    '5991d3756866e88e2922a3b1873ffbb3', _currentYear)
                 .then((kills) {
               if (!mounted) return;
               setState(() {
@@ -43,8 +45,6 @@ class _KillsScreenState extends State<KillsScreen> {
     // print('Init state found cookie $cookie');
     // await ;
   }
-
-  // Well, she's delighted now! She got a VW Golf from Germany on Tuesday. Quite an expensive car to pick if you ask me but she really had her mind made up about that..
 
   @override
   void initState() {
@@ -64,12 +64,32 @@ class _KillsScreenState extends State<KillsScreen> {
     return filtered;
   }
 
+  Future<void> refresh(int year) async {
+    setState(() {
+      _isLoading = true;
+    });
+    await Provider.of<CookieProvider>(context, listen: false)
+        .readPrefsOrUpdate()
+        .then((cookie) =>
+            RequestMethods.loadKills('5991d3756866e88e2922a3b1873ffbb3', year)
+                .then((kills) {
+              if (!mounted) return;
+              setState(() {
+                this.kills = kills;
+                _isLoading = false;
+              });
+            }));
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     String cookie = Provider.of<CookieProvider>(context).getCookie;
     cookie = "5991d3756866e88e2922a3b1873ffbb3"; // TODO REMOVE
 
-    List<KillEntry> filteredKills = chipFilter(kills);
+    filteredKills = chipFilter(kills);
 
     return Scaffold(
       appBar: AppBar(
@@ -79,26 +99,7 @@ class _KillsScreenState extends State<KillsScreen> {
             },
             child: const Text('324 - Terenten')), // TODO get from loaded page
         backgroundColor: Colors.green,
-        actions: [
-          IconButton(
-            onPressed: () {
-              deletePrefs();
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => MyApp()));
-            },
-            icon: Icon(Icons.logout),
-          ),
-          IconButton(
-            onPressed: () async {
-              print(
-                  'Cookie: ${Provider.of<CookieProvider>(context, listen: false).getCookie}');
-
-              print(
-                  'New cookie: ${await Provider.of<CookieProvider>(context, listen: false).refreshCookie()}');
-            },
-            icon: Icon(Icons.http),
-          ),
-        ],
+        actions: buildActionButtons(),
       ),
       body: Column(
         // mainAxisSize: MainAxisSize.min,
@@ -120,6 +121,7 @@ class _KillsScreenState extends State<KillsScreen> {
             //             label: Text(c.label)))
             //         .toList()),
 
+            // Horizontal chip listview
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: chips.length,
@@ -143,26 +145,259 @@ class _KillsScreenState extends State<KillsScreen> {
               }),
             ),
           ),
-          // ListTile(
-          //   leading: Text(
-          //     '5',
-          //     style: TextStyle(fontSize: 24),
-          //   ),
-          //   title: Text('Wildart'),
-          // ),
-          _isLoading ? Container() : buildProgressBar(filteredKills),
+          Center(
+            child: Wrap(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: buildActionChips(),
+            ),
+          ),
+          _isLoading
+              ? Container()
+              : filteredKills.isEmpty
+                  ? Container()
+                  : buildProgressBar(filteredKills),
           _isLoading
               ? const Center(
                   child: CircularProgressIndicator(color: Colors.green))
-              : Expanded(flex: 9, child: buildKillEntries(filteredKills)),
+              : filteredKills.isEmpty
+                  ? Expanded(child: buildNoDataFound())
+                  : Expanded(flex: 9, child: buildKillEntries(filteredKills)),
         ],
+      ),
+    );
+  }
+
+  List<Widget> buildActionChips() {
+    ShapeBorder modalShape = const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20),
+        topRight: Radius.circular(20),
+      ),
+    );
+    EdgeInsets chipPadding =
+        const EdgeInsets.symmetric(horizontal: 5, vertical: 2);
+    return [
+      Padding(
+        padding: chipPadding,
+        child: ActionChip(
+            label: Text('$_currentYear'),
+            onPressed: () async {
+              await showModalBottomSheet(
+                  context: context,
+                  shape: modalShape,
+                  builder: (BuildContext context) {
+                    return buildYearModalSheet();
+                  });
+              setState(() {
+                print('SET tHE STATE');
+              });
+            }),
+      ),
+      Padding(
+        padding: chipPadding,
+        child: ActionChip(
+            label: Text('${chips.where((e) => e.isSelected).length} Wildarten'),
+            onPressed: () async {
+              await showModalBottomSheet(
+                  context: context,
+                  shape: modalShape,
+                  builder: (BuildContext context) {
+                    return buildChipModalSheet();
+                  });
+              setState(() {
+                print('SET tHE STATE');
+              });
+            }),
+      ),
+    ];
+  }
+
+  Widget buildNoDataFound() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 44,
+              backgroundColor: Colors.transparent,
+              child: Image.asset('assets/shooter.png'),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Hier gibt es nichts zu sehen...',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 18,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Widget> buildActionButtons() {
+    return <Widget>[
+      IconButton(
+        onPressed: () async {
+          await showAlertDialog(
+              title: 'Abmelden',
+              description: 'Möchtest du dich wirklich abmelden?',
+              yesOption: 'Ja',
+              noOption: 'Nein',
+              onYes: () async {
+                await deletePrefs();
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => MyApp()));
+              },
+              icon: Icons.warning,
+              context: context);
+        },
+        icon: Icon(Icons.logout),
+      ),
+      IconButton(
+        onPressed: () async {
+          print(
+              'Cookie: ${Provider.of<CookieProvider>(context, listen: false).getCookie}');
+
+          print(
+              'New cookie: ${await Provider.of<CookieProvider>(context, listen: false).refreshCookie()}');
+        },
+        icon: Icon(Icons.http),
+      ),
+      IconButton(
+        onPressed: () async {
+          await showModalBottomSheet(
+              context: context,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
+              builder: (BuildContext context) {
+                return buildYearModalSheet();
+              });
+          setState(() {
+            print('SET tHE STATE');
+          });
+        },
+        icon: Icon(Icons.access_time_filled_outlined),
+      ),
+      IconButton(
+        onPressed: () async {
+          await showModalBottomSheet(
+              elevation: 2,
+              enableDrag: true,
+              isScrollControlled: true,
+              context: context,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
+              builder: (BuildContext context) {
+                return buildChipModalSheet();
+              });
+          setState(() {
+            print('SET tHE STATE');
+          });
+        },
+        icon: Icon(Icons.filter_list_rounded),
+      ),
+    ];
+  }
+
+  Widget buildYearModalSheet() {
+    List<Widget> buttonList = [];
+    double w = MediaQuery.of(context).size.width;
+    for (int i = 2022; i >= 2000; i--) {
+      buttonList.add(
+        MaterialButton(
+          minWidth: w,
+          onPressed: () {
+            _currentYear = i;
+
+            Navigator.of(context).pop();
+            refresh(i);
+            showSnackBar('Lade Abschüsse aus $i', context);
+          },
+          elevation: 2,
+          padding:
+              EdgeInsets.symmetric(horizontal: w * 0.3, vertical: w * 0.02),
+          child: Text(
+            '$i',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight:
+                  i == _currentYear ? FontWeight.bold : FontWeight.normal,
+              color: i == _currentYear ? Colors.green : Colors.black,
+            ),
+          ),
+        ),
+      );
+    }
+    return SingleChildScrollView(
+      child: Column(
+        children: buttonList,
+      ),
+    );
+  }
+
+  Widget buildChipModalSheet() {
+    // List<MaterialButton> buttonList = [];
+
+    // for (int i = 2022; i > 2000; i--) {
+    //   buttonList.add(MaterialButton(
+    //     onPressed: () {
+    //       Navigator.of(context).pop();
+    //       showSnackBar('Lade $i ...', context);
+    //       refresh(i);
+    //     },
+    //     child: Text('$i'),
+    //     padding: const EdgeInsets.all(10),
+    //   ));
+    // }
+
+    // Wrap(
+    //     children:);
+    double width = MediaQuery.of(context).size.width;
+    return SingleChildScrollView(
+      child: Padding(
+        padding:
+            EdgeInsets.only(top: 20, left: width * 0.1, right: width * 0.1),
+        child: Wrap(
+          children: chips
+              .map((c) => StatefulBuilder(builder: (context, setState) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5.0, vertical: 2),
+                      child: FilterChip(
+                          checkmarkColor: c.color,
+                          selectedColor: c.color.withOpacity(0.25),
+                          disabledColor: c.color.withOpacity(0.1),
+                          labelStyle: TextStyle(color: c.color),
+                          onSelected: (selected) {
+                            c.isSelected = selected;
+                            setState(() {});
+                          },
+                          selected: c.isSelected,
+                          label: Text(c.label)),
+                    );
+                  }))
+              .toList(),
+        ),
       ),
     );
   }
 
   Widget buildProgressBar(List<KillEntry> kills) {
     double percentage = kills.length / this.kills.length;
-    double horizontal = MediaQuery.of(context).size.width * 0.3;
+    double horizontal = MediaQuery.of(context).size.width * 0.2;
     return Padding(
       padding: EdgeInsets.only(
         left: horizontal,
@@ -172,6 +407,8 @@ class _KillsScreenState extends State<KillsScreen> {
       ),
       child: Column(
         children: [
+          //#c4 > h1
+          const SizedBox(height: 10),
           Text('Zeige ${kills.length} von ${this.kills.length}'),
           const SizedBox(height: 12),
           LinearProgressIndicator(
@@ -184,26 +421,32 @@ class _KillsScreenState extends State<KillsScreen> {
   }
 
   Widget buildKillEntries(List<KillEntry> kills) {
-    if (kills.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.search),
-            SizedBox(height: 12),
-            Text('Hier gibt es nichts zu sehen...'),
-          ],
-        ),
-      );
-    }
-    return ListView.builder(
-      //separatorBuilder: (context, index) => Divider(),
-      itemCount: kills.length,
-      itemBuilder: ((context, index) {
-        KillEntry k = kills.elementAt(index);
-        String key = '${k.nummer}-${k.datum}';
-        return KillListEntry(key: Key(key), kill: k);
-      }),
+    return RefreshIndicator(
+      color: Theme.of(context).colorScheme.primary,
+      child: kills.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.search),
+                  SizedBox(height: 12),
+                  Text('Hier gibt es nichts zu sehen...'),
+                ],
+              ),
+            )
+          : ListView.builder(
+              //separatorBuilder: (context, index) => Divider(),
+              itemCount: kills.length,
+              itemBuilder: ((context, index) {
+                KillEntry k = kills.elementAt(index);
+                String key = '${k.nummer}-${k.datum}';
+                return KillListEntry(key: Key(key), kill: k);
+              }),
+            ),
+      onRefresh: () async {
+        await refresh(_currentYear);
+        print('refreshed)');
+      },
     );
   }
 }
