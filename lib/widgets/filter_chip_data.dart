@@ -9,7 +9,7 @@ class FilterChipData {
   FilterChipData(
       {required this.label, required this.color, this.isSelected = true});
 
-  static List<FilterChipData> all = <FilterChipData>[
+  static List<FilterChipData> allWild = <FilterChipData>[
     FilterChipData(label: 'Rehwild', color: rehwildFarbe),
     FilterChipData(label: 'Rotwild', color: rotwildFarbe),
     FilterChipData(label: 'Gamswild', color: gamswildFarbe),
@@ -23,5 +23,28 @@ class FilterChipData {
     FilterChipData(label: 'Fuchs', color: fuchsFarbe),
     FilterChipData(label: 'Schneehase', color: schneehaseFarbe),
     FilterChipData(label: 'Andere Wildart', color: wildFarbe),
+  ];
+
+  static List<FilterChipData> allUrsache = <FilterChipData>[
+    FilterChipData(label: 'erlegt', color: erlegtFarbe),
+    FilterChipData(label: 'Fallwild', color: fallwildFarbe),
+    FilterChipData(label: 'Hegeabschuss', color: hegeabschussFarbe),
+    FilterChipData(label: 'Straßenunfall', color: strassenunfallFarbe),
+    FilterChipData(label: 'Protokoll / beschlagnahmt', color: protokollFarbe),
+    FilterChipData(label: 'vom zug überfahren', color: zugFarbe),
+    FilterChipData(label: 'Freizone', color: freizoneFarbe),
+  ];
+
+  static List<FilterChipData> allVerwendung = <FilterChipData>[
+    FilterChipData(label: 'Eigengebrauch', color: eigengebrauchFarbe),
+    FilterChipData(
+        label: 'Eigengebrauch - Abgabe zur Weiterverarbeitung',
+        color: weiterverarbeitungFarbe),
+    FilterChipData(label: 'verkauf', color: verkaufFarbe),
+    FilterChipData(label: 'nicht verwertbar', color: nichtVerwertbarFarbe),
+    FilterChipData(
+        label: 'nicht gefunden / Nachsuche erfolglos',
+        color: nichtGefundenFarbe),
+    FilterChipData(label: 'nicht bekannt', color: nichtBekanntFarbe),
   ];
 }

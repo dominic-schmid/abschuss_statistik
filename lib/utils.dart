@@ -96,7 +96,7 @@ Future<dynamic> showAlertDialog({
 const rehwildFarbe = Color.fromRGBO(73, 130, 5, 1);
 const rotwildFarbe = Color.fromRGBO(230, 74, 25, 1);
 const gamswildFarbe = Color.fromRGBO(0, 183, 195, 1);
-const steinwildFarbe = Color.fromRGBO(55, 71, 79, 1);
+const steinwildFarbe = Color.fromRGBO(175, 180, 43, 1);
 const schwarzwildFarbe = Color.fromRGBO(35, 35, 35, 1);
 const spielhahnFarbe = Color.fromRGBO(255, 87, 34, 1);
 const steinhuhnFarbe = Color.fromRGBO(0, 137, 123, 1);
@@ -106,3 +106,18 @@ const dachsFarbe = Color.fromRGBO(66, 66, 66, 1);
 const fuchsFarbe = Color.fromRGBO(255, 140, 0, 1);
 const schneehaseFarbe = Color.fromRGBO(107, 105, 214, 1);
 const wildFarbe = Color.fromRGBO(16, 137, 62, 1);
+
+const erlegtFarbe = Color.fromRGBO(76, 175, 80, 1);
+const fallwildFarbe = Color.fromRGBO(121, 85, 72, 1);
+const hegeabschussFarbe = Color.fromRGBO(255, 87, 34, 1);
+const strassenunfallFarbe = Color.fromRGBO(97, 97, 97, 1);
+const protokollFarbe = Color.fromRGBO(156, 39, 176, 1);
+const zugFarbe = Color.fromRGBO(175, 180, 43, 1);
+const freizoneFarbe = Color.fromRGBO(40, 53, 147, 1);
+
+const eigengebrauchFarbe = Color.fromRGBO(76, 175, 80, 1);
+const weiterverarbeitungFarbe = Color.fromRGBO(245, 127, 23, 1);
+const verkaufFarbe = Color.fromRGBO(63, 81, 181, 1);
+const nichtVerwertbarFarbe = Color.fromRGBO(97, 97, 97, 1);
+const nichtGefundenFarbe = Color.fromRGBO(0, 121, 107, 1);
+const nichtBekanntFarbe = Color.fromRGBO(233, 30, 99, 1);

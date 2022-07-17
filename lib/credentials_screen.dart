@@ -26,7 +26,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
       _isLoading = true;
     });
     // verify written login data
-    Provider.of<CookieProvider>(context, listen: false)
+    await Provider.of<CookieProvider>(context, listen: false)
         .refreshCredentials(revierLogin, revierPasswort);
 
     String cookie = await Provider.of<CookieProvider>(context, listen: false)
@@ -134,7 +134,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
                 Icons.co_present_rounded,
                 color: Colors.white,
               ),
-              hintText: 'Bruneck13L',
+              hintText: 'z.B. Bruneck13L',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -170,7 +170,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
                 Icons.lock,
                 color: Colors.white,
               ),
-              hintText: 'az380',
+              hintText: 'Passwort',
               hintStyle: kHintTextStyle,
             ),
           ),

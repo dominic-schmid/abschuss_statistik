@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
           // Notice that the counter didn't reset back to zero; the application
           // is not restarted.
           primarySwatch: Colors.green,
+          //primaryColor: Color.fromRGBO(56, 142, 60, 1),
         ),
         //darkTheme: ThemeData.dark(),
         //themeMode: ThemeMode.dark,
