@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'request_methods.dart';
 
 Future<void> saveCredentialsToPrefs(
     String revierLogin, String revierPasswort) async {
@@ -12,43 +9,17 @@ Future<void> saveCredentialsToPrefs(
   prefs.setString('revierPasswort', revierPasswort);
 }
 
-// Returns the new cookie if success, empty means wrong credentials or no prefs found
-// Should either return a valid cookie or null if you need to be logged out
-Future<bool> validCredentialsSaved() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  // Otherwise read prefs and check if that cookie is valid
-  String revierLogin = prefs.getString('revierLogin') ?? "";
-  String revierPasswort = prefs.getString('revierPasswort') ?? "";
-  String cookie = prefs.getString('cookie') ?? "";
-  print('Initial prefs: `$revierLogin` `$revierPasswort` `$cookie`');
-
-  if (revierLogin.isNotEmpty && revierPasswort.isNotEmpty) {
-    String cookie =
-        await RequestMethods.getCookieFromLogin(revierLogin, revierPasswort);
-    if (cookie.isNotEmpty) {
-      await prefs.setString('cookie', cookie);
-      return true;
-    }
-    return false;
-  }
-
-  return false; // This means no valid creds are saved and we need to login again
-}
-
 Future<Map<String, String>?> loadCredentialsFromPrefs() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   String revierLogin = prefs.getString('revierLogin') ?? "";
   String revierPasswort = prefs.getString('revierPasswort') ?? "";
-  String cookie = prefs.getString('cookie') ?? "";
 
   if (revierLogin.isNotEmpty && revierPasswort.isNotEmpty) {
-    print('Loaded Credentials: `$revierLogin` `$revierPasswort`');
+    print('Read credentials: `$revierLogin` `$revierPasswort`');
     return {
       'revierLogin': revierLogin,
       'revierPasswort': revierPasswort,
-      'cookie': cookie,
     };
   } else {
     return null;
@@ -121,16 +92,22 @@ Future<dynamic> showAlertDialog({
   );
 }
 
+const primaryColor = Colors.white;
+Color secondaryColor = Colors.white.withAlpha(170);
+const invertedPrimaryColor = Colors.black;
+
 const rehwildFarbe = Color.fromRGBO(73, 130, 5, 1);
 const rotwildFarbe = Color.fromRGBO(230, 74, 25, 1);
 const gamswildFarbe = Color.fromRGBO(0, 183, 195, 1);
 const steinwildFarbe = Color.fromRGBO(175, 180, 43, 1);
-const schwarzwildFarbe = Color.fromRGBO(35, 35, 35, 1);
+const schwarzwildFarbe =
+    Color.fromRGBO(188, 170, 164, 1); //Color.fromRGBO(35, 35, 35, 1);
 const spielhahnFarbe = Color.fromRGBO(255, 87, 34, 1);
 const steinhuhnFarbe = Color.fromRGBO(0, 137, 123, 1);
 const schneehuhnFarbe = Color.fromRGBO(116, 77, 169, 1);
 const murmeltierFarbe = Color.fromRGBO(136, 14, 79, 1);
-const dachsFarbe = Color.fromRGBO(66, 66, 66, 1);
+const dachsFarbe =
+    Color.fromRGBO(144, 164, 174, 1); // Color.fromRGBO(66, 66, 66, 1);
 const fuchsFarbe = Color.fromRGBO(255, 140, 0, 1);
 const schneehaseFarbe = Color.fromRGBO(107, 105, 214, 1);
 const wildFarbe = Color.fromRGBO(16, 137, 62, 1);
@@ -141,7 +118,7 @@ const hegeabschussFarbe = Color.fromRGBO(255, 87, 34, 1);
 const strassenunfallFarbe = Color.fromRGBO(97, 97, 97, 1);
 const protokollFarbe = Color.fromRGBO(156, 39, 176, 1);
 const zugFarbe = Color.fromRGBO(175, 180, 43, 1);
-const freizoneFarbe = Color.fromRGBO(40, 53, 147, 1);
+const freizoneFarbe = Color.fromRGBO(92, 107, 192, 1);
 
 const eigengebrauchFarbe = Color.fromRGBO(76, 175, 80, 1);
 const weiterverarbeitungFarbe = Color.fromRGBO(245, 127, 23, 1);

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/kills_screen.dart';
-import 'package:jagdverband_scraper/providers.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'request_methods.dart';
 
@@ -19,21 +19,6 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
   final TextEditingController _passwortController = TextEditingController();
 
   bool _isLoading = false;
-
-  Future<bool> verify(String revierLogin, String revierPasswort) async {
-    if (!mounted) return false;
-    // verify written login data
-    await Provider.of<CookieProvider>(context, listen: false)
-        .writeCredentials(revierLogin, revierPasswort);
-
-    if (!mounted) return false;
-    String cookie = await Provider.of<CookieProvider>(context, listen: false)
-            .readPrefsOrUpdate() ??
-        ""; // Loads creds from prefs and refreshes cookei
-
-    return cookie
-        .isNotEmpty; // If cookie is not empty -> login successfull and cookie saved in provider
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -191,10 +176,19 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
     setState(() {
       _isLoading = true;
     });
-    bool login = await verify(revier, pass);
+    bool login = await RequestMethods.tryLogin(revier, pass);
+    if (!login) {
+      print('Trying to log in one more time');
+      login = await RequestMethods.tryLogin(revier, pass);
+    }
 
     if (!mounted) return;
     if (login) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('revierLogin', _revierController.text);
+      await prefs.setString('revierPasswort', _passwortController.text);
+
+      if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => const KillsScreen(),

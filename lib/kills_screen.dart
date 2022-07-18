@@ -1,11 +1,12 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jagdverband_scraper/credentials_screen.dart';
 import 'package:jagdverband_scraper/main.dart';
-import 'package:jagdverband_scraper/providers.dart';
 import 'package:jagdverband_scraper/request_methods.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:jagdverband_scraper/widgets/filter_chip_data.dart';
-import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/kill_entry.dart';
 import 'package:intl/intl.dart';
@@ -31,48 +32,17 @@ class _KillsScreenState extends State<KillsScreen> {
   List<FilterChipData> ursacheChips = FilterChipData.allUrsache.toList();
   List<FilterChipData> verwendungChips = FilterChipData.allVerwendung.toList();
 
-  loadCookieAndKills() async {
-    String? cookie = await Provider.of<CookieProvider>(context, listen: false)
-        .readPrefsOrUpdate();
-
-    print('Kills screen found cookie $cookie');
-
-    if (cookie != null && cookie.isNotEmpty) {
-      List<KillEntry>? kills =
-          await RequestMethods.loadKills(cookie, _currentYear)
-              .timeout(const Duration(seconds: 10));
-
-      // Cookie isn't valid (anymore)
-      if (kills == null) {
-        if (!mounted) return;
-        await Provider.of<CookieProvider>(context, listen: false)
-            .refreshCookie();
-        //.timeout(const Duration(seconds: 10));
-      }
-
-      this.kills = kills!;
-    }
-    if (!mounted) return;
-    setState(() {
-      _isLoading = false;
-    });
-    // String cookie =
-    //     Provider.of<CookieProvider>(context, listen: false).getCookie;
-    // print('Init state found cookie $cookie');
-    // await ;
-  }
-
   @override
   void initState() {
     super.initState();
-    loadCookieAndKills();
+    refresh(_currentYear);
   }
 
   List<KillEntry> chipFilter(List<KillEntry> kills) {
     List<KillEntry> filtered = [];
 
     // Find all selected chips and see if contains
-    kills.forEach((k) {
+    for (KillEntry k in kills) {
       if (wildChips
               .where((e) => e.isSelected)
               .map((e) => e.label)
@@ -87,13 +57,7 @@ class _KillsScreenState extends State<KillsScreen> {
               .contains(k.verwendung)) {
         filtered.add(k);
       }
-    });
-
-    // wildChips.forEach((element) {
-    //   if (element.isSelected) {
-    //     filtered.addAll(kills.where((k) => k.wildart == element.label));
-    //   }
-    // });
+    }
 
     return filtered;
   }
@@ -135,21 +99,27 @@ class _KillsScreenState extends State<KillsScreen> {
   }
 
   Future<void> refresh(int year) async {
-    showSnackBar('Not implemented', context);
+    if (await Connectivity()
+            .checkConnectivity()
+            .timeout(const Duration(seconds: 15)) ==
+        ConnectivityResult.none) {
+      showSnackBar('Fehler: Kein Internet!', context);
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
-    await Provider.of<CookieProvider>(context, listen: false)
-        .readPrefsOrUpdate()
-        .then((cookie) =>
-            RequestMethods.loadKills('d3eb45567f24feb21551f6c171f8fb8a', year)
-                .then((kills) {
-              if (!mounted) return;
-              setState(() {
-                this.kills = kills!;
-                _isLoading = false;
-              });
-            }));
+
+    await RequestMethods.getKills(year).then((kills) {
+      if (!mounted) return;
+      if (kills == null) {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => CredentialsScreen()));
+      } else {
+        this.kills = kills;
+      }
+    }).timeout(const Duration(seconds: 15));
     setState(() {
       _isLoading = false;
     });
@@ -157,9 +127,6 @@ class _KillsScreenState extends State<KillsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String cookie = Provider.of<CookieProvider>(context).getCookie;
-    cookie = "5991d3756866e88e2922a3b1873ffbb3"; // TODO REMOVE
-
     double w = MediaQuery.of(context).size.width;
 
     filteredKills = chipFilter(kills);
@@ -177,6 +144,7 @@ class _KillsScreenState extends State<KillsScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: rehwildFarbe,
         title: GestureDetector(
             onTap: () {
               print(loadCredentialsFromPrefs());
@@ -193,34 +161,6 @@ class _KillsScreenState extends State<KillsScreen> {
         // mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          // Container(
-          //   height: MediaQuery.of(context).size.height * 0.1,
-          //   width: double.infinity,
-
-          //   // Horizontal chip listview
-          //   child: ListView.builder(
-          //     scrollDirection: Axis.horizontal,
-          //     itemCount: chips.length,
-          //     itemBuilder: ((context, index) {
-          //       FilterChipData chip = chips.elementAt(index);
-          //       return Padding(
-          //         padding: const EdgeInsets.all(5.0),
-          //         child: FilterChip(
-          //             selectedColor: chip.color.withOpacity(0.25),
-          //             disabledColor: chip.color.withOpacity(0.1),
-          //             checkmarkColor: chip.color,
-          //             labelStyle: TextStyle(color: chip.color),
-          //             onSelected: (selected) {
-          //               setState(() {
-          //                 chip.isSelected = selected;
-          //               });
-          //             },
-          //             selected: chip.isSelected,
-          //             label: Text(chip.label)),
-          //       );
-          //     }),
-          //   ),
-          // ),
           ExpansionTile(
             childrenPadding: const EdgeInsets.all(0),
             title: buildSearchbar(),
@@ -235,7 +175,9 @@ class _KillsScreenState extends State<KillsScreen> {
               ),
             ],
           ),
-
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 2),
+          ),
           _isLoading
               ? const Center(
                   child: CircularProgressIndicator(color: Colors.green))
@@ -427,7 +369,7 @@ class _KillsScreenState extends State<KillsScreen> {
       IconButton(
         onPressed: () async {
           await showAlertDialog(
-            title: 'Abmelden',
+            title: ' Abmelden',
             description: 'Möchtest du dich wirklich abmelden?',
             yesOption: 'Ja',
             noOption: 'Nein',
@@ -476,7 +418,7 @@ class _KillsScreenState extends State<KillsScreen> {
               fontSize: 24,
               fontWeight:
                   i == _currentYear ? FontWeight.bold : FontWeight.normal,
-              color: i == _currentYear ? Colors.green : Colors.black,
+              color: i == _currentYear ? Colors.green : secondaryColor,
             ),
           ),
         ),
@@ -512,7 +454,7 @@ class _KillsScreenState extends State<KillsScreen> {
               fontSize: 24,
               fontWeight:
                   i == _currentSorting ? FontWeight.bold : FontWeight.normal,
-              color: i == _currentSorting ? Colors.green : Colors.black,
+              color: i == _currentSorting ? Colors.green : secondaryColor,
             ),
           ),
         ),
@@ -725,10 +667,7 @@ class _KillsScreenState extends State<KillsScreen> {
           }),
         ),
       ),
-      onRefresh: () async {
-        await refresh(_currentYear);
-        print('refreshed)');
-      },
+      onRefresh: () async => await refresh(_currentYear),
     );
   }
 }
@@ -768,8 +707,8 @@ class KillListEntryState extends State<KillListEntry> {
         : k.alter.isEmpty && k.alterw.isNotEmpty
             ? k.alterw
             : k.alter.isNotEmpty && k.alterw.isNotEmpty
-                ? k.alter
-                : k.alterw;
+                ? '${k.alter} - ${k.alterw}'
+                : "";
 
     double w = MediaQuery.of(context).size.width;
 
@@ -778,7 +717,7 @@ class KillListEntryState extends State<KillListEntry> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: 3),
       decoration: BoxDecoration(
-          color: k.color.withOpacity(0.2),
+          color: k.color.withOpacity(0.8),
           borderRadius: const BorderRadius.all(
             Radius.circular(20),
           )),
@@ -789,7 +728,10 @@ class KillListEntryState extends State<KillListEntry> {
           // iconColor: k.color,
           // collapsedIconColor: k.color,
           // collapsedBackgroundColor: k.color.withOpacity(0.2),
-          leading: Icon(k.icon),
+          leading: Icon(
+            k.icon,
+            color: primaryColor,
+          ),
 
           // Row(
           //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -806,21 +748,33 @@ class KillListEntryState extends State<KillListEntry> {
           // ),
 
           title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 k.wildart,
-                style: const TextStyle(fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                    fontWeight: FontWeight.w600, color: primaryColor),
               ),
-              const SizedBox(
-                width: 20,
+              // const SizedBox(
+              //   width: 20,
+              // ),
+              Text(
+                k.oertlichkeit,
+                style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: primaryColor,
+                    fontSize: 12),
               ),
             ],
           ),
           subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(k.geschlecht),
-              Text('${date}'),
+              Text(k.geschlecht, style: TextStyle(color: secondaryColor)),
+              Text(
+                '${date}',
+                style: TextStyle(color: secondaryColor),
+              ),
             ],
           ),
           expandedAlignment: Alignment.topLeft,
@@ -829,22 +783,51 @@ class KillListEntryState extends State<KillListEntry> {
           expandedCrossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${k.nummer} - ${k.oertlichkeit}',
-              style: const TextStyle(fontWeight: FontWeight.w600),
+              'Fortlaufende Nummer: ${k.nummer}',
+              style:
+                  TextStyle(fontWeight: FontWeight.w600, color: secondaryColor),
             ),
-            k.alter.isEmpty ? Container() : Text(k.hegeinGebietRevierteil),
-            time == '00:00' ? Container() : Text('Uhrzeit: ${time}'),
-            k.alter.trim().isEmpty ? Container() : Text('Alter: ${k.alter}'),
-            k.alterw.isEmpty ? Container() : Text('Alter W: ${k.alterw}'),
-            k.gewicht == null ? Container() : Text('Gewicht: ${k.gewicht} kg'),
+            k.alter.isEmpty
+                ? Container()
+                : Text(k.hegeinGebietRevierteil,
+                    style: TextStyle(color: secondaryColor)),
+            time == '00:00'
+                ? Container()
+                : Text('Uhrzeit: $time',
+                    style: TextStyle(color: secondaryColor)),
+            k.alter.trim().isEmpty
+                ? Container()
+                : Text('Alter: $alter',
+                    style: TextStyle(color: secondaryColor)),
+            // k.alterw.isEmpty
+            //     ? Container()
+            //     : Text('Alter W: ${k.alterw}',
+            //         style: TextStyle(color: secondaryColor)),
+            k.gewicht == null
+                ? Container()
+                : Text('Gewicht: ${k.gewicht} kg',
+                    style: TextStyle(color: secondaryColor)),
             k.begleiter.isEmpty
                 ? Container()
-                : Text('Begleiter: ${k.begleiter}'),
-            Text('Verwendung: ${k.verwendung}'),
+                : Text('Begleiter: ${k.begleiter}',
+                    style: TextStyle(color: secondaryColor)),
+            Text('Verwendung: ${k.verwendung}',
+                style: TextStyle(color: secondaryColor)),
             k.urpsrungszeichen.isEmpty
                 ? Container()
-                : Text('Urpsrungszeichen: ${k.urpsrungszeichen}'),
-            Text(k.datetime.toLocal().toIso8601String()),
+                : Text('Urpsrungszeichen: ${k.urpsrungszeichen}',
+                    style: TextStyle(color: secondaryColor)),
+            k.jagdaufseher == null
+                ? Container()
+                : Wrap(
+                    children: [
+                      Text(
+                          "Gesehen von: ${k.jagdaufseher!['aufseher']} am ${k.jagdaufseher!['datum']} um ${k.jagdaufseher!['zeit']}",
+                          style: TextStyle(
+                            color: secondaryColor,
+                          )),
+                    ],
+                  ),
           ],
         ),
       ),
