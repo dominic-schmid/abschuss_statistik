@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Map<String, dynamic> getDefaultPrefs() {
-  return {
-    'login': '',
-    'pass': '',
-    'isDarkMode': true,
-  };
-}
+Map<String, dynamic> getDefaultPrefs() => {
+      'login': '',
+      'pass': '',
+      'isDarkMode': true,
+    };
 
 Future<Map<String, String>?> loadCredentialsFromPrefs() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -26,14 +24,12 @@ Future<Map<String, String>?> loadCredentialsFromPrefs() async {
   }
 }
 
-Future<void> deletePrefs() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  //Map<String, String>? creds = await loadCredentials();
-
-  await prefs.remove('revierLogin');
-  await prefs.remove('revierPasswort');
-  await prefs.remove('cookie');
-}
+Future<void> deletePrefs() async =>
+    await SharedPreferences.getInstance().then((prefs) async {
+      await prefs.remove('revierLogin');
+      await prefs.remove('revierPasswort');
+      await prefs.remove('cookie');
+    });
 
 showSnackBar(String content, BuildContext context, {int duration = 1500}) {
   ScaffoldMessenger.of(context).showSnackBar(

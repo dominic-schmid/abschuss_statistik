@@ -22,15 +22,6 @@ class KillEntry {
   IconData icon = Icons.question_mark;
   Color color = Colors.grey;
 
-  // DateTime parseDateTime(String d, String t) {
-  //   int yy = int.parse(datum.substring(6));
-  //   int mo = int.parse(datum.substring(3, 5));
-  //   int dd = int.parse(datum.substring(0, 2));
-  //   int hh24 = int.parse(zeit.substring(0, 2));
-  //   int mi = int.parse(zeit.substring(3));
-  //   return DateTime(yy, mo, dd, hh24, mi);
-  // }
-
   KillEntry({
     required this.nummer,
     required this.wildart,
@@ -49,7 +40,6 @@ class KillEntry {
     this.jagdaufseher,
   }) {
     icon = getUrsacheIcon(ursache);
-    // datetime = parseDateTime(datum, zeit);
 
     switch (wildart) {
       case 'Rehwild':
@@ -94,25 +84,30 @@ class KillEntry {
     }
   }
 
+  // Return an improved search string
+  String _r(String s) => s
+      .toLowerCase()
+      .trim()
+      .replaceAll('ä', 'a')
+      .replaceAll('ö', 'o')
+      .replaceAll('ü', 'u')
+      .replaceAll('ß', 's');
+
   bool contains(String q) {
-    return wildart.toLowerCase().contains(q) ||
-        geschlecht.toLowerCase().contains(q) ||
-        oertlichkeit.toLowerCase().contains(q) ||
-        verwendung.toLowerCase().contains(q) ||
-        ursache.toLowerCase().contains(q) ||
-        datetime.toString().contains(q) ||
-        gewicht.toString().contains(q) ||
-        alter.toLowerCase().contains(q) ||
-        alterw.toLowerCase().contains(q);
+    q = _r(q);
+    return _r(wildart).contains(q) ||
+        _r(geschlecht).contains(q) ||
+        _r(oertlichkeit).contains(q) ||
+        _r(verwendung).contains(q) ||
+        _r(ursache).contains(q) ||
+        _r(datetime.toString()).contains(q) ||
+        _r(gewicht.toString()).contains(q) ||
+        _r(alter).contains(q) ||
+        _r(alterw).contains(q);
   }
 
   static KillEntry? fromEntry(dom.Element e) {
     try {
-      //debugPrint('PARSING: ${htmlRow.length}');
-      // dom.DocumentFragment r = dom.DocumentFragment.html(htmlRow);
-      // print(r.attributes);
-
-      // print(r.children);
       var cols = e.querySelectorAll('td');
 
       String datum = cols.elementAt(4).text.substring(0, 10);
@@ -142,7 +137,6 @@ class KillEntry {
         gewicht: double.tryParse(cols.elementAt(7).text),
         erleger: cols.elementAt(8).text,
         begleiter: cols.elementAt(9).text,
-
         ursprungszeichen: cols.elementAt(12).text,
         jagdaufseher: cols.elementAt(14).text.length > 20
             ? {
@@ -151,7 +145,6 @@ class KillEntry {
                 'aufseher': cols.elementAt(14).text.substring(19),
               }
             : null,
-
         // Oertlichkeit
       );
     } catch (e) {

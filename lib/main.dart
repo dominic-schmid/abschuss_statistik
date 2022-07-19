@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
 import 'package:jagdverband_scraper/providers.dart';
-import 'dart:async';
 import 'package:jagdverband_scraper/request_methods.dart';
-import 'package:jagdverband_scraper/utils.dart';
 import 'package:provider/provider.dart';
-import 'package:requests/requests.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'kills_screen.dart';
@@ -25,11 +22,6 @@ void main() async {
   };
 
   print('Read config: $config');
-
-  // return {
-  //   'revierLogin': revierLogin,
-  //   'revierPasswort': revierPasswort,
-  // };
 
   runApp(MyApp(config: config));
 }
@@ -56,13 +48,10 @@ class MyApp extends StatelessWidget {
 
           return MaterialApp(
             title: 'Abschuss Statistik',
-            // theme: ThemeData.dark(
-            //   primarySwatch: Colors.green,
-            // ),
             theme: ThemeData(
               textTheme: Theme.of(context).textTheme.apply(
-                    bodyColor: Colors.black, //<-- SEE HERE
-                    displayColor: Colors.black, //<-- SEE HERE
+                    bodyColor: Colors.black,
+                    displayColor: Colors.black,
                   ),
               brightness: Brightness.light,
               primarySwatch: Colors.lightGreen,
@@ -74,8 +63,8 @@ class MyApp extends StatelessWidget {
             ),
             darkTheme: ThemeData(
               textTheme: Theme.of(context).textTheme.apply(
-                    bodyColor: Colors.white, //<-- SEE HERE
-                    displayColor: Colors.white, //<-- SEE HERE
+                    bodyColor: Colors.white,
+                    displayColor: Colors.white,
                   ),
               appBarTheme: const AppBarTheme().copyWith(
                 foregroundColor: Colors.white,
@@ -87,7 +76,7 @@ class MyApp extends StatelessWidget {
             ),
             themeMode: themeProvider.themeMode,
             home: login.isEmpty || pass.isEmpty
-                ? CredentialsScreen()
+                ? const CredentialsScreen()
                 : FutureBuilder<bool>(
                     future: RequestMethods.tryLogin(login, pass),
                     builder: (context, snap) {
@@ -95,7 +84,7 @@ class MyApp extends StatelessWidget {
                         if (snap.hasData && snap.data!) {
                           return const KillsScreen();
                         } else {
-                          return CredentialsScreen();
+                          return const CredentialsScreen();
                         }
                       }
                       return const Center(

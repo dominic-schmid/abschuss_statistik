@@ -3,14 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
-import 'package:jagdverband_scraper/main.dart';
 import 'package:jagdverband_scraper/models/kill_page.dart';
 import 'package:jagdverband_scraper/request_methods.dart';
 import 'package:jagdverband_scraper/settings_screen.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:jagdverband_scraper/widgets/filter_chip_data.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/kill_entry.dart';
 import 'package:intl/intl.dart';
@@ -24,6 +22,8 @@ class KillsScreen extends StatefulWidget {
 
 class _KillsScreenState extends State<KillsScreen> {
   final TextEditingController controller = TextEditingController();
+  final ScrollController _scrollController =
+      ScrollController(initialScrollOffset: 0);
 
   bool _isLoading = true;
   int _currentYear = 2022;
@@ -45,7 +45,19 @@ class _KillsScreenState extends State<KillsScreen> {
   @override
   void dispose() {
     controller.dispose();
+    _scrollController.dispose();
+    // On logout, re-select all chips to make sure that on login you arent filtering anything
+    wildChips.forEach((element) => element.isSelected = true);
+    ursacheChips.forEach((element) => element.isSelected = true);
+    verwendungChips.forEach((element) => element.isSelected = true);
+
     super.dispose();
+  }
+
+  // This function is triggered when the user presses the back-to-top button
+  void _scrollToTop() {
+    _scrollController.animateTo(0,
+        duration: const Duration(milliseconds: 1500), curve: Curves.decelerate);
   }
 
   List<KillEntry> chipFilter(List<KillEntry> kills) {
@@ -218,6 +230,20 @@ class _KillsScreenState extends State<KillsScreen> {
     );
   }
 
+  List<Widget> buildActionButtons() {
+    return <Widget>[
+      IconButton(
+        onPressed: () => showSnackBar('Hinzufügen...', context),
+        icon: const Icon(Icons.add_box_rounded),
+      ),
+      IconButton(
+        onPressed: () => Navigator.of(context).push(
+            CupertinoPageRoute(builder: (context) => const SettingsScreen())),
+        icon: const Icon(Icons.settings),
+      ),
+    ];
+  }
+
   Widget buildSearchbar() {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
@@ -228,6 +254,11 @@ class _KillsScreenState extends State<KillsScreen> {
         style: const TextStyle(color: Colors.green),
         controller: controller,
         decoration: InputDecoration(
+          suffixIcon: IconButton(
+            icon:
+                controller.text.isEmpty ? Container() : const Icon(Icons.close),
+            onPressed: () => setState(() => controller.text = ""),
+          ),
           // enabledBorder: InputBorder.none,
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.green, width: 1),
@@ -394,43 +425,6 @@ class _KillsScreenState extends State<KillsScreen> {
     ];
   }
 
-  List<Widget> buildActionButtons() {
-    return <Widget>[
-      IconButton(
-        onPressed: () async {
-          await showAlertDialog(
-            title: ' Abmelden',
-            description: 'Möchtest du dich wirklich abmelden?',
-            yesOption: 'Ja',
-            noOption: 'Nein',
-            onYes: () {
-              // On logout, re-select all chips to make sure that on login you arent filtering anything
-              wildChips.forEach((element) => element.isSelected = true);
-              ursacheChips.forEach((element) => element.isSelected = true);
-              verwendungChips.forEach((element) => element.isSelected = true);
-
-              deletePrefs().then((value) => Navigator.of(context)
-                  .pushReplacement(MaterialPageRoute(
-                      builder: (context) => MyApp(config: getDefaultPrefs()))));
-            },
-            icon: Icons.warning,
-            context: context,
-          );
-        },
-        icon: const Icon(Icons.logout),
-      ),
-      IconButton(
-        onPressed: () => Navigator.of(context).push(
-            CupertinoPageRoute(builder: (context) => const SettingsScreen())),
-        icon: const Icon(Icons.settings),
-      ),
-      IconButton(
-        onPressed: () => showSnackBar('Hinzufügen...', context),
-        icon: const Icon(Icons.add_box_rounded),
-      ),
-    ];
-  }
-
   Widget buildYearModalSheet() {
     List<Widget> buttonList = [];
     double w = MediaQuery.of(context).size.width;
@@ -464,45 +458,6 @@ class _KillsScreenState extends State<KillsScreen> {
         ),
       );
     }
-    return SingleChildScrollView(
-      child: Column(
-        children: buttonList,
-      ),
-    );
-  }
-
-  Widget buildSortierungModalSheet() {
-    List<Widget> buttonList = [];
-    double w = MediaQuery.of(context).size.width;
-
-    for (var i in Sorting.values) {
-      buttonList.add(
-        MaterialButton(
-          minWidth: w,
-          onPressed: () {
-            _currentSorting = i;
-
-            Navigator.of(context).pop();
-            sortListBy(_currentSorting);
-          },
-          elevation: 2,
-          padding:
-              EdgeInsets.symmetric(horizontal: w * 0.3, vertical: w * 0.02),
-          child: Text(
-            describeEnum(i),
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight:
-                  i == _currentSorting ? FontWeight.bold : FontWeight.normal,
-              color: i == _currentSorting
-                  ? Colors.green
-                  : Theme.of(context).textTheme.headline1!.color,
-            ),
-          ),
-        ),
-      );
-    }
-    for (int i = 2022; i >= 2000; i--) {}
     return SingleChildScrollView(
       child: Column(
         children: buttonList,
@@ -646,6 +601,46 @@ class _KillsScreenState extends State<KillsScreen> {
     );
   }
 
+  Widget buildSortierungModalSheet() {
+    List<Widget> buttonList = [];
+    double w = MediaQuery.of(context).size.width;
+
+    for (var i in Sorting.values) {
+      buttonList.add(
+        MaterialButton(
+          minWidth: w,
+          onPressed: () {
+            _currentSorting = i;
+
+            Navigator.of(context).pop();
+            sortListBy(_currentSorting);
+            _scrollToTop();
+          },
+          elevation: 2,
+          padding:
+              EdgeInsets.symmetric(horizontal: w * 0.3, vertical: w * 0.02),
+          child: Text(
+            describeEnum(i),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight:
+                  i == _currentSorting ? FontWeight.bold : FontWeight.normal,
+              color: i == _currentSorting
+                  ? Colors.green
+                  : Theme.of(context).textTheme.headline1!.color,
+            ),
+          ),
+        ),
+      );
+    }
+    for (int i = 2022; i >= 2000; i--) {}
+    return SingleChildScrollView(
+      child: Column(
+        children: buttonList,
+      ),
+    );
+  }
+
   Widget buildNoDataFound() {
     return SingleChildScrollView(
       child: Padding(
@@ -707,8 +702,10 @@ class _KillsScreenState extends State<KillsScreen> {
     return RefreshIndicator(
       color: Theme.of(context).colorScheme.primary,
       child: Scrollbar(
+        controller: _scrollController,
         interactive: true,
         child: ListView.builder(
+          controller: _scrollController,
           //separatorBuilder: (context, index) => Divider(),
           itemCount: kills.length + 1,
           itemBuilder: ((context, index) {
@@ -743,22 +740,6 @@ class KillListEntryState extends State<KillListEntry> {
   Widget build(BuildContext context) {
     KillEntry k = widget.kill;
 
-    // IconData id = Icons.close;
-    // switch (k.ursache) {
-    //   case 'erlegt':
-    //     id = Icons.person;
-    //     break;
-    //   case 'Fallwild':
-    //     id = Icons.cloudy_snowing;
-    //     break;
-    //   case 'Straßenunfall':
-    //     id = Icons.car_crash;
-    //     break;
-    //   case 'Hegeabschuss':
-    //     id = Icons.admin_panel_settings_outlined;
-    //     break;
-    // }
-
     String alter = k.alter.isNotEmpty && k.alterw.isEmpty
         ? k.alter
         : k.alter.isEmpty && k.alterw.isNotEmpty
@@ -771,6 +752,7 @@ class KillListEntryState extends State<KillListEntry> {
 
     String date = DateFormat('dd.MM.yy').format(k.datetime);
     String time = DateFormat('kk:mm').format(k.datetime);
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: w * 0.025),
       decoration: BoxDecoration(
@@ -781,15 +763,10 @@ class KillListEntryState extends State<KillListEntry> {
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
-          // trailing: Text(k.oertlichkeit),
-          // iconColor: k.color,
-          // collapsedIconColor: k.color,
-          // collapsedBackgroundColor: k.color.withOpacity(0.2),
           leading: Icon(
             k.icon,
             color: primaryColor,
           ),
-
           // Row(
           //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           //   children: [
@@ -803,24 +780,23 @@ class KillListEntryState extends State<KillListEntry> {
           //     // ),
           //   ],
           // ),
-
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 k.wildart,
                 style: const TextStyle(
-                    fontWeight: FontWeight.w600, color: primaryColor),
+                  fontWeight: FontWeight.w600,
+                  color: primaryColor,
+                ),
               ),
-              // const SizedBox(
-              //   width: 20,
-              // ),
               Text(
                 k.oertlichkeit,
                 style: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: primaryColor,
-                    fontSize: 12),
+                  fontWeight: FontWeight.w500,
+                  color: primaryColor,
+                  fontSize: 12,
+                ),
               ),
             ],
           ),
@@ -829,14 +805,16 @@ class KillListEntryState extends State<KillListEntry> {
             children: [
               Text(k.geschlecht, style: TextStyle(color: secondaryColor)),
               Text(
-                '${date}',
+                date,
                 style: TextStyle(color: secondaryColor),
               ),
             ],
           ),
           expandedAlignment: Alignment.topLeft,
           childrenPadding: EdgeInsets.only(
-              left: MediaQuery.of(context).size.width * 0.2, bottom: 10),
+            left: MediaQuery.of(context).size.width * 0.2,
+            bottom: 10,
+          ),
           expandedCrossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -856,10 +834,6 @@ class KillListEntryState extends State<KillListEntry> {
                 ? Container()
                 : Text('Alter: $alter',
                     style: TextStyle(color: secondaryColor)),
-            // k.alterw.isEmpty
-            //     ? Container()
-            //     : Text('Alter W: ${k.alterw}',
-            //         style: TextStyle(color: secondaryColor)),
             k.gewicht == null
                 ? Container()
                 : Text('Gewicht: ${k.gewicht} kg',
@@ -883,10 +857,11 @@ class KillListEntryState extends State<KillListEntry> {
                 : Wrap(
                     children: [
                       Text(
-                          "Gesehen von: ${k.jagdaufseher!['aufseher']} am ${k.jagdaufseher!['datum']} um ${k.jagdaufseher!['zeit']}",
-                          style: TextStyle(
-                            color: secondaryColor,
-                          )),
+                        "Gesehen von: ${k.jagdaufseher!['aufseher']} am ${k.jagdaufseher!['datum']} um ${k.jagdaufseher!['zeit']}",
+                        style: TextStyle(
+                          color: secondaryColor,
+                        ),
+                      ),
                     ],
                   ),
           ],

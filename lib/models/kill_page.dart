@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
-import 'package:jagdverband_scraper/utils.dart';
 import 'package:jagdverband_scraper/widgets/filter_chip_data.dart';
 
 import 'kill_entry.dart';
@@ -16,15 +14,6 @@ class KillPage {
   List<FilterChipData> geschlechter = [];
   List<FilterChipData> ursachen = [];
   List<FilterChipData> verwendungen = [];
-
-  // DateTime parseDateTime(String d, String t) {
-  //   int yy = int.parse(datum.substring(6));
-  //   int mo = int.parse(datum.substring(3, 5));
-  //   int dd = int.parse(datum.substring(0, 2));
-  //   int hh24 = int.parse(zeit.substring(0, 2));
-  //   int mi = int.parse(zeit.substring(3));
-  //   return DateTime(yy, mo, dd, hh24, mi);
-  // }
 
   KillPage({
     required this.jahr,

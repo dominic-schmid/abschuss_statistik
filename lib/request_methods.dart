@@ -1,5 +1,4 @@
 import 'package:html/dom.dart' as dom;
-import 'package:jagdverband_scraper/models/kill_entry.dart';
 import 'package:jagdverband_scraper/models/kill_page.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:requests/requests.dart';

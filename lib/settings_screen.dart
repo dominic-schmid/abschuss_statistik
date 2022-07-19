@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'main.dart';
 import 'utils.dart';
 import 'providers.dart';
 
@@ -42,6 +43,35 @@ class SettingsScreen extends StatelessWidget {
               ),
             ],
           ),
+          SettingsSection(
+            title: const Text(
+              'Konto',
+              style: TextStyle(color: rehwildFarbe),
+            ),
+            tiles: <SettingsTile>[
+              SettingsTile(
+                onPressed: (value) async {
+                  await showAlertDialog(
+                    title: ' Abmelden',
+                    description:
+                        'Möchtest du dich wirklich abmelden?\nDeine Anmeldedaten und alle deiner Einstellungen werden dabei gelöscht!',
+                    yesOption: 'Ja',
+                    noOption: 'Nein',
+                    onYes: () {
+                      deletePrefs().then((value) => Navigator.of(context)
+                          .pushReplacement(MaterialPageRoute(
+                              builder: (context) =>
+                                  MyApp(config: getDefaultPrefs()))));
+                    },
+                    icon: Icons.warning,
+                    context: context,
+                  );
+                },
+                leading: const Icon(Icons.logout),
+                title: const Text('Abmelden'),
+              ),
+            ],
+          )
         ],
       ),
     );

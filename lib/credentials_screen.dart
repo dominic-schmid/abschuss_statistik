@@ -2,13 +2,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/kills_screen.dart';
 import 'package:jagdverband_scraper/utils.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'request_methods.dart';
 
 class CredentialsScreen extends StatefulWidget {
-  CredentialsScreen({Key? key}) : super(key: key);
+  const CredentialsScreen({Key? key}) : super(key: key);
 
   @override
   State<CredentialsScreen> createState() => _CredentialsScreenState();
@@ -16,7 +15,6 @@ class CredentialsScreen extends StatefulWidget {
 
 class _CredentialsScreenState extends State<CredentialsScreen> {
   final TextEditingController _revierController = TextEditingController();
-
   final TextEditingController _passwortController = TextEditingController();
 
   bool _isLoading = false;
@@ -50,8 +48,8 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
           Container(
             height: double.infinity,
             child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.symmetric(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(
                 horizontal: 40.0,
                 vertical: 120.0,
               ),
@@ -100,7 +98,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
           'Revier',
           style: kLabelStyle,
         ),
-        SizedBox(height: 10.0),
+        const SizedBox(height: 10.0),
         Container(
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
@@ -136,7 +134,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
           'Passwort',
           style: kLabelStyle,
         ),
-        SizedBox(height: 10.0),
+        const SizedBox(height: 10.0),
         Container(
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
@@ -182,16 +180,13 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    if (mounted) setState(() => _isLoading = true);
     bool login = await RequestMethods.tryLogin(revier, pass);
     if (!login) {
       print('Trying to log in one more time');
       login = await RequestMethods.tryLogin(revier, pass);
     }
 
-    if (!mounted) return;
     if (login) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('revierLogin', _revierController.text);
@@ -204,14 +199,11 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
         ),
       );
     } else {
-      showSnackBar(
-        'Fehler: Zu diesen Daten gibt es kein Revier!',
-        context,
-      );
+      if (!mounted) return;
+      showSnackBar('Fehler: Zu diesen Daten gibt es kein Revier!', context);
     }
-    setState(() {
-      _isLoading = false;
-    });
+
+    if (mounted) setState(() => _isLoading = false);
   }
 
   Widget _buildLoginBtn() {
@@ -245,21 +237,21 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
   }
 }
 
-final kHintTextStyle = TextStyle(
+const kHintTextStyle = TextStyle(
   color: Colors.white54,
   fontFamily: 'OpenSans',
 );
 
-final kLabelStyle = TextStyle(
+const kLabelStyle = TextStyle(
   color: Colors.white,
   fontWeight: FontWeight.bold,
   fontFamily: 'OpenSans',
 );
 
 final kBoxDecorationStyle = BoxDecoration(
-  color: Color(0xFF2E7D32),
+  color: const Color(0xFF2E7D32),
   borderRadius: BorderRadius.circular(10.0),
-  boxShadow: [
+  boxShadow: const [
     BoxShadow(
       color: Colors.black12,
       blurRadius: 6.0,
