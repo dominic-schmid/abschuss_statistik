@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> saveCredentialsToPrefs(
-    String revierLogin, String revierPasswort) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  prefs.setString('revierLogin', revierLogin);
-  prefs.setString('revierPasswort', revierPasswort);
+Map<String, dynamic> getDefaultPrefs() {
+  return {
+    'login': '',
+    'pass': '',
+    'isDarkMode': true,
+  };
 }
 
 Future<Map<String, String>?> loadCredentialsFromPrefs() async {

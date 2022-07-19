@@ -1,10 +1,12 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
 import 'package:jagdverband_scraper/main.dart';
 import 'package:jagdverband_scraper/models/kill_page.dart';
 import 'package:jagdverband_scraper/request_methods.dart';
+import 'package:jagdverband_scraper/settings_screen.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:jagdverband_scraper/widgets/filter_chip_data.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -115,6 +117,7 @@ class _KillsScreenState extends State<KillsScreen> {
       return;
     }
 
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -131,6 +134,7 @@ class _KillsScreenState extends State<KillsScreen> {
         verwendungChips = page.verwendungen;
       }
     }).timeout(const Duration(seconds: 15));
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });
@@ -172,6 +176,7 @@ class _KillsScreenState extends State<KillsScreen> {
           },
           child: Text(
             page!.revierName,
+            //style: TextStyle(color: ThemeData.estimateBrightnessForColor(color)),
           ),
         ),
         //backgroundColor: Colors.green,
@@ -281,7 +286,7 @@ class _KillsScreenState extends State<KillsScreen> {
                   builder: (BuildContext context) {
                     return buildYearModalSheet();
                   });
-              setState(() {});
+              if (mounted) setState(() {});
             }),
       ),
       Padding(
@@ -307,7 +312,7 @@ class _KillsScreenState extends State<KillsScreen> {
                   builder: (BuildContext context) {
                     return buildWildChipModalSheet();
                   });
-              setState(() {});
+              if (mounted) setState(() {});
             }),
       ),
       Padding(
@@ -333,7 +338,7 @@ class _KillsScreenState extends State<KillsScreen> {
                   builder: (BuildContext context) {
                     return buildUrsachenChipModalSheet();
                   });
-              setState(() {});
+              if (mounted) setState(() {});
             }),
       ),
       Padding(
@@ -359,7 +364,7 @@ class _KillsScreenState extends State<KillsScreen> {
                   builder: (BuildContext context) {
                     return buildVerwendungChipModalSheet();
                   });
-              setState(() {});
+              if (mounted) setState(() {});
             }),
       ),
       Padding(
@@ -383,7 +388,7 @@ class _KillsScreenState extends State<KillsScreen> {
                   builder: (BuildContext context) {
                     return buildSortierungModalSheet();
                   });
-              setState(() {});
+              if (mounted) setState(() {});
             }),
       ),
     ];
@@ -405,8 +410,8 @@ class _KillsScreenState extends State<KillsScreen> {
               verwendungChips.forEach((element) => element.isSelected = true);
 
               deletePrefs().then((value) => Navigator.of(context)
-                  .pushReplacement(
-                      MaterialPageRoute(builder: (context) => MyApp())));
+                  .pushReplacement(MaterialPageRoute(
+                      builder: (context) => MyApp(config: getDefaultPrefs()))));
             },
             icon: Icons.warning,
             context: context,
@@ -415,7 +420,8 @@ class _KillsScreenState extends State<KillsScreen> {
         icon: const Icon(Icons.logout),
       ),
       IconButton(
-        onPressed: () {},
+        onPressed: () => Navigator.of(context).push(
+            CupertinoPageRoute(builder: (context) => const SettingsScreen())),
         icon: const Icon(Icons.settings),
       ),
       IconButton(
@@ -447,7 +453,12 @@ class _KillsScreenState extends State<KillsScreen> {
               fontSize: 24,
               fontWeight:
                   i == _currentYear ? FontWeight.bold : FontWeight.normal,
-              color: i == _currentYear ? Colors.green : secondaryColor,
+              color: i == _currentYear
+                  ? Colors.green
+                  : Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .color, // secondaryColor,
             ),
           ),
         ),
@@ -483,7 +494,9 @@ class _KillsScreenState extends State<KillsScreen> {
               fontSize: 24,
               fontWeight:
                   i == _currentSorting ? FontWeight.bold : FontWeight.normal,
-              color: i == _currentSorting ? Colors.green : secondaryColor,
+              color: i == _currentSorting
+                  ? Colors.green
+                  : Theme.of(context).textTheme.headline1!.color,
             ),
           ),
         ),
@@ -524,7 +537,7 @@ class _KillsScreenState extends State<KillsScreen> {
                               labelStyle: TextStyle(color: c.color),
                               onSelected: (selected) {
                                 c.isSelected = selected;
-                                setState(() {});
+                                if (mounted) setState(() {});
                               },
                               selected: c.isSelected,
                               label: Text(c.label)),
@@ -759,7 +772,7 @@ class KillListEntryState extends State<KillListEntry> {
     String date = DateFormat('dd.MM.yy').format(k.datetime);
     String time = DateFormat('kk:mm').format(k.datetime);
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: 3),
+      margin: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: w * 0.025),
       decoration: BoxDecoration(
           color: k.color.withOpacity(0.8),
           borderRadius: const BorderRadius.all(
