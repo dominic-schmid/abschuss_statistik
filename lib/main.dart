@@ -27,10 +27,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.lightGreen,
+        useMaterial3: true,
         //primaryColor: Color.fromRGBO(56, 142, 60, 1),
       ),
       //darkTheme: ThemeData.dark(),
       //themeMode: ThemeMode.dark,
+      //scrollBehavior: const ScrollBehavior(androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
       home: FutureBuilder<Map<String, String>?>(
         future:
             loadCredentialsFromPrefs(), // Loads creds and cookie from storage

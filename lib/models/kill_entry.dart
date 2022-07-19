@@ -15,7 +15,7 @@ class KillEntry {
   final String begleiter;
   final String ursache;
   final String verwendung;
-  final String urpsrungszeichen;
+  final String ursprungszeichen;
   final String oertlichkeit;
   final Map<String, String>? jagdaufseher;
   DateTime datetime = DateTime.now();
@@ -45,33 +45,11 @@ class KillEntry {
     this.gewicht = 0.0,
     this.erleger = "",
     this.begleiter = "",
-    this.urpsrungszeichen = "",
+    this.ursprungszeichen = "",
     this.jagdaufseher,
   }) {
+    icon = getUrsacheIcon(ursache);
     // datetime = parseDateTime(datum, zeit);
-    switch (ursache) {
-      case 'erlegt':
-        icon = Icons.person;
-        break;
-      case 'Fallwild':
-        icon = Icons.cloudy_snowing;
-        break;
-      case 'Straßenunfall':
-        icon = Icons.car_crash;
-        break;
-      case 'Hegeabschuss':
-        icon = Icons.admin_panel_settings_outlined;
-        break;
-      case 'Protokoll / beschlagnahmt':
-        icon = Icons.list_alt;
-        break;
-      case 'vom Zug überfahren':
-        icon = Icons.train;
-        break;
-      case 'Freizone':
-        icon = Icons.forest;
-        break;
-    }
 
     switch (wildart) {
       case 'Rehwild':
@@ -165,7 +143,7 @@ class KillEntry {
         erleger: cols.elementAt(8).text,
         begleiter: cols.elementAt(9).text,
 
-        urpsrungszeichen: cols.elementAt(12).text,
+        ursprungszeichen: cols.elementAt(12).text,
         jagdaufseher: cols.elementAt(14).text.length > 20
             ? {
                 'datum': cols.elementAt(14).text.substring(0, 10),

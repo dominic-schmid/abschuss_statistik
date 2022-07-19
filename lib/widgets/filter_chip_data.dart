@@ -4,10 +4,14 @@ import 'package:jagdverband_scraper/utils.dart';
 class FilterChipData {
   final String label;
   final Color color;
+  IconData? icon;
   bool isSelected;
 
   FilterChipData(
-      {required this.label, required this.color, this.isSelected = true});
+      {required this.label,
+      required this.color,
+      this.isSelected = true,
+      this.icon});
 
   static List<FilterChipData> allWild = <FilterChipData>[
     FilterChipData(label: 'Rehwild', color: rehwildFarbe),
@@ -26,13 +30,32 @@ class FilterChipData {
   ];
 
   static List<FilterChipData> allUrsache = <FilterChipData>[
-    FilterChipData(label: 'erlegt', color: erlegtFarbe),
-    FilterChipData(label: 'Fallwild', color: fallwildFarbe),
-    FilterChipData(label: 'Hegeabschuss', color: hegeabschussFarbe),
-    FilterChipData(label: 'Straßenunfall', color: strassenunfallFarbe),
-    FilterChipData(label: 'Protokoll / beschlagnahmt', color: protokollFarbe),
-    FilterChipData(label: 'vom zug überfahren', color: zugFarbe),
-    FilterChipData(label: 'Freizone', color: freizoneFarbe),
+    FilterChipData(
+        label: 'erlegt', color: erlegtFarbe, icon: getUrsacheIcon('erlegt')),
+    FilterChipData(
+        label: 'Fallwild',
+        color: fallwildFarbe,
+        icon: getUrsacheIcon('Fallwild')),
+    FilterChipData(
+        label: 'Hegeabschuss',
+        color: hegeabschussFarbe,
+        icon: getUrsacheIcon('Hegeabschuss')),
+    FilterChipData(
+        label: 'Straßenunfall',
+        color: strassenunfallFarbe,
+        icon: getUrsacheIcon('Straßenunfall')),
+    FilterChipData(
+        label: 'Protokoll / beschlagnahmt',
+        color: protokollFarbe,
+        icon: getUrsacheIcon('Protokoll / beschlagnahmt')),
+    FilterChipData(
+        label: 'vom zug überfahren',
+        color: zugFarbe,
+        icon: getUrsacheIcon('vom zug überfahren')),
+    FilterChipData(
+        label: 'Freizone',
+        color: freizoneFarbe,
+        icon: getUrsacheIcon('Freizone')),
   ];
 
   static List<FilterChipData> allVerwendung = <FilterChipData>[

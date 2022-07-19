@@ -1,18 +1,13 @@
-// TO VERIFY LOGIN CHECK FOR EITHER
-// <h1><h3>Anmeldefehler</h3></h1>
-// <h1><h3>Anmeldung erfolgreich</h3></h1>
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:html/dom.dart' as dom;
 import 'package:jagdverband_scraper/models/kill_entry.dart';
+import 'package:jagdverband_scraper/models/kill_page.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:requests/requests.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class RequestMethods {
   static const String _baseURL = 'https://stat.jagdverband.it/index.php';
 
-  // Returns true if login data is valid
+  // Returns true if login data is valid (by checking whether or not the POST request returned a set-cookie)
   static Future<bool> tryLogin(String user, String pass) async {
     var data = {
       'user': user,
@@ -41,7 +36,7 @@ class RequestMethods {
   }
 
   // If called after tryLogin(), returns list of kills using cookie
-  static Future<List<KillEntry>?> getKills(int year) async {
+  static Future<KillPage?> getPage(int year) async {
     var res = await Requests.get(
         '$_baseURL?id=4&no_cache=1&tx_jvdb_pi1[filter-year]=$year');
 
@@ -60,29 +55,15 @@ class RequestMethods {
         if (!verified) {
           await deletePrefs();
         } else {
-          return getKills(year);
+          return getPage(year);
         }
       }
     }
 
     dom.Document html = dom.Document.html(res.body);
 
-    List<KillEntry> kills = [];
-    dom.Element? table = html.querySelector('#dataTables');
-    if (table != null) {
-      final entries = table
-          .querySelectorAll('tr'); //.map((e) => e.innerHtml.trim()).toList();
-      print('${entries.length} kill entries loaded');
+    KillPage? page = KillPage.fromPage(year, html);
 
-      // Sublist 1 because the first element is the table header
-      for (dom.Element e in entries.sublist(1)) {
-        KillEntry? k = KillEntry.fromEntry(e);
-        if (k != null) {
-          kills.add(k);
-        }
-      }
-    }
-
-    return kills;
+    return page;
   }
 }

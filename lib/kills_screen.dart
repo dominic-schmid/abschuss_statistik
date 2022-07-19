@@ -3,9 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
 import 'package:jagdverband_scraper/main.dart';
+import 'package:jagdverband_scraper/models/kill_page.dart';
 import 'package:jagdverband_scraper/request_methods.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:jagdverband_scraper/widgets/filter_chip_data.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/kill_entry.dart';
@@ -25,17 +27,23 @@ class _KillsScreenState extends State<KillsScreen> {
   int _currentYear = 2022;
   Sorting _currentSorting = Sorting.datum;
 
-  List<KillEntry> kills = [];
+  KillPage? page;
   List<KillEntry> filteredKills = [];
 
-  List<FilterChipData> wildChips = FilterChipData.allWild.toList();
-  List<FilterChipData> ursacheChips = FilterChipData.allUrsache.toList();
-  List<FilterChipData> verwendungChips = FilterChipData.allVerwendung.toList();
+  List<FilterChipData> wildChips = [];
+  List<FilterChipData> ursacheChips = [];
+  List<FilterChipData> verwendungChips = [];
 
   @override
   void initState() {
     super.initState();
     refresh(_currentYear);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   List<KillEntry> chipFilter(List<KillEntry> kills) {
@@ -111,13 +119,16 @@ class _KillsScreenState extends State<KillsScreen> {
       _isLoading = true;
     });
 
-    await RequestMethods.getKills(year).then((kills) {
+    await RequestMethods.getPage(year).then((page) {
       if (!mounted) return;
-      if (kills == null) {
+      if (page == null) {
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => CredentialsScreen()));
       } else {
-        this.kills = kills;
+        this.page = page;
+        wildChips = page.wildarten;
+        ursacheChips = page.ursachen;
+        verwendungChips = page.verwendungen;
       }
     }).timeout(const Duration(seconds: 15));
     setState(() {
@@ -127,9 +138,19 @@ class _KillsScreenState extends State<KillsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (page == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Colors.green,
+          ),
+        ),
+      );
+    }
+
     double w = MediaQuery.of(context).size.width;
 
-    filteredKills = chipFilter(kills);
+    filteredKills = chipFilter(page!.kills);
 
     filteredKills = filteredKills.where((k) {
       if (controller.text.isEmpty) {
@@ -146,10 +167,13 @@ class _KillsScreenState extends State<KillsScreen> {
       appBar: AppBar(
         backgroundColor: rehwildFarbe,
         title: GestureDetector(
-            onTap: () {
-              print(loadCredentialsFromPrefs());
-            },
-            child: const Text('Terenten')), // TODO get from loaded page
+          onTap: () {
+            //print(loadCredentialsFromPrefs());
+          },
+          child: Text(
+            page!.revierName,
+          ),
+        ),
         //backgroundColor: Colors.green,
         actions: buildActionButtons(),
       ),
@@ -193,8 +217,9 @@ class _KillsScreenState extends State<KillsScreen> {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: TextField(
-        focusNode: FocusNode(canRequestFocus: false),
+        //focusNode: FocusNode(canRequestFocus: false),
         autofocus: false,
+        onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
         style: const TextStyle(color: Colors.green),
         controller: controller,
         decoration: InputDecoration(
@@ -210,7 +235,7 @@ class _KillsScreenState extends State<KillsScreen> {
             color: Colors.green,
           ),
           prefixIconColor: Colors.green,
-          hintText: '${kills.length} Abschüsse filtern',
+          hintText: '${page!.kills.length} Abschüsse filtern',
         ),
         onChanged: (query) => setState(() {
           //this.query = query;
@@ -276,7 +301,7 @@ class _KillsScreenState extends State<KillsScreen> {
             labelStyle: const TextStyle(color: wildFarbe),
             label: Text('$selectedWildChips Wildarten'),
             onPressed: () async {
-              await showModalBottomSheet(
+              await showMaterialModalBottomSheet(
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
@@ -302,7 +327,7 @@ class _KillsScreenState extends State<KillsScreen> {
             labelStyle: const TextStyle(color: hegeabschussFarbe),
             label: Text('$selectedUrsachenChips Ursachen'),
             onPressed: () async {
-              await showModalBottomSheet(
+              await showMaterialModalBottomSheet(
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
@@ -328,7 +353,7 @@ class _KillsScreenState extends State<KillsScreen> {
             labelStyle: const TextStyle(color: nichtBekanntFarbe),
             label: Text('$selectedVerwendungenChips Verwendungen'),
             onPressed: () async {
-              await showModalBottomSheet(
+              await showMaterialModalBottomSheet(
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
@@ -352,7 +377,7 @@ class _KillsScreenState extends State<KillsScreen> {
             labelStyle: const TextStyle(color: steinhuhnFarbe),
             label: const Text('Sortierung'),
             onPressed: () async {
-              await showModalBottomSheet(
+              await showMaterialModalBottomSheet(
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
@@ -373,10 +398,15 @@ class _KillsScreenState extends State<KillsScreen> {
             description: 'Möchtest du dich wirklich abmelden?',
             yesOption: 'Ja',
             noOption: 'Nein',
-            onYes: () async {
-              await deletePrefs();
-              await Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => MyApp()));
+            onYes: () {
+              // On logout, re-select all chips to make sure that on login you arent filtering anything
+              wildChips.forEach((element) => element.isSelected = true);
+              ursacheChips.forEach((element) => element.isSelected = true);
+              verwendungChips.forEach((element) => element.isSelected = true);
+
+              deletePrefs().then((value) => Navigator.of(context)
+                  .pushReplacement(
+                      MaterialPageRoute(builder: (context) => MyApp())));
             },
             icon: Icons.warning,
             context: context,
@@ -402,12 +432,11 @@ class _KillsScreenState extends State<KillsScreen> {
       buttonList.add(
         MaterialButton(
           minWidth: w,
-          onPressed: () {
+          onPressed: () async {
             _currentYear = i;
 
             Navigator.of(context).pop();
-            refresh(i);
-            showSnackBar('Lade Abschüsse aus $i', context);
+            await refresh(i);
           },
           elevation: 2,
           padding:
@@ -539,7 +568,20 @@ class _KillsScreenState extends State<KillsScreen> {
                                 setState(() {});
                               },
                               selected: c.isSelected,
-                              label: Text(c.label)),
+                              label: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(c.label),
+                                  const SizedBox(width: 4),
+                                  Icon(
+                                    c.icon ?? Icons.question_mark_rounded,
+                                    color: c.color,
+                                    size: 18,
+                                  ),
+                                ],
+                              )),
                         );
                       }))
                   .toList(),
@@ -621,7 +663,7 @@ class _KillsScreenState extends State<KillsScreen> {
   }
 
   Widget buildProgressBar(List<KillEntry> kills) {
-    double percentage = kills.length / this.kills.length;
+    double percentage = kills.length / page!.kills.length;
     double w = MediaQuery.of(context).size.width;
     return Padding(
       padding: EdgeInsets.only(
@@ -635,7 +677,7 @@ class _KillsScreenState extends State<KillsScreen> {
           //#c4 > h1
           const SizedBox(height: 10),
           Text(
-            'Zeige ${kills.length} von ${this.kills.length}',
+            'Zeige ${kills.length} von ${page!.kills.length}',
             style: TextStyle(fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 12),
@@ -674,8 +716,10 @@ class _KillsScreenState extends State<KillsScreen> {
 
 class KillListEntry extends StatefulWidget {
   final KillEntry kill;
+  final bool showPerson; // TODO make this a setting or something
 
-  const KillListEntry({Key? key, required this.kill}) : super(key: key);
+  const KillListEntry({Key? key, required this.kill, this.showPerson = false})
+      : super(key: key);
 
   @override
   State<KillListEntry> createState() => KillListEntryState();
@@ -787,11 +831,11 @@ class KillListEntryState extends State<KillListEntry> {
               style:
                   TextStyle(fontWeight: FontWeight.w600, color: secondaryColor),
             ),
-            k.alter.isEmpty
+            k.hegeinGebietRevierteil.isEmpty
                 ? Container()
                 : Text(k.hegeinGebietRevierteil,
                     style: TextStyle(color: secondaryColor)),
-            time == '00:00'
+            time == '00:00' || time == '24:00'
                 ? Container()
                 : Text('Uhrzeit: $time',
                     style: TextStyle(color: secondaryColor)),
@@ -807,15 +851,19 @@ class KillListEntryState extends State<KillListEntry> {
                 ? Container()
                 : Text('Gewicht: ${k.gewicht} kg',
                     style: TextStyle(color: secondaryColor)),
-            k.begleiter.isEmpty
-                ? Container()
-                : Text('Begleiter: ${k.begleiter}',
-                    style: TextStyle(color: secondaryColor)),
+            k.erleger.isNotEmpty && widget.showPerson
+                ? Text('Erleger: ${k.erleger}',
+                    style: TextStyle(color: secondaryColor))
+                : Container(),
+            k.begleiter.isNotEmpty && widget.showPerson
+                ? Text('Begleiter: ${k.begleiter}',
+                    style: TextStyle(color: secondaryColor))
+                : Container(),
             Text('Verwendung: ${k.verwendung}',
                 style: TextStyle(color: secondaryColor)),
-            k.urpsrungszeichen.isEmpty
+            k.ursprungszeichen.isEmpty
                 ? Container()
-                : Text('Urpsrungszeichen: ${k.urpsrungszeichen}',
+                : Text('Ursprungszeichen: ${k.ursprungszeichen}',
                     style: TextStyle(color: secondaryColor)),
             k.jagdaufseher == null
                 ? Container()
