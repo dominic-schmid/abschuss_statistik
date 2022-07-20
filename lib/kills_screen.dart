@@ -1,6 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
 import 'package:jagdverband_scraper/models/kill_page.dart';
@@ -12,6 +11,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'models/kill_entry.dart';
 import 'package:intl/intl.dart';
+
+import 'models/sorting.dart';
 
 class KillsScreen extends StatefulWidget {
   const KillsScreen({Key? key}) : super(key: key);
@@ -27,7 +28,8 @@ class _KillsScreenState extends State<KillsScreen> {
 
   bool _isLoading = true;
   int _currentYear = 2022;
-  Sorting _currentSorting = Sorting.datum;
+  late Sorting _currentSorting;
+  final List<Sorting> _sortings = Sorting.generateDefault();
 
   KillPage? page;
   List<KillEntry> filteredKills = [];
@@ -39,6 +41,8 @@ class _KillsScreenState extends State<KillsScreen> {
   @override
   void initState() {
     super.initState();
+    _currentSorting =
+        _sortings.firstWhere((element) => element.sortType == SortType.datum);
     refresh(_currentYear);
   }
 
@@ -47,6 +51,7 @@ class _KillsScreenState extends State<KillsScreen> {
     controller.dispose();
     _scrollController.dispose();
     // On logout, re-select all chips to make sure that on login you arent filtering anything
+    // This probably doesn't even do much but eh
     wildChips.forEach((element) => element.isSelected = true);
     ursacheChips.forEach((element) => element.isSelected = true);
     verwendungChips.forEach((element) => element.isSelected = true);
@@ -82,42 +87,6 @@ class _KillsScreenState extends State<KillsScreen> {
     }
 
     return filtered;
-  }
-
-  void sortListBy(Sorting s) {
-    switch (s) {
-      case Sorting.datum:
-        filteredKills.sort((a, b) => b.datetime.compareTo(a.datetime));
-        break;
-      case Sorting.nummer:
-        filteredKills.sort((a, b) => a.nummer.compareTo(b.nummer));
-        break;
-      case Sorting.wildart:
-        filteredKills.sort((a, b) => a.wildart.compareTo(b.wildart));
-        break;
-      case Sorting.geschlecht:
-        filteredKills.sort((a, b) => a.geschlecht.compareTo(b.geschlecht));
-        break;
-      case Sorting.gewicht:
-        filteredKills.sort((a, b) {
-          if (a.gewicht != null && b.gewicht != null) {
-            return b.gewicht!.compareTo(a.gewicht!);
-          } else if (a.gewicht != null) {
-            return -1;
-          } else if (b.gewicht != null) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
-        break;
-      case Sorting.ursache:
-        filteredKills.sort((a, b) => a.ursache.compareTo(b.ursache));
-        break;
-      case Sorting.verwendung:
-        filteredKills.sort((a, b) => a.verwendung.compareTo(b.verwendung));
-        break;
-    }
   }
 
   Future<void> refresh(int year) async {
@@ -164,7 +133,7 @@ class _KillsScreenState extends State<KillsScreen> {
       );
     }
 
-    double w = MediaQuery.of(context).size.width;
+    Size size = MediaQuery.of(context).size;
 
     filteredKills = chipFilter(page!.kills);
 
@@ -177,7 +146,9 @@ class _KillsScreenState extends State<KillsScreen> {
       }
     }).toList();
 
-    sortListBy(_currentSorting);
+    filteredKills = _currentSorting.sort(filteredKills);
+
+    // sortListBy(_currentSorting);
 
     return Scaffold(
       appBar: AppBar(
@@ -198,34 +169,46 @@ class _KillsScreenState extends State<KillsScreen> {
       //   onPressed: () => showSnackBar('Hinzufügen...', context),
       //   child: Icon(Icons.add),
       // ),
-      body: Column(
-        // mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          ExpansionTile(
-            childrenPadding: const EdgeInsets.all(0),
-            title: buildSearchbar(),
-            initiallyExpanded: true,
+      body: Center(
+        child: Container(
+          width: double.infinity,
+          alignment: Alignment.center,
+          constraints: const BoxConstraints(
+              minWidth: 100, maxWidth: 1000, minHeight: 400),
+          child: Column(
+            // mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: w * 0.02),
-                child: Wrap(
-                  alignment: WrapAlignment.spaceEvenly,
-                  children: buildActionChips(),
-                ),
+              ExpansionTile(
+                childrenPadding: const EdgeInsets.all(0),
+                title: buildSearchbar(),
+                initiallyExpanded: true,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: size.width * 0.02,
+                        vertical: size.height * 0.01),
+                    child: Wrap(
+                      alignment: WrapAlignment.spaceEvenly,
+                      children: buildActionChips(),
+                    ),
+                  ),
+                ],
               ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
+              ),
+              _isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(color: Colors.green))
+                  : filteredKills.isEmpty
+                      ? Expanded(child: buildNoDataFound())
+                      : Expanded(
+                          flex: 9, child: buildKillEntries(filteredKills)),
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 2),
-          ),
-          _isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(color: Colors.green))
-              : filteredKills.isEmpty
-                  ? Expanded(child: buildNoDataFound())
-                  : Expanded(flex: 9, child: buildKillEntries(filteredKills)),
-        ],
+        ),
       ),
     );
   }
@@ -425,8 +408,29 @@ class _KillsScreenState extends State<KillsScreen> {
     ];
   }
 
+  Widget _buildHandle(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return FractionallySizedBox(
+      widthFactor: 0.25,
+      child: Container(
+        margin: const EdgeInsets.symmetric(
+          vertical: 12.0,
+        ),
+        child: Container(
+          height: 5.0,
+          decoration: BoxDecoration(
+            color: theme.dividerColor,
+            borderRadius: const BorderRadius.all(Radius.circular(2.5)),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget buildYearModalSheet() {
     List<Widget> buttonList = [];
+    buttonList.add(_buildHandle(context));
     double w = MediaQuery.of(context).size.width;
     for (int i = 2022; i >= 2000; i--) {
       buttonList.add(
@@ -466,13 +470,17 @@ class _KillsScreenState extends State<KillsScreen> {
   }
 
   Widget buildWildChipModalSheet() {
-    double width = MediaQuery.of(context).size.width;
+    Size size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.only(
-            top: 20, left: width * 0.075, right: width * 0.075, bottom: 10),
+            top: size.height * 0.01,
+            left: size.width * 0.075,
+            right: size.width * 0.075,
+            bottom: size.height * 0.015),
         child: Column(
           children: [
+            _buildHandle(context),
             const Text(
               'Wildarten',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
@@ -514,6 +522,7 @@ class _KillsScreenState extends State<KillsScreen> {
             EdgeInsets.only(top: 20, left: width * 0.1, right: width * 0.1),
         child: Column(
           children: [
+            _buildHandle(context),
             const Text(
               'Ursachen',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
@@ -568,6 +577,7 @@ class _KillsScreenState extends State<KillsScreen> {
             EdgeInsets.only(top: 20, left: width * 0.1, right: width * 0.1),
         child: Column(
           children: [
+            _buildHandle(context),
             const Text(
               'Verwendung',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
@@ -603,32 +613,55 @@ class _KillsScreenState extends State<KillsScreen> {
 
   Widget buildSortierungModalSheet() {
     List<Widget> buttonList = [];
-    double w = MediaQuery.of(context).size.width;
+    buttonList.add(_buildHandle(context));
+    Size size = MediaQuery.of(context).size;
 
-    for (var i in Sorting.values) {
+    for (Sorting s in _sortings) {
       buttonList.add(
         MaterialButton(
-          minWidth: w,
+          minWidth: size.width,
           onPressed: () {
-            _currentSorting = i;
+            if (_currentSorting == s) {
+              _currentSorting.toggleDirection();
+            } else {
+              _currentSorting = s;
+            }
 
             Navigator.of(context).pop();
-            sortListBy(_currentSorting);
+            // TODO maybe sort here
+            //sortListBy(_currentSorting);
             _scrollToTop();
           },
           elevation: 2,
-          padding:
-              EdgeInsets.symmetric(horizontal: w * 0.3, vertical: w * 0.02),
-          child: Text(
-            describeEnum(i),
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight:
-                  i == _currentSorting ? FontWeight.bold : FontWeight.normal,
-              color: i == _currentSorting
-                  ? Colors.green
-                  : Theme.of(context).textTheme.headline1!.color,
-            ),
+          padding: EdgeInsets.symmetric(
+              horizontal: size.width * 0.1, vertical: size.height * 0.02),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                s.label,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: s == _currentSorting
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: s == _currentSorting
+                      ? Colors.green
+                      : Theme.of(context).textTheme.headline1!.color,
+                ),
+              ),
+              const SizedBox(width: 12),
+              s.sortType == SortType.kein || s != _currentSorting
+                  ? Container()
+                  : Icon(
+                      s.ascending
+                          ? Icons.arrow_upward_rounded
+                          : Icons.arrow_downward_rounded,
+                      color: s == _currentSorting
+                          ? Colors.green
+                          : Theme.of(context).textTheme.headline1!.color,
+                    ),
+            ],
           ),
         ),
       );
@@ -748,13 +781,14 @@ class KillListEntryState extends State<KillListEntry> {
                 ? '${k.alter} - ${k.alterw}'
                 : "";
 
-    double w = MediaQuery.of(context).size.width;
+    Size size = MediaQuery.of(context).size;
 
     String date = DateFormat('dd.MM.yy').format(k.datetime);
     String time = DateFormat('kk:mm').format(k.datetime);
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: w * 0.025),
+      margin: EdgeInsets.symmetric(
+          horizontal: size.width * 0.05, vertical: size.height * 0.01),
       decoration: BoxDecoration(
           color: k.color.withOpacity(0.8),
           borderRadius: const BorderRadius.all(

@@ -143,13 +143,3 @@ IconData getUrsacheIcon(String ursache) {
       return Icons.question_mark_rounded;
   }
 }
-
-enum Sorting {
-  datum,
-  nummer,
-  wildart,
-  geschlecht,
-  gewicht,
-  ursache,
-  verwendung,
-}

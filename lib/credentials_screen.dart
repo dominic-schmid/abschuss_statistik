@@ -23,6 +23,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
+        alignment: Alignment.center,
         children: <Widget>[
           Container(
             height: double.infinity,
@@ -46,6 +47,8 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
             ),
           ),
           Container(
+            alignment: Alignment.center,
+            constraints: const BoxConstraints(minWidth: 100, maxWidth: 500),
             height: double.infinity,
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -182,10 +185,10 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
 
     if (mounted) setState(() => _isLoading = true);
     bool login = await RequestMethods.tryLogin(revier, pass);
-    if (!login) {
-      print('Trying to log in one more time');
-      login = await RequestMethods.tryLogin(revier, pass);
-    }
+    // if (!login) {
+    //   print('Trying to log in one more time');
+    //   login = await RequestMethods.tryLogin(revier, pass);
+    // }
 
     if (login) {
       SharedPreferences prefs = await SharedPreferences.getInstance();

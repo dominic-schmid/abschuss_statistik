@@ -6,6 +6,14 @@ import 'package:requests/requests.dart';
 class RequestMethods {
   static const String _baseURL = 'https://stat.jagdverband.it/index.php';
 
+  static final _baseHeaders = {
+    "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+    "Access-Control-Allow-Credentials":
+        'true', // Required for cookies, authorization headers with HTTPS
+    "Access-Control-Allow-Headers":
+        "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
   // Returns true if login data is valid (by checking whether or not the POST request returned a set-cookie)
   static Future<bool> tryLogin(String user, String pass) async {
     var data = {
@@ -21,7 +29,9 @@ class RequestMethods {
     await Requests.clearStoredCookies('https://stat.jagdverband.it');
     var res = await Requests.post(
       _baseURL,
+      headers: _baseHeaders,
       body: data,
+      persistCookies: true,
       bodyEncoding: RequestBodyEncoding.FormURLEncoded,
     );
 
@@ -37,7 +47,10 @@ class RequestMethods {
   // If called after tryLogin(), returns list of kills using cookie
   static Future<KillPage?> getPage(int year) async {
     var res = await Requests.get(
-        '$_baseURL?id=4&no_cache=1&tx_jvdb_pi1[filter-year]=$year');
+      '$_baseURL?id=4&no_cache=1&tx_jvdb_pi1[filter-year]=$year',
+      persistCookies: true,
+      headers: _baseHeaders,
+    );
 
     if (res.content().contains('Anmeldung')) {
       print('ACHTUNG: Session nicht mehr gültig!');
