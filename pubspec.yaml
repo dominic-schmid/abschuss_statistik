@@ -39,6 +39,7 @@ dependencies:
   requests: ^4.4.1
   settings_ui: ^2.0.2
   shared_preferences: ^2.0.15
+  url_launcher: ^6.1.5
 
 dev_dependencies:
   flutter_lints: ^2.0.0

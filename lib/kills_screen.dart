@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jagdverband_scraper/add_kill_screen.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
 import 'package:jagdverband_scraper/models/kill_page.dart';
 import 'package:jagdverband_scraper/request_methods.dart';
@@ -107,7 +108,7 @@ class _KillsScreenState extends State<KillsScreen> {
       if (!mounted) return;
       if (page == null) {
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => CredentialsScreen()));
+            MaterialPageRoute(builder: (context) => const CredentialsScreen()));
       } else {
         this.page = page;
         wildChips = page.wildarten;
@@ -216,7 +217,12 @@ class _KillsScreenState extends State<KillsScreen> {
   List<Widget> buildActionButtons() {
     return <Widget>[
       IconButton(
-        onPressed: () => showSnackBar('Hinzufügen...', context),
+        onPressed: () {
+          Navigator.of(context).push(CupertinoPageRoute(
+            builder: (context) => const AddKillScreen(),
+            fullscreenDialog: true,
+          ));
+        },
         icon: const Icon(Icons.add_box_rounded),
       ),
       IconButton(
@@ -234,26 +240,27 @@ class _KillsScreenState extends State<KillsScreen> {
         //focusNode: FocusNode(canRequestFocus: false),
         autofocus: false,
         onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-        style: const TextStyle(color: Colors.green),
+        style: const TextStyle(color: rehwildFarbe),
         controller: controller,
         decoration: InputDecoration(
           suffixIcon: IconButton(
-            icon:
-                controller.text.isEmpty ? Container() : const Icon(Icons.close),
+            icon: controller.text.isEmpty
+                ? Container()
+                : const Icon(Icons.close, color: rehwildFarbe),
             onPressed: () => setState(() => controller.text = ""),
           ),
-          // enabledBorder: InputBorder.none,
+          //enabledBorder: InputBorder.none,
           enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.green, width: 1),
+            borderSide: BorderSide(color: rehwildFarbe, width: 1),
           ),
           focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.green, width: 1),
+            borderSide: BorderSide(color: rehwildFarbe, width: 1),
           ),
           prefixIcon: const Icon(
             Icons.search,
-            color: Colors.green,
+            color: rehwildFarbe,
           ),
-          prefixIconColor: Colors.green,
+          prefixIconColor: rehwildFarbe,
           hintText: '${page!.kills.length} Abschüsse filtern',
         ),
         onChanged: (query) => setState(() {
@@ -430,7 +437,7 @@ class _KillsScreenState extends State<KillsScreen> {
 
   Widget buildYearModalSheet() {
     List<Widget> buttonList = [];
-    buttonList.add(_buildHandle(context));
+    //buttonList.add(_buildHandle(context));
     double w = MediaQuery.of(context).size.width;
     for (int i = 2022; i >= 2000; i--) {
       buttonList.add(
@@ -626,15 +633,12 @@ class _KillsScreenState extends State<KillsScreen> {
             } else {
               _currentSorting = s;
             }
-
             Navigator.of(context).pop();
-            // TODO maybe sort here
-            //sortListBy(_currentSorting);
             _scrollToTop();
           },
           elevation: 2,
           padding: EdgeInsets.symmetric(
-              horizontal: size.width * 0.1, vertical: size.height * 0.02),
+              horizontal: size.width * 0.1, vertical: size.height * 0.01),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -797,6 +801,8 @@ class KillListEntryState extends State<KillListEntry> {
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
+          iconColor: primaryColor,
+          collapsedIconColor: primaryColor,
           leading: Icon(
             k.icon,
             color: primaryColor,
