@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jagdverband_scraper/database_methods.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -86,6 +87,24 @@ class SettingsScreen extends StatelessWidget {
                           },
                           leading: const Icon(Icons.logout),
                           title: const Text('Abmelden'),
+                        ),
+                      ],
+                    ),
+                    SettingsSection(
+                      title: const Text(
+                        'Debug',
+                        style: TextStyle(color: rehwildFarbe),
+                      ),
+                      tiles: <SettingsTile>[
+                        SettingsTile(
+                          onPressed: (value) async {
+                            await SqliteDB.internal()
+                                .db
+                                .then((value) => value.delete('Kill'));
+                          },
+                          leading: const Icon(Icons.delete_forever),
+                          title: const Text(
+                              'Lokal gespeicherte Abschüsse löschen'),
                         ),
                       ],
                     ),

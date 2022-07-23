@@ -18,7 +18,7 @@ class KillPage {
   KillPage({
     required this.jahr,
     required this.revierName,
-    required this.revierNummer,
+    this.revierNummer = -1,
     required this.kills,
   }) {
     // Select distinct
@@ -64,7 +64,7 @@ class KillPage {
       }
 
       return KillPage(
-        jahr: 2022,
+        jahr: year,
         revierName: revierName,
         revierNummer: revierNummer,
         kills: kills,
@@ -74,4 +74,30 @@ class KillPage {
     }
     return null;
   }
+
+  static KillPage fromList(String revierName, int jahr, List<KillEntry> kills) {
+    return KillPage(
+      jahr: jahr,
+      revierName: revierName,
+      kills: kills,
+    );
+  }
+
+  @override
+  String toString() {
+    return '$jahr - $revierName - ${kills.length}';
+  }
+
+  // Define that two kill lists are equal ifthe length is the same (Wrong! but should not happen often so..?)
+  @override
+  bool operator ==(dynamic other) =>
+      other != null &&
+      other is KillPage &&
+      jahr == other.jahr &&
+      revierName == other.revierName &&
+      kills.length == other.kills.length;
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => Object.hash(revierName, jahr, kills.length);
 }

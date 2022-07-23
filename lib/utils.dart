@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jagdverband_scraper/database_methods.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Map<String, dynamic> getDefaultPrefs() => {
@@ -24,12 +25,16 @@ Future<Map<String, String>?> loadCredentialsFromPrefs() async {
   }
 }
 
-Future<void> deletePrefs() async =>
-    await SharedPreferences.getInstance().then((prefs) async {
-      await prefs.remove('revierLogin');
-      await prefs.remove('revierPasswort');
-      await prefs.remove('cookie');
-    });
+Future<void> deletePrefs() async {
+  await SharedPreferences.getInstance().then((prefs) async {
+    await prefs.remove('revierLogin');
+    await prefs.remove('revierPasswort');
+    await prefs.remove('cookie');
+  });
+  var db = await SqliteDB.internal().db;
+  await db.execute('DROP TABLE IF EXISTS User');
+  await db.execute('DROP TABLE IF EXISTS Kill');
+}
 
 showSnackBar(String content, BuildContext context, {int duration = 1500}) {
   ScaffoldMessenger.of(context).showSnackBar(

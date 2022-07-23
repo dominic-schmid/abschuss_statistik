@@ -1,7 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
+import 'package:jagdverband_scraper/database_methods.dart';
+import 'package:jagdverband_scraper/models/kill_entry.dart';
 import 'package:jagdverband_scraper/models/kill_page.dart';
 import 'package:jagdverband_scraper/utils.dart';
+import 'package:path/path.dart';
 import 'package:requests/requests.dart';
+import 'package:sqflite/sqflite.dart';
 
 class RequestMethods {
   static const String _baseURL = 'https://stat.jagdverband.it/index.php';
@@ -34,8 +39,20 @@ class RequestMethods {
       persistCookies: true,
       bodyEncoding: RequestBodyEncoding.FormURLEncoded,
     );
+    // location: https://stat.jagdverband.it/index.php?id=4&no_cache=1
 
-    if (res.headers.containsKey('set-cookie')) {
+    // if (res.headers.containsKey('set-cookie')) {
+    //
+    debugPrint(res.headers.toString());
+
+    res = await Requests.get(
+      'https://stat.jagdverband.it',
+      headers: _baseHeaders,
+    );
+    debugPrint(res.headers.toString());
+
+    dom.DocumentFragment html = dom.DocumentFragment.html(res.body);
+    if (html.text!.contains('Abmelden')) {
       print('Erfolgreich angemeldet!');
       return true;
     } else {
@@ -55,12 +72,9 @@ class RequestMethods {
     if (res.content().contains('Anmeldung')) {
       print('ACHTUNG: Session nicht mehr gültig!');
       var creds = await loadCredentialsFromPrefs();
-      if (creds == null ||
-          !creds.containsKey('revierLogin') ||
-          !creds.containsKey('revierPasswort')) {
-        await deletePrefs();
-      } else {
-        String user = creds['revierLogin']!;
+
+      try {
+        String user = creds!['revierLogin']!;
         String pass = creds['revierPasswort']!;
         bool verified = await tryLogin(user, pass);
         print('Erneute Session mit $user $pass: $verified');
@@ -69,12 +83,51 @@ class RequestMethods {
         } else {
           return getPage(year);
         }
+      } catch (e) {
+        await deletePrefs();
       }
     }
 
     dom.Document html = dom.Document.html(res.body);
 
     KillPage? page = KillPage.fromPage(year, html);
+    if (page != null) {
+      SqliteDB.internal().db.then((d) async {
+        for (KillEntry k in page.kills) {
+          // await d.rawDelete('Delete FROM Kill ');
+          await d.transaction((txn) => txn.insert(
+                'Kill',
+                {
+                  'key': '$year-${k.key}',
+                  'year': year,
+                  'revier': page.revierName,
+                  'nummer': k.nummer,
+                  'wildart': k.wildart,
+                  'geschlecht': k.geschlecht,
+                  'hegeinGebietRevierteil': k.hegeinGebietRevierteil,
+                  'alterm': k.alter,
+                  'alterw': k.alterw,
+                  'gewicht': k.gewicht,
+                  'erleger': k.erleger,
+                  'begleiter': k.begleiter,
+                  'ursache': k.ursache,
+                  'verwendung': k.verwendung,
+                  'ursprungszeichen': k.ursprungszeichen,
+                  'oertlichkeit': k.oertlichkeit,
+                  'datetime': k.datetime.toIso8601String(),
+                  'aufseherDatum':
+                      k.jagdaufseher == null ? null : k.jagdaufseher!['datum'],
+                  'aufseherZeit':
+                      k.jagdaufseher == null ? null : k.jagdaufseher!['zeit'],
+                  'aufseher': k.jagdaufseher == null
+                      ? null
+                      : k.jagdaufseher!['aufseher'],
+                },
+                conflictAlgorithm: ConflictAlgorithm.ignore,
+              ));
+        }
+      });
+    }
 
     return page;
   }

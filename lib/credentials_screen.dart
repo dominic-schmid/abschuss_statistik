@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:jagdverband_scraper/database_methods.dart';
 import 'package:jagdverband_scraper/kills_screen.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -215,9 +216,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
       width: double.infinity,
       child: MaterialButton(
         elevation: 5.0,
-        onPressed: () async {
-          login();
-        },
+        onPressed: () => login(),
         padding: const EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/add_kill_screen.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
+import 'package:jagdverband_scraper/database_methods.dart';
 import 'package:jagdverband_scraper/models/kill_page.dart';
 import 'package:jagdverband_scraper/request_methods.dart';
 import 'package:jagdverband_scraper/settings_screen.dart';
@@ -44,7 +45,9 @@ class _KillsScreenState extends State<KillsScreen> {
     super.initState();
     _currentSorting =
         _sortings.firstWhere((element) => element.sortType == SortType.datum);
-    refresh(_currentYear);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      readFromDb(_currentYear);
+    });
   }
 
   @override
@@ -90,35 +93,101 @@ class _KillsScreenState extends State<KillsScreen> {
     return filtered;
   }
 
-  Future<void> refresh(int year) async {
-    if (await Connectivity()
-            .checkConnectivity()
-            .timeout(const Duration(seconds: 15)) ==
-        ConnectivityResult.none) {
-      showSnackBar('Fehler: Kein Internet!', context);
-      return;
-    }
-
+  Future<void> readFromDb(int year) async {
     if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
 
-    await RequestMethods.getPage(year).then((page) {
-      if (!mounted) return;
-      if (page == null) {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const CredentialsScreen()));
-      } else {
-        this.page = page;
-        wildChips = page.wildarten;
-        ursacheChips = page.ursachen;
-        verwendungChips = page.verwendungen;
+    // TODO try login first and otherwise make popup saying logout to fix creds
+    KillPage? p;
+
+    await SqliteDB.internal().db.then((d) async {
+      List<Map<String, Object?>> kills =
+          await d.query('Kill', where: 'year = $year');
+
+      print('SQL found ${kills.length} entries for year $year');
+      List<KillEntry> killList = [];
+
+      for (Map<String, Object?> m in kills) {
+        KillEntry? k = KillEntry.fromMap(m);
+        if (k != null) {
+          killList.add(k);
+        }
       }
-    }).timeout(const Duration(seconds: 15));
+      try {
+        p = KillPage.fromList(kills.first['revier'] as String, year, killList);
+        page = p;
+        wildChips = p!.wildarten;
+        ursacheChips = p!.ursachen;
+        verwendungChips = p!.verwendungen;
+      } catch (e) {
+        print('Error parsing KillPage: ${e.toString()}');
+      }
+    });
+
+    if (p == null) {
+      await refresh(year);
+    } else {
+      refresh(year);
+    }
+
     if (!mounted) return;
     setState(() {
       _isLoading = false;
+    });
+  }
+
+  Future<void> refresh(int year) async {
+    if (await Connectivity()
+            .checkConnectivity()
+            .timeout(const Duration(seconds: 15)) ==
+        ConnectivityResult.none) {
+      showSnackBar('Kein Internet!', context);
+      return;
+    }
+
+    // Do not await since this should happen in the background
+    await RequestMethods.getPage(year).then((page) async {
+      if (!mounted) return;
+      if (page == null) {
+        await showAlertDialog(
+          title: 'Fehler',
+          description: 'Deine Anmeldedaten sind nicht mehr gültig!',
+          yesOption: 'Ok',
+          noOption: '',
+          onYes: () {},
+          icon: Icons.error,
+          context: context,
+        );
+
+        deletePrefs();
+        if (!mounted) return;
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const CredentialsScreen()));
+      } else {
+        if (this.page != page && _currentYear == page.jahr) {
+          if (this.page != null &&
+              this.page!.jahr == year &&
+              this.page!.kills.isNotEmpty &&
+              page.kills.isNotEmpty) {
+            showSnackBar('Neue Abschüsse', context);
+          }
+
+          this.page = page;
+          wildChips = page.wildarten;
+          ursacheChips = page.ursachen;
+          verwendungChips = page.verwendungen;
+          setState(() {});
+
+          print('Changes found!');
+        } else {
+          print('No changes found');
+        }
+      }
+    }).timeout(const Duration(seconds: 15), onTimeout: () {
+      if (!mounted) return;
+      showSnackBar('Fehler: Abschüsse konnten nicht geladen werden!', context);
     });
   }
 
@@ -229,6 +298,17 @@ class _KillsScreenState extends State<KillsScreen> {
         onPressed: () => Navigator.of(context).push(
             CupertinoPageRoute(builder: (context) => const SettingsScreen())),
         icon: const Icon(Icons.settings),
+      ),
+      IconButton(
+        onPressed: () async {
+          debugPrint(await SqliteDB.internal().db.then((d) async {
+            List<Map<String, Object?>> kills = await d.query('Kill');
+            for (var e in kills) {
+              print(e.toString());
+            }
+          }));
+        },
+        icon: const Icon(Icons.data_object),
       ),
     ];
   }
@@ -447,7 +527,7 @@ class _KillsScreenState extends State<KillsScreen> {
             _currentYear = i;
 
             Navigator.of(context).pop();
-            await refresh(i);
+            await readFromDb(i);
           },
           elevation: 2,
           padding:

@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
 import 'package:jagdverband_scraper/providers.dart';
-import 'package:jagdverband_scraper/request_methods.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'database_methods.dart';
 import 'kills_screen.dart';
 
 void main() async {
@@ -24,6 +22,11 @@ void main() async {
   };
 
   print('Read config: $config');
+
+  // Init database
+  final db = SqliteDB();
+  await db.initDb();
+  //print(await db.countTable() + ' tables');
 
   runApp(MyApp(config: config));
 }
@@ -79,23 +82,24 @@ class MyApp extends StatelessWidget {
             themeMode: themeProvider.themeMode,
             home: login.isEmpty || pass.isEmpty
                 ? const CredentialsScreen()
-                : FutureBuilder<bool>(
-                    future: RequestMethods.tryLogin(login, pass),
-                    builder: (context, snap) {
-                      if (snap.connectionState == ConnectionState.done) {
-                        if (snap.hasData && snap.data!) {
-                          return const KillsScreen();
-                        } else {
-                          return const CredentialsScreen();
-                        }
-                      }
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.green,
-                        ),
-                      );
-                    },
-                  ),
+                : const KillsScreen(),
+            // : FutureBuilder<List<Map<String, Object?>>>(
+            //     future: getCredsFromDb(),
+            //     builder: (context, snap) {
+            //       if (snap.connectionState == ConnectionState.done) {
+            //         if (snap.hasData && snap.data!.isNotEmpty) {
+            //           return const KillsScreen();
+            //         } else {
+            //           return const CredentialsScreen();
+            //         }
+            //       }
+            //       return const Center(
+            //         child: CircularProgressIndicator(
+            //           color: Colors.green,
+            //         ),
+            //       );
+            //     },
+            //   ),
           );
         });
   }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'utils.dart';
+import "dart:io" as io;
 
 //---This to switch theme from Switch button----
 class ThemeProvider extends ChangeNotifier {

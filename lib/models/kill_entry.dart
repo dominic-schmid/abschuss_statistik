@@ -84,6 +84,8 @@ class KillEntry {
     }
   }
 
+  String get key =>
+      "$nummer$wildart$geschlecht${datetime.toIso8601String()}$ursache$verwendung$oertlichkeit$hegeinGebietRevierteil$alter$alterw$gewicht$erleger$begleiter$ursprungszeichen${jagdaufseher == null ? null : jagdaufseher!.values.toString()}";
   // Return an improved search string
   String _r(String s) => s
       .toLowerCase()
@@ -150,5 +152,34 @@ class KillEntry {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  static KillEntry? fromMap(Map<String, Object?> map) {
+    Map<String, Object?> m = Map.from(map); // Copy map since db is read only
+
+    return KillEntry(
+      nummer: m['nummer'] as int, // Nummer
+      wildart: m['wildart'] as String, // Wildart
+      geschlecht: m['geschlecht'] as String, // Geschlecht
+      datetime: DateTime.parse(m['datetime'] as String),
+      ursache: m['ursache'] as String, // Ursache
+      verwendung: m['verwendung'] as String, // Verwendung
+      oertlichkeit: m['oertlichkeit'] as String, // Örtlichkeit
+      hegeinGebietRevierteil: m['hegeinGebietRevierteil'] as String,
+      alter: m['alterm'] as String,
+      alterw: m['alterw'] as String,
+      gewicht: m['gewicht'] as double?,
+      erleger: m['erleger'] as String,
+      begleiter: m['begleiter'] as String,
+      ursprungszeichen: m['ursprungszeichen'] as String,
+      jagdaufseher: m['aufseher'] == null
+          ? null
+          : {
+              'datum': m['aufseherDatum'] as String,
+              'zeit': m['aufseherZeit'] as String,
+              'aufseher': m['aufseher'] as String,
+            },
+      // Oertlichkeit
+    );
   }
 }
