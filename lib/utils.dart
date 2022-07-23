@@ -31,7 +31,7 @@ Future<void> deletePrefs() async {
     await prefs.remove('revierPasswort');
     await prefs.remove('cookie');
   });
-  var db = await SqliteDB.internal().db;
+  var db = await SqliteDB().db;
   await db.execute('DROP TABLE IF EXISTS User');
   await db.execute('DROP TABLE IF EXISTS Kill');
 }

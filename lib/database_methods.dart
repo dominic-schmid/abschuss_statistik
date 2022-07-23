@@ -13,13 +13,7 @@ class SqliteDB {
   final boolType = 'BOOLEAN NOT NULL';
   final integerType = 'INTEGER NOT NULL';
 
-  Future<Database> get db async {
-    if (_db != null) {
-      return _db!;
-    }
-    _db = await initDb();
-    return _db!;
-  }
+  Future<Database> get db async => _db ?? await initDb();
 
   SqliteDB.internal();
 
@@ -27,10 +21,8 @@ class SqliteDB {
   initDb() async {
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'scraper.db');
-    print('Database path: $path');
-    var taskDb = await openDatabase(path, version: 1, onOpen: (db) async {
+    _db = await openDatabase(path, version: 1, onOpen: (db) async {
       // await db.execute('DROP TABLE IF EXISTS Kill');
-
       await db.execute("""
       CREATE TABLE IF NOT EXISTS Kill (
         key TEXT PRIMARY KEY,
@@ -55,22 +47,10 @@ class SqliteDB {
         aufseher TEXT,
        UNIQUE (key)
       )""");
-      // UNIQUE (year, revier, nummer, wildart, geschlecht, hegeinGebietRevierteil, alterm, alterw, gewicht, erleger, begleiter, ursache, verwendung, ursprungszeichen, oertlichkeit, datetime, aufseherDatum, aufseherZeit, aufseher) ON CONFLICT IGNORE
     });
-    //   //db.transaction((txn) => txn.query(table))
 
     print('Initialized Database!');
-    return taskDb;
-  }
 
-  /// Count number of tables in DB
-  Future countTable() async {
-    var dbClient = await db;
-    var res =
-        await dbClient.rawQuery("""SELECT count(*) as count FROM sqlite_master
-         WHERE type = 'table' 
-         AND name != 'android_metadata' 
-         AND name != 'sqlite_sequence';""");
-    return res[0]['count'];
+    return _db;
   }
 }

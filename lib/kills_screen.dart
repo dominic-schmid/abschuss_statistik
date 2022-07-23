@@ -10,6 +10,7 @@ import 'package:jagdverband_scraper/settings_screen.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:jagdverband_scraper/widgets/filter_chip_data.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/kill_entry.dart';
 import 'package:intl/intl.dart';
@@ -45,7 +46,7 @@ class _KillsScreenState extends State<KillsScreen> {
     super.initState();
     _currentSorting =
         _sortings.firstWhere((element) => element.sortType == SortType.datum);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       readFromDb(_currentYear);
     });
   }
@@ -102,7 +103,7 @@ class _KillsScreenState extends State<KillsScreen> {
     // TODO try login first and otherwise make popup saying logout to fix creds
     KillPage? p;
 
-    await SqliteDB.internal().db.then((d) async {
+    await SqliteDB().db.then((d) async {
       List<Map<String, Object?>> kills =
           await d.query('Kill', where: 'year = $year');
 
@@ -172,6 +173,7 @@ class _KillsScreenState extends State<KillsScreen> {
               this.page!.kills.isNotEmpty &&
               page.kills.isNotEmpty) {
             showSnackBar('Neue Abschüsse', context);
+            print('Changes found!');
           }
 
           this.page = page;
@@ -179,8 +181,7 @@ class _KillsScreenState extends State<KillsScreen> {
           ursacheChips = page.ursachen;
           verwendungChips = page.verwendungen;
           setState(() {});
-
-          print('Changes found!');
+          print('Using HTTP page');
         } else {
           print('No changes found');
         }
@@ -218,27 +219,16 @@ class _KillsScreenState extends State<KillsScreen> {
 
     filteredKills = _currentSorting.sort(filteredKills);
 
-    // sortListBy(_currentSorting);
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: rehwildFarbe,
-        title: GestureDetector(
-          onTap: () {
-            //print(loadCredentialsFromPrefs());
-          },
-          child: Text(
-            page!.revierName,
-            //style: TextStyle(color: ThemeData.estimateBrightnessForColor(color)),
-          ),
-        ),
+        //backgroundColor: rehwildFarbe,
+        elevation: 0,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        scrolledUnderElevation: 0,
+        title: Text(page == null ? 'Revier' : page!.revierName),
         //backgroundColor: Colors.green,
         actions: buildActionButtons(),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () => showSnackBar('Hinzufügen...', context),
-      //   child: Icon(Icons.add),
-      // ),
       body: Center(
         child: Container(
           width: double.infinity,
@@ -248,23 +238,26 @@ class _KillsScreenState extends State<KillsScreen> {
           child: Column(
             // mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
-            // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ExpansionTile(
-                childrenPadding: const EdgeInsets.all(0),
-                title: buildSearchbar(),
-                initiallyExpanded: true,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: size.width * 0.02,
-                        vertical: size.height * 0.01),
-                    child: Wrap(
-                      alignment: WrapAlignment.spaceEvenly,
-                      children: buildActionChips(),
+              Theme(
+                data: Theme.of(context)
+                    .copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  childrenPadding: const EdgeInsets.all(0),
+                  title: buildSearchbar(),
+                  initiallyExpanded: true,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: size.width * 0.02,
+                          vertical: size.height * 0.01),
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceEvenly,
+                        children: buildActionChips(),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
@@ -295,20 +288,11 @@ class _KillsScreenState extends State<KillsScreen> {
         icon: const Icon(Icons.add_box_rounded),
       ),
       IconButton(
-        onPressed: () => Navigator.of(context).push(
-            CupertinoPageRoute(builder: (context) => const SettingsScreen())),
+        onPressed: () => Navigator.of(context)
+            .push(CupertinoPageRoute(
+                builder: (context) => const SettingsScreen()))
+            .then((_) => setState(() {})),
         icon: const Icon(Icons.settings),
-      ),
-      IconButton(
-        onPressed: () async {
-          debugPrint(await SqliteDB.internal().db.then((d) async {
-            List<Map<String, Object?>> kills = await d.query('Kill');
-            for (var e in kills) {
-              print(e.toString());
-            }
-          }));
-        },
-        icon: const Icon(Icons.data_object),
       ),
     ];
   }
@@ -317,7 +301,6 @@ class _KillsScreenState extends State<KillsScreen> {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: TextField(
-        //focusNode: FocusNode(canRequestFocus: false),
         autofocus: false,
         onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
         style: const TextStyle(color: rehwildFarbe),
@@ -396,7 +379,7 @@ class _KillsScreenState extends State<KillsScreen> {
             avatar: CircleAvatar(
               backgroundColor: Colors.transparent,
               child: Icon(
-                selectedWildChips < FilterChipData.allWild.length
+                selectedWildChips < wildChips.length
                     ? Icons.filter_list_rounded
                     : Icons.checklist_rtl_sharp,
                 color: wildFarbe,
@@ -422,7 +405,7 @@ class _KillsScreenState extends State<KillsScreen> {
             avatar: CircleAvatar(
               backgroundColor: Colors.transparent,
               child: Icon(
-                selectedUrsachenChips < FilterChipData.allUrsache.length
+                selectedUrsachenChips < ursacheChips.length
                     ? Icons.filter_list_rounded
                     : Icons.checklist_rtl_sharp,
                 color: hegeabschussFarbe,
@@ -448,7 +431,7 @@ class _KillsScreenState extends State<KillsScreen> {
             avatar: CircleAvatar(
               backgroundColor: Colors.transparent,
               child: Icon(
-                selectedVerwendungenChips < FilterChipData.allVerwendung.length
+                selectedVerwendungenChips < verwendungChips.length
                     ? Icons.filter_list_rounded
                     : Icons.checklist_rtl_sharp,
                 color: nichtBekanntFarbe,
@@ -750,7 +733,7 @@ class _KillsScreenState extends State<KillsScreen> {
         ),
       );
     }
-    for (int i = 2022; i >= 2000; i--) {}
+
     return SingleChildScrollView(
       child: Column(
         children: buttonList,
@@ -803,7 +786,7 @@ class _KillsScreenState extends State<KillsScreen> {
           const SizedBox(height: 10),
           Text(
             'Zeige ${kills.length} von ${page!.kills.length}',
-            style: TextStyle(fontWeight: FontWeight.w500),
+            style: const TextStyle(fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 12),
           LinearProgressIndicator(
@@ -816,36 +799,49 @@ class _KillsScreenState extends State<KillsScreen> {
   }
 
   Widget buildKillEntries(List<KillEntry> kills) {
-    return RefreshIndicator(
-      color: Theme.of(context).colorScheme.primary,
-      child: Scrollbar(
-        controller: _scrollController,
-        interactive: true,
-        child: ListView.builder(
-          controller: _scrollController,
-          //separatorBuilder: (context, index) => Divider(),
-          itemCount: kills.length + 1,
-          itemBuilder: ((context, index) {
-            if (index == 0) {
-              return buildProgressBar(kills);
-            }
+    return FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
+      builder: ((context, snapshot) {
+        if (snapshot.hasData) {
+          SharedPreferences prefs = snapshot.data!;
+          bool showPerson = prefs.getBool('showPerson') ?? false;
+          return RefreshIndicator(
+            color: Theme.of(context).colorScheme.primary,
+            child: Scrollbar(
+              controller: _scrollController,
+              interactive: true,
+              child: ListView.builder(
+                controller: _scrollController,
+                //separatorBuilder: (context, index) => Divider(),
+                itemCount: kills.length + 1,
+                itemBuilder: ((context, index) {
+                  if (index == 0) return buildProgressBar(kills);
 
-            KillEntry k = kills.elementAt(index - 1);
-            String key = '${k.nummer}-${k.datetime.toIso8601String()}';
-            return KillListEntry(key: Key(key), kill: k);
-          }),
-        ),
-      ),
-      onRefresh: () async => await refresh(_currentYear),
+                  KillEntry k = kills.elementAt(index - 1);
+                  return KillListEntry(
+                    key: Key(k.key),
+                    kill: k,
+                    showPerson: showPerson,
+                  );
+                }),
+              ),
+            ),
+            onRefresh: () async => await refresh(_currentYear),
+          );
+        }
+
+        return const Center(
+            child: CircularProgressIndicator(color: rehwildFarbe));
+      }),
     );
   }
 }
 
 class KillListEntry extends StatefulWidget {
   final KillEntry kill;
-  final bool showPerson; // TODO make this a setting or something
+  final bool showPerson;
 
-  const KillListEntry({Key? key, required this.kill, this.showPerson = false})
+  const KillListEntry({Key? key, required this.kill, required this.showPerson})
       : super(key: key);
 
   @override

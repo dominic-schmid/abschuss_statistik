@@ -1,14 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/database_methods.dart';
+import 'package:jagdverband_scraper/credentials_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'main.dart';
 import 'utils.dart';
 import 'providers.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool _isLoading = true;
+
+  late SharedPreferences prefs;
+  late bool _showPerson;
+
+  @override
+  void initState() {
+    super.initState();
+    loadPrefs();
+  }
+
+  void loadPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    _showPerson = prefs.getBool('showPerson') ?? false;
+    //await prefs.setBool('showPerson', value);
+
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,142 +51,147 @@ class SettingsScreen extends StatelessWidget {
           alignment: Alignment.center,
           constraints: const BoxConstraints(
               minWidth: 100, maxWidth: 600, minHeight: 400),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                child: SettingsList(
-                  darkTheme: const SettingsThemeData()
-                      .copyWith(settingsListBackground: bg),
-                  lightTheme: const SettingsThemeData()
-                      .copyWith(settingsListBackground: bg),
-                  sections: [
-                    SettingsSection(
-                      title: const Text(
-                        'Anzeige',
-                        style: TextStyle(color: rehwildFarbe),
-                      ),
-                      tiles: <SettingsTile>[
-                        SettingsTile.navigation(
-                          onPressed: (context) {
-                            showSnackBar('Sprache wechseln', context);
-                          },
-                          leading: Icon(Icons.language),
-                          title: Text('Sprache'),
-                          value: Text('Deutsch'),
-                        ),
-                        SettingsTile.switchTile(
-                          onToggle: (value) {
-                            themeProvider.toggleTheme(themeProvider.isDarkMode);
-                          },
-                          initialValue: themeProvider.isDarkMode,
-                          leading: const Icon(Icons.format_paint),
-                          title: const Text('Dunkler Modus'),
-                        ),
-                      ],
-                    ),
-                    SettingsSection(
-                      title: const Text(
-                        'Konto',
-                        style: TextStyle(color: rehwildFarbe),
-                      ),
-                      tiles: <SettingsTile>[
-                        SettingsTile(
-                          onPressed: (value) async {
-                            await showAlertDialog(
-                              title: ' Abmelden',
-                              description:
-                                  'Möchtest du dich wirklich abmelden?\nDeine Anmeldedaten und alle deiner Einstellungen werden dabei gelöscht!',
-                              yesOption: 'Ja',
-                              noOption: 'Nein',
-                              onYes: () {
-                                deletePrefs().then((value) => Navigator.of(
-                                        context)
-                                    .pushReplacement(MaterialPageRoute(
-                                        builder: (context) =>
-                                            MyApp(config: getDefaultPrefs()))));
-                              },
-                              icon: Icons.warning,
-                              context: context,
-                            );
-                          },
-                          leading: const Icon(Icons.logout),
-                          title: const Text('Abmelden'),
-                        ),
-                      ],
-                    ),
-                    SettingsSection(
-                      title: const Text(
-                        'Debug',
-                        style: TextStyle(color: rehwildFarbe),
-                      ),
-                      tiles: <SettingsTile>[
-                        SettingsTile(
-                          onPressed: (value) async {
-                            await SqliteDB.internal()
-                                .db
-                                .then((value) => value.delete('Kill'));
-                          },
-                          leading: const Icon(Icons.delete_forever),
-                          title: const Text(
-                              'Lokal gespeicherte Abschüsse löschen'),
-                        ),
-                      ],
-                    ),
-                    // SettingsSection(
-                    //   title: const Text(
-                    //     'Entwicklung',
-                    //     style: TextStyle(color: rehwildFarbe),
-                    //   ),
-                    //   tiles: <SettingsTile>[
-                    //     SettingsTile(
-                    //       onPressed: (value) async {
-                    //         Uri uri = Uri(
-                    //           scheme: 'mailto',
-                    //           path: 'dominic.schmid@hotmail.com',
-                    //           queryParameters: {
-                    //             'subject': 'Feedback zur Jagdstatistik App'
-                    //           },
-                    //         );
+          child: _isLoading
+              ? const CircularProgressIndicator(color: rehwildFarbe)
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: SettingsList(
+                        darkTheme: const SettingsThemeData()
+                            .copyWith(settingsListBackground: bg),
+                        lightTheme: const SettingsThemeData()
+                            .copyWith(settingsListBackground: bg),
+                        sections: [
+                          SettingsSection(
+                            title: const Text(
+                              'Anzeige',
+                              style: TextStyle(color: rehwildFarbe),
+                            ),
+                            tiles: <SettingsTile>[
+                              SettingsTile.navigation(
+                                onPressed: (context) {
+                                  showSnackBar('Sprache wechseln', context);
+                                },
+                                leading: Icon(Icons.language),
+                                title: Text('Sprache'),
+                                value: Text('Deutsch'),
+                              ),
+                              SettingsTile.switchTile(
+                                onToggle: (value) {
+                                  themeProvider
+                                      .toggleTheme(themeProvider.isDarkMode);
+                                },
+                                initialValue: themeProvider.isDarkMode,
+                                leading: const Icon(Icons.format_paint),
+                                title: const Text('Dunkler Modus'),
+                              ),
+                              SettingsTile.switchTile(
+                                onToggle: (value) {
+                                  prefs.setBool('showPerson', value);
 
-                    //         print(uri.toString());
+                                  setState(() => _showPerson = value);
+                                },
+                                description: const Text(
+                                    'Zur Zeit können dabei nur Sterne angezeigt werden'),
+                                initialValue: _showPerson,
+                                leading: const Icon(Icons.person),
+                                title: const Text('Namen anzeigen'),
+                              ),
+                            ],
+                          ),
+                          SettingsSection(
+                            title: const Text(
+                              'Konto',
+                              style: TextStyle(color: rehwildFarbe),
+                            ),
+                            tiles: <SettingsTile>[
+                              SettingsTile(
+                                onPressed: (value) async {
+                                  await showAlertDialog(
+                                    title: ' Abmelden',
+                                    description:
+                                        'Möchtest du dich wirklich abmelden?\nDeine Anmeldedaten und alle deiner Einstellungen werden dabei gelöscht!',
+                                    yesOption: 'Ja',
+                                    noOption: 'Nein',
+                                    onYes: () {
+                                      deletePrefs().then((value) =>
+                                          Navigator.of(context)
+                                              .pushAndRemoveUntil(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const CredentialsScreen()),
+                                            (route) => false,
+                                          ));
+                                    },
+                                    icon: Icons.warning,
+                                    context: context,
+                                  );
+                                },
+                                leading: const Icon(Icons.logout),
+                                title: const Text('Abmelden'),
+                              ),
+                            ],
+                          ),
+                          SettingsSection(
+                            title: const Text(
+                              'Entwicklung',
+                              style: TextStyle(color: rehwildFarbe),
+                            ),
+                            tiles: <SettingsTile>[
+                              SettingsTile(
+                                onPressed: (value) async {
+                                  Uri uri = Uri(
+                                    scheme: 'mailto',
+                                    path: 'dominic.schmid@hotmail.com',
+                                    queryParameters: {
+                                      'subject':
+                                          'Feedback zur Jagdstatistik App'
+                                    },
+                                  );
 
-                    //         await launchUrl(uri)
-                    //             .timeout(const Duration(seconds: 10));
-                    //       },
-                    //       leading: const Icon(Icons.mail),
-                    //       title: const Text('Kontakt'),
-                    //     ),
-                    //     SettingsTile(
-                    //       onPressed: (value) async {
-                    //         Uri uri = Uri(
-                    //           scheme: 'https',
-                    //           path: 'buymeacoffee.com/dominic.schmid',
-                    //         );
+                                  print(uri.toString());
 
-                    //         await launchUrl(uri)
-                    //             .timeout(const Duration(seconds: 10));
-                    //       },
-                    //       leading: const Icon(Icons.local_pizza_rounded),
-                    //       title: const Text('Pizza spendieren'),
-                    //     ),
-                    //   ],
-                    // )
-                    // TODO UNCOMMENT IF SHAMELESS
+                                  await launchUrl(uri)
+                                      .timeout(const Duration(seconds: 10));
+                                },
+                                leading: const Icon(Icons.mail),
+                                title: const Text('Kontakt'),
+                              ),
+                              SettingsTile(
+                                onPressed: (value) async {
+                                  Uri uri = Uri(
+                                    scheme: 'https',
+                                    path: 'buymeacoffee.com/dominic.schmid',
+                                  );
+
+                                  await launchUrl(uri,
+                                          mode: LaunchMode.externalApplication)
+                                      .timeout(const Duration(seconds: 10));
+                                },
+                                leading: Icon(
+                                  Icons.favorite_rounded,
+                                  color: Colors.red.withAlpha(180),
+                                ),
+                                title: const Text('an Speck spendieren'),
+                              ),
+                            ],
+                          )
+                          // TODO UNCOMMENT IF SHAMELESS
+                        ],
+                      ),
+                    ),
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Version 1.0.0 © 2022',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-              ),
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'Version 1.0.0 © 2022',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

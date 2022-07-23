@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:jagdverband_scraper/widgets/filter_chip_data.dart';
 
@@ -14,6 +15,7 @@ class KillPage {
   List<FilterChipData> geschlechter = [];
   List<FilterChipData> ursachen = [];
   List<FilterChipData> verwendungen = [];
+  List<FilterChipData> oertlichkeiten = [];
 
   KillPage({
     required this.jahr,
@@ -25,6 +27,8 @@ class KillPage {
     List<String> wildarten = kills.map((e) => e.wildart).toSet().toList();
     List<String> ursachen = kills.map((e) => e.ursache).toSet().toList();
     List<String> verwendungen = kills.map((e) => e.verwendung).toSet().toList();
+    List<String> oertlichkeiten =
+        kills.map((e) => e.oertlichkeit).toSet().toList();
 
     this.wildarten.addAll(FilterChipData.allWild
         .where((element) => wildarten.contains(element.label)));
@@ -32,6 +36,10 @@ class KillPage {
         .where((element) => ursachen.contains(element.label)));
     this.verwendungen.addAll(FilterChipData.allVerwendung
         .where((element) => verwendungen.contains(element.label)));
+    this.oertlichkeiten.addAll(oertlichkeiten.map((o) {
+      return FilterChipData(
+          label: o, color: const Color.fromRGBO(0, 160, 83, 1));
+    }));
   }
 
   static KillPage? fromPage(int year, dom.Document page) {

@@ -19,6 +19,7 @@ class RequestMethods {
         "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
   };
+
   // Returns true if login data is valid (by checking whether or not the POST request returned a set-cookie)
   static Future<bool> tryLogin(String user, String pass) async {
     var data = {
@@ -41,15 +42,10 @@ class RequestMethods {
     );
     // location: https://stat.jagdverband.it/index.php?id=4&no_cache=1
 
-    // if (res.headers.containsKey('set-cookie')) {
-    //
-    debugPrint(res.headers.toString());
-
     res = await Requests.get(
       'https://stat.jagdverband.it',
       headers: _baseHeaders,
     );
-    debugPrint(res.headers.toString());
 
     dom.DocumentFragment html = dom.DocumentFragment.html(res.body);
     if (html.text!.contains('Abmelden')) {
@@ -92,7 +88,7 @@ class RequestMethods {
 
     KillPage? page = KillPage.fromPage(year, html);
     if (page != null) {
-      SqliteDB.internal().db.then((d) async {
+      SqliteDB().db.then((d) async {
         for (KillEntry k in page.kills) {
           // await d.rawDelete('Delete FROM Kill ');
           await d.transaction((txn) => txn.insert(
