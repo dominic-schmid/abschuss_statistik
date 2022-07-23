@@ -105,7 +105,7 @@ void main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String revierLogin = prefs.getString('revierLogin') ?? "";
   String revierPasswort = prefs.getString('revierPasswort') ?? "";
-  bool isDarkMode = prefs.getBool('isDarkMode') ?? true;
+  bool? isDarkMode = prefs.getBool('isDarkMode');
 
   Map<String, dynamic> config = {
     'login': revierLogin,
@@ -163,11 +163,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     String login = config['login'];
     String pass = config['pass'];
-    bool isDarkMode = config['isDarkMode'];
+    bool? isDarkMode = config['isDarkMode'];
 
     return ChangeNotifierProvider(
         create: (BuildContext context) => ThemeProvider(
-              themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+              themeMode: isDarkMode == null
+                  ? ThemeMode.system
+                  : isDarkMode
+                      ? ThemeMode.dark
+                      : ThemeMode.light,
             ),
         builder: (context, _) {
           final themeProvider = Provider.of<ThemeProvider>(context);

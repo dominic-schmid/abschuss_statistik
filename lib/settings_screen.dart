@@ -76,6 +76,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 leading: Icon(Icons.language),
                                 title: Text('Sprache'),
                                 value: Text('Deutsch'),
+                                enabled: false, // TODO enable when implemented
                               ),
                               SettingsTile.switchTile(
                                 onToggle: (value) {

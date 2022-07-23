@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.jagdverband_scraper">
+    package="com.dominicschmid.jagdstatistik">
 
    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="jagdverband_scraper"
+        android:label="Jagdstatistik"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">

@@ -223,6 +223,7 @@ class _KillsScreenState extends State<KillsScreen> {
       appBar: AppBar(
         //backgroundColor: rehwildFarbe,
         elevation: 0,
+        foregroundColor: Theme.of(context).textTheme.headline1!.color,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         scrolledUnderElevation: 0,
         title: Text(page == null ? 'Revier' : page!.revierName),
@@ -248,9 +249,12 @@ class _KillsScreenState extends State<KillsScreen> {
                   initiallyExpanded: true,
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: size.width * 0.02,
-                          vertical: size.height * 0.01),
+                      padding: EdgeInsets.only(
+                        left: size.width * 0.02,
+                        right: size.width * 0.02,
+                        bottom: size.height * 0.005,
+                        top: size.height * 0.0025,
+                      ),
                       child: Wrap(
                         alignment: WrapAlignment.spaceEvenly,
                         children: buildActionChips(),
@@ -278,15 +282,16 @@ class _KillsScreenState extends State<KillsScreen> {
 
   List<Widget> buildActionButtons() {
     return <Widget>[
-      IconButton(
-        onPressed: () {
-          Navigator.of(context).push(CupertinoPageRoute(
-            builder: (context) => const AddKillScreen(),
-            fullscreenDialog: true,
-          ));
-        },
-        icon: const Icon(Icons.add_box_rounded),
-      ),
+      // TODO ENABLE WHEN IMPLEMENTED
+      // IconButton(
+      //   onPressed: () {
+      //     Navigator.of(context).push(CupertinoPageRoute(
+      //       builder: (context) => const AddKillScreen(),
+      //       fullscreenDialog: true,
+      //     ));
+      //   },
+      //   icon: const Icon(Icons.add_box_rounded),
+      // ),
       IconButton(
         onPressed: () => Navigator.of(context)
             .push(CupertinoPageRoute(
@@ -306,12 +311,12 @@ class _KillsScreenState extends State<KillsScreen> {
         style: const TextStyle(color: rehwildFarbe),
         controller: controller,
         decoration: InputDecoration(
-          suffixIcon: IconButton(
-            icon: controller.text.isEmpty
-                ? Container()
-                : const Icon(Icons.close, color: rehwildFarbe),
-            onPressed: () => setState(() => controller.text = ""),
-          ),
+          suffixIcon: controller.text.isEmpty
+              ? Container()
+              : IconButton(
+                  icon: const Icon(Icons.close, color: rehwildFarbe),
+                  onPressed: () => setState(() => controller.text = ""),
+                ),
           //enabledBorder: InputBorder.none,
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: rehwildFarbe, width: 1),
@@ -860,6 +865,7 @@ class KillListEntryState extends State<KillListEntry> {
             : k.alter.isNotEmpty && k.alterw.isNotEmpty
                 ? '${k.alter} - ${k.alterw}'
                 : "";
+    alter = alter.trim();
 
     Size size = MediaQuery.of(context).size;
 
@@ -868,121 +874,267 @@ class KillListEntryState extends State<KillListEntry> {
 
     return Container(
       margin: EdgeInsets.symmetric(
-          horizontal: size.width * 0.05, vertical: size.height * 0.01),
-      decoration: BoxDecoration(
-          color: k.color.withOpacity(0.8),
+          horizontal: size.width * 0.05, vertical: size.height * 0.005),
+      // decoration: BoxDecoration(
+      //     color: k.color.withOpacity(0.8),
+      //     borderRadius: const BorderRadius.all(
+      //       Radius.circular(20),
+      //     )),
+      child: Card(
+        shape: RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(
             Radius.circular(20),
-          )),
-      child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          iconColor: primaryColor,
-          collapsedIconColor: primaryColor,
-          leading: Icon(
-            k.icon,
-            color: primaryColor,
           ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //   children: [
-          //     Icon(k.ursache == 'erlegt' ? Icons.check : Icons.close),
-          //     // Icon(
-          //     //   k.verwendung == 'Eigengebrauch'
-          //     //       ? Icons.person
-          //     //       : k.verwendung == 'verkauf'
-          //     //           ? Icons.euro
-          //     //           : Icons.close,
-          //     // ),
-          //   ],
-          // ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                k.wildart,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: primaryColor,
-                ),
-              ),
-              Text(
-                k.oertlichkeit,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: primaryColor,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-          subtitle: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(k.geschlecht, style: TextStyle(color: secondaryColor)),
-              Text(
-                date,
-                style: TextStyle(color: secondaryColor),
-              ),
-            ],
-          ),
-          expandedAlignment: Alignment.topLeft,
-          childrenPadding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * 0.2,
-            bottom: 10,
-          ),
-          expandedCrossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Fortlaufende Nummer: ${k.nummer}',
-              style:
-                  TextStyle(fontWeight: FontWeight.w600, color: secondaryColor),
+        ),
+        color: k.color.withOpacity(0.8),
+        elevation: 7,
+        clipBehavior: Clip.hardEdge,
+        child: Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            iconColor: primaryColor,
+            collapsedIconColor: primaryColor,
+            leading: Icon(
+              k.icon,
+              color: primaryColor,
             ),
-            k.hegeinGebietRevierteil.isEmpty
-                ? Container()
-                : Text(k.hegeinGebietRevierteil,
-                    style: TextStyle(color: secondaryColor)),
-            time == '00:00' || time == '24:00'
-                ? Container()
-                : Text('Uhrzeit: $time',
-                    style: TextStyle(color: secondaryColor)),
-            k.alter.trim().isEmpty
-                ? Container()
-                : Text('Alter: $alter',
-                    style: TextStyle(color: secondaryColor)),
-            k.gewicht == null
-                ? Container()
-                : Text('Gewicht: ${k.gewicht} kg',
-                    style: TextStyle(color: secondaryColor)),
-            k.erleger.isNotEmpty && widget.showPerson
-                ? Text('Erleger: ${k.erleger}',
-                    style: TextStyle(color: secondaryColor))
-                : Container(),
-            k.begleiter.isNotEmpty && widget.showPerson
-                ? Text('Begleiter: ${k.begleiter}',
-                    style: TextStyle(color: secondaryColor))
-                : Container(),
-            Text('Verwendung: ${k.verwendung}',
-                style: TextStyle(color: secondaryColor)),
-            k.ursprungszeichen.isEmpty
-                ? Container()
-                : Text('Ursprungszeichen: ${k.ursprungszeichen}',
-                    style: TextStyle(color: secondaryColor)),
-            k.jagdaufseher == null
-                ? Container()
-                : Wrap(
-                    children: [
-                      Text(
-                        "Gesehen von: ${k.jagdaufseher!['aufseher']} am ${k.jagdaufseher!['datum']} um ${k.jagdaufseher!['zeit']}",
-                        style: TextStyle(
-                          color: secondaryColor,
-                        ),
-                      ),
-                    ],
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: [
+            //     Icon(k.ursache == 'erlegt' ? Icons.check : Icons.close),
+            //     // Icon(
+            //     //   k.verwendung == 'Eigengebrauch'
+            //     //       ? Icons.person
+            //     //       : k.verwendung == 'verkauf'
+            //     //           ? Icons.euro
+            //     //           : Icons.close,
+            //     // ),
+            //   ],
+            // ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Text(
+                    k.wildart,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: primaryColor,
+                    ),
                   ),
-          ],
+                ),
+                Flexible(
+                  child: Text(
+                    k.oertlichkeit,
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: primaryColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            subtitle: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(k.geschlecht, style: TextStyle(color: secondaryColor)),
+                Text(
+                  date,
+                  style: TextStyle(color: secondaryColor),
+                ),
+              ],
+            ),
+            // expandedAlignment: Alignment.topLeft,
+
+            childrenPadding: EdgeInsets.only(
+              left: MediaQuery.of(context).size.width * 0.01,
+              //left: MediaQuery.of(context).size.width * 0.05,
+              right: MediaQuery.of(context).size.width * 0.01,
+              bottom: 10,
+            ),
+            expandedCrossAxisAlignment: CrossAxisAlignment.start,
+
+            children: [
+              ExpandedChildKillEntry(
+                icon: Icons.numbers_rounded,
+                title: 'Nummer',
+                value: k.nummer.toString(),
+              ),
+              ExpandedChildKillEntry(
+                icon: Icons.map_rounded,
+                title: 'Gebiet',
+                value: k.hegeinGebietRevierteil,
+              ),
+              time == '00:00' || time == '24:00'
+                  ? Container()
+                  : ExpandedChildKillEntry(
+                      icon: Icons.access_time_outlined,
+                      title: 'Uhrzeit',
+                      value: time,
+                    ),
+              ExpandedChildKillEntry(
+                icon: Icons.calendar_month,
+                title: 'Alter',
+                value: alter,
+              ),
+              ExpandedChildKillEntry(
+                icon: Icons.scale,
+                title: 'Gewicht',
+                value: k.gewicht == null ? null : '${k.gewicht} kg',
+              ),
+              widget.showPerson
+                  ? ExpandedChildKillEntry(
+                      icon: Icons.person,
+                      title: 'Erleger',
+                      value: k.erleger,
+                    )
+                  : Container(),
+              widget.showPerson
+                  ? ExpandedChildKillEntry(
+                      icon: Icons.person_add_alt_1,
+                      title: 'Begleiter',
+                      value: k.begleiter,
+                    )
+                  : Container(),
+              ExpandedChildKillEntry(
+                icon: Icons.data_usage,
+                title: 'Verwendung',
+                value: k.verwendung,
+              ),
+              ExpandedChildKillEntry(
+                icon: Icons.history_edu_rounded,
+                title: 'Ursprungszeichen',
+                value: k.ursprungszeichen,
+              ),
+              k.jagdaufseher == null
+                  ? Container()
+                  : ExpandedChildKillEntry(
+                      icon: Icons.admin_panel_settings_outlined,
+                      title: k.jagdaufseher!['aufseher']!,
+                      value:
+                          "${k.jagdaufseher!['datum']}\n${k.jagdaufseher!['zeit']}",
+                    ),
+
+              // Row(
+              //   children: [
+              //     Icon(
+              //       Icons.numbers_rounded,
+              //       size: size.height * 0.0225,
+              //       color: secondaryColor,
+              //     ),
+              //     Text(
+              //       ' Nummer: ',
+              //       style: TextStyle(color: secondaryColor),
+              //     ),
+              //     Text(
+              //       '${k.nummer}',
+              //       style: TextStyle(
+              //           fontWeight: FontWeight.w600, color: secondaryColor),
+              //     ),
+              //   ],
+              // ),
+              // k.hegeinGebietRevierteil.isEmpty
+              //     ? Container()
+              //     : Text(k.hegeinGebietRevierteil,
+              //         style: TextStyle(color: secondaryColor)),
+              // time == '00:00' || time == '24:00'
+              //     ? Container()
+              //     : Row(
+              //         crossAxisAlignment: CrossAxisAlignment.center,
+              //         children: [
+              //           Icon(
+              //             Icons.access_time_outlined,
+              //             size: size.height * 0.0225,
+              //             color: secondaryColor,
+              //           ),
+              //           Text(' Uhrzeit: ',
+              //               style: TextStyle(color: secondaryColor)),
+              //           Text(time,
+              //               style: TextStyle(
+              //                 color: secondaryColor,
+              //                 fontWeight: FontWeight.bold,
+              //               )),
+              //         ],
+              //       ),
+              // k.alter.trim().isEmpty
+              //     ? Container()
+              //     : Text('Alter: $alter',
+              //         style: TextStyle(color: secondaryColor)),
+              // k.gewicht == null
+              //     ? Container()
+              //     : Text('Gewicht: ${k.gewicht} kg',
+              //         style: TextStyle(color: secondaryColor)),
+              // k.erleger.isNotEmpty && widget.showPerson
+              //     ? Text('Erleger: ${k.erleger}',
+              //         style: TextStyle(color: secondaryColor))
+              //     : Container(),
+              // k.begleiter.isNotEmpty && widget.showPerson
+              //     ? Text('Begleiter: ${k.begleiter}',
+              //         style: TextStyle(color: secondaryColor))
+              //     : Container(),
+              // Text('Verwendung: ${k.verwendung}',
+              //     style: TextStyle(color: secondaryColor)),
+              // k.ursprungszeichen.isEmpty
+              //     ? Container()
+              //     : Text('Ursprungszeichen: ${k.ursprungszeichen}',
+              //         style: TextStyle(color: secondaryColor)),
+              // k.jagdaufseher == null
+              //     ? Container()
+              //     : Wrap(
+              //         children: [
+              //           Text(
+              //             "Gesehen von: ${k.jagdaufseher!['aufseher']} am ${k.jagdaufseher!['datum']} um ${k.jagdaufseher!['zeit']}",
+              //             style: TextStyle(
+              //               color: secondaryColor,
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+            ],
+          ),
         ),
       ),
     );
+  }
+}
+
+class ExpandedChildKillEntry extends StatelessWidget {
+  final IconData? icon;
+  final String title;
+  final String? value;
+  final String subtitle;
+  const ExpandedChildKillEntry(
+      {Key? key,
+      required this.icon,
+      required this.title,
+      required this.value,
+      this.subtitle = ""})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return value == null || value!.isEmpty || value == "null"
+        ? Container()
+        : ListTile(
+            visualDensity: const VisualDensity(horizontal: 4, vertical: -3.5),
+            textColor: secondaryColor,
+            iconColor: secondaryColor,
+            horizontalTitleGap: 0,
+            leading: Icon(
+              icon,
+              size: size.height * 0.023,
+            ),
+            title: Text(' $title'),
+            //subtitle: Text(subtitle),
+            trailing: Text(
+              value!,
+              textAlign: TextAlign.end,
+              style:
+                  TextStyle(fontWeight: FontWeight.w600, color: secondaryColor),
+            ),
+          );
   }
 }

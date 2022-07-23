@@ -1,4 +1,4 @@
-package com.example.jagdverband_scraper
+package com.dominicschmid.jagdstatistik
 
 import io.flutter.embedding.android.FlutterActivity
 
