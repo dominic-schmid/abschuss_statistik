@@ -1,6 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/database_methods.dart';
 import 'package:jagdverband_scraper/kills_screen.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -77,7 +76,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
                   _buildLoginBtn(),
                   const SizedBox(height: 50.0),
                   const Text(
-                    'Deine Anmeldedaten werden nur lokal gespeichert und verwendet, um die Abschüsse von der Seite des Jagdverbands herunterzuladen.',
+                    'Deine Anmeldedaten werden nur lokal gespeichert und verwendet, um die Abschüsse von der Seite des Jagdverbands herunterzuladen.\nSie werden niemals an Dritte weitergegeben!',
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'OpenSans',

@@ -31,6 +31,7 @@ class _KillsScreenState extends State<KillsScreen> {
 
   bool _isLoading = true;
   int _currentYear = 2022;
+  late DateTime _lastRefresh;
   late Sorting _currentSorting;
   final List<Sorting> _sortings = Sorting.generateDefault();
 
@@ -46,6 +47,8 @@ class _KillsScreenState extends State<KillsScreen> {
     super.initState();
     _currentSorting =
         _sortings.firstWhere((element) => element.sortType == SortType.datum);
+    _lastRefresh = DateTime.now().subtract(
+        const Duration(seconds: 60)); // first refresh can happen instantly
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       readFromDb(_currentYear);
     });
@@ -148,6 +151,15 @@ class _KillsScreenState extends State<KillsScreen> {
       return;
     }
 
+    print(
+        'Time since last refresh: ${DateTime.now().difference(_lastRefresh).inSeconds}');
+    if (DateTime.now().difference(_lastRefresh).inSeconds < 60 &&
+        year == _currentYear) {
+      return;
+    }
+    // If last refresh was more than 60 seconds ago we can query again
+
+    print('Refreshing again cooldown is over');
     // Do not await since this should happen in the background
     await RequestMethods.getPage(year).then((page) async {
       if (!mounted) return;
@@ -167,7 +179,7 @@ class _KillsScreenState extends State<KillsScreen> {
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const CredentialsScreen()));
       } else {
-        if (this.page != page && _currentYear == page.jahr) {
+        if (this.page != page) {
           if (this.page != null &&
               this.page!.jahr == year &&
               this.page!.kills.isNotEmpty &&
@@ -186,7 +198,10 @@ class _KillsScreenState extends State<KillsScreen> {
           print('No changes found');
         }
       }
+      _lastRefresh = DateTime.now();
     }).timeout(const Duration(seconds: 15), onTimeout: () {
+      _lastRefresh = DateTime.now().subtract(const Duration(
+          seconds: 30)); // Can refresh after 30 seconds since error occured
       if (!mounted) return;
       showSnackBar('Fehler: Abschüsse konnten nicht geladen werden!', context);
     });
@@ -311,12 +326,14 @@ class _KillsScreenState extends State<KillsScreen> {
         style: const TextStyle(color: rehwildFarbe),
         controller: controller,
         decoration: InputDecoration(
-          suffixIcon: controller.text.isEmpty
-              ? Container()
-              : IconButton(
-                  icon: const Icon(Icons.close, color: rehwildFarbe),
-                  onPressed: () => setState(() => controller.text = ""),
-                ),
+          suffixIcon: IconButton(
+            icon: controller.text.isEmpty
+                ? Container()
+                : const Icon(Icons.close, color: rehwildFarbe),
+            onPressed: () => controller.text.isEmpty
+                ? {}
+                : setState(() => controller.text = ""),
+          ),
           //enabledBorder: InputBorder.none,
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: rehwildFarbe, width: 1),
@@ -331,9 +348,7 @@ class _KillsScreenState extends State<KillsScreen> {
           prefixIconColor: rehwildFarbe,
           hintText: '${page!.kills.length} Abschüsse filtern',
         ),
-        onChanged: (query) => setState(() {
-          //this.query = query;
-        }),
+        onChanged: (query) => setState(() {}),
       ),
     );
   }
@@ -512,10 +527,9 @@ class _KillsScreenState extends State<KillsScreen> {
         MaterialButton(
           minWidth: w,
           onPressed: () async {
-            _currentYear = i;
-
             Navigator.of(context).pop();
             await readFromDb(i);
+            _currentYear = i;
           },
           elevation: 2,
           padding:
