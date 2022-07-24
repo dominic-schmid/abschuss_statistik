@@ -88,42 +88,48 @@ class RequestMethods {
 
     KillPage? page = KillPage.fromPage(year, html);
     if (page != null) {
-      SqliteDB().db.then((d) async {
-        for (KillEntry k in page.kills) {
-          // await d.rawDelete('Delete FROM Kill ');
+      Database db = await SqliteDB().db;
+      var testIfExist = await db.rawQuery(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='Kill';");
 
-          await d.transaction((txn) async => await txn.insert(
-                'Kill',
-                {
-                  'key': '$year-${k.key}',
-                  'year': year,
-                  'revier': page.revierName,
-                  'nummer': k.nummer,
-                  'wildart': k.wildart,
-                  'geschlecht': k.geschlecht,
-                  'hegeinGebietRevierteil': k.hegeinGebietRevierteil,
-                  'alterm': k.alter,
-                  'alterw': k.alterw,
-                  'gewicht': k.gewicht,
-                  'erleger': k.erleger,
-                  'begleiter': k.begleiter,
-                  'ursache': k.ursache,
-                  'verwendung': k.verwendung,
-                  'ursprungszeichen': k.ursprungszeichen,
-                  'oertlichkeit': k.oertlichkeit,
-                  'datetime': k.datetime.toIso8601String(),
-                  'aufseherDatum':
-                      k.jagdaufseher == null ? null : k.jagdaufseher!['datum'],
-                  'aufseherZeit':
-                      k.jagdaufseher == null ? null : k.jagdaufseher!['zeit'],
-                  'aufseher': k.jagdaufseher == null
-                      ? null
-                      : k.jagdaufseher!['aufseher'],
-                },
-                conflictAlgorithm: ConflictAlgorithm.ignore,
-              ));
-        }
-      });
+      if (testIfExist.isEmpty) {
+        // Somehow db was deleted, recreate it
+        await SqliteDB().initDb();
+      }
+
+      for (KillEntry k in page.kills) {
+        // await d.rawDelete('Delete FROM Kill ');
+
+        await db.transaction((txn) async => await txn.insert(
+              'Kill',
+              {
+                'key': '$year-${k.key}',
+                'year': year,
+                'revier': page.revierName,
+                'nummer': k.nummer,
+                'wildart': k.wildart,
+                'geschlecht': k.geschlecht,
+                'hegeinGebietRevierteil': k.hegeinGebietRevierteil,
+                'alterm': k.alter,
+                'alterw': k.alterw,
+                'gewicht': k.gewicht,
+                'erleger': k.erleger,
+                'begleiter': k.begleiter,
+                'ursache': k.ursache,
+                'verwendung': k.verwendung,
+                'ursprungszeichen': k.ursprungszeichen,
+                'oertlichkeit': k.oertlichkeit,
+                'datetime': k.datetime.toIso8601String(),
+                'aufseherDatum':
+                    k.jagdaufseher == null ? null : k.jagdaufseher!['datum'],
+                'aufseherZeit':
+                    k.jagdaufseher == null ? null : k.jagdaufseher!['zeit'],
+                'aufseher':
+                    k.jagdaufseher == null ? null : k.jagdaufseher!['aufseher'],
+              },
+              conflictAlgorithm: ConflictAlgorithm.ignore,
+            ));
+      }
     }
 
     return page;

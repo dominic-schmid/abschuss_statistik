@@ -8,7 +8,10 @@ import 'package:jagdverband_scraper/models/kill_page.dart';
 import 'package:jagdverband_scraper/request_methods.dart';
 import 'package:jagdverband_scraper/settings_screen.dart';
 import 'package:jagdverband_scraper/utils.dart';
+import 'package:jagdverband_scraper/widgets/chip_selector_modal.dart';
 import 'package:jagdverband_scraper/widgets/filter_chip_data.dart';
+import 'package:jagdverband_scraper/widgets/no_data_found.dart';
+import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +29,8 @@ class KillsScreen extends StatefulWidget {
   State<KillsScreen> createState() => _KillsScreenState();
 }
 
-class _KillsScreenState extends State<KillsScreen> {
+class _KillsScreenState extends State<KillsScreen>
+    with AutomaticKeepAliveClientMixin {
   final TextEditingController controller = TextEditingController();
   final ScrollController _scrollController =
       ScrollController(initialScrollOffset: 0);
@@ -108,29 +112,34 @@ class _KillsScreenState extends State<KillsScreen> {
     // TODO try login first and otherwise make popup saying logout to fix creds
     KillPage? p;
 
-    await SqliteDB().db.then((d) async {
-      List<Map<String, Object?>> kills =
-          await d.query('Kill', where: 'year = $year');
+    try {
+      await SqliteDB().db.then((d) async {
+        List<Map<String, Object?>> kills =
+            await d.query('Kill', where: 'year = $year');
 
-      print('SQL found ${kills.length} entries for year $year');
-      List<KillEntry> killList = [];
+        print('SQL found ${kills.length} entries for year $year');
+        List<KillEntry> killList = [];
 
-      for (Map<String, Object?> m in kills) {
-        KillEntry? k = KillEntry.fromMap(m);
-        if (k != null) {
-          killList.add(k);
+        for (Map<String, Object?> m in kills) {
+          KillEntry? k = KillEntry.fromMap(m);
+          if (k != null) {
+            killList.add(k);
+          }
         }
-      }
-      try {
-        p = KillPage.fromList(kills.first['revier'] as String, year, killList);
-        page = p;
-        wildChips = p!.wildarten;
-        ursacheChips = p!.ursachen;
-        verwendungChips = p!.verwendungen;
-      } catch (e) {
-        print('Error parsing KillPage: ${e.toString()}');
-      }
-    });
+        try {
+          p = KillPage.fromList(
+              kills.first['revier'] as String, year, killList);
+          page = p;
+          wildChips = p!.wildarten;
+          ursacheChips = p!.ursachen;
+          verwendungChips = p!.verwendungen;
+        } catch (e) {
+          print('Error parsing KillPage: ${e.toString()}');
+        }
+      });
+    } catch (e) {
+      print('Database exception ${e.toString()}');
+    }
 
     if (p == null) {
       await refresh(year);
@@ -211,6 +220,7 @@ class _KillsScreenState extends State<KillsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (page == null) {
       return const Scaffold(
         body: Center(
@@ -243,7 +253,9 @@ class _KillsScreenState extends State<KillsScreen> {
         foregroundColor: Theme.of(context).textTheme.headline1!.color,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         scrolledUnderElevation: 0,
-        title: Text(page == null ? 'Revier' : page!.revierName),
+        title: _showSearch
+            ? buildToolbarSearchbar()
+            : Text(page == null ? 'Revier' : page!.revierName),
         //backgroundColor: Colors.green,
         actions: buildActionButtons(),
       ),
@@ -257,29 +269,35 @@ class _KillsScreenState extends State<KillsScreen> {
             // mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Theme(
-                data: Theme.of(context)
-                    .copyWith(dividerColor: Colors.transparent),
-                child: ExpansionTile(
-                  childrenPadding: const EdgeInsets.all(0),
-                  title: buildSearchbar(),
-                  initiallyExpanded: true,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: size.width * 0.02,
-                        right: size.width * 0.02,
-                        bottom: size.height * 0.005,
-                        top: size.height * 0.0025,
-                      ),
-                      child: Wrap(
-                        alignment: WrapAlignment.spaceEvenly,
-                        children: buildActionChips(),
-                      ),
-                    ),
-                  ],
-                ),
+              // Theme(
+              //   data: Theme.of(context)
+              //       .copyWith(dividerColor: Colors.transparent),
+              //   child: ExpansionTile(
+              //     childrenPadding: const EdgeInsets.all(0),
+              //     title: buildSearchbar(),
+              //     initiallyExpanded: true,
+              //     children: [
+              //       Padding(
+              //         padding: EdgeInsets.only(
+              //           left: size.width * 0.02,
+              //           right: size.width * 0.02,
+              //           bottom: size.height * 0.005,
+              //           top: size.height * 0.0025,
+              //         ),
+              //         child: Wrap(
+              //           alignment: WrapAlignment.spaceEvenly,
+              //           children: buildActionChips(),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              Wrap(
+                alignment: WrapAlignment.spaceEvenly,
+                //scrollDirection: Axis.horizontal,
+                children: buildActionChips(),
               ),
+
               Padding(
                 padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
               ),
@@ -287,7 +305,7 @@ class _KillsScreenState extends State<KillsScreen> {
                   ? const Center(
                       child: CircularProgressIndicator(color: Colors.green))
                   : filteredKills.isEmpty
-                      ? Expanded(child: buildNoDataFound())
+                      ? const Expanded(child: NoDataFoundWidget())
                       : Expanded(
                           flex: 9, child: buildKillEntries(filteredKills)),
             ],
@@ -296,6 +314,8 @@ class _KillsScreenState extends State<KillsScreen> {
       ),
     );
   }
+
+  bool _showSearch = false;
 
   List<Widget> buildActionButtons() {
     return <Widget>[
@@ -310,6 +330,16 @@ class _KillsScreenState extends State<KillsScreen> {
       //   icon: const Icon(Icons.add_box_rounded),
       // ),
       IconButton(
+          onPressed: () {
+            if (_showSearch && controller.text.isNotEmpty) {
+              setState(() => controller.text = "");
+            } else {
+              _showSearch = !_showSearch;
+              setState(() {});
+            }
+          },
+          icon: Icon(controller.text.isEmpty ? Icons.search : Icons.close)),
+      IconButton(
         onPressed: () => Navigator.of(context)
             .push(CupertinoPageRoute(
                 builder: (context) => const SettingsScreen()))
@@ -317,6 +347,23 @@ class _KillsScreenState extends State<KillsScreen> {
         icon: const Icon(Icons.settings),
       ),
     ];
+  }
+
+  Widget buildToolbarSearchbar() {
+    return Center(
+      child: TextField(
+        autofocus: true,
+        onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+        style: TextStyle(color: Theme.of(context).textTheme.headline1!.color),
+        controller: controller,
+        decoration: InputDecoration(
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          hintText: '${page!.kills.length} Abschüsse filtern',
+        ),
+        onChanged: (query) => setState(() {}),
+      ),
+    );
   }
 
   Widget buildSearchbar() {
@@ -390,7 +437,20 @@ class _KillsScreenState extends State<KillsScreen> {
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
-                    return buildYearModalSheet();
+                    return ValueSelectorModal<int>(
+                      items: List.generate(
+                        DateTime.now().year - 2000 + 1,
+                        (index) => index + 2000,
+                      ).reversed.toList(),
+                      selectedItem: _currentYear,
+                      onSelect: (selectedYear) async {
+                        if (selectedYear != _currentYear) {
+                          _currentYear = selectedYear;
+                          readFromDb(selectedYear);
+                        }
+                      },
+                    );
+                    //return buildYearModalSheet();
                   });
               if (mounted) setState(() {});
             }),
@@ -416,7 +476,8 @@ class _KillsScreenState extends State<KillsScreen> {
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
-                    return buildWildChipModalSheet();
+                    return ChipSelectorModal(
+                        title: 'Wildarten', chips: wildChips);
                   });
               if (mounted) setState(() {});
             }),
@@ -442,7 +503,8 @@ class _KillsScreenState extends State<KillsScreen> {
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
-                    return buildUrsachenChipModalSheet();
+                    return ChipSelectorModal(
+                        title: 'Ursachen', chips: ursacheChips);
                   });
               if (mounted) setState(() {});
             }),
@@ -468,7 +530,8 @@ class _KillsScreenState extends State<KillsScreen> {
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
-                    return buildVerwendungChipModalSheet();
+                    return ChipSelectorModal(
+                        title: 'Verwendungen', chips: verwendungChips);
                   });
               if (mounted) setState(() {});
             }),
@@ -515,188 +578,6 @@ class _KillsScreenState extends State<KillsScreen> {
             color: theme.dividerColor,
             borderRadius: const BorderRadius.all(Radius.circular(2.5)),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildYearModalSheet() {
-    List<Widget> buttonList = [];
-    //buttonList.add(_buildHandle(context));
-    double w = MediaQuery.of(context).size.width;
-    for (int i = 2022; i >= 2000; i--) {
-      buttonList.add(
-        MaterialButton(
-          minWidth: w,
-          onPressed: () async {
-            Navigator.of(context).pop();
-            await readFromDb(i);
-            _currentYear = i;
-          },
-          elevation: 2,
-          padding:
-              EdgeInsets.symmetric(horizontal: w * 0.3, vertical: w * 0.02),
-          child: Text(
-            '$i',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight:
-                  i == _currentYear ? FontWeight.bold : FontWeight.normal,
-              color: i == _currentYear
-                  ? Colors.green
-                  : Theme.of(context)
-                      .textTheme
-                      .headline1!
-                      .color, // secondaryColor,
-            ),
-          ),
-        ),
-      );
-    }
-    return SingleChildScrollView(
-      child: Column(
-        children: buttonList,
-      ),
-    );
-  }
-
-  Widget buildWildChipModalSheet() {
-    Size size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.only(
-            top: size.height * 0.01,
-            left: size.width * 0.075,
-            right: size.width * 0.075,
-            bottom: size.height * 0.015),
-        child: Column(
-          children: [
-            _buildHandle(context),
-            const Text(
-              'Wildarten',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              alignment: WrapAlignment.spaceEvenly,
-              children: wildChips
-                  .map((c) => StatefulBuilder(builder: (context, setState) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5.0, vertical: 2),
-                          child: FilterChip(
-                              checkmarkColor: c.color,
-                              selectedColor: c.color.withOpacity(0.25),
-                              disabledColor: c.color.withOpacity(0.1),
-                              labelStyle: TextStyle(color: c.color),
-                              onSelected: (selected) {
-                                c.isSelected = selected;
-                                if (mounted) setState(() {});
-                              },
-                              selected: c.isSelected,
-                              label: Text(c.label)),
-                        );
-                      }))
-                  .toList(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildUrsachenChipModalSheet() {
-    double width = MediaQuery.of(context).size.width;
-    return SingleChildScrollView(
-      child: Padding(
-        padding:
-            EdgeInsets.only(top: 20, left: width * 0.1, right: width * 0.1),
-        child: Column(
-          children: [
-            _buildHandle(context),
-            const Text(
-              'Ursachen',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              alignment: WrapAlignment.spaceEvenly,
-              children: ursacheChips
-                  .map((c) => StatefulBuilder(builder: (context, setState) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5.0, vertical: 2),
-                          child: FilterChip(
-                              checkmarkColor: c.color,
-                              selectedColor: c.color.withOpacity(0.25),
-                              disabledColor: c.color.withOpacity(0.1),
-                              labelStyle: TextStyle(color: c.color),
-                              onSelected: (selected) {
-                                c.isSelected = selected;
-                                setState(() {});
-                              },
-                              selected: c.isSelected,
-                              label: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(c.label),
-                                  const SizedBox(width: 4),
-                                  Icon(
-                                    c.icon ?? Icons.question_mark_rounded,
-                                    color: c.color,
-                                    size: 18,
-                                  ),
-                                ],
-                              )),
-                        );
-                      }))
-                  .toList(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildVerwendungChipModalSheet() {
-    double width = MediaQuery.of(context).size.width;
-    return SingleChildScrollView(
-      child: Padding(
-        padding:
-            EdgeInsets.only(top: 20, left: width * 0.1, right: width * 0.1),
-        child: Column(
-          children: [
-            _buildHandle(context),
-            const Text(
-              'Verwendung',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              alignment: WrapAlignment.spaceEvenly,
-              children: verwendungChips
-                  .map((c) => StatefulBuilder(builder: (context, setState) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5.0, vertical: 2),
-                          child: FilterChip(
-                              checkmarkColor: c.color,
-                              selectedColor: c.color.withOpacity(0.25),
-                              disabledColor: c.color.withOpacity(0.1),
-                              labelStyle: TextStyle(color: c.color),
-                              onSelected: (selected) {
-                                c.isSelected = selected;
-                                setState(() {});
-                              },
-                              selected: c.isSelected,
-                              label: Text(c.label)),
-                        );
-                      }))
-                  .toList(),
-            ),
-          ],
         ),
       ),
     );
@@ -762,35 +643,6 @@ class _KillsScreenState extends State<KillsScreen> {
     );
   }
 
-  Widget buildNoDataFound() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 44,
-                backgroundColor: Colors.transparent,
-                child: Image.asset('assets/shooter.png'),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Hier gibt es nichts zu sehen...',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 18,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget buildProgressBar(List<KillEntry> kills) {
     double percentage = kills.length / page!.kills.length;
     double w = MediaQuery.of(context).size.width;
@@ -833,7 +685,7 @@ class _KillsScreenState extends State<KillsScreen> {
               interactive: true,
               child: ListView.builder(
                 controller: _scrollController,
-                cacheExtent: 1250, // pixels both directions
+                cacheExtent: 1000, // pixels both directions
                 //separatorBuilder: (context, index) => Divider(),
                 itemCount: kills.length + 1,
                 itemBuilder: ((context, index) {
@@ -858,6 +710,10 @@ class _KillsScreenState extends State<KillsScreen> {
       }),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class KillListEntry extends StatefulWidget {
@@ -1056,7 +912,7 @@ class KillListEntryState extends State<KillListEntry> {
                       Clipboard.setData(ClipboardData(text: k.toString()));
                       showSnackBar('In Zwischenablage kopiert!', context);
                     },
-                    icon: const Icon(Icons.copy_rounded),
+                    icon: const Icon(Icons.copy_rounded, color: primaryColor),
                   ),
                   IconButton(
                       onPressed: () async {
@@ -1071,7 +927,7 @@ class KillListEntryState extends State<KillListEntry> {
                               box!.localToGlobal(Offset.zero) & box.size,
                         );
                       },
-                      icon: const Icon(Icons.share)),
+                      icon: const Icon(Icons.share, color: primaryColor)),
                 ],
               ),
             ],
@@ -1097,6 +953,7 @@ class ExpandedChildKillEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return value == null || value!.isEmpty || value == "null"
         ? Container()
         : ListTile(
@@ -1115,13 +972,15 @@ class ExpandedChildKillEntry extends StatelessWidget {
             title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(child: Text(' $title')),
+                  Flexible(
+                    child: Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Text(title)),
+                  ),
                   Flexible(
                     child: Text(
                       value!,
                       textAlign: TextAlign.end,
-                      //softWrap: true,
-                      //maxLines: 4,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: secondaryColor,
@@ -1131,20 +990,6 @@ class ExpandedChildKillEntry extends StatelessWidget {
                     ),
                   ),
                 ]),
-            //subtitle: Text(subtitle),
-            // trailing: Container(
-            //   width: size.width * 0.4,
-            //   child: Text(
-            //     value!,
-            //     textAlign: TextAlign.end,
-            //     //softWrap: true,
-            //     //maxLines: 4,
-            //     style: TextStyle(
-            //         fontWeight: FontWeight.w600,
-            //         color: secondaryColor,
-            //         overflow: TextOverflow.fade),
-            //   ),
-            // ),
           );
   }
 }

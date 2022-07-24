@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
+import 'package:jagdverband_scraper/home_screen.dart';
 import 'package:jagdverband_scraper/providers.dart';
 import 'package:jagdverband_scraper/request_methods.dart';
 import 'package:provider/provider.dart';
@@ -205,9 +206,10 @@ class MyApp extends StatelessWidget {
               //primaryColor: Color.fromRGBO(56, 142, 60, 1),
             ),
             themeMode: themeProvider.themeMode,
-            home: login.isEmpty || pass.isEmpty
-                ? const CredentialsScreen()
-                : const KillsScreen(),
+            // home: login.isEmpty || pass.isEmpty
+            //     ? const CredentialsScreen()
+            //     : const KillsScreen(),
+            home: HomeScreen(),
           );
         });
   }

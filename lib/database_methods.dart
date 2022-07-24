@@ -21,6 +21,7 @@ class SqliteDB {
   initDb() async {
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'scraper.db');
+    if (_db != null) await _db!.close();
     _db = await openDatabase(path, version: 1, onOpen: (db) async {
       // await db.execute('DROP TABLE IF EXISTS Kill');
       await db.execute("""
@@ -52,5 +53,12 @@ class SqliteDB {
     print('Initialized Database!');
 
     return _db;
+  }
+
+  delteDb() async {
+    if (_db != null) {
+      await _db!.delete('Kill');
+      _db = null;
+    }
   }
 }

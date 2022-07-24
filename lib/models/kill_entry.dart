@@ -41,7 +41,11 @@ class KillEntry {
     this.jagdaufseher,
   }) {
     icon = getUrsacheIcon(ursache);
+    color = getColorFromWildart(wildart);
+  }
 
+  static Color getColorFromWildart(String wildart) {
+    Color color = Colors.green;
     switch (wildart) {
       case 'Rehwild':
         color = rehwildFarbe;
@@ -83,6 +87,7 @@ class KillEntry {
         color = wildFarbe;
         break;
     }
+    return color;
   }
 
   String get key =>

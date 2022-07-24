@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:jagdverband_scraper/home_screen.dart';
 import 'package:jagdverband_scraper/kills_screen.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -155,7 +156,6 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
             ),
             decoration: const InputDecoration(
               border: InputBorder.none,
-//              contentPadding: const EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
                 Icons.lock,
                 color: Colors.white,
@@ -199,10 +199,6 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
     _lastRefresh = DateTime.now();
 
     bool login = await RequestMethods.tryLogin(revier, pass);
-    // if (!login) {
-    //   print('Trying to log in one more time');
-    //   login = await RequestMethods.tryLogin(revier, pass);
-    // }
 
     if (login) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -212,7 +208,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const KillsScreen(),
+          builder: (context) => const HomeScreen(),
         ),
       );
     } else {

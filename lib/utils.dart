@@ -26,14 +26,15 @@ Future<Map<String, String>?> loadCredentialsFromPrefs() async {
 }
 
 Future<void> deletePrefs() async {
-  await SharedPreferences.getInstance().then((prefs) async {
-    await prefs.remove('revierLogin');
-    await prefs.remove('revierPasswort');
-    await prefs.remove('cookie');
-  });
-  var db = await SqliteDB().db;
-  await db.execute('DROP TABLE IF EXISTS User');
-  await db.execute('DROP TABLE IF EXISTS Kill');
+  try {
+    await SharedPreferences.getInstance().then((prefs) async {
+      await prefs.remove('revierLogin');
+      await prefs.remove('revierPasswort');
+    });
+    await SqliteDB().delteDb();
+  } catch (e) {
+    print('Error deleting preferences! ${e.toString()}');
+  }
 }
 
 showSnackBar(String content, BuildContext context, {int duration = 1500}) {

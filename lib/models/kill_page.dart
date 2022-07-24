@@ -46,7 +46,7 @@ class KillPage {
     try {
       var titel = page.querySelector('#c4 > h1');
 
-      String revierName = "Unbekanntes Revier";
+      String revierName = "Kein Revier";
       int revierNummer = 0;
       if (titel != null) {
         revierName = titel.text.substring(titel.text.indexOf('-') + 2);
