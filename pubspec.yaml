@@ -41,6 +41,7 @@ dependencies:
   provider: ^6.0.3
   requests: ^4.4.1
   settings_ui: ^2.0.2
+  share_plus: ^4.0.10
   shared_preferences: ^2.0.15
   sqflite: ^2.0.3
   url_launcher: ^6.1.5
@@ -58,17 +59,15 @@ flutter_native_splash:
   # flutter pub run flutter_native_splash:create
   # To restore Flutter's default white splash screen, run the following command in the terminal:
   # flutter pub run flutter_native_splash:remove
-
   # color or background_image is the only required parameter.  Use color to set the background
   # of your splash screen to a solid color.  Use background_image to set the background of your
   # splash screen to a png image.  This is useful for gradients. The image will be stretch to the
   # size of the app. Only one parameter can be used, color and background_image cannot both be set.
   color: "#ffffff"
   #background_image: "assets/eagle.png"
-   # Android 12 handles the splash screen differently than previous versions.  Please visit
+  # Android 12 handles the splash screen differently than previous versions.  Please visit
   # https://developer.android.com/guide/topics/ui/splash-screen
   # Following are Android 12 specific parameter.
-
   # The color_dark, background_image_dark, image_dark, branding_dark are parameters that set the background
   # and image when the device is in dark mode. If they are not specified, the app will use the
   # parameters from above. If the image_dark parameter is specified, color_dark or
@@ -78,28 +77,25 @@ flutter_native_splash:
   #background_image_dark: "assets/dark-background.png"
   #image_dark: assets/splash-invert.png
   #branding_dark: assets/dart_dark.png
-  android_12:
-    # The image parameter sets the splash screen icon image.  If this parameter is not specified,
-    # the app's launcher icon will be used instead.
-    # Please note that the splash screen will be clipped to a circle on the center of the screen.
-    # App icon with an icon background: This should be 960×960 pixels, and fit within a circle
-    # 640 pixels in diameter.
-    # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
-    # 768 pixels in diameter.
-    #image: assets/android12splash.png
-
-    # Splash screen background color.
-    #color: "#42a5f5"
-
-    # App icon background color.
-    #icon_background_color: "#111111"
-
-    # The image_dark parameter and icon_background_color_dark set the image and icon background
-    # color when the device is in dark mode. If they are not specified, the app will use the
-    # parameters from above.
-    #image_dark: assets/android12splash-invert.png
-    #color_dark: "#042a49"
-    #icon_background_color_dark: "#eeeeee"
+  android_12: null
+  # The image parameter sets the splash screen icon image.  If this parameter is not specified,
+  # the app's launcher icon will be used instead.
+  # Please note that the splash screen will be clipped to a circle on the center of the screen.
+  # App icon with an icon background: This should be 960×960 pixels, and fit within a circle
+  # 640 pixels in diameter.
+  # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
+  # 768 pixels in diameter.
+  #image: assets/android12splash.png
+  # Splash screen background color.
+  #color: "#42a5f5"
+  # App icon background color.
+  #icon_background_color: "#111111"
+  # The image_dark parameter and icon_background_color_dark set the image and icon background
+  # color when the device is in dark mode. If they are not specified, the app will use the
+  # parameters from above.
+  #image_dark: assets/android12splash-invert.png
+  #color_dark: "#042a49"
+  #icon_background_color_dark: "#eeeeee"
 
 flutter_icons:
   android: true

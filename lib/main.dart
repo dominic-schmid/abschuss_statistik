@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
@@ -57,7 +59,7 @@ Future<void> _showNotification() async {
         print('SEND NOTIFICATION: Found difference in pages');
         AwesomeNotifications().createNotification(
             content: NotificationContent(
-          id: DateTime.now().millisecondsSinceEpoch,
+          id: Random.secure().nextInt(999999),
           channelKey: 'basic_channel',
           title: 'Neuer Abschuss',
           body: 'Es gibt einen neuen Abschuss in ${sqlPage.revierName}!',

@@ -18,6 +18,8 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
   final TextEditingController _passwortController = TextEditingController();
 
   bool _isLoading = false;
+  int _loginAttempts = 0;
+  DateTime _lastRefresh = DateTime.now().subtract(const Duration(seconds: 60));
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +99,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
+        const Text(
           'Revier',
           style: kLabelStyle,
         ),
@@ -113,10 +115,10 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
               color: Colors.white,
               fontFamily: 'OpenSans',
             ),
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: InputBorder.none,
               //contentPadding: const EdgeInsets.only(top: 14.0),
-              prefixIcon: const Icon(
+              prefixIcon: Icon(
                 Icons.co_present_rounded,
                 color: Colors.white,
               ),
@@ -133,7 +135,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
+        const Text(
           'Passwort',
           style: kLabelStyle,
         ),
@@ -151,10 +153,10 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
               color: Colors.white,
               fontFamily: 'OpenSans',
             ),
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: InputBorder.none,
 //              contentPadding: const EdgeInsets.only(top: 14.0),
-              prefixIcon: const Icon(
+              prefixIcon: Icon(
                 Icons.lock,
                 color: Colors.white,
               ),
@@ -183,7 +185,19 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
       return;
     }
 
+    if (_loginAttempts > 5 &&
+        DateTime.now().difference(_lastRefresh).inSeconds < 60) {
+      showSnackBar(
+          'Zu oft angemeldet! Warte 1 Minute bevor du dich erneut anmelden kannst.',
+          context);
+      return;
+    }
+
     if (mounted) setState(() => _isLoading = true);
+
+    _loginAttempts++;
+    _lastRefresh = DateTime.now();
+
     bool login = await RequestMethods.tryLogin(revier, pass);
     // if (!login) {
     //   print('Trying to log in one more time');

@@ -10,7 +10,9 @@ import 'package:jagdverband_scraper/settings_screen.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:jagdverband_scraper/widgets/filter_chip_data.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
 
 import 'models/kill_entry.dart';
 import 'package:intl/intl.dart';
@@ -831,6 +833,7 @@ class _KillsScreenState extends State<KillsScreen> {
               interactive: true,
               child: ListView.builder(
                 controller: _scrollController,
+                cacheExtent: 1250, // pixels both directions
                 //separatorBuilder: (context, index) => Divider(),
                 itemCount: kills.length + 1,
                 itemBuilder: ((context, index) {
@@ -841,6 +844,7 @@ class _KillsScreenState extends State<KillsScreen> {
                     key: Key(k.key),
                     kill: k,
                     showPerson: showPerson,
+                    revier: page!.revierName,
                   );
                 }),
               ),
@@ -859,9 +863,14 @@ class _KillsScreenState extends State<KillsScreen> {
 class KillListEntry extends StatefulWidget {
   final KillEntry kill;
   final bool showPerson;
+  final String revier;
 
-  const KillListEntry({Key? key, required this.kill, required this.showPerson})
-      : super(key: key);
+  const KillListEntry({
+    Key? key,
+    required this.kill,
+    required this.showPerson,
+    this.revier = "",
+  }) : super(key: key);
 
   @override
   State<KillListEntry> createState() => KillListEntryState();
@@ -886,6 +895,8 @@ class KillListEntryState extends State<KillListEntry> {
     String date = DateFormat('dd.MM.yy').format(k.datetime);
     String time = DateFormat('kk:mm').format(k.datetime);
 
+    String copyPrefix = "${k.wildart} ${k.geschlecht} #${k.nummer} vom $date";
+
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: size.width * 0.05, vertical: size.height * 0.005),
@@ -895,8 +906,8 @@ class KillListEntryState extends State<KillListEntry> {
       //       Radius.circular(20),
       //     )),
       child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: const BorderRadius.all(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
             Radius.circular(20),
           ),
         ),
@@ -908,9 +919,14 @@ class KillListEntryState extends State<KillListEntry> {
           child: ExpansionTile(
             iconColor: primaryColor,
             collapsedIconColor: primaryColor,
-            leading: Icon(
-              k.icon,
-              color: primaryColor,
+            leading: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  k.icon,
+                  color: primaryColor,
+                ),
+              ],
             ),
             // Row(
             //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -931,6 +947,7 @@ class KillListEntryState extends State<KillListEntry> {
                 Flexible(
                   child: Text(
                     k.wildart,
+                    textAlign: TextAlign.start,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       color: primaryColor,
@@ -1030,82 +1047,33 @@ class KillListEntryState extends State<KillListEntry> {
                       value:
                           "${k.jagdaufseher!['datum']}\n${k.jagdaufseher!['zeit']}",
                     ),
+              SizedBox(width: double.infinity, height: size.height * 0.0025),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: k.toString()));
+                      showSnackBar('In Zwischenablage kopiert!', context);
+                    },
+                    icon: const Icon(Icons.copy_rounded),
+                  ),
+                  IconButton(
+                      onPressed: () async {
+                        final box = context.findRenderObject()
+                            as RenderBox?; // Needed for iPad
 
-              // Row(
-              //   children: [
-              //     Icon(
-              //       Icons.numbers_rounded,
-              //       size: size.height * 0.0225,
-              //       color: secondaryColor,
-              //     ),
-              //     Text(
-              //       ' Nummer: ',
-              //       style: TextStyle(color: secondaryColor),
-              //     ),
-              //     Text(
-              //       '${k.nummer}',
-              //       style: TextStyle(
-              //           fontWeight: FontWeight.w600, color: secondaryColor),
-              //     ),
-              //   ],
-              // ),
-              // k.hegeinGebietRevierteil.isEmpty
-              //     ? Container()
-              //     : Text(k.hegeinGebietRevierteil,
-              //         style: TextStyle(color: secondaryColor)),
-              // time == '00:00' || time == '24:00'
-              //     ? Container()
-              //     : Row(
-              //         crossAxisAlignment: CrossAxisAlignment.center,
-              //         children: [
-              //           Icon(
-              //             Icons.access_time_outlined,
-              //             size: size.height * 0.0225,
-              //             color: secondaryColor,
-              //           ),
-              //           Text(' Uhrzeit: ',
-              //               style: TextStyle(color: secondaryColor)),
-              //           Text(time,
-              //               style: TextStyle(
-              //                 color: secondaryColor,
-              //                 fontWeight: FontWeight.bold,
-              //               )),
-              //         ],
-              //       ),
-              // k.alter.trim().isEmpty
-              //     ? Container()
-              //     : Text('Alter: $alter',
-              //         style: TextStyle(color: secondaryColor)),
-              // k.gewicht == null
-              //     ? Container()
-              //     : Text('Gewicht: ${k.gewicht} kg',
-              //         style: TextStyle(color: secondaryColor)),
-              // k.erleger.isNotEmpty && widget.showPerson
-              //     ? Text('Erleger: ${k.erleger}',
-              //         style: TextStyle(color: secondaryColor))
-              //     : Container(),
-              // k.begleiter.isNotEmpty && widget.showPerson
-              //     ? Text('Begleiter: ${k.begleiter}',
-              //         style: TextStyle(color: secondaryColor))
-              //     : Container(),
-              // Text('Verwendung: ${k.verwendung}',
-              //     style: TextStyle(color: secondaryColor)),
-              // k.ursprungszeichen.isEmpty
-              //     ? Container()
-              //     : Text('Ursprungszeichen: ${k.ursprungszeichen}',
-              //         style: TextStyle(color: secondaryColor)),
-              // k.jagdaufseher == null
-              //     ? Container()
-              //     : Wrap(
-              //         children: [
-              //           Text(
-              //             "Gesehen von: ${k.jagdaufseher!['aufseher']} am ${k.jagdaufseher!['datum']} um ${k.jagdaufseher!['zeit']}",
-              //             style: TextStyle(
-              //               color: secondaryColor,
-              //             ),
-              //           ),
-              //         ],
-              //       ),
+                        await Share.share(
+                          'Sieh dir diesen Abschuss in ${widget.revier} an!\n${k.toString()}',
+                          subject:
+                              'Sieh dir diesen Abschuss in ${widget.revier} an!',
+                          sharePositionOrigin:
+                              box!.localToGlobal(Offset.zero) & box.size,
+                        );
+                      },
+                      icon: const Icon(Icons.share)),
+                ],
+              ),
             ],
           ),
         ),
@@ -1118,14 +1086,13 @@ class ExpandedChildKillEntry extends StatelessWidget {
   final IconData? icon;
   final String title;
   final String? value;
-  final String subtitle;
-  const ExpandedChildKillEntry(
-      {Key? key,
-      required this.icon,
-      required this.title,
-      required this.value,
-      this.subtitle = ""})
-      : super(key: key);
+
+  const ExpandedChildKillEntry({
+    Key? key,
+    required this.icon,
+    required this.title,
+    required this.value,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -1133,6 +1100,10 @@ class ExpandedChildKillEntry extends StatelessWidget {
     return value == null || value!.isEmpty || value == "null"
         ? Container()
         : ListTile(
+            onLongPress: () {
+              Clipboard.setData(ClipboardData(text: value));
+              showSnackBar('In Zwischenablage kopiert!', context);
+            },
             visualDensity: const VisualDensity(horizontal: 4, vertical: -3.5),
             textColor: secondaryColor,
             iconColor: secondaryColor,
@@ -1141,14 +1112,39 @@ class ExpandedChildKillEntry extends StatelessWidget {
               icon,
               size: size.height * 0.023,
             ),
-            title: Text(' $title'),
+            title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(child: Text(' $title')),
+                  Flexible(
+                    child: Text(
+                      value!,
+                      textAlign: TextAlign.end,
+                      //softWrap: true,
+                      //maxLines: 4,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: secondaryColor,
+                        fontSize: 15,
+                        overflow: TextOverflow.fade,
+                      ),
+                    ),
+                  ),
+                ]),
             //subtitle: Text(subtitle),
-            trailing: Text(
-              value!,
-              textAlign: TextAlign.end,
-              style:
-                  TextStyle(fontWeight: FontWeight.w600, color: secondaryColor),
-            ),
+            // trailing: Container(
+            //   width: size.width * 0.4,
+            //   child: Text(
+            //     value!,
+            //     textAlign: TextAlign.end,
+            //     //softWrap: true,
+            //     //maxLines: 4,
+            //     style: TextStyle(
+            //         fontWeight: FontWeight.w600,
+            //         color: secondaryColor,
+            //         overflow: TextOverflow.fade),
+            //   ),
+            // ),
           );
   }
 }

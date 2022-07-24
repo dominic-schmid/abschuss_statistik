@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
+import 'package:intl/intl.dart';
 import 'package:jagdverband_scraper/utils.dart';
 
 class KillEntry {
@@ -181,5 +182,25 @@ class KillEntry {
             },
       // Oertlichkeit
     );
+  }
+
+  @override
+  String toString() {
+    String datum = DateFormat('dd.MM.yy').format(datetime);
+    String zeit = DateFormat('kk:mm').format(datetime);
+    String alterString = alter.isNotEmpty && alterw.isEmpty
+        ? alter
+        : alter.isEmpty && alterw.isNotEmpty
+            ? alterw
+            : alter.isNotEmpty && alterw.isNotEmpty
+                ? '$alter - $alterw'
+                : "";
+    alterString = alterString.trim();
+
+    String aufseherString = jagdaufseher == null
+        ? ''
+        : "Gesehen von ${jagdaufseher!['aufseher']} am ${jagdaufseher!['datum']} um ${jagdaufseher!['zeit']}";
+
+    return "$wildart $geschlecht,\ngeschossen $oertlichkeit am $datum um $zeit\n\nNummer: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\nGebiet: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\nAlter: $alterString'}${gewicht == null ? '' : '\nGewicht: $gewicht kg'}${erleger.isEmpty || erleger.contains('*') ? '' : '\nErleger: $erleger'}${begleiter.isEmpty || begleiter.contains('*') ? '' : '\nBegleiter: $begleiter'}${verwendung.isEmpty ? '' : '\nVerwendung: $verwendung'}${ursprungszeichen.isEmpty ? '' : '\nUrsprungszeichen: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}"; //${} ${} ${} ${} ${} ${} ${} ${}""";
   }
 }

@@ -91,7 +91,8 @@ class RequestMethods {
       SqliteDB().db.then((d) async {
         for (KillEntry k in page.kills) {
           // await d.rawDelete('Delete FROM Kill ');
-          await d.transaction((txn) => txn.insert(
+
+          await d.transaction((txn) async => await txn.insert(
                 'Kill',
                 {
                   'key': '$year-${k.key}',
