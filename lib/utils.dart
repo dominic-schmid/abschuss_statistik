@@ -148,3 +148,5 @@ IconData getUrsacheIcon(String ursache) {
       return Icons.question_mark_rounded;
   }
 }
+
+const String appVersion = "1.0.0";

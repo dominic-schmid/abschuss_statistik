@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
 import 'package:jagdverband_scraper/providers.dart';
 import 'package:jagdverband_scraper/request_methods.dart';
@@ -163,15 +164,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     String login = config['login'];
     String pass = config['pass'];
-    bool? isDarkMode = config['isDarkMode'];
+    bool isDarkMode = config['isDarkMode'] ??
+        SchedulerBinding.instance.window.platformBrightness == Brightness.dark;
 
     return ChangeNotifierProvider(
         create: (BuildContext context) => ThemeProvider(
-              themeMode: isDarkMode == null
-                  ? ThemeMode.system
-                  : isDarkMode
-                      ? ThemeMode.dark
-                      : ThemeMode.light,
+              themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
             ),
         builder: (context, _) {
           final themeProvider = Provider.of<ThemeProvider>(context);

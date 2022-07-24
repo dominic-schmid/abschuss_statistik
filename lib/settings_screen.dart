@@ -186,7 +186,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Text(
-                          'Version 1.0.0 © 2022',
+                          'Version $appVersion © 2022',
                           style: TextStyle(color: Colors.grey),
                         ),
                       ),
