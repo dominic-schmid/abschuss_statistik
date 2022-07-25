@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:intl/intl.dart';
-import 'package:jagdverband_scraper/utils.dart';
+import 'package:jagdverband_scraper/utils/utils.dart';
 
 class KillEntry {
   final int nummer;

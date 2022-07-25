@@ -1,8 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'models/kill_entry.dart';
-import 'models/kill_page.dart';
+import '../models/kill_entry.dart';
+import '../models/kill_page.dart';
 
 class SqliteDB {
   static final SqliteDB _instance = SqliteDB.internal();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/utils.dart';
+import 'package:jagdverband_scraper/utils/utils.dart';
 
 class AddKillScreen extends StatefulWidget {
   const AddKillScreen({Key? key}) : super(key: key);

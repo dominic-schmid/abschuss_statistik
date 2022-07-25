@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/database_methods.dart';
+import 'package:jagdverband_scraper/utils/database_methods.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Map<String, dynamic> getDefaultPrefs() => {

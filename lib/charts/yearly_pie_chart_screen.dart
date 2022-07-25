@@ -2,24 +2,24 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/database_methods.dart';
-import 'package:jagdverband_scraper/utils.dart';
+import 'package:jagdverband_scraper/utils/database_methods.dart';
+import 'package:jagdverband_scraper/utils/utils.dart';
 import 'package:jagdverband_scraper/widgets/no_data_found.dart';
 import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/kill_entry.dart';
-import 'chart_app_bar.dart';
+import '../widgets/chart_app_bar.dart';
 
-class WildartPieChart extends StatefulWidget {
-  const WildartPieChart({Key? key}) : super(key: key);
+class YearlyPieChartScreen extends StatefulWidget {
+  const YearlyPieChartScreen({Key? key}) : super(key: key);
 
   @override
-  State<WildartPieChart> createState() => _WildartPieChartState();
+  State<YearlyPieChartScreen> createState() => _YearlyPieChartScreenState();
 }
 
-class _WildartPieChartState extends State<WildartPieChart> {
+class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
   late int year;
   int _minYear = 2000;
   int _maxYear = 2022;
@@ -143,15 +143,24 @@ class _WildartPieChartState extends State<WildartPieChart> {
       int value = e['Anzahl'] as int;
       String percentage = (value / sum * 100).toStringAsFixed(0);
 
+      num radius = touchedIndex == index
+          ? size.aspectRatio < 1
+              ? size.width * 0.35
+              : size.height * 0.35
+          : size.aspectRatio < 1
+              ? size.width * 0.3
+              : size.height * 0.3;
+
       return PieChartSectionData(
-        badgePositionPercentageOffset: touchedIndex == index ? 1.5 : 1.85,
+        badgePositionPercentageOffset: touchedIndex == index ? 1.23 : 1.33,
         badgeWidget: Text('$title\n($value)',
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: Theme.of(context).textTheme.headline1!.color,
                 fontWeight: FontWeight.bold)),
-        //titlePositionPercentageOffset: -2,
-        radius: touchedIndex == index ? size.width * 0.175 : size.width * 0.125,
+        radius: radius.toDouble(),
+        //radius: touchedIndex == index ? size.height * 0.35 : size.height * 0.3,
+        titlePositionPercentageOffset: 0.5,
         //color: KillEntry.getColorFromWildart(e['Gruppierung'] as String),
         color: groupBy['value'] == 'wildart'
             ? KillEntry.getColorFromWildart(e['Gruppierung'] as String)
@@ -277,18 +286,23 @@ class _WildartPieChartState extends State<WildartPieChart> {
                 ? const NoDataFoundWidget(
                     suffix: "Eventuell musst du diese Daten erst herunterladen",
                   )
-                : Expanded(
-                    flex: 10,
+                : ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: size.height * 0.5,
+                      maxWidth: size.width,
+                    ),
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                        horizontal: size.width * 0.1,
-                        vertical: size.height * 0.1,
+                        horizontal: size.width * 0.01,
+                        vertical: size.height * 0.01,
                       ),
                       child: PieChart(
                         swapAnimationDuration:
                             const Duration(milliseconds: 350), // Optional
                         swapAnimationCurve: Curves.decelerate, // Optional
                         PieChartData(
+                          startDegreeOffset: 180,
+
                           pieTouchData: PieTouchData(touchCallback:
                               (FlTouchEvent event, pieTouchResponse) {
                             setState(() {
@@ -302,12 +316,44 @@ class _WildartPieChartState extends State<WildartPieChart> {
                                   .touchedSection!.touchedSectionIndex;
                             });
                           }),
-                          centerSpaceRadius: size.width * 0.15,
+                          sectionsSpace: 2,
+                          centerSpaceRadius: 0, //size.width * 0.15,
                           sections: sections,
                         ),
                       ),
                     ),
                   ),
+            // : Expanded(
+            //     flex: 10,
+            //     child: Padding(
+            //       padding: EdgeInsets.symmetric(
+            //         horizontal: size.width * 0.1,
+            //         vertical: size.height * 0.1,
+            //       ),
+            //       child: PieChart(
+            //         swapAnimationDuration:
+            //             const Duration(milliseconds: 350), // Optional
+            //         swapAnimationCurve: Curves.decelerate, // Optional
+            //         PieChartData(
+            //           pieTouchData: PieTouchData(touchCallback:
+            //               (FlTouchEvent event, pieTouchResponse) {
+            //             setState(() {
+            //               if (!event.isInterestedForInteractions ||
+            //                   pieTouchResponse == null ||
+            //                   pieTouchResponse.touchedSection == null) {
+            //                 touchedIndex = -1;
+            //                 return;
+            //               }
+            //               touchedIndex = pieTouchResponse
+            //                   .touchedSection!.touchedSectionIndex;
+            //             });
+            //           }),
+            //           centerSpaceRadius: size.width * 0.15,
+            //           sections: sections,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
           ],
         ),
       ),

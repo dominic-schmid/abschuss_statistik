@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/utils.dart';
+import 'package:jagdverband_scraper/utils/utils.dart';
 
 class FilterChipData {
   final String label;

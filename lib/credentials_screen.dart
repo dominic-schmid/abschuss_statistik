@@ -2,10 +2,10 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/home_screen.dart';
 import 'package:jagdverband_scraper/kills_screen.dart';
-import 'package:jagdverband_scraper/utils.dart';
+import 'package:jagdverband_scraper/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'request_methods.dart';
+import 'utils/request_methods.dart';
 
 class CredentialsScreen extends StatefulWidget {
   const CredentialsScreen({Key? key}) : super(key: key);

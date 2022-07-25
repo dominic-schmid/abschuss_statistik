@@ -4,17 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
 import 'package:jagdverband_scraper/home_screen.dart';
-import 'package:jagdverband_scraper/providers.dart';
-import 'package:jagdverband_scraper/request_methods.dart';
+import 'package:jagdverband_scraper/utils/providers.dart';
+import 'package:jagdverband_scraper/utils/request_methods.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
-import 'database_methods.dart';
+import 'utils/database_methods.dart';
 import 'kills_screen.dart';
 import 'models/kill_entry.dart';
 import 'models/kill_page.dart';
+import 'utils/providers.dart';
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
