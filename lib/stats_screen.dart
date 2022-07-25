@@ -15,7 +15,16 @@ class _StatsScreenState extends State<StatsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       //body: Center(child: Text('Stats')),
-      body: WildartPieChart(),
+
+      //body: WildartPieChart(),
+      body: Center(
+        child: MaterialButton(
+            child: Text('Piechart'),
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => WildartPieChart()));
+            }),
+      ),
     );
   }
 }

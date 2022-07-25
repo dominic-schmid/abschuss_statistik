@@ -6,9 +6,11 @@ import 'package:jagdverband_scraper/database_methods.dart';
 import 'package:jagdverband_scraper/utils.dart';
 import 'package:jagdverband_scraper/widgets/no_data_found.dart';
 import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/kill_entry.dart';
+import 'chart_app_bar.dart';
 
 class WildartPieChart extends StatefulWidget {
   const WildartPieChart({Key? key}) : super(key: key);
@@ -19,66 +21,101 @@ class WildartPieChart extends StatefulWidget {
 
 class _WildartPieChartState extends State<WildartPieChart> {
   late int year;
+  int _minYear = 2000;
+  int _maxYear = 2022;
+
+  int touchedIndex = -1;
+  List<Map<String, Object?>> res = [];
+  bool _isLoading = true;
+
   Map<String, String> groupBy = {
-    'key': 'Wildart',
+    'key': 'Wildarten',
     'value': 'wildart',
   };
-  int touchedIndex = -1;
-
-  List<Map<String, Object?>> res = [];
-
-  bool _isLoading = true;
 
   List<Map<String, String>> groupBys = [
     {
-      'key': 'Wildart',
+      'key': 'Wildarten',
       'value': 'wildart',
     },
     {
-      'key': 'Geschlecht',
+      'key': 'Geschlechter',
       'value': 'geschlecht',
     },
     {
-      'key': 'Gebiet',
+      'key': 'Gebiete',
       'value': 'hegeinGebietRevierteil',
     },
     {
-      'key': 'Erleger',
-      'value': 'erleger',
-    },
-    {
-      'key': 'Begleiter',
-      'value': 'begleiter',
-    },
-    {
-      'key': 'Ursache',
+      'key': 'Ursachen',
       'value': 'ursache',
     },
     {
-      'key': 'Verwendung',
+      'key': 'Verwendungen',
       'value': 'verwendung',
     },
     {
       'key': 'Ursprungszeichen',
       'value': 'ursprungszeichen',
     },
-    {
-      'key': 'Örtlichkeit',
-      'value': 'oertlichkeit',
-    },
     //  'datetime': k.datetime.toIso8601String(),
   ];
+
+  List<int> years = [];
+
+  showPerson() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool showPerson = prefs.getBool('showPerson') ?? false;
+    if (showPerson) {
+      groupBys.addAll(
+        [
+          {
+            'key': 'Erleger',
+            'value': 'erleger',
+          },
+          {
+            'key': 'Begleiter',
+            'value': 'begleiter',
+          },
+        ],
+      );
+    }
+  }
+
+  getConfig() async {
+    showPerson();
+    await getYearList();
+    await getData();
+  }
 
   @override
   void initState() {
     super.initState();
     year = DateTime.now().year;
-    getData();
+    getConfig();
+  }
+
+  getYearList() async {
+    try {
+      Database db = await SqliteDB().db;
+
+      List<Map<String, Object?>> res = await db.rawQuery("""
+      SELECT
+      min(year) AS MIN_YEAR,
+      max(year) AS MAX_YEAR
+      FROM Kill
+      """);
+      _minYear = res.first['MIN_YEAR'] as int;
+      _maxYear = res.first['MAX_YEAR'] as int;
+    } catch (e) {
+      _minYear = 2000;
+      _maxYear = DateTime.now().year;
+    }
   }
 
   getData() async {
     Database db = await SqliteDB().db;
-    print('SQL grouping by ${groupBy['value']}');
+
     List<Map<String, Object?>> res = await db.rawQuery("""
     SELECT
     COUNT(*) AS Anzahl,
@@ -107,7 +144,7 @@ class _WildartPieChartState extends State<WildartPieChart> {
       String percentage = (value / sum * 100).toStringAsFixed(0);
 
       return PieChartSectionData(
-        badgePositionPercentageOffset: 1.75,
+        badgePositionPercentageOffset: touchedIndex == index ? 1.5 : 1.85,
         badgeWidget: Text('$title\n($value)',
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -116,7 +153,7 @@ class _WildartPieChartState extends State<WildartPieChart> {
         //titlePositionPercentageOffset: -2,
         radius: touchedIndex == index ? size.width * 0.175 : size.width * 0.125,
         //color: KillEntry.getColorFromWildart(e['Gruppierung'] as String),
-        color: groupBy['key'] == 'Wildart'
+        color: groupBy['value'] == 'wildart'
             ? KillEntry.getColorFromWildart(e['Gruppierung'] as String)
             : Colors.primaries[index % Colors.primaries.length],
         title: '$percentage%',
@@ -140,150 +177,139 @@ class _WildartPieChartState extends State<WildartPieChart> {
 
     List<PieChartSectionData> sections = buildSections(res);
 
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: size.width * 0.035, vertical: size.height * 0.05),
-      child: Column(
-        // mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Flexible(
-            child: Text(
-              'Abschüsse $year\nGruppiert über ${groupBy['key']}',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1,
-                fontSize: size.height * 0.04,
+    return Scaffold(
+      appBar: ChartAppBar(title: Text(groupBy['key'] as String), actions: []),
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: size.width * 0.035, vertical: size.height * 0.05),
+        child: Column(
+          // mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Flexible(
+              flex: 1,
+              child: Text(
+                year.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                  fontSize: size.height * 0.04,
+                ),
               ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.all(2),
-                  child: ActionChip(
-                      avatar: const CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        child: Icon(
-                          Icons.calendar_month,
-                          color: schneehaseFarbe,
-                          size: 18,
-                        ),
-                      ),
-                      backgroundColor: schneehaseFarbe.withOpacity(0.25),
-                      labelStyle: const TextStyle(color: schneehaseFarbe),
-                      label: Text('$year'),
-                      onPressed: () async {
-                        await showModalBottomSheet(
-                            context: context,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                              ),
-                            ),
-                            builder: (BuildContext context) {
-                              return ValueSelectorModal<int>(
-                                items: List.generate(
-                                  DateTime.now().year - 2000 + 1,
-                                  (index) => index + 2000,
-                                ).reversed.toList(),
-                                selectedItem: year,
-                                onSelect: (selectedYear) async {
-                                  if (selectedYear != year) {
-                                    year = selectedYear;
-                                    await getData();
-                                    setState(() {});
-                                  }
-                                },
-                              );
-                            });
-                      }),
-                ),
-              ),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.all(2),
-                  child: ActionChip(
-                      avatar: const CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        child: Icon(
-                          Icons.pets_rounded,
-                          color: nichtBekanntFarbe,
-                          size: 18,
-                        ),
-                      ),
-                      backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
-                      labelStyle: const TextStyle(color: nichtBekanntFarbe),
-                      label: Text(groupBy['key'] as String),
-                      onPressed: () async {
-                        await showModalBottomSheet(
-                            context: context,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                              ),
-                            ),
-                            builder: (BuildContext context) {
-                              return ValueSelectorModal<String>(
-                                items: List.generate(
-                                  groupBys.length,
-                                  (index) => groupBys.elementAt(index)['key']
-                                      as String,
-                                ),
-                                selectedItem: groupBy['key'] as String,
-                                padding: false,
-                                onSelect: (selected) async {
-                                  if (groupBy !=
-                                      groupBys.firstWhere((element) =>
-                                          element['key'] as String ==
-                                          selected)) {
-                                    groupBy = groupBys.firstWhere((element) =>
-                                        element['key'] as String == selected);
-                                    await getData();
-                                    setState(() {});
-                                  }
-                                },
-                              );
-                            });
-                      }),
-                ),
-              ),
-            ],
-          ),
-          sections.isEmpty
-              ? const NoDataFoundWidget(
-                  suffix: "Eventuell musst du diese Daten erst herunterladen",
-                )
-              : Expanded(
-                  child: PieChart(
-                    swapAnimationDuration:
-                        const Duration(milliseconds: 150), // Optional
-                    swapAnimationCurve: Curves.decelerate, // Optional
-                    PieChartData(
-                      pieTouchData: PieTouchData(touchCallback:
-                          (FlTouchEvent event, pieTouchResponse) {
-                        setState(() {
-                          if (!event.isInterestedForInteractions ||
-                              pieTouchResponse == null ||
-                              pieTouchResponse.touchedSection == null) {
-                            touchedIndex = -1;
-                            return;
-                          }
-                          touchedIndex = pieTouchResponse
-                              .touchedSection!.touchedSectionIndex;
-                        });
-                      }),
-                      centerSpaceRadius: size.width * 0.15,
-                      sections: sections,
-                    ),
+            Flexible(
+              flex: 1,
+              child: SliderTheme(
+                data: SliderThemeData(
+                  activeTickMarkColor: primaryColor,
+                  thumbColor: rehwildFarbe,
+                  activeTrackColor: rehwildFarbe.withAlpha(180),
+                  inactiveTrackColor: rehwildFarbe.withOpacity(0.2),
+                  trackHeight: size.height * 0.01,
+                  valueIndicatorColor: rehwildFarbe,
+                  valueIndicatorTextStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    //color: ,
                   ),
                 ),
-        ],
+                child: Slider(
+                  min: _minYear.toDouble(),
+                  max: _maxYear.toDouble(),
+                  label: year.toString(),
+                  divisions: _maxYear - _minYear,
+                  value: year.toDouble(),
+                  onChanged: (double value) async {
+                    year = value.toInt();
+                    await getData();
+                    setState(() {});
+                  },
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 2,
+              child: ActionChip(
+                  avatar: const CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    child: Icon(
+                      Icons.pets_rounded,
+                      color: nichtBekanntFarbe,
+                      size: 18,
+                    ),
+                  ),
+                  backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
+                  labelStyle: const TextStyle(color: nichtBekanntFarbe),
+                  label: Text(groupBy['key'] as String),
+                  onPressed: () async {
+                    await showModalBottomSheet(
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        builder: (BuildContext context) {
+                          return ValueSelectorModal<String>(
+                            items: List.generate(
+                              groupBys.length,
+                              (index) =>
+                                  groupBys.elementAt(index)['key'] as String,
+                            ),
+                            selectedItem: groupBy['key'] as String,
+                            padding: false,
+                            onSelect: (selected) async {
+                              if (groupBy !=
+                                  groupBys.firstWhere((element) =>
+                                      element['key'] as String == selected)) {
+                                groupBy = groupBys.firstWhere((element) =>
+                                    element['key'] as String == selected);
+                                await getData();
+                                setState(() {});
+                              }
+                            },
+                          );
+                        });
+                  }),
+            ),
+            sections.isEmpty
+                ? const NoDataFoundWidget(
+                    suffix: "Eventuell musst du diese Daten erst herunterladen",
+                  )
+                : Expanded(
+                    flex: 10,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: size.width * 0.1,
+                        vertical: size.height * 0.1,
+                      ),
+                      child: PieChart(
+                        swapAnimationDuration:
+                            const Duration(milliseconds: 350), // Optional
+                        swapAnimationCurve: Curves.decelerate, // Optional
+                        PieChartData(
+                          pieTouchData: PieTouchData(touchCallback:
+                              (FlTouchEvent event, pieTouchResponse) {
+                            setState(() {
+                              if (!event.isInterestedForInteractions ||
+                                  pieTouchResponse == null ||
+                                  pieTouchResponse.touchedSection == null) {
+                                touchedIndex = -1;
+                                return;
+                              }
+                              touchedIndex = pieTouchResponse
+                                  .touchedSection!.touchedSectionIndex;
+                            });
+                          }),
+                          centerSpaceRadius: size.width * 0.15,
+                          sections: sections,
+                        ),
+                      ),
+                    ),
+                  ),
+          ],
+        ),
       ),
     );
   }

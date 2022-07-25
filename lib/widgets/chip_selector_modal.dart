@@ -39,16 +39,32 @@ class _ChipSelectorModalState extends State<ChipSelectorModal> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 5.0, vertical: 2),
                           child: FilterChip(
-                              checkmarkColor: c.color,
-                              selectedColor: c.color.withOpacity(0.25),
-                              disabledColor: c.color.withOpacity(0.1),
-                              labelStyle: TextStyle(color: c.color),
-                              onSelected: (selected) {
-                                c.isSelected = selected;
-                                if (mounted) setState(() {});
-                              },
-                              selected: c.isSelected,
-                              label: Text(c.label)),
+                            checkmarkColor: c.color,
+                            selectedColor: c.color.withOpacity(0.25),
+                            disabledColor: c.color.withOpacity(0.1),
+                            labelStyle: TextStyle(color: c.color),
+                            onSelected: (selected) {
+                              c.isSelected = selected;
+                              if (mounted) setState(() {});
+                            },
+                            label: c.icon == null
+                                ? Text(c.label)
+                                : Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(c.label),
+                                      const SizedBox(width: 4),
+                                      Icon(
+                                        c.icon,
+                                        color: c.color,
+                                        size: 18,
+                                      ),
+                                    ],
+                                  ),
+                            selected: c.isSelected,
+                          ),
                         );
                       }))
                   .toList(),

@@ -203,7 +203,7 @@ class _KillsScreenState extends State<KillsScreen>
           wildChips = page.wildarten;
           ursacheChips = page.ursachen;
           verwendungChips = page.verwendungen;
-          setState(() {});
+          //setState(() {});
           print('Using HTTP page');
         } else {
           print('No changes found');
@@ -331,14 +331,10 @@ class _KillsScreenState extends State<KillsScreen>
       // ),
       IconButton(
           onPressed: () {
-            if (_showSearch && controller.text.isNotEmpty) {
-              setState(() => controller.text = "");
-            } else {
-              _showSearch = !_showSearch;
-              setState(() {});
-            }
+            if (controller.text.isNotEmpty) controller.text = "";
+            setState(() => _showSearch = !_showSearch);
           },
-          icon: Icon(controller.text.isEmpty ? Icons.search : Icons.close)),
+          icon: Icon(_showSearch ? Icons.close : Icons.search)),
       IconButton(
         onPressed: () => Navigator.of(context)
             .push(CupertinoPageRoute(
@@ -445,14 +441,14 @@ class _KillsScreenState extends State<KillsScreen>
                       selectedItem: _currentYear,
                       onSelect: (selectedYear) async {
                         if (selectedYear != _currentYear) {
+                          await readFromDb(selectedYear)
+                              .then((value) => setState(() {}));
                           _currentYear = selectedYear;
-                          readFromDb(selectedYear);
                         }
                       },
                     );
                     //return buildYearModalSheet();
                   });
-              if (mounted) setState(() {});
             }),
       ),
       Padding(

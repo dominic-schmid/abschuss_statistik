@@ -1,6 +1,8 @@
-import 'package:jagdverband_scraper/models/kill_entry.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+
+import 'models/kill_entry.dart';
+import 'models/kill_page.dart';
 
 class SqliteDB {
   static final SqliteDB _instance = SqliteDB.internal();
@@ -53,6 +55,43 @@ class SqliteDB {
     print('Initialized Database!');
 
     return _db;
+  }
+
+  insertKills(int year, KillPage page) async {
+    for (KillEntry k in page.kills) {
+      // await d.rawDelete('Delete FROM Kill ');
+      var database = await db;
+
+      await database.transaction((txn) async => await txn.insert(
+            'Kill',
+            {
+              'key': '$year-${k.key}',
+              'year': year,
+              'revier': page.revierName,
+              'nummer': k.nummer,
+              'wildart': k.wildart,
+              'geschlecht': k.geschlecht,
+              'hegeinGebietRevierteil': k.hegeinGebietRevierteil,
+              'alterm': k.alter,
+              'alterw': k.alterw,
+              'gewicht': k.gewicht,
+              'erleger': k.erleger,
+              'begleiter': k.begleiter,
+              'ursache': k.ursache,
+              'verwendung': k.verwendung,
+              'ursprungszeichen': k.ursprungszeichen,
+              'oertlichkeit': k.oertlichkeit,
+              'datetime': k.datetime.toIso8601String(),
+              'aufseherDatum':
+                  k.jagdaufseher == null ? null : k.jagdaufseher!['datum'],
+              'aufseherZeit':
+                  k.jagdaufseher == null ? null : k.jagdaufseher!['zeit'],
+              'aufseher':
+                  k.jagdaufseher == null ? null : k.jagdaufseher!['aufseher'],
+            },
+            conflictAlgorithm: ConflictAlgorithm.ignore,
+          ));
+    }
   }
 
   delteDb() async {
