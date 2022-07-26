@@ -1,10 +1,7 @@
-import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/utils/database_methods.dart';
 import 'package:jagdverband_scraper/utils/utils.dart';
-import 'package:jagdverband_scraper/widgets/no_data_found.dart';
 import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -13,26 +10,26 @@ import '../models/kill_entry.dart';
 import '../widgets/chart_app_bar.dart';
 import '../widgets/chart_legend.dart';
 
-class YearlyBarChartScreen extends StatefulWidget {
-  const YearlyBarChartScreen({Key? key}) : super(key: key);
+class HistoricBarChartScreen extends StatefulWidget {
+  const HistoricBarChartScreen({Key? key}) : super(key: key);
 
   @override
-  State<YearlyBarChartScreen> createState() => _YearlyBarChartScreenState();
+  State<HistoricBarChartScreen> createState() => _HistoricBarChartScreenState();
 }
 
-class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
-  late int year;
+class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
+  late RangeValues years;
   int _minYear = 2000;
   int _maxYear = 2022;
   int maxDisplayValue = 0;
-
+  int maxValue = 0;
   bool _asc = true;
+  bool _showLegend = false;
 
   int touchedIndex = -1;
 
   List<ChartItem> chartItems = [];
   bool _isLoading = true;
-  bool _showLegend = false;
 
   Map<String, String> groupBy = {
     'key': 'Wildarten',
@@ -40,8 +37,6 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
   };
 
   List<Map<String, String>> groupBys = baseGroupBys.toList();
-
-  List<int> years = [];
 
   showPerson() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -65,7 +60,6 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
   @override
   void initState() {
     super.initState();
-    year = DateTime.now().year;
     getConfig();
   }
 
@@ -92,9 +86,10 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
       _minYear = 2000;
       _maxYear = DateTime.now().year;
     }
+    years = RangeValues(_minYear.toDouble(), _maxYear.toDouble());
   }
 
-  Future<void> getData() async {
+  getData() async {
     Database db = await SqliteDB().db;
     String sorting = _asc ? 'ASC' : 'DESC';
 
@@ -103,10 +98,11 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
     COUNT(*) AS Anzahl,
     ${groupBy['value']} AS Gruppierung
     FROM Kill
-    WHERE year = $year
-    GROUP BY ${groupBy['value']}
-    ORDER BY Anzahl $sorting   
+    WHERE year >= ${years.start.toInt()} AND year <= ${years.end.toInt()}
+    GROUP BY ${groupBy['value']}    
+    ORDER BY Anzahl $sorting
     """);
+    // Get largest value
 
     chartItems = [];
     maxDisplayValue = 0;
@@ -184,7 +180,9 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
           Padding(
             padding: EdgeInsets.only(top: size.height * 0.035),
             child: Text(
-              year.toString(),
+              years.start == years.end
+                  ? '${years.start.toInt()}'
+                  : '${years.start.toInt()} - ${years.end.toInt()}',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -208,14 +206,15 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
                   //color: ,
                 ),
               ),
-              child: Slider(
+              child: RangeSlider(
+                values: years,
+                labels: RangeLabels(years.start.toInt().toString(),
+                    years.end.toInt().toString()),
                 min: _minYear.toDouble(),
                 max: _maxYear.toDouble(),
-                label: year.toString(),
                 divisions: _maxYear - _minYear == 0 ? 1 : _maxYear - _minYear,
-                value: year.toDouble(),
-                onChanged: (double value) async {
-                  year = value.toInt();
+                onChanged: (RangeValues values) async {
+                  years = values;
                   await getData();
                 },
               ),
@@ -290,10 +289,9 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
             ],
           ),
           SizedBox(height: size.height * 0.05),
-          chartItems.isEmpty
-              ? const NoDataFoundWidget(
-                  suffix: "Eventuell musst du diese Daten erst herunterladen",
-                )
+          _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(color: rehwildFarbe))
               : ConstrainedBox(
                   constraints: BoxConstraints(
                     maxHeight: size.height * 0.5,

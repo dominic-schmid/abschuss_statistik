@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/utils/database_methods.dart';
 import 'package:jagdverband_scraper/utils/utils.dart';
+import 'package:jagdverband_scraper/widgets/chart_legend.dart';
 import 'package:jagdverband_scraper/widgets/no_data_found.dart';
 import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,22 +12,24 @@ import 'package:sqflite/sqflite.dart';
 
 import '../models/kill_entry.dart';
 import '../widgets/chart_app_bar.dart';
-import '../widgets/chart_legend.dart';
 
-class YearlyPieChartScreen extends StatefulWidget {
-  const YearlyPieChartScreen({Key? key}) : super(key: key);
+class HistoricPieChartScreen extends StatefulWidget {
+  const HistoricPieChartScreen({Key? key}) : super(key: key);
 
   @override
-  State<YearlyPieChartScreen> createState() => _YearlyPieChartScreenState();
+  State<HistoricPieChartScreen> createState() => _HistoricPieChartScreenState();
 }
 
-class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
-  late int year;
+class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
+  late RangeValues yearRange;
+
   int _minYear = 2000;
   int _maxYear = 2022;
 
   int touchedIndex = -1;
+
   List<ChartItem> chartItems = [];
+
   bool _isLoading = true;
   bool _showLegend = false;
 
@@ -65,7 +68,6 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
   @override
   void initState() {
     super.initState();
-    year = DateTime.now().year;
     getConfig();
   }
 
@@ -85,6 +87,7 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
       _minYear = 2000;
       _maxYear = DateTime.now().year;
     }
+    yearRange = RangeValues(_minYear.toDouble(), _maxYear.toDouble());
   }
 
   getData() async {
@@ -95,7 +98,7 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
     COUNT(*) AS Anzahl,
     ${groupBy['value']} AS Gruppierung
     FROM Kill
-    WHERE year = $year
+    WHERE year >= ${yearRange.start.toInt()} AND year <= ${yearRange.end.toInt()}
     GROUP BY ${groupBy['value']}    
     """);
 
@@ -176,7 +179,9 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
           Padding(
             padding: EdgeInsets.only(top: size.height * 0.035),
             child: Text(
-              year.toString(),
+              yearRange.start == yearRange.end
+                  ? '${yearRange.start.toInt()}'
+                  : '${yearRange.start.toInt()} - ${yearRange.end.toInt()}',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -200,14 +205,15 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
                   //color: ,
                 ),
               ),
-              child: Slider(
+              child: RangeSlider(
+                values: yearRange,
+                labels: RangeLabels(yearRange.start.toInt().toString(),
+                    yearRange.end.toInt().toString()),
                 min: _minYear.toDouble(),
                 max: _maxYear.toDouble(),
-                label: year.toString(),
                 divisions: _maxYear - _minYear == 0 ? 1 : _maxYear - _minYear,
-                value: year.toDouble(),
-                onChanged: (double value) async {
-                  year = value.toInt();
+                onChanged: (RangeValues values) async {
+                  yearRange = values;
                   await getData();
                 },
               ),

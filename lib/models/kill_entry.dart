@@ -206,6 +206,16 @@ class KillEntry {
         ? ''
         : "Gesehen von ${jagdaufseher!['aufseher']} am ${jagdaufseher!['datum']} um ${jagdaufseher!['zeit']}";
 
-    return "$wildart $geschlecht,\ngeschossen $oertlichkeit am $datum um $zeit\n\nNummer: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\nGebiet: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\nAlter: $alterString'}${gewicht == null ? '' : '\nGewicht: $gewicht kg'}${erleger.isEmpty || erleger.contains('*') ? '' : '\nErleger: $erleger'}${begleiter.isEmpty || begleiter.contains('*') ? '' : '\nBegleiter: $begleiter'}${verwendung.isEmpty ? '' : '\nVerwendung: $verwendung'}${ursprungszeichen.isEmpty ? '' : '\nUrsprungszeichen: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}"; //${} ${} ${} ${} ${} ${} ${} ${}""";
+    String e = erleger.isEmpty ||
+            erleger.contains('*') ||
+            ursache == 'Fallwild' ||
+            ursache == 'Straßenunfall' ||
+            ursache == 'vom Zug überfahren'
+        ? ''
+        : '\nErleger: $erleger';
+    String b = begleiter.isEmpty || begleiter.contains('*')
+        ? ''
+        : '\nBegleiter: $begleiter';
+    return "$wildart $geschlecht,\ngeschossen $oertlichkeit am $datum um $zeit\n\nNummer: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\nGebiet: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\nAlter: $alterString'}${gewicht == null ? '' : '\nGewicht: $gewicht kg'}$e$b${verwendung.isEmpty ? '' : '\nVerwendung: $verwendung'}${ursprungszeichen.isEmpty ? '' : '\nUrsprungszeichen: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}"; //${} ${} ${} ${} ${} ${} ${} ${}""";
   }
 }

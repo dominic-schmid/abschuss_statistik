@@ -3,6 +3,9 @@ import 'package:jagdverband_scraper/utils/utils.dart';
 import 'package:jagdverband_scraper/widgets/chart_app_bar.dart';
 import 'package:jagdverband_scraper/charts/yearly_pie_chart_screen.dart';
 
+import 'charts/historic_bar_chart_screen.dart';
+import 'charts/historic_line_chart_screen.dart';
+import 'charts/historic_pie_chart_screen.dart';
 import 'charts/yearly_bar_chart_screen.dart';
 
 class StatsScreen extends StatefulWidget {
@@ -38,7 +41,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 ),
                 children: [
                   ChartGridItem(
-                    title: 'Abschüsse',
+                    title: 'Summe',
                     assetImage: 'assets/pie-chart.png',
                     backgroundColor: gamswildFarbe.withAlpha(215),
                     onTap: () => Navigator.of(context).push(
@@ -56,18 +59,6 @@ class _StatsScreenState extends State<StatsScreen> {
                         builder: (context) => const YearlyBarChartScreen(),
                       ),
                     ),
-                  ),
-                  ChartGridItem(
-                    title: 'Trend',
-                    assetImage: 'assets/trend-chart.png',
-                    backgroundColor: erlegtFarbe,
-                    onTap: () {},
-                  ),
-                  ChartGridItem(
-                    title: 'Deckung',
-                    assetImage: 'assets/area-chart.png',
-                    backgroundColor: verkaufFarbe,
-                    onTap: () {},
                   ),
                 ],
               ),
@@ -87,12 +78,12 @@ class _StatsScreenState extends State<StatsScreen> {
                 ),
                 children: [
                   ChartGridItem(
-                    title: 'Abschüsse',
+                    title: 'Summe',
                     assetImage: 'assets/pie-chart.png',
                     backgroundColor: gamswildFarbe.withAlpha(215),
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const YearlyPieChartScreen(),
+                        builder: (context) => const HistoricPieChartScreen(),
                       ),
                     ),
                   ),
@@ -102,21 +93,29 @@ class _StatsScreenState extends State<StatsScreen> {
                     backgroundColor: schneehaseFarbe,
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const YearlyBarChartScreen(),
+                        builder: (context) => const HistoricBarChartScreen(),
                       ),
                     ),
-                  ),
-                  ChartGridItem(
-                    title: 'Trend',
-                    assetImage: 'assets/trend-chart.png',
-                    backgroundColor: erlegtFarbe,
-                    onTap: () {},
                   ),
                   ChartGridItem(
                     title: 'Deckung',
                     assetImage: 'assets/area-chart.png',
                     backgroundColor: verkaufFarbe,
-                    onTap: () {},
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const HistoricLineChartScreen(),
+                      ),
+                    ),
+                  ),
+                  ChartGridItem(
+                    title: 'Verlauf',
+                    assetImage: 'assets/increase-line.png',
+                    backgroundColor: erlegtFarbe.withGreen(150),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const HistoricLineChartScreen(),
+                      ),
+                    ),
                   ),
                 ],
               ),

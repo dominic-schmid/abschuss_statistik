@@ -150,4 +150,39 @@ IconData getUrsacheIcon(String ursache) {
   }
 }
 
+List<Map<String, String>> baseGroupBys = [
+  {
+    'key': 'Wildarten',
+    'value': 'wildart',
+  },
+  {
+    'key': 'Geschlechter',
+    'value': 'geschlecht',
+  },
+  {
+    'key': 'Gebiete',
+    'value': 'hegeinGebietRevierteil',
+  },
+  {
+    'key': 'Ursachen',
+    'value': 'ursache',
+  },
+  {
+    'key': 'Verwendungen',
+    'value': 'verwendung',
+  },
+  {
+    'key': 'Ursprungszeichen',
+    'value': 'ursprungszeichen',
+  },
+  //  'datetime': k.datetime.toIso8601String(),
+];
+
+const ShapeBorder modalShape = RoundedRectangleBorder(
+  borderRadius: BorderRadius.only(
+    topLeft: Radius.circular(20),
+    topRight: Radius.circular(20),
+  ),
+);
+
 const String appVersion = "1.0.0";

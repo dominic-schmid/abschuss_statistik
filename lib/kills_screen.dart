@@ -708,7 +708,6 @@ class _KillsScreenState extends State<KillsScreen>
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
 
@@ -746,17 +745,9 @@ class KillListEntryState extends State<KillListEntry> {
 
     String date = DateFormat('dd.MM.yy').format(k.datetime);
     String time = DateFormat('kk:mm').format(k.datetime);
-
-    String copyPrefix = "${k.wildart} ${k.geschlecht} #${k.nummer} vom $date";
-
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: size.width * 0.05, vertical: size.height * 0.005),
-      // decoration: BoxDecoration(
-      //     color: k.color.withOpacity(0.8),
-      //     borderRadius: const BorderRadius.all(
-      //       Radius.circular(20),
-      //     )),
       child: Card(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
@@ -867,7 +858,10 @@ class KillListEntryState extends State<KillListEntry> {
                 title: 'Gewicht',
                 value: k.gewicht == null ? null : '${k.gewicht} kg',
               ),
-              widget.showPerson
+              widget.showPerson &&
+                      k.ursache != 'Fallwild' &&
+                      k.ursache != 'Straßenunfall' &&
+                      k.ursache != 'vom Zug überfahren'
                   ? ExpandedChildKillEntry(
                       icon: Icons.person,
                       title: 'Erleger',

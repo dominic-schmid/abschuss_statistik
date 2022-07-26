@@ -94,7 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   setState(() => _showPerson = value);
                                 },
                                 description: const Text(
-                                    'Zur Zeit können dabei nur Sterne angezeigt werden'),
+                                    'Es kann je nach Benutzer sein, dass dabei nur Sterne angezeigt werden können.'),
                                 initialValue: _showPerson,
                                 leading: const Icon(Icons.person),
                                 title: const Text('Namen anzeigen'),
