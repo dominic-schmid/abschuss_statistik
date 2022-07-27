@@ -9,7 +9,7 @@ import 'package:jagdverband_scraper/utils/request_methods.dart';
 import 'package:jagdverband_scraper/settings_screen.dart';
 import 'package:jagdverband_scraper/utils/utils.dart';
 import 'package:jagdverband_scraper/widgets/chip_selector_modal.dart';
-import 'package:jagdverband_scraper/widgets/filter_chip_data.dart';
+import 'package:jagdverband_scraper/models/filter_chip_data.dart';
 import 'package:jagdverband_scraper/widgets/no_data_found.dart';
 import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';

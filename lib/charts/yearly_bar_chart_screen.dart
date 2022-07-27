@@ -178,6 +178,13 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
           onPressed: () => setState(() => _showLegend = !_showLegend),
           icon: const Icon(Icons.legend_toggle_rounded),
         ),
+        IconButton(
+          onPressed: () => setState(() {
+            _asc = !_asc;
+            getData();
+          }),
+          icon: const Icon(Icons.sort_by_alpha_rounded),
+        ),
       ]),
       body: ListView(
         children: [
@@ -224,23 +231,6 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Flexible(
-                child: CheckboxListTile(
-                    controlAffinity: ListTileControlAffinity.leading,
-                    selectedTileColor: rehwildFarbe,
-                    activeColor: rehwildFarbe,
-                    checkColor: primaryColor,
-                    title: const Text(
-                      'Aufsteigend sortieren',
-                      softWrap: false,
-                      style: TextStyle(overflow: TextOverflow.fade),
-                    ),
-                    value: _asc,
-                    onChanged: (selected) async {
-                      if (selected != null) _asc = selected;
-                      await getData();
-                    }),
-              ),
               Expanded(
                 child: ActionChip(
                   avatar: const CircleAvatar(
@@ -253,7 +243,7 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
                   ),
                   backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
                   labelStyle: const TextStyle(color: nichtBekanntFarbe),
-                  label: Text(groupBy['key'] as String),
+                  label: const Text('Anzeige'),
                   onPressed: () async {
                     await showModalBottomSheet(
                         context: context,
@@ -290,111 +280,116 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
             ],
           ),
           SizedBox(height: size.height * 0.05),
-          chartItems.isEmpty
-              ? const NoDataFoundWidget(
-                  suffix: "Eventuell musst du diese Daten erst herunterladen",
-                )
-              : ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: size.height * 0.5,
-                    maxWidth: size.width * 0.9,
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: size.width * 0.01,
-                      vertical: size.height * 0.01,
-                    ),
-                    child: BarChart(
-                      swapAnimationDuration:
-                          const Duration(milliseconds: 350), // Optional
-                      swapAnimationCurve: Curves.decelerate, // Optional
-                      BarChartData(
-                        alignment: BarChartAlignment.spaceEvenly,
-                        maxY: maxDisplayValue.toDouble() +
-                            (maxDisplayValue * 0.05),
-                        minY: 0,
-                        borderData: FlBorderData(show: false),
-                        gridData: FlGridData(show: false),
-                        barGroups: buildGroupData(),
-                        titlesData: FlTitlesData(
-                          rightTitles: AxisTitles(),
-                          leftTitles: AxisTitles(),
-                          topTitles: AxisTitles(),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              reservedSize: 28,
-                              getTitlesWidget: (value, meta) {
-                                String g =
-                                    chartItems.elementAt(value.toInt()).label;
-                                // g = res.length > 15
-                                //     ? g.substring(0, 1)
-                                //     : g.length < 3
-                                //         ? g
-                                //         : g.substring(0, 3);
-                                double w =
-                                    size.width / chartItems.length * 0.08;
-                                num endIndex = g.length > w ? w : g.length;
+          _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(color: rehwildFarbe))
+              : chartItems.isEmpty
+                  ? const NoDataFoundWidget(
+                      suffix:
+                          "Eventuell musst du diese Daten erst herunterladen",
+                    )
+                  : ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: size.height * 0.5,
+                        maxWidth: size.width * 0.9,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: size.width * 0.01,
+                          vertical: size.height * 0.01,
+                        ),
+                        child: BarChart(
+                          swapAnimationDuration:
+                              const Duration(milliseconds: 350), // Optional
+                          swapAnimationCurve: Curves.decelerate, // Optional
+                          BarChartData(
+                            alignment: BarChartAlignment.spaceEvenly,
+                            maxY: maxDisplayValue.toDouble() +
+                                (maxDisplayValue * 0.05),
+                            minY: 0,
+                            borderData: FlBorderData(show: false),
+                            gridData: FlGridData(show: false),
+                            barGroups: buildGroupData(),
+                            titlesData: FlTitlesData(
+                              rightTitles: AxisTitles(),
+                              leftTitles: AxisTitles(),
+                              topTitles: AxisTitles(),
+                              bottomTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 28,
+                                  getTitlesWidget: (value, meta) {
+                                    String g = chartItems
+                                        .elementAt(value.toInt())
+                                        .label;
+                                    // g = res.length > 15
+                                    //     ? g.substring(0, 1)
+                                    //     : g.length < 3
+                                    //         ? g
+                                    //         : g.substring(0, 3);
+                                    double w =
+                                        size.width / chartItems.length * 0.08;
+                                    num endIndex = g.length > w ? w : g.length;
 
-                                g = g.isEmpty
-                                    ? ''
-                                    : g.substring(
-                                        0,
-                                        endIndex < 1 ? 1 : endIndex.toInt(),
-                                      );
-                                return SideTitleWidget(
-                                  axisSide: meta.axisSide,
-                                  child: Text(g),
-                                );
-                              },
+                                    g = g.isEmpty
+                                        ? ''
+                                        : g.substring(
+                                            0,
+                                            endIndex < 1 ? 1 : endIndex.toInt(),
+                                          );
+                                    return SideTitleWidget(
+                                      axisSide: meta.axisSide,
+                                      child: Text(g),
+                                    );
+                                  },
+                                ),
+                              ),
                             ),
+                            barTouchData: BarTouchData(
+                                touchExtraThreshold: EdgeInsets.symmetric(
+                                  horizontal: size.width * 0.05,
+                                  vertical: size.height * 0.05,
+                                ),
+                                touchTooltipData: BarTouchTooltipData(
+                                  fitInsideHorizontally: true,
+                                  tooltipBgColor: Colors.transparent,
+                                  tooltipPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 6),
+                                  tooltipMargin: 0,
+                                  getTooltipItem:
+                                      (group, groupIndex, rod, rodIndex) {
+                                    //print('Working $groupIndex');
+                                    return BarTooltipItem(
+                                      rod.toY.toStringAsFixed(0),
+                                      TextStyle(
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .headline1!
+                                            .color,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                enabled: true,
+                                touchCallback:
+                                    (FlTouchEvent event, pieTouchResponse) {
+                                  setState(() {
+                                    if (!event.isInterestedForInteractions ||
+                                        pieTouchResponse == null ||
+                                        pieTouchResponse.spot == null) {
+                                      touchedIndex = -1;
+                                      return;
+                                    }
+                                    touchedIndex = pieTouchResponse
+                                        .spot!.touchedBarGroupIndex;
+                                  });
+                                }),
+                            // centerSpaceRadius: size.width * 0.15,
+                            // sections: sections,
                           ),
                         ),
-                        barTouchData: BarTouchData(
-                            touchExtraThreshold: EdgeInsets.symmetric(
-                              horizontal: size.width * 0.05,
-                              vertical: size.height * 0.05,
-                            ),
-                            touchTooltipData: BarTouchTooltipData(
-                              fitInsideHorizontally: true,
-                              tooltipBgColor: Colors.transparent,
-                              tooltipPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 6),
-                              tooltipMargin: 0,
-                              getTooltipItem:
-                                  (group, groupIndex, rod, rodIndex) {
-                                //print('Working $groupIndex');
-                                return BarTooltipItem(
-                                  rod.toY.toStringAsFixed(0),
-                                  TextStyle(
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .headline1!
-                                        .color,
-                                  ),
-                                );
-                              },
-                            ),
-                            enabled: true,
-                            touchCallback:
-                                (FlTouchEvent event, pieTouchResponse) {
-                              setState(() {
-                                if (!event.isInterestedForInteractions ||
-                                    pieTouchResponse == null ||
-                                    pieTouchResponse.spot == null) {
-                                  touchedIndex = -1;
-                                  return;
-                                }
-                                touchedIndex =
-                                    pieTouchResponse.spot!.touchedBarGroupIndex;
-                              });
-                            }),
-                        // centerSpaceRadius: size.width * 0.15,
-                        // sections: sections,
                       ),
                     ),
-                  ),
-                ),
           _showLegend ? ChartLegend(items: chartItems) : Container()
         ],
       ),

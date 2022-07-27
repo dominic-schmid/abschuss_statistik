@@ -7,11 +7,14 @@ import 'package:jagdverband_scraper/utils/utils.dart';
 import 'package:jagdverband_scraper/widgets/chart_legend.dart';
 import 'package:jagdverband_scraper/widgets/no_data_found.dart';
 import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../models/filter_chip_data.dart';
 import '../models/kill_entry.dart';
 import '../widgets/chart_app_bar.dart';
+import '../widgets/chip_selector_modal.dart';
 
 class HistoricPieChartScreen extends StatefulWidget {
   const HistoricPieChartScreen({Key? key}) : super(key: key);
@@ -28,7 +31,9 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
 
   int touchedIndex = -1;
 
+  List<Map<String, Object?>> res = [];
   List<ChartItem> chartItems = [];
+  List<FilterChipData> filterChips = [];
 
   bool _isLoading = true;
   bool _showLegend = false;
@@ -59,16 +64,17 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
     }
   }
 
-  getConfig() async {
-    showPerson();
-    await getYearList();
-    await getData();
-  }
-
   @override
   void initState() {
     super.initState();
     getConfig();
+  }
+
+  getConfig() async {
+    showPerson();
+    await getYearList();
+    await getData();
+    resetChips();
   }
 
   getYearList() async {
@@ -102,27 +108,64 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
     GROUP BY ${groupBy['value']}    
     """);
 
-    chartItems = [];
-    for (int i = 0; i < res.length; i++) {
-      var e = res.elementAt(i);
-      String label = e['Gruppierung'] as String;
-      double value = (e['Anzahl'] as int).toDouble();
-
-      Color c = groupBy['value'] == 'wildart'
-          ? KillEntry.getColorFromWildart(e['Gruppierung'] as String)
-          : Colors.primaries[i % Colors.primaries.length];
-
-      chartItems.add(ChartItem(label: label, value: value, color: c));
-    }
+    this.res = res;
 
     if (mounted) setState(() => _isLoading = false);
+  }
+
+  void resetChips() {
+    Set<String> gruppierungen =
+        res.map((e) => e['Gruppierung'] as String).toSet();
+
+    filterChips = [];
+    for (int i = 0; i < gruppierungen.length; i++) {
+      String g = gruppierungen.elementAt(i);
+      Color c = groupBy['value'] == 'wildart'
+          ? KillEntry.getColorFromWildart(g)
+          : Colors.primaries[i % Colors.primaries.length];
+
+      filterChips.add(FilterChipData(label: g, color: c));
+    }
+
+    //     chartItems = [];
+    // for (int i = 0; i < res.length; i++) {
+    //   var e = res.elementAt(i);
+    //   String label = e['Gruppierung'] as String;
+    //   double value = (e['Anzahl'] as int).toDouble();
+
+    //   Color c = groupBy['value'] == 'wildart'
+    //       ? KillEntry.getColorFromWildart(e['Gruppierung'] as String)
+    //       : Colors.primaries[i % Colors.primaries.length];
+
+    //   chartItems.add(ChartItem(label: label, value: value, color: c));
+    // }
   }
 
   List<PieChartSectionData> buildSections() {
     Size size = MediaQuery.of(context).size;
 
-    int sum = 0;
-    chartItems.forEach((e) => sum += e.value.toInt());
+    double sum = 0;
+    chartItems = [];
+
+    Iterable<String> selectedLabels =
+        filterChips.where((e) => e.isSelected).map((e) => e.label);
+
+    var toBuild = res
+        .where((e) => selectedLabels.contains(e['Gruppierung'] as String))
+        .toList();
+
+    for (int i = 0; i < toBuild.length; i++) {
+      String label = toBuild.elementAt(i)['Gruppierung'] as String;
+      double value = (toBuild.elementAt(i)['Anzahl'] as int).toDouble();
+
+      Color c = groupBy['value'] == 'wildart'
+          ? KillEntry.getColorFromWildart(label)
+          : Colors.primaries[i % Colors.primaries.length];
+
+      sum += value;
+
+      chartItems.add(ChartItem(label: label, value: value, color: c));
+    }
 
     return chartItems.map((e) {
       String percentage = (e.value / sum * 100).toStringAsFixed(0);
@@ -166,6 +209,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
     }
 
     Size size = MediaQuery.of(context).size;
+
+    var sections = buildSections();
 
     return Scaffold(
       appBar: ChartAppBar(title: Text(groupBy['key'] as String), actions: [
@@ -219,90 +264,130 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
               ),
             ),
           ),
-          ActionChip(
-              avatar: const CircleAvatar(
-                backgroundColor: Colors.transparent,
-                child: Icon(
-                  Icons.pets_rounded,
-                  color: nichtBekanntFarbe,
-                  size: 18,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: ActionChip(
+                    avatar: const CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      child: Icon(
+                        Icons.pets_rounded,
+                        color: nichtBekanntFarbe,
+                        size: 18,
+                      ),
+                    ),
+                    backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
+                    labelStyle: const TextStyle(color: nichtBekanntFarbe),
+                    label: const Text('Anzeige'),
+                    onPressed: () async {
+                      await showModalBottomSheet(
+                          context: context,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                          ),
+                          builder: (BuildContext context) {
+                            return ValueSelectorModal<String>(
+                              items: List.generate(
+                                groupBys.length,
+                                (index) =>
+                                    groupBys.elementAt(index)['key'] as String,
+                              ),
+                              selectedItem: groupBy['key'] as String,
+                              padding: false,
+                              onSelect: (selected) async {
+                                if (groupBy !=
+                                    groupBys.firstWhere((element) =>
+                                        element['key'] as String == selected)) {
+                                  groupBy = groupBys.firstWhere((element) =>
+                                      element['key'] as String == selected);
+                                  await getData();
+                                  resetChips();
+                                  setState(() {});
+                                }
+                              },
+                            );
+                          });
+                    }),
+              ),
+              Expanded(
+                child: ActionChip(
+                  avatar: const CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    child: Icon(
+                      Icons.filter_alt_rounded,
+                      color: protokollFarbe,
+                      size: 18,
+                    ),
+                  ),
+                  backgroundColor: protokollFarbe.withOpacity(0.25),
+                  labelStyle: const TextStyle(color: protokollFarbe),
+                  label: Text(groupBy['key'] as String),
+                  onPressed: () async {
+                    await showMaterialModalBottomSheet(
+                        context: context,
+                        shape: modalShape,
+                        builder: (BuildContext context) {
+                          return ChipSelectorModal(
+                            title: groupBy['key'] as String,
+                            chips: filterChips,
+                          );
+                        });
+                    if (mounted) setState(() {});
+                  },
                 ),
               ),
-              backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
-              labelStyle: const TextStyle(color: nichtBekanntFarbe),
-              label: Text(groupBy['key'] as String),
-              onPressed: () async {
-                await showModalBottomSheet(
-                    context: context,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
-                    ),
-                    builder: (BuildContext context) {
-                      return ValueSelectorModal<String>(
-                        items: List.generate(
-                          groupBys.length,
-                          (index) => groupBys.elementAt(index)['key'] as String,
-                        ),
-                        selectedItem: groupBy['key'] as String,
-                        padding: false,
-                        onSelect: (selected) async {
-                          if (groupBy !=
-                              groupBys.firstWhere((element) =>
-                                  element['key'] as String == selected)) {
-                            groupBy = groupBys.firstWhere((element) =>
-                                element['key'] as String == selected);
-                            await getData();
-                            setState(() {});
-                          }
-                        },
-                      );
-                    });
-              }),
+            ],
+          ),
           SizedBox(height: size.height * 0.05),
-          chartItems.isEmpty
-              ? const NoDataFoundWidget(
-                  suffix: "Eventuell musst du diese Daten erst herunterladen",
-                )
-              : ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: size.height * 0.5,
-                    maxWidth: size.width * 0.9,
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: size.width * 0.01,
-                      vertical: size.height * 0.01,
-                    ),
-                    child: PieChart(
-                      swapAnimationDuration:
-                          const Duration(milliseconds: 350), // Optional
-                      swapAnimationCurve: Curves.decelerate, // Optional
-                      PieChartData(
-                        startDegreeOffset: 180,
+          _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(color: rehwildFarbe))
+              : sections.isEmpty
+                  ? const NoDataFoundWidget(
+                      suffix:
+                          "Eventuell musst du diese Daten erst herunterladen",
+                    )
+                  : ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: size.height * 0.5,
+                        maxWidth: size.width * 0.9,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: size.width * 0.01,
+                          vertical: size.height * 0.01,
+                        ),
+                        child: PieChart(
+                          swapAnimationDuration:
+                              const Duration(milliseconds: 350), // Optional
+                          swapAnimationCurve: Curves.decelerate, // Optional
+                          PieChartData(
+                            startDegreeOffset: 180,
 
-                        pieTouchData: PieTouchData(touchCallback:
-                            (FlTouchEvent event, pieTouchResponse) {
-                          setState(() {
-                            if (!event.isInterestedForInteractions ||
-                                pieTouchResponse == null ||
-                                pieTouchResponse.touchedSection == null) {
-                              touchedIndex = -1;
-                              return;
-                            }
-                            touchedIndex = pieTouchResponse
-                                .touchedSection!.touchedSectionIndex;
-                          });
-                        }),
-                        sectionsSpace: 2,
-                        centerSpaceRadius: 0, //size.width * 0.15,
-                        sections: buildSections(),
+                            pieTouchData: PieTouchData(touchCallback:
+                                (FlTouchEvent event, pieTouchResponse) {
+                              setState(() {
+                                if (!event.isInterestedForInteractions ||
+                                    pieTouchResponse == null ||
+                                    pieTouchResponse.touchedSection == null) {
+                                  touchedIndex = -1;
+                                  return;
+                                }
+                                touchedIndex = pieTouchResponse
+                                    .touchedSection!.touchedSectionIndex;
+                              });
+                            }),
+                            sectionsSpace: 2,
+                            centerSpaceRadius: 0, //size.width * 0.15,
+                            sections: sections,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
           _showLegend ? ChartLegend(items: chartItems) : Container()
         ],
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'filter_chip_data.dart';
+import '../models/filter_chip_data.dart';
 
 class ChipSelectorModal extends StatefulWidget {
   final List<FilterChipData> chips;

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'filter_chip_data.dart';
-
 class ChartItem {
   final String label;
   final double value;
@@ -21,9 +19,9 @@ class ChartItem {
 
 class ChartLegend extends StatelessWidget {
   final List<ChartItem> items;
-  bool showValues;
+  final bool showValues;
 
-  ChartLegend({Key? key, required this.items, this.showValues = false})
+  const ChartLegend({Key? key, required this.items, this.showValues = false})
       : super(key: key);
 
   @override

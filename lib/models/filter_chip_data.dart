@@ -70,4 +70,9 @@ class FilterChipData {
         color: nichtGefundenFarbe),
     FilterChipData(label: 'nicht bekannt', color: nichtBekanntFarbe),
   ];
+
+  @override
+  String toString() {
+    return '$label ($color) isSelected: $isSelected';
+  }
 }

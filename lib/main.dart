@@ -12,10 +12,11 @@ import 'package:workmanager/workmanager.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
 import 'utils/database_methods.dart';
-import 'kills_screen.dart';
 import 'models/kill_entry.dart';
 import 'models/kill_page.dart';
 import 'utils/providers.dart';
+
+const SEND_NOTIFICATIONS = false;
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
@@ -124,35 +125,27 @@ void main() async {
   final db = SqliteDB();
   await db.initDb();
 
-  initNotifications();
-  //print(await db.countTable() + ' tables');
-  // The top level function, aka callbackDispatche
-  Workmanager().initialize(callbackDispatcher);
+  if (SEND_NOTIFICATIONS) {
+    initNotifications();
+    //print(await db.countTable() + ' tables');
+    // The top level function, aka callbackDispatche
+    Workmanager().initialize(callbackDispatcher);
 
-  // Periodic task registration
-  Workmanager().registerPeriodicTask(
-    "periodic-task-identifier", "updateKills",
-    // When no frequency is provided the default 15 minutes is set.
-    // Minimum frequency is 15 min. Android will automatically change your frequency to 15 min if you have configured a lower frequency.
-    initialDelay: const Duration(seconds: 10),
-    constraints: Constraints(
-      networkType: NetworkType.connected,
-      requiresBatteryNotLow: false,
-      requiresCharging: false,
-      requiresDeviceIdle: false,
-      requiresStorageNotLow: false,
-    ),
-  );
-
-  // Workmanager().registerOneOffTask("task-identifier", "updateKills",
-  //     initialDelay: const Duration(seconds: 10),
-  //     constraints: Constraints(
-  //       networkType: NetworkType.connected,
-  //       requiresBatteryNotLow: false,
-  //       requiresCharging: false,
-  //       requiresDeviceIdle: false,
-  //       requiresStorageNotLow: false,
-  //     ));
+    // Periodic task registration
+    Workmanager().registerPeriodicTask(
+      "periodic-task-identifier", "updateKills",
+      // When no frequency is provided the default 15 minutes is set.
+      // Minimum frequency is 15 min. Android will automatically change your frequency to 15 min if you have configured a lower frequency.
+      initialDelay: const Duration(seconds: 10),
+      constraints: Constraints(
+        networkType: NetworkType.connected,
+        requiresBatteryNotLow: false,
+        requiresCharging: false,
+        requiresDeviceIdle: false,
+        requiresStorageNotLow: false,
+      ),
+    );
+  }
 
   runApp(MyApp(config: config));
 }

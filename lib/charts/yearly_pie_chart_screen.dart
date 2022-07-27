@@ -224,7 +224,7 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
               ),
               backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
               labelStyle: const TextStyle(color: nichtBekanntFarbe),
-              label: Text(groupBy['key'] as String),
+              label: const Text('Anzeige'),
               onPressed: () async {
                 await showModalBottomSheet(
                     context: context,
@@ -256,47 +256,51 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
                     });
               }),
           SizedBox(height: size.height * 0.05),
-          chartItems.isEmpty
-              ? const NoDataFoundWidget(
-                  suffix: "Eventuell musst du diese Daten erst herunterladen",
-                )
-              : ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: size.height * 0.5,
-                    maxWidth: size.width * 0.9,
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: size.width * 0.01,
-                      vertical: size.height * 0.01,
-                    ),
-                    child: PieChart(
-                      swapAnimationDuration:
-                          const Duration(milliseconds: 350), // Optional
-                      swapAnimationCurve: Curves.decelerate, // Optional
-                      PieChartData(
-                        startDegreeOffset: 180,
+          _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(color: rehwildFarbe))
+              : chartItems.isEmpty
+                  ? const NoDataFoundWidget(
+                      suffix:
+                          "Eventuell musst du diese Daten erst herunterladen",
+                    )
+                  : ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: size.height * 0.5,
+                        maxWidth: size.width * 0.9,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: size.width * 0.01,
+                          vertical: size.height * 0.01,
+                        ),
+                        child: PieChart(
+                          swapAnimationDuration:
+                              const Duration(milliseconds: 350), // Optional
+                          swapAnimationCurve: Curves.decelerate, // Optional
+                          PieChartData(
+                            startDegreeOffset: 180,
 
-                        pieTouchData: PieTouchData(touchCallback:
-                            (FlTouchEvent event, pieTouchResponse) {
-                          setState(() {
-                            if (!event.isInterestedForInteractions ||
-                                pieTouchResponse == null ||
-                                pieTouchResponse.touchedSection == null) {
-                              touchedIndex = -1;
-                              return;
-                            }
-                            touchedIndex = pieTouchResponse
-                                .touchedSection!.touchedSectionIndex;
-                          });
-                        }),
-                        sectionsSpace: 2,
-                        centerSpaceRadius: 0, //size.width * 0.15,
-                        sections: buildSections(),
+                            pieTouchData: PieTouchData(touchCallback:
+                                (FlTouchEvent event, pieTouchResponse) {
+                              setState(() {
+                                if (!event.isInterestedForInteractions ||
+                                    pieTouchResponse == null ||
+                                    pieTouchResponse.touchedSection == null) {
+                                  touchedIndex = -1;
+                                  return;
+                                }
+                                touchedIndex = pieTouchResponse
+                                    .touchedSection!.touchedSectionIndex;
+                              });
+                            }),
+                            sectionsSpace: 2,
+                            centerSpaceRadius: 0, //size.width * 0.15,
+                            sections: buildSections(),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
           _showLegend ? ChartLegend(items: chartItems) : Container()
         ],
       ),

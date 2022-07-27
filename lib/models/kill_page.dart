@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
-import 'package:jagdverband_scraper/widgets/filter_chip_data.dart';
+import 'package:jagdverband_scraper/models/filter_chip_data.dart';
 
 import 'kill_entry.dart';
 
