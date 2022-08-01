@@ -2,11 +2,13 @@
     package="com.dominicschmid.jagdstatistik">
 
    <uses-permission android:name="android.permission.INTERNET" />
+  
    <application
         android:label="Jagdstatistik"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAitjSGptIa2zSrUjfqfkXwgdW-MEbxPjU"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

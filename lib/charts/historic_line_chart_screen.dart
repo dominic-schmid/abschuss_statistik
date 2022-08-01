@@ -185,8 +185,8 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
 
     Size size = MediaQuery.of(context).size;
 
-    Iterable<FilterChipData> selectedLineChips =
-        lineChips.where((element) => element.isSelected);
+    // Iterable<FilterChipData> selectedLineChips =
+    //     lineChips.where((element) => element.isSelected);
 
     var lines = buildLines(res);
 
@@ -204,217 +204,231 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
           icon: Icon(_showDots ? Icons.circle_outlined : Icons.linear_scale),
         ),
       ]),
-      body: ListView(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: size.height * 0.035),
-            child: Text(
-              years.start == years.end
-                  ? '${years.start.toInt()}'
-                  : '${years.start.toInt()} - ${years.end.toInt()}',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1,
-                fontSize: size.height * 0.04,
+      body: years.start == years.end
+          ? const Center(
+              child: NoDataFoundWidget(
+                suffix:
+                    'Eventuell hast du erst die Daten von einem Jahr heruntergeladen',
               ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: size.width * 0.033),
-            child: SliderTheme(
-              data: SliderThemeData(
-                activeTickMarkColor: primaryColor,
-                thumbColor: rehwildFarbe,
-                activeTrackColor: rehwildFarbe.withAlpha(180),
-                inactiveTrackColor: rehwildFarbe.withOpacity(0.2),
-                trackHeight: size.height * 0.01,
-                valueIndicatorColor: rehwildFarbe,
-                valueIndicatorTextStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  //color: ,
-                ),
-              ),
-              child: RangeSlider(
-                values: years,
-                labels: RangeLabels(years.start.toInt().toString(),
-                    years.end.toInt().toString()),
-                min: _minYear.toDouble(),
-                max: _maxYear.toDouble(),
-                divisions: _maxYear - _minYear == 0 ? 1 : _maxYear - _minYear,
-                onChanged: (RangeValues values) async {
-                  years = values;
-                  await getData();
-                },
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: ActionChip(
-                  avatar: const CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    child: Icon(
-                      Icons.pets_rounded,
-                      color: nichtBekanntFarbe,
-                      size: 18,
+            )
+          : ListView(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: size.height * 0.035),
+                  child: Text(
+                    years.start == years.end
+                        ? '${years.start.toInt()}'
+                        : '${years.start.toInt()} - ${years.end.toInt()}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                      fontSize: size.height * 0.04,
                     ),
                   ),
-                  backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
-                  labelStyle: const TextStyle(color: nichtBekanntFarbe),
-                  label: const Text('Anzeige'),
-                  onPressed: () async {
-                    await showModalBottomSheet(
-                        context: context,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                        ),
-                        builder: (BuildContext context) {
-                          return ValueSelectorModal<String>(
-                            items: List.generate(
-                              groupBys.length,
-                              (index) =>
-                                  groupBys.elementAt(index)['key'] as String,
-                            ),
-                            selectedItem: groupBy['key'] as String,
-                            padding: false,
-                            onSelect: (selected) async {
-                              if (groupBy !=
-                                  groupBys.firstWhere((element) =>
-                                      element['key'] as String == selected)) {
-                                groupBy = groupBys.firstWhere((element) =>
-                                    element['key'] as String == selected);
-                                await getData();
-                                resetChips();
-                                setState(() {});
-                              }
-                            },
-                          );
-                        });
-                  },
                 ),
-              ),
-              Expanded(
-                child: ActionChip(
-                    avatar: const CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      child: Icon(
-                        Icons.filter_alt_rounded,
-                        color: protokollFarbe,
-                        size: 18,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.033),
+                  child: SliderTheme(
+                    data: SliderThemeData(
+                      activeTickMarkColor: primaryColor,
+                      thumbColor: rehwildFarbe,
+                      activeTrackColor: rehwildFarbe.withAlpha(180),
+                      inactiveTrackColor: rehwildFarbe.withOpacity(0.2),
+                      trackHeight: size.height * 0.01,
+                      valueIndicatorColor: rehwildFarbe,
+                      valueIndicatorTextStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        //color: ,
                       ),
                     ),
-                    backgroundColor: protokollFarbe.withOpacity(0.25),
-                    labelStyle: const TextStyle(color: protokollFarbe),
-                    label: Text(groupBy['key'] as String),
-                    onPressed: () async {
-                      await showMaterialModalBottomSheet(
-                          context: context,
-                          shape: modalShape,
-                          builder: (BuildContext context) {
-                            return ChipSelectorModal(
-                              title: groupBy['key'] as String,
-                              chips: lineChips,
-                            );
-                          });
-                      if (mounted) setState(() {});
-                    }),
-              ),
-            ],
-          ),
-          _isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(color: rehwildFarbe))
-              : lines.isEmpty
-                  ? const NoDataFoundWidget()
-                  : ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxHeight: size.height * 0.5,
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          right: size.width * 0.03,
-                          left: size.width * 0.005,
-                          top: size.height * 0.01,
-                          bottom: size.height * 0.01,
-                        ),
-                        child: LineChart(
-                          swapAnimationDuration:
-                              const Duration(milliseconds: 350), // Optional
-                          swapAnimationCurve: Curves.decelerate, // Optional
-                          LineChartData(
-                            lineBarsData: lines,
-                            //alignment: BarChartAlignment.spaceEvenly,
-                            maxY: maxDisplayValue.toDouble() +
-                                (maxDisplayValue * 0.05),
-                            minY: 0,
-                            // Try to create better padding
-                            minX:
-                                years.start - (0.5 / (years.end - years.start)),
-                            maxX: years.end + (0.5 / (years.end - years.start)),
-                            clipData: FlClipData.all(),
-                            borderData: FlBorderData(show: false),
-                            gridData: FlGridData(show: _showGrid),
-                            titlesData: FlTitlesData(
-                              rightTitles: AxisTitles(
-                                  // sideTitles: SideTitles(
-                                  //   reservedSize: 38,
-                                  //   showTitles: true,
-                                  //   getTitlesWidget: (value, meta) => Container(),
-                                  // ),
-                                  ),
-                              leftTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  reservedSize: 38,
-                                  interval: maxDisplayValue / 4,
-                                  getTitlesWidget: (value, meta) {
-                                    if (value > maxDisplayValue || value == 0) {
-                                      return Container();
-                                    }
-
-                                    return SideTitleWidget(
-                                      axisSide: meta.axisSide,
-                                      child: Text(value.toInt().toString()),
-                                    );
-                                  },
-                                ),
-                              ),
-                              topTitles: AxisTitles(),
-                              bottomTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  reservedSize: 28,
-                                  interval: 1,
-                                  getTitlesWidget: (value, meta) {
-                                    if (value % 1 != 0) {
-                                      return Container(); // Only show actual years
-                                    }
-                                    return SideTitleWidget(
-                                      axisSide: meta.axisSide,
-                                      child: Text(
-                                          (value.toInt() % 100).toString()),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                            lineTouchData: LineTouchData(
-                              touchSpotThreshold:
-                                  size.width * 0.35 / (years.end - years.start),
-                            ),
+                    child: RangeSlider(
+                      values: years,
+                      labels: RangeLabels(years.start.toInt().toString(),
+                          years.end.toInt().toString()),
+                      min: _minYear.toDouble(),
+                      max: _maxYear.toDouble(),
+                      divisions:
+                          _maxYear - _minYear == 0 ? 1 : _maxYear - _minYear,
+                      onChanged: (RangeValues values) async {
+                        years = values;
+                        await getData();
+                      },
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: ActionChip(
+                        avatar: const CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          child: Icon(
+                            Icons.pets_rounded,
+                            color: nichtBekanntFarbe,
+                            size: 18,
                           ),
                         ),
+                        backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
+                        labelStyle: const TextStyle(color: nichtBekanntFarbe),
+                        label: const Text('Anzeige'),
+                        onPressed: () async {
+                          await showModalBottomSheet(
+                              context: context,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                ),
+                              ),
+                              builder: (BuildContext context) {
+                                return ValueSelectorModal<String>(
+                                  items: List.generate(
+                                    groupBys.length,
+                                    (index) => groupBys.elementAt(index)['key']
+                                        as String,
+                                  ),
+                                  selectedItem: groupBy['key'] as String,
+                                  padding: false,
+                                  onSelect: (selected) async {
+                                    if (groupBy !=
+                                        groupBys.firstWhere((element) =>
+                                            element['key'] as String ==
+                                            selected)) {
+                                      groupBy = groupBys.firstWhere((element) =>
+                                          element['key'] as String == selected);
+                                      await getData();
+                                      resetChips();
+                                      setState(() {});
+                                    }
+                                  },
+                                );
+                              });
+                        },
                       ),
                     ),
-          ChartLegend(items: chartItems),
-        ],
-      ),
+                    Expanded(
+                      child: ActionChip(
+                          avatar: const CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            child: Icon(
+                              Icons.filter_alt_rounded,
+                              color: protokollFarbe,
+                              size: 18,
+                            ),
+                          ),
+                          backgroundColor: protokollFarbe.withOpacity(0.25),
+                          labelStyle: const TextStyle(color: protokollFarbe),
+                          label: Text(groupBy['key'] as String),
+                          onPressed: () async {
+                            await showMaterialModalBottomSheet(
+                                context: context,
+                                shape: modalShape,
+                                builder: (BuildContext context) {
+                                  return ChipSelectorModal(
+                                    title: groupBy['key'] as String,
+                                    chips: lineChips,
+                                  );
+                                });
+                            if (mounted) setState(() {});
+                          }),
+                    ),
+                  ],
+                ),
+                _isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(color: rehwildFarbe))
+                    : lines.isEmpty
+                        ? const NoDataFoundWidget()
+                        : ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxHeight: size.height * 0.5,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                right: size.width * 0.03,
+                                left: size.width * 0.005,
+                                top: size.height * 0.01,
+                                bottom: size.height * 0.01,
+                              ),
+                              child: LineChart(
+                                swapAnimationDuration: const Duration(
+                                    milliseconds: 350), // Optional
+                                swapAnimationCurve:
+                                    Curves.decelerate, // Optional
+                                LineChartData(
+                                  lineBarsData: lines,
+                                  //alignment: BarChartAlignment.spaceEvenly,
+                                  maxY: maxDisplayValue.toDouble() +
+                                      (maxDisplayValue * 0.05),
+                                  minY: 0,
+                                  // Try to create better padding
+                                  minX: years.start -
+                                      (0.5 / (years.end - years.start)),
+                                  maxX: years.end +
+                                      (0.5 / (years.end - years.start)),
+                                  clipData: FlClipData.all(),
+                                  borderData: FlBorderData(show: false),
+                                  gridData: FlGridData(show: _showGrid),
+                                  titlesData: FlTitlesData(
+                                    rightTitles: AxisTitles(
+                                        // sideTitles: SideTitles(
+                                        //   reservedSize: 38,
+                                        //   showTitles: true,
+                                        //   getTitlesWidget: (value, meta) => Container(),
+                                        // ),
+                                        ),
+                                    leftTitles: AxisTitles(
+                                      sideTitles: SideTitles(
+                                        showTitles: true,
+                                        reservedSize: 38,
+                                        interval: maxDisplayValue / 4,
+                                        getTitlesWidget: (value, meta) {
+                                          if (value > maxDisplayValue ||
+                                              value == 0) {
+                                            return Container();
+                                          }
+
+                                          return SideTitleWidget(
+                                            axisSide: meta.axisSide,
+                                            child:
+                                                Text(value.toInt().toString()),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    topTitles: AxisTitles(),
+                                    bottomTitles: AxisTitles(
+                                      sideTitles: SideTitles(
+                                        showTitles: true,
+                                        reservedSize: 28,
+                                        interval: 1,
+                                        getTitlesWidget: (value, meta) {
+                                          if (value % 1 != 0) {
+                                            return Container(); // Only show actual years
+                                          }
+                                          return SideTitleWidget(
+                                            axisSide: meta.axisSide,
+                                            child: Text((value.toInt() % 100)
+                                                .toString()),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  lineTouchData: LineTouchData(
+                                    touchSpotThreshold: size.width *
+                                        0.35 /
+                                        (years.end - years.start),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                ChartLegend(items: chartItems),
+              ],
+            ),
     );
   }
 }

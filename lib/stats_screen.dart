@@ -20,7 +20,23 @@ class _StatsScreenState extends State<StatsScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: const ChartAppBar(title: Text('Statistik'), actions: []),
+      appBar: ChartAppBar(title: const Text('Statistik'), actions: [
+        IconButton(
+          onPressed: () {
+            showAlertDialog(
+              title: ' Verwendung',
+              description:
+                  'Um Daten für die Statistiken herunterzuladen, gehe auf die Startseite mit der Abschussliste und klicke auf alle deiner gewünschten Jahre.\n\nDadurch werden diese lokal gespeichert und können für Diagramme verwendet werden!',
+              yesOption: '',
+              noOption: 'Ok',
+              onYes: () {},
+              icon: Icons.help_outline_rounded,
+              context: context,
+            );
+          },
+          icon: const Icon(Icons.help_outline_rounded),
+        ),
+      ]),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -97,16 +113,16 @@ class _StatsScreenState extends State<StatsScreen> {
                       ),
                     ),
                   ),
-                  ChartGridItem(
-                    title: 'Deckung',
-                    assetImage: 'assets/area-chart.png',
-                    backgroundColor: verkaufFarbe,
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const HistoricLineChartScreen(),
-                      ),
-                    ),
-                  ),
+                  // ChartGridItem(
+                  //   title: 'Deckung',
+                  //   assetImage: 'assets/area-chart.png',
+                  //   backgroundColor: verkaufFarbe,
+                  //   onTap: () => Navigator.of(context).push(
+                  //     MaterialPageRoute(
+                  //       builder: (context) => const HistoricLineChartScreen(),
+                  //     ),
+                  //   ),
+                  // ),
                   ChartGridItem(
                     title: 'Verlauf',
                     assetImage: 'assets/increase-line.png',

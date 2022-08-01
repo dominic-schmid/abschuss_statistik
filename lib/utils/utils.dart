@@ -185,4 +185,4 @@ const ShapeBorder modalShape = RoundedRectangleBorder(
   ),
 );
 
-const String appVersion = "1.0.1";
+const String appVersion = "1.2.0";

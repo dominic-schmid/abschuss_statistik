@@ -44,6 +44,8 @@ class SqliteDB {
         verwendung $textType,
         ursprungszeichen $textType,
         oertlichkeit $textType,
+        gpsLat REAL,
+        gpsLon REAL,
         datetime $textType,
         aufseherDatum TEXT,
         aufseherZeit TEXT,
@@ -81,6 +83,8 @@ class SqliteDB {
               'verwendung': k.verwendung,
               'ursprungszeichen': k.ursprungszeichen,
               'oertlichkeit': k.oertlichkeit,
+              'gpsLat': k.gpsLat,
+              'gpsLon': k.gpsLon,
               'datetime': k.datetime.toIso8601String(),
               'aufseherDatum':
                   k.jagdaufseher == null ? null : k.jagdaufseher!['datum'],

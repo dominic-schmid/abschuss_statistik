@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:intl/intl.dart';
@@ -11,13 +13,14 @@ class KillEntry {
 
   final String alter;
   final String alterw;
-  final double? gewicht;
+  final double gewicht;
   final String erleger;
   final String begleiter;
   final String ursache;
   final String verwendung;
   final String ursprungszeichen;
   final String oertlichkeit;
+  final double? gpsLat, gpsLon;
   final Map<String, String>? jagdaufseher;
   DateTime datetime = DateTime.now();
   IconData icon = Icons.question_mark;
@@ -39,6 +42,8 @@ class KillEntry {
     this.begleiter = "",
     this.ursprungszeichen = "",
     this.jagdaufseher,
+    this.gpsLat = 0,
+    this.gpsLon = 0,
   }) {
     icon = getUrsacheIcon(ursache);
     color = getColorFromWildart(wildart);
@@ -128,6 +133,21 @@ class KillEntry {
       int mi = int.parse(zeit.substring(3));
       DateTime datetime = DateTime(yy, mo, dd, hh24, mi);
 
+      var map = cols.elementAt(13).querySelector('a');
+
+      double? lat, lon;
+      if (map != null) {
+        LinkedHashMap<Object, String>? attrs = map.attributes;
+        String tmpLat = attrs.containsKey('data-gps-lat')
+            ? attrs['data-gps-lat'] as String
+            : "";
+        String tmpLon = attrs.containsKey('data-gps-long')
+            ? attrs['data-gps-long'] as String
+            : "";
+        lat = double.tryParse(tmpLat);
+        lon = double.tryParse(tmpLon);
+      }
+
       return KillEntry(
         nummer: int.parse(cols.elementAt(0).text), // Nummer
         wildart: cols.elementAt(1).text, // Wildart
@@ -135,14 +155,14 @@ class KillEntry {
         datetime: datetime,
         ursache: cols.elementAt(10).text, // Ursache
         verwendung: cols.elementAt(11).text, // Verwendung
-        oertlichkeit: cols
-            .elementAt(13)
-            .text
-            .replaceFirst('Auf Karte anzeigen', ''), // Örtlichkeit
+        oertlichkeit:
+            cols.elementAt(13).text.replaceFirst('Auf Karte anzeigen', ''),
+        gpsLat: lat, // Örtlichkeit
+        gpsLon: lon,
         hegeinGebietRevierteil: cols.elementAt(3).text,
         alter: cols.elementAt(5).text,
         alterw: cols.elementAt(6).text,
-        gewicht: double.tryParse(cols.elementAt(7).text),
+        gewicht: double.tryParse(cols.elementAt(7).text) ?? 0,
         erleger: cols.elementAt(8).text,
         begleiter: cols.elementAt(9).text,
         ursprungszeichen: cols.elementAt(12).text,
@@ -171,10 +191,12 @@ class KillEntry {
       ursache: m['ursache'] as String, // Ursache
       verwendung: m['verwendung'] as String, // Verwendung
       oertlichkeit: m['oertlichkeit'] as String, // Örtlichkeit
+      gpsLat: m['gpsLat'] as double?,
+      gpsLon: m['gpsLon'] as double?,
       hegeinGebietRevierteil: m['hegeinGebietRevierteil'] as String,
       alter: m['alterm'] as String,
       alterw: m['alterw'] as String,
-      gewicht: m['gewicht'] as double?,
+      gewicht: m['gewicht'] as double,
       erleger: m['erleger'] as String,
       begleiter: m['begleiter'] as String,
       ursprungszeichen: m['ursprungszeichen'] as String,
@@ -216,6 +238,9 @@ class KillEntry {
     String b = begleiter.isEmpty || begleiter.contains('*')
         ? ''
         : '\nBegleiter: $begleiter';
+
+    // String latLong =
+    //     gpsLat == null || gpsLon == null ? '' : 'Koordinaten: $gpsLat, $gpsLon';
     return "$wildart $geschlecht,\ngeschossen $oertlichkeit am $datum um $zeit\n\nNummer: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\nGebiet: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\nAlter: $alterString'}${gewicht == null ? '' : '\nGewicht: $gewicht kg'}$e$b${verwendung.isEmpty ? '' : '\nVerwendung: $verwendung'}${ursprungszeichen.isEmpty ? '' : '\nUrsprungszeichen: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}"; //${} ${} ${} ${} ${} ${} ${} ${}""";
   }
 }

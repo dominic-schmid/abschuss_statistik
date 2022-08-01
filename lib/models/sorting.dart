@@ -114,7 +114,7 @@ class Sorting {
       case SortType.gewicht:
         if (ascending) {
           kills.sort((a, b) {
-            if (a.gewicht != null && b.gewicht != null) {
+            /*if (a.gewicht != null && b.gewicht != null) {
               return a.gewicht!.compareTo(b.gewicht!);
             } else if (a.gewicht != null) {
               return 1;
@@ -122,11 +122,12 @@ class Sorting {
               return -1;
             } else {
               return 0;
-            }
+            }*/
+            return a.gewicht.compareTo(b.gewicht);
           });
         } else {
           kills.sort((a, b) {
-            if (a.gewicht != null && b.gewicht != null) {
+            /*if (a.gewicht != null && b.gewicht != null) {
               return b.gewicht!.compareTo(a.gewicht!);
             } else if (a.gewicht != null) {
               return -1;
@@ -134,7 +135,8 @@ class Sorting {
               return 1;
             } else {
               return 0;
-            }
+            }*/
+            return b.gewicht.compareTo(a.gewicht);
           });
         }
         break;

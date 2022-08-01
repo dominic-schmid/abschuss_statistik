@@ -2,7 +2,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/add_kill_screen.dart';
+import 'package:jagdverband_scraper/all_map_screen.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
+import 'package:jagdverband_scraper/map_screen.dart';
 import 'package:jagdverband_scraper/utils/database_methods.dart';
 import 'package:jagdverband_scraper/models/kill_page.dart';
 import 'package:jagdverband_scraper/utils/request_methods.dart';
@@ -43,6 +45,7 @@ class _KillsScreenState extends State<KillsScreen>
 
   KillPage? page;
   List<KillEntry> filteredKills = [];
+  List<KillEntry> newKills = [];
 
   List<FilterChipData> wildChips = [];
   List<FilterChipData> ursacheChips = [];
@@ -195,7 +198,12 @@ class _KillsScreenState extends State<KillsScreen>
               this.page!.jahr == year &&
               this.page!.kills.isNotEmpty &&
               page.kills.isNotEmpty) {
-            showSnackBar('Neue Abschüsse', context);
+            newKills = page.kills.where((k) {
+              return !this.page!.kills.contains(k);
+            }).toList();
+
+            showSnackBar(
+                '${newKills.length} neue Abschüsse gefunden!', context);
             print('Changes found!');
           }
 
@@ -203,7 +211,7 @@ class _KillsScreenState extends State<KillsScreen>
           wildChips = page.wildarten;
           ursacheChips = page.ursachen;
           verwendungChips = page.verwendungen;
-          //setState(() {});
+          setState(() {});
           print('Using HTTP page');
         } else {
           print('No changes found');
@@ -255,7 +263,16 @@ class _KillsScreenState extends State<KillsScreen>
         scrolledUnderElevation: 0,
         title: _showSearch
             ? buildToolbarSearchbar()
-            : Text(page == null ? 'Revier' : page!.revierName),
+            : InkWell(
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => AllMapScreen(page: page!))),
+                child: Row(
+                  children: [
+                    const Icon(Icons.map_rounded),
+                    const SizedBox(width: 4),
+                    Text(page == null ? 'Revier' : page!.revierName),
+                  ],
+                )),
         //backgroundColor: Colors.green,
         actions: buildActionButtons(),
       ),
@@ -355,7 +372,7 @@ class _KillsScreenState extends State<KillsScreen>
         decoration: InputDecoration(
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
-          hintText: '${page!.kills.length} Abschüsse filtern',
+          hintText: '${filteredKills.length} Abschüsse filtern',
         ),
         onChanged: (query) => setState(() {}),
       ),
@@ -691,6 +708,8 @@ class _KillsScreenState extends State<KillsScreen>
                   return KillListEntry(
                     key: Key(k.key),
                     kill: k,
+                    initiallyExpanded:
+                        newKills.isEmpty ? false : newKills.contains(k),
                     showPerson: showPerson,
                     revier: page!.revierName,
                   );
@@ -715,12 +734,14 @@ class KillListEntry extends StatefulWidget {
   final KillEntry kill;
   final bool showPerson;
   final String revier;
+  final bool initiallyExpanded;
 
   const KillListEntry({
     Key? key,
     required this.kill,
     required this.showPerson,
     this.revier = "",
+    this.initiallyExpanded = false,
   }) : super(key: key);
 
   @override
@@ -745,6 +766,48 @@ class KillListEntryState extends State<KillListEntry> {
 
     String date = DateFormat('dd.MM.yy').format(k.datetime);
     String time = DateFormat('kk:mm').format(k.datetime);
+
+    List<Widget> iconButtons = [
+      IconButton(
+        onPressed: () {
+          Clipboard.setData(ClipboardData(text: k.toString()));
+          showSnackBar('In Zwischenablage kopiert!', context);
+        },
+        icon: const Icon(Icons.copy_rounded, color: primaryColor),
+      ),
+      IconButton(
+        onPressed: () async {
+          final box =
+              context.findRenderObject() as RenderBox?; // Needed for iPad
+
+          await Share.share(
+            'Sieh dir diesen Abschuss in ${widget.revier} an!\n${k.toString()}',
+            subject: 'Sieh dir diesen Abschuss in ${widget.revier} an!',
+            sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+          );
+        },
+        icon: const Icon(Icons.share, color: primaryColor),
+      ),
+    ];
+
+    if (k.gpsLat != null && k.gpsLon != null) {
+      iconButtons.add(
+        IconButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => MapScreen(kill: k),
+              ),
+            );
+          },
+          icon: const Icon(
+            Icons.map_rounded,
+            color: primaryColor,
+          ),
+        ),
+      );
+    }
+
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: size.width * 0.05, vertical: size.height * 0.005),
@@ -762,6 +825,7 @@ class KillListEntryState extends State<KillListEntry> {
           child: ExpansionTile(
             iconColor: primaryColor,
             collapsedIconColor: primaryColor,
+            initiallyExpanded: widget.initiallyExpanded,
             leading: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -856,7 +920,7 @@ class KillListEntryState extends State<KillListEntry> {
               ExpandedChildKillEntry(
                 icon: Icons.scale,
                 title: 'Gewicht',
-                value: k.gewicht == null ? null : '${k.gewicht} kg',
+                value: k.gewicht == 0 ? null : '${k.gewicht} kg',
               ),
               widget.showPerson &&
                       k.ursache != 'Fallwild' &&
@@ -896,29 +960,7 @@ class KillListEntryState extends State<KillListEntry> {
               SizedBox(width: double.infinity, height: size.height * 0.0025),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: k.toString()));
-                      showSnackBar('In Zwischenablage kopiert!', context);
-                    },
-                    icon: const Icon(Icons.copy_rounded, color: primaryColor),
-                  ),
-                  IconButton(
-                      onPressed: () async {
-                        final box = context.findRenderObject()
-                            as RenderBox?; // Needed for iPad
-
-                        await Share.share(
-                          'Sieh dir diesen Abschuss in ${widget.revier} an!\n${k.toString()}',
-                          subject:
-                              'Sieh dir diesen Abschuss in ${widget.revier} an!',
-                          sharePositionOrigin:
-                              box!.localToGlobal(Offset.zero) & box.size,
-                        );
-                      },
-                      icon: const Icon(Icons.share, color: primaryColor)),
-                ],
+                children: iconButtons,
               ),
             ],
           ),

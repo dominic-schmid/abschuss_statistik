@@ -1,12 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:jagdverband_scraper/utils/database_methods.dart';
-import 'package:jagdverband_scraper/models/kill_entry.dart';
 import 'package:jagdverband_scraper/models/kill_page.dart';
 import 'package:jagdverband_scraper/utils/utils.dart';
-import 'package:path/path.dart';
 import 'package:requests/requests.dart';
-import 'package:sqflite/sqflite.dart';
 
 class RequestMethods {
   static const String _baseURL = 'https://stat.jagdverband.it/index.php';
