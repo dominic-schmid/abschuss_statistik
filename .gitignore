@@ -45,7 +45,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-# API Keys
-android/app/src/main/AndroidManifest.xml
-ios/Runner/AppDelegate.swift
