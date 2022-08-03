@@ -59,7 +59,8 @@ class _StatsScreenState extends State<StatsScreen> {
                   ChartGridItem(
                     title: 'Summe',
                     assetImage: 'assets/pie-chart.png',
-                    backgroundColor: gamswildFarbe.withAlpha(215),
+                    backgroundColor:
+                        gamswildFarbe.withAlpha(215).withOpacity(0.66),
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const YearlyPieChartScreen(),
@@ -69,7 +70,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   ChartGridItem(
                     title: 'Verteilung',
                     assetImage: 'assets/bar-graph.png',
-                    backgroundColor: schneehaseFarbe,
+                    backgroundColor: schneehaseFarbe.withOpacity(0.66),
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const YearlyBarChartScreen(),
@@ -79,7 +80,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 ],
               ),
             ),
-            SizedBox(height: size.height * 0.025),
+            SizedBox(height: size.height * 0.02),
             Text(
               'Historisch',
               style: Theme.of(context).primaryTextTheme.titleLarge,

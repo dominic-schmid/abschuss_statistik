@@ -35,6 +35,8 @@ class _AllMapScreenState extends State<AllMapScreen> {
   late LatLng kLocation;
   late CameraPosition originCamPosition;
   final Set<Marker> _markers = <Marker>{};
+  List<FilterChipData> wildChips = [];
+
   MapType _currentMapType = MapType.hybrid;
   Uint8List markerBytes = Uint8List(0);
 
@@ -96,7 +98,7 @@ class _AllMapScreenState extends State<AllMapScreen> {
                       yesOption: '',
                       noOption: 'Ok',
                       onYes: () {},
-                      icon: Icons.info,
+                      icon: k.icon,
                       context: context,
                     ),
                 snippet:
@@ -126,57 +128,173 @@ class _AllMapScreenState extends State<AllMapScreen> {
     });
   }
 
-  List<FilterChipData> wildChips = [];
-
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
-      appBar:
-          ChartAppBar(title: Text('${_markers.length} Abschüsse'), actions: [
-        IconButton(
-            onPressed: toggleMapType, icon: const Icon(Icons.map_rounded)),
-        IconButton(
-          onPressed: () async {
-            await showMaterialModalBottomSheet(
-                context: context,
-                shape: modalShape,
-                builder: (BuildContext context) {
-                  return ChipSelectorModal(
-                    title: 'Wildarten',
-                    chips: wildChips,
-                  );
-                });
-            rebuildMarkers();
-            if (mounted) setState(() {});
-            _goToOrigin();
-          },
-          icon: widget.page.wildarten.length ==
-                  wildChips.where((e) => e.isSelected).length
-              ? Icon(Icons.filter_alt)
-              : Icon(Icons.filter_alt_off_rounded),
-        )
-      ]),
+      // appBar:
+      //     ChartAppBar(title: Text('${_markers.length} Abschüsse'), actions: [
+      //   IconButton(
+      //       onPressed: toggleMapType, icon: const Icon(Icons.map_rounded)),
+      //   IconButton(
+      //     onPressed: () async {
+      //       await showMaterialModalBottomSheet(
+      //           context: context,
+      //           shape: modalShape,
+      //           builder: (BuildContext context) {
+      //             return ChipSelectorModal(
+      //               title: 'Wildarten',
+      //               chips: wildChips,
+      //             );
+      //           });
+      //       rebuildMarkers();
+      //       if (mounted) setState(() {});
+      //       _goToOrigin();
+      //     },
+      //     icon: widget.page.wildarten.length ==
+      //             wildChips.where((e) => e.isSelected).length
+      //         ? Icon(Icons.filter_alt)
+      //         : Icon(Icons.filter_alt_off_rounded),
+      //   )
+      // ]),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(
               color: Colors.green,
             ))
-          : GoogleMap(
-              mapType: _currentMapType,
-              zoomControlsEnabled: false,
-              mapToolbarEnabled: false,
-              initialCameraPosition: originCamPosition,
-              markers: _markers,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-                //createMarkerIcon();
-              },
+          : SafeArea(
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: GoogleMap(
+                      mapType: _currentMapType,
+                      zoomControlsEnabled: false,
+                      mapToolbarEnabled: false,
+                      initialCameraPosition: originCamPosition,
+                      markers: _markers,
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller.complete(controller);
+                        //createMarkerIcon();
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    top: size.height * 0.026,
+                    left: size.width * 0.05,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 2,
+                            blurRadius: 14,
+                            offset: const Offset(
+                                0, 0), // changes position of shadow
+                          ),
+                        ],
+                        color: Theme.of(context)
+                            .scaffoldBackgroundColor, //.withOpacity(0.8),
+                      ),
+                      child: InkWell(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              icon: const Icon(Icons.arrow_back_rounded),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(right: size.width * 0.05),
+                              child: Text('${_markers.length} Abschüsse'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: size.height * 0.026,
+                    right: size.width * 0.05,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 2,
+                            blurRadius: 14,
+                            offset: const Offset(
+                                0, 0), // changes position of shadow
+                          ),
+                        ],
+                        color: rehwildFarbe,
+                      ),
+                      child: IconButton(
+                        onPressed: () async {
+                          await showMaterialModalBottomSheet(
+                              context: context,
+                              shape: modalShape,
+                              builder: (BuildContext context) {
+                                return ChipSelectorModal(
+                                  title: 'Wildarten',
+                                  chips: wildChips,
+                                );
+                              });
+                          rebuildMarkers();
+                          if (mounted) setState(() {});
+                          _goToOrigin();
+                        },
+                        icon: widget.page.wildarten.length ==
+                                wildChips.where((e) => e.isSelected).length
+                            ? const Icon(
+                                Icons.filter_alt,
+                                color: primaryColor,
+                              )
+                            : const Icon(
+                                Icons.filter_alt_off_rounded,
+                                color: primaryColor,
+                              ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: size.height * 0.026,
+                    right: size.width * 0.225,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 2,
+                            blurRadius: 14,
+                            offset: const Offset(
+                                0, 0), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: IconButton(
+                        onPressed: toggleMapType,
+                        icon: const Icon(Icons.map_rounded),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
       floatingActionButton: _isLoading
           ? Container()
           : FloatingActionButton.extended(
               onPressed: _goToOrigin,
-              label: const Text('Anfangsposition'),
+              backgroundColor: rehwildFarbe,
+              foregroundColor: Colors.white,
+              label: const Text(
+                'Anfangsposition',
+              ),
               icon: const Icon(Icons.restore_rounded),
             ),
     );
@@ -184,6 +302,7 @@ class _AllMapScreenState extends State<AllMapScreen> {
 
   Future<void> _goToOrigin() async {
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(originCamPosition));
+    await controller
+        .animateCamera(CameraUpdate.newCameraPosition(originCamPosition));
   }
 }

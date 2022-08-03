@@ -76,7 +76,7 @@ class _MapScreenState extends State<MapScreen> {
                   yesOption: '',
                   noOption: 'Ok',
                   onYes: () {},
-                  icon: Icons.info,
+                  icon: widget.kill.icon,
                   context: context,
                 ),
             snippet:
@@ -99,34 +99,104 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: ChartAppBar(
-          title: Text('Abschuss #${widget.kill.nummer}'),
-          actions: [
-            IconButton(
-                onPressed: toggleMapType, icon: const Icon(Icons.map_rounded))
-          ]),
+      // appBar: ChartAppBar(
+      //     title: Text('Abschuss #${widget.kill.nummer}'),
+      //     actions: [
+      //       IconButton(
+      //           onPressed: toggleMapType, icon: const Icon(Icons.map_rounded))
+      //     ]),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(
               color: Colors.green,
             ))
-          : GoogleMap(
-              mapType: _currentMapType,
-              zoomControlsEnabled: false,
-              mapToolbarEnabled: false,
-              initialCameraPosition: kCamPosition,
-              markers: _markers,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-                //createMarkerIcon();
-              },
+          : SafeArea(
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: GoogleMap(
+                      mapType: _currentMapType,
+                      zoomControlsEnabled: false,
+                      mapToolbarEnabled: false,
+                      initialCameraPosition: kCamPosition,
+                      markers: _markers,
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller.complete(controller);
+                        //createMarkerIcon();
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    top: size.height * 0.026,
+                    left: size.width * 0.05,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 2,
+                            blurRadius: 14,
+                            offset: const Offset(
+                                0, 0), // changes position of shadow
+                          ),
+                        ],
+                        color: Theme.of(context)
+                            .scaffoldBackgroundColor, //.withOpacity(0.8),
+                      ),
+                      child: InkWell(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              icon: const Icon(Icons.arrow_back_rounded),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(right: size.width * 0.05),
+                              child: Text('#${widget.kill.nummer}'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: size.height * 0.026,
+                    right: size.width * 0.05,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 2,
+                            blurRadius: 14,
+                            offset: const Offset(
+                                0, 0), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: IconButton(
+                        onPressed: toggleMapType,
+                        icon: const Icon(Icons.map_rounded),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
       floatingActionButton: _isLoading
           ? Container()
           : FloatingActionButton.extended(
               onPressed: _goToOrigin,
-              label: const Text('Zurück zum Abschuss'),
+              backgroundColor: rehwildFarbe,
+              foregroundColor: Colors.white,
+              label: const Text('Anfangsposition'),
               icon: const Icon(Icons.restore_rounded),
             ),
     );
