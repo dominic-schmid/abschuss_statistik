@@ -35,6 +35,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
   List<Map<String, Object?>> res = [];
   List<ChartItem> chartItems = [];
   List<FilterChipData> filterChips = [];
+  List<BarChartGroupData> groupData = [];
+
   bool _isLoading = true;
 
   Map<String, String> groupBy = {
@@ -209,7 +211,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
 
     Size size = MediaQuery.of(context).size;
 
-    var bars = buildGroupData();
+    groupData.clear();
+    groupData.addAll(buildGroupData());
 
     return Scaffold(
       appBar: ChartAppBar(title: Text(groupBy['key'] as String), actions: [
@@ -355,7 +358,7 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
           _isLoading
               ? const Center(
                   child: CircularProgressIndicator(color: rehwildFarbe))
-              : bars.isEmpty
+              : groupData.isEmpty
                   ? const NoDataFoundWidget()
                   : ConstrainedBox(
                       constraints: BoxConstraints(
@@ -378,7 +381,7 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
                             minY: 0,
                             borderData: FlBorderData(show: false),
                             gridData: FlGridData(show: false),
-                            barGroups: bars,
+                            barGroups: groupData,
                             titlesData: FlTitlesData(
                               rightTitles: AxisTitles(),
                               leftTitles: AxisTitles(),

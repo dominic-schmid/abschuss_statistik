@@ -9,8 +9,11 @@ import 'package:intl/intl.dart';
 import 'package:jagdverband_scraper/models/kill_entry.dart';
 import 'package:jagdverband_scraper/utils/utils.dart';
 import 'package:jagdverband_scraper/widgets/chart_app_bar.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import 'models/filter_chip_data.dart';
 import 'models/kill_page.dart';
+import 'widgets/chip_selector_modal.dart';
 
 class AllMapScreen extends StatefulWidget {
   final KillPage page;
@@ -33,10 +36,12 @@ class _AllMapScreenState extends State<AllMapScreen> {
   late CameraPosition originCamPosition;
   final Set<Marker> _markers = <Marker>{};
   MapType _currentMapType = MapType.hybrid;
+  Uint8List markerBytes = Uint8List(0);
 
   @override
   void initState() {
     super.initState();
+    wildChips = widget.page.wildarten;
     initMap();
   }
 
@@ -53,15 +58,25 @@ class _AllMapScreenState extends State<AllMapScreen> {
   }
 
   void initMap() async {
-    var bytes =
+    markerBytes =
         await getBytesFromAsset(path: 'assets/location-marker.png', width: 125);
+    rebuildMarkers();
+    setState(() => _isLoading = false);
+  }
 
+  rebuildMarkers() {
+    _markers.clear();
     double avgLat = 0;
     double avgLon = 0;
     int markerCount = 0;
 
     for (KillEntry k in widget.page.kills) {
-      if (k.gpsLat != null && k.gpsLon != null) {
+      if (k.gpsLat != null &&
+          k.gpsLon != null &&
+          wildChips
+              .where((e) => e.isSelected)
+              .map((e) => e.label)
+              .contains(k.wildart)) {
         avgLat += k.gpsLat!;
         avgLon += k.gpsLon!;
         markerCount++;
@@ -70,7 +85,9 @@ class _AllMapScreenState extends State<AllMapScreen> {
           Marker(
             markerId: MarkerId(k.key),
             position: LatLng(k.gpsLat!, k.gpsLon!),
-            icon: BitmapDescriptor.fromBytes(bytes),
+            //icon: BitmapDescriptor.fromBytes(markerBytes),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                KillEntry.getMarkerHueFromWildart(k.wildart)),
             infoWindow: InfoWindow(
                 title: '${k.wildart} (${k.geschlecht})',
                 onTap: () => showAlertDialog(
@@ -89,14 +106,14 @@ class _AllMapScreenState extends State<AllMapScreen> {
       }
     }
 
-    originCamPosition = CameraPosition(
-      target: LatLng(avgLat / markerCount, avgLon / markerCount),
-      bearing: cameraBearing,
-      tilt: cameraTilt,
-      zoom: cameraZoom,
-    );
-
-    setState(() => _isLoading = false);
+    if (_markers.isNotEmpty) {
+      originCamPosition = CameraPosition(
+        target: LatLng(avgLat / markerCount, avgLon / markerCount),
+        bearing: cameraBearing,
+        tilt: cameraTilt,
+        zoom: cameraZoom,
+      );
+    }
   }
 
   toggleMapType() {
@@ -109,15 +126,36 @@ class _AllMapScreenState extends State<AllMapScreen> {
     });
   }
 
+  List<FilterChipData> wildChips = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ChartAppBar(
-          title: Text('Abschüsse ${widget.page.revierName}'),
-          actions: [
-            IconButton(
-                onPressed: toggleMapType, icon: const Icon(Icons.map_rounded))
-          ]),
+      appBar:
+          ChartAppBar(title: Text('${_markers.length} Abschüsse'), actions: [
+        IconButton(
+            onPressed: toggleMapType, icon: const Icon(Icons.map_rounded)),
+        IconButton(
+          onPressed: () async {
+            await showMaterialModalBottomSheet(
+                context: context,
+                shape: modalShape,
+                builder: (BuildContext context) {
+                  return ChipSelectorModal(
+                    title: 'Wildarten',
+                    chips: wildChips,
+                  );
+                });
+            rebuildMarkers();
+            if (mounted) setState(() {});
+            _goToOrigin();
+          },
+          icon: widget.page.wildarten.length ==
+                  wildChips.where((e) => e.isSelected).length
+              ? Icon(Icons.filter_alt)
+              : Icon(Icons.filter_alt_off_rounded),
+        )
+      ]),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(

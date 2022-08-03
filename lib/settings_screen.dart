@@ -39,8 +39,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     Color bg = Theme.of(context).scaffoldBackgroundColor;
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         foregroundColor: Theme.of(context).textTheme.headline1!.color,
         backgroundColor: bg,
         title: const Text('Einstellungen'),
@@ -176,9 +178,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                                 title: const Text('an Speck spendieren'),
                               ),
+                              SettingsTile(
+                                onPressed: (value) => showAboutDialog(
+                                    context: context,
+                                    applicationIcon: ImageIcon(
+                                      const AssetImage(
+                                        'assets/ic_launcher_adaptive_fore.png',
+                                      ),
+                                      size: size.width * 0.1,
+                                    ),
+                                    applicationName: 'Jagdstatistik',
+                                    applicationVersion: 'Version $appVersion',
+                                    applicationLegalese:
+                                        'Dominic Schmid © 2022'),
+                                leading:
+                                    const Icon(Icons.app_registration_rounded),
+                                title: const Text('Lizenzen'),
+                              ),
                             ],
                           )
-                          // TODO UNCOMMENT IF SHAMELESS
                         ],
                       ),
                     ),

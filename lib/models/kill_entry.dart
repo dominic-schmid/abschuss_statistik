@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:intl/intl.dart';
 import 'package:jagdverband_scraper/utils/utils.dart';
@@ -47,6 +48,53 @@ class KillEntry {
   }) {
     icon = getUrsacheIcon(ursache);
     color = getColorFromWildart(wildart);
+  }
+
+  static double getMarkerHueFromWildart(String wildart) {
+    double color = 0;
+
+    switch (wildart) {
+      case 'Rehwild':
+        color = BitmapDescriptor.hueGreen;
+        break;
+      case 'Rotwild':
+        color = BitmapDescriptor.hueRed;
+        break;
+      case 'Gamswild':
+        color = BitmapDescriptor.hueCyan;
+        break;
+      case 'Steinwild':
+        color = BitmapDescriptor.hueYellow; // special - yellow;
+        break;
+      case 'Schwarzwild':
+        color = BitmapDescriptor.hueYellow; // special - yellow
+        break;
+      case 'Spielhahn':
+        color = BitmapDescriptor.hueOrange;
+        break;
+      case 'Steinhuhn':
+        color = BitmapDescriptor.hueAzure;
+        break;
+      case 'Schneehuhn':
+        color = BitmapDescriptor.hueViolet;
+        break;
+      case 'Murmeltier':
+        color = BitmapDescriptor.hueRose;
+        break;
+      case 'Dachs':
+        color = BitmapDescriptor.hueYellow; // special - yellow;
+        break;
+      case 'Fuchs':
+        color = BitmapDescriptor.hueOrange;
+        break;
+      case 'Schneehase':
+        color = BitmapDescriptor.hueViolet; // Duplicate
+        break;
+      case 'Andere Wildart':
+        color = BitmapDescriptor.hueBlue;
+        break;
+    }
+    return color;
   }
 
   static Color getColorFromWildart(String wildart) {
@@ -241,6 +289,6 @@ class KillEntry {
 
     // String latLong =
     //     gpsLat == null || gpsLon == null ? '' : 'Koordinaten: $gpsLat, $gpsLon';
-    return "$wildart $geschlecht,\ngeschossen $oertlichkeit am $datum um $zeit\n\nNummer: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\nGebiet: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\nAlter: $alterString'}${gewicht == null ? '' : '\nGewicht: $gewicht kg'}$e$b${verwendung.isEmpty ? '' : '\nVerwendung: $verwendung'}${ursprungszeichen.isEmpty ? '' : '\nUrsprungszeichen: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}"; //${} ${} ${} ${} ${} ${} ${} ${}""";
+    return "$wildart $geschlecht, geschossen $oertlichkeit am $datum um $zeit\nNummer: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\nGebiet: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\nAlter: $alterString'}${gewicht == 0 ? '' : '\nGewicht: $gewicht kg'}$e$b${verwendung.isEmpty ? '' : '\nVerwendung: $verwendung'}${ursprungszeichen.isEmpty ? '' : '\nUrsprungszeichen: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}"; //${} ${} ${} ${} ${} ${} ${} ${}""";
   }
 }

@@ -31,6 +31,7 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
   int touchedIndex = -1;
 
   List<ChartItem> chartItems = [];
+  List<BarChartGroupData> groupData = [];
   bool _isLoading = true;
   bool _showLegend = false;
 
@@ -171,6 +172,8 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
     }
 
     Size size = MediaQuery.of(context).size;
+    groupData.clear();
+    groupData.addAll(buildGroupData());
 
     return Scaffold(
       appBar: ChartAppBar(title: Text(groupBy['key'] as String), actions: [
@@ -309,7 +312,7 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
                             minY: 0,
                             borderData: FlBorderData(show: false),
                             gridData: FlGridData(show: false),
-                            barGroups: buildGroupData(),
+                            barGroups: groupData,
                             titlesData: FlTitlesData(
                               rightTitles: AxisTitles(),
                               leftTitles: AxisTitles(),

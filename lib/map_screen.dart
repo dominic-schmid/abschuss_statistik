@@ -65,7 +65,9 @@ class _MapScreenState extends State<MapScreen> {
       Marker(
         markerId: MarkerId(widget.kill.key),
         position: kLocation,
-        icon: BitmapDescriptor.fromBytes(bytes),
+        // icon: BitmapDescriptor.fromBytes(bytes),
+        icon: BitmapDescriptor.defaultMarkerWithHue(
+            KillEntry.getMarkerHueFromWildart(widget.kill.wildart)),
         infoWindow: InfoWindow(
             title: '${widget.kill.wildart} (${widget.kill.geschlecht})',
             onTap: () => showAlertDialog(
