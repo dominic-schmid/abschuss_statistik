@@ -202,8 +202,19 @@ class _KillsScreenState extends State<KillsScreen>
               return !this.page!.kills.contains(k);
             }).toList();
 
-            showSnackBar(
-                '${newKills.length} neue Abschüsse gefunden!', context);
+            showAlertDialog(
+              title: ' Neue Abschüsse',
+              description:
+                  'Es wurden ${newKills.length} neue Abschüsse gefunden!',
+              yesOption: '',
+              noOption: 'Schließen',
+              onYes: () {},
+              icon: Icons.fiber_new_rounded,
+              context: context,
+            );
+
+            // showSnackBar(
+            //     '${newKills.length} neue Abschüsse gefunden!', context);
             print('Changes found!');
           }
 

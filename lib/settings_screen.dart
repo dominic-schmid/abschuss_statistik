@@ -176,7 +176,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   Icons.favorite_rounded,
                                   color: Colors.red.withAlpha(180),
                                 ),
-                                title: const Text('an Speck spendieren'),
+                                title: const Text('Speck spendieren'),
+                              ),
+                              SettingsTile(
+                                onPressed: (value) async {
+                                  Uri uri = Uri(
+                                    scheme: 'https',
+                                    path: 'jagdstatistik.com/',
+                                  );
+
+                                  await launchUrl(uri,
+                                          mode: LaunchMode.externalApplication)
+                                      .timeout(const Duration(seconds: 10));
+                                },
+                                leading: const Icon(Icons.language_rounded),
+                                title: const Text('Webseite'),
                               ),
                               SettingsTile(
                                 onPressed: (value) => showAboutDialog(
@@ -193,7 +207,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         'Dominic Schmid © 2022'),
                                 leading:
                                     const Icon(Icons.app_registration_rounded),
-                                title: const Text('Lizenzen'),
+                                title: const Text('Über'),
                               ),
                             ],
                           )
