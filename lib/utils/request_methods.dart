@@ -5,9 +5,9 @@ import 'package:jagdverband_scraper/utils/utils.dart';
 import 'package:requests/requests.dart';
 
 class RequestMethods {
-  static const String _baseURL = 'https://stat.jagdverband.it/index.php';
+  static const String baseURL = 'https://stat.jagdverband.it/index.php';
 
-  static final _baseHeaders = {
+  static final baseHeaders = {
     "Access-Control-Allow-Origin": "*", // Required for CORS support to work
     "Access-Control-Allow-Credentials":
         'true', // Required for cookies, authorization headers with HTTPS
@@ -30,8 +30,8 @@ class RequestMethods {
 
     await Requests.clearStoredCookies('https://stat.jagdverband.it');
     var res = await Requests.post(
-      _baseURL,
-      headers: _baseHeaders,
+      baseURL,
+      headers: baseHeaders,
       body: data,
       persistCookies: true,
       bodyEncoding: RequestBodyEncoding.FormURLEncoded,
@@ -40,7 +40,7 @@ class RequestMethods {
 
     res = await Requests.get(
       'https://stat.jagdverband.it',
-      headers: _baseHeaders,
+      headers: baseHeaders,
     );
 
     dom.DocumentFragment html = dom.DocumentFragment.html(res.body);
@@ -56,9 +56,9 @@ class RequestMethods {
   // If called after tryLogin(), returns list of kills using cookie
   static Future<KillPage?> getPage(int year) async {
     var res = await Requests.get(
-      '$_baseURL?id=4&no_cache=1&tx_jvdb_pi1[filter-year]=$year',
+      '$baseURL?id=4&no_cache=1&tx_jvdb_pi1[filter-year]=$year',
       persistCookies: true,
-      headers: _baseHeaders,
+      headers: baseHeaders,
     );
 
     if (res.content().contains('Anmeldung')) {
