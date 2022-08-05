@@ -202,8 +202,19 @@ class _KillsScreenState extends State<KillsScreen>
               return !this.page!.kills.contains(k);
             }).toList();
 
-            showSnackBar(
-                '${newKills.length} neue Abschüsse gefunden!', context);
+            showAlertDialog(
+              title: ' Neue Abschüsse',
+              description:
+                  'Es wurden ${newKills.length} neue Abschüsse gefunden!',
+              yesOption: '',
+              noOption: 'Schließen',
+              onYes: () {},
+              icon: Icons.fiber_new_rounded,
+              context: context,
+            );
+
+            // showSnackBar(
+            //     '${newKills.length} neue Abschüsse gefunden!', context);
             print('Changes found!');
           }
 
@@ -749,6 +760,18 @@ class KillListEntry extends StatefulWidget {
 }
 
 class KillListEntryState extends State<KillListEntry> {
+  final GlobalKey expansionTileKey = GlobalKey();
+
+  void _scrollToSelectedContent({required GlobalKey expansionTileKey}) {
+    final keyContext = expansionTileKey.currentContext;
+    if (keyContext != null) {
+      Future.delayed(const Duration(milliseconds: 200)).then((value) {
+        Scrollable.ensureVisible(keyContext,
+            duration: const Duration(milliseconds: 200));
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     KillEntry k = widget.kill;
@@ -809,6 +832,7 @@ class KillListEntryState extends State<KillListEntry> {
     }
 
     return Container(
+      key: expansionTileKey,
       margin: EdgeInsets.symmetric(
           horizontal: size.width * 0.05, vertical: size.height * 0.005),
       child: Card(
@@ -823,6 +847,12 @@ class KillListEntryState extends State<KillListEntry> {
         child: Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
+            onExpansionChanged: (exp) {
+              if (exp) {
+                // Checking expansion status
+                _scrollToSelectedContent(expansionTileKey: expansionTileKey);
+              }
+            },
             iconColor: primaryColor,
             collapsedIconColor: primaryColor,
             initiallyExpanded: widget.initiallyExpanded,

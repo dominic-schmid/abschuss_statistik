@@ -291,4 +291,41 @@ class KillEntry {
     //     gpsLat == null || gpsLon == null ? '' : 'Koordinaten: $gpsLat, $gpsLon';
     return "$wildart $geschlecht, $ursache $oertlichkeit am $datum um $zeit\nNummer: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\nGebiet: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\nAlter: $alterString'}${gewicht == 0 ? '' : '\nGewicht: $gewicht kg'}$e$b${verwendung.isEmpty ? '' : '\nVerwendung: $verwendung'}${ursprungszeichen.isEmpty ? '' : '\nUrsprungszeichen: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}"; //${} ${} ${} ${} ${} ${} ${} ${}""";
   }
+
+  @override
+  bool operator ==(dynamic other) =>
+      other != null &&
+      other is KillEntry &&
+      wildart == other.wildart &&
+      geschlecht == other.geschlecht &&
+      oertlichkeit == other.oertlichkeit &&
+      datetime == other.datetime &&
+      nummer == other.nummer &&
+      hegeinGebietRevierteil == other.hegeinGebietRevierteil &&
+      alter == other.alter &&
+      alterw == other.alterw &&
+      gewicht == other.gewicht &&
+      erleger == other.erleger &&
+      begleiter == other.begleiter &&
+      verwendung == other.verwendung &&
+      ursache == other.ursache &&
+      ursprungszeichen == other.ursprungszeichen;
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => Object.hash(
+      wildart,
+      geschlecht,
+      oertlichkeit,
+      datetime,
+      nummer,
+      hegeinGebietRevierteil,
+      alter,
+      alterw,
+      gewicht,
+      erleger,
+      begleiter,
+      verwendung,
+      ursache,
+      ursprungszeichen);
 }
