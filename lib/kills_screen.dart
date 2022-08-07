@@ -18,6 +18,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'models/kill_entry.dart';
 import 'package:intl/intl.dart';
@@ -31,14 +32,13 @@ class KillsScreen extends StatefulWidget {
   State<KillsScreen> createState() => _KillsScreenState();
 }
 
-class _KillsScreenState extends State<KillsScreen>
-    with AutomaticKeepAliveClientMixin {
+class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClientMixin {
   final TextEditingController controller = TextEditingController();
-  final ScrollController _scrollController =
-      ScrollController(initialScrollOffset: 0);
+  final ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
 
   bool _isLoading = true;
-  int _currentYear = 2022;
+  late int _currentYear;
+  List<int> _yearList = [];
   late DateTime _lastRefresh;
   late Sorting _currentSorting;
   final List<Sorting> _sortings = Sorting.generateDefault();
@@ -50,16 +50,46 @@ class _KillsScreenState extends State<KillsScreen>
   List<FilterChipData> wildChips = [];
   List<FilterChipData> ursacheChips = [];
   List<FilterChipData> verwendungChips = [];
+  List<FilterChipData> geschlechterChips = [];
 
   @override
   void initState() {
     super.initState();
+    _currentYear = DateTime.now().year;
+    _yearList = List.generate(
+      _currentYear - 2015 + 1,
+      (index) => index + 2015,
+    ).reversed.toList();
+
     _currentSorting =
         _sortings.firstWhere((element) => element.sortType == SortType.datum);
-    _lastRefresh = DateTime.now().subtract(
-        const Duration(seconds: 60)); // first refresh can happen instantly
+    _lastRefresh = DateTime.now()
+        .subtract(const Duration(seconds: 60)); // first refresh can happen instantly
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      readFromDb(_currentYear);
+      await loadYear(_currentYear);
+      print('Loaded initial page for year $_currentYear: $page');
+      setState(() {
+        _isLoading = false;
+      });
+      KillPage? p2 = await refresh(
+          _currentYear); // Refresh current year if launching app to check for updates
+      if (page != null && page!.kills.isNotEmpty && page != p2) {
+        print('Changes found!');
+        newKills = page!.kills.where((k) {
+          return !page!.kills.contains(k);
+        }).toList();
+
+        showAlertDialog(
+          title: ' Neue Abschüsse',
+          description: 'Es wurden ${newKills.length} neue Abschüsse gefunden!',
+          yesOption: '',
+          noOption: 'Schließen',
+          onYes: () {},
+          icon: Icons.fiber_new_rounded,
+          context: context,
+        );
+      }
+      loadPastYearsIfNotExisting(); // Async loads all historic years in BG if not existing
     });
   }
 
@@ -72,8 +102,78 @@ class _KillsScreenState extends State<KillsScreen>
     wildChips.forEach((element) => element.isSelected = true);
     ursacheChips.forEach((element) => element.isSelected = true);
     verwendungChips.forEach((element) => element.isSelected = true);
+    geschlechterChips.forEach((element) => element.isSelected = true);
 
     super.dispose();
+  }
+
+  void loadPastYearsIfNotExisting() async {
+    // Load all years in background
+    for (int y in _yearList.sublist(1)) {
+// If DB has no entries for a given year, refresh for that year
+      if (await readFromDb(y) == null) await refresh(y);
+    }
+  }
+
+  Future<void> loadYear(int year, {bool updateUI = true}) async {
+    KillPage? p = await readFromDb(year);
+    // P is null if db has no entries for this year -> refresh
+    // If last refresh was more than 60 seconds ago we (=true on init) can query again
+    if (p == null) {
+      print('DB returned null. Refreshing from Internet...');
+      if (updateUI) {
+        // Not clean in here but maaan
+        if (!mounted) return;
+        setState(() {
+          _isLoading = true;
+        });
+      }
+
+      KillPage? p2 = await refresh(year);
+
+      if (p2 != null) {
+        if (page != null &&
+            page!.jahr == year &&
+            page!.kills.isNotEmpty &&
+            p2.kills.isNotEmpty) {
+          print('Changes found!');
+          newKills = page!.kills.where((k) {
+            return !page!.kills.contains(k);
+          }).toList();
+
+          showAlertDialog(
+            title: ' Neue Abschüsse',
+            description: 'Es wurden ${newKills.length} neue Abschüsse gefunden!',
+            yesOption: '',
+            noOption: 'Schließen',
+            onYes: () {},
+            icon: Icons.fiber_new_rounded,
+            context: context,
+          );
+        }
+
+        p = p2; // Prioritize Internet loaded data
+        print('Internet returned $p2');
+      }
+    }
+
+    // Update UI if data was found, otherwise set null -> Page shown is empty
+    if (updateUI) updateYearUI(p);
+
+    return;
+  }
+
+  void updateYearUI(KillPage? page) {
+    this.page = page;
+    if (page != null) {
+      wildChips = page.wildarten;
+      ursacheChips = page.ursachen;
+      verwendungChips = page.verwendungen;
+      geschlechterChips = page.geschlechter;
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   // This function is triggered when the user presses the back-to-top button
@@ -87,10 +187,7 @@ class _KillsScreenState extends State<KillsScreen>
 
     // Find all selected chips and see if contains
     for (KillEntry k in kills) {
-      if (wildChips
-              .where((e) => e.isSelected)
-              .map((e) => e.label)
-              .contains(k.wildart) &&
+      if (wildChips.where((e) => e.isSelected).map((e) => e.label).contains(k.wildart) &&
           ursacheChips
               .where((e) => e.isSelected)
               .map((e) => e.label)
@@ -98,7 +195,11 @@ class _KillsScreenState extends State<KillsScreen>
           verwendungChips
               .where((e) => e.isSelected)
               .map((e) => e.label)
-              .contains(k.verwendung)) {
+              .contains(k.verwendung) &&
+          geschlechterChips
+              .where((e) => e.isSelected)
+              .map((e) => e.label)
+              .contains(k.geschlecht)) {
         filtered.add(k);
       }
     }
@@ -106,19 +207,11 @@ class _KillsScreenState extends State<KillsScreen>
     return filtered;
   }
 
-  Future<void> readFromDb(int year) async {
-    if (!mounted) return;
-    setState(() {
-      _isLoading = true;
-    });
-
-    // TODO try login first and otherwise make popup saying logout to fix creds
-    KillPage? p;
-
+  Future<KillPage?> readFromDb(int year) async {
+    KillPage? page;
     try {
       await SqliteDB().db.then((d) async {
-        List<Map<String, Object?>> kills =
-            await d.query('Kill', where: 'year = $year');
+        List<Map<String, Object?>> kills = await d.query('Kill', where: 'year = $year');
 
         print('SQL found ${kills.length} entries for year $year');
         List<KillEntry> killList = [];
@@ -130,12 +223,8 @@ class _KillsScreenState extends State<KillsScreen>
           }
         }
         try {
-          p = KillPage.fromList(
-              kills.first['revier'] as String, year, killList);
-          page = p;
-          wildChips = p!.wildarten;
-          ursacheChips = p!.ursachen;
-          verwendungChips = p!.verwendungen;
+          // Return new kill page. Throws BadState: No Element for kills.first if kills is null
+          page = KillPage.fromList(kills.first['revier'] as String, year, killList);
         } catch (e) {
           print('Error parsing KillPage: ${e.toString()}');
         }
@@ -143,106 +232,68 @@ class _KillsScreenState extends State<KillsScreen>
     } catch (e) {
       print('Database exception ${e.toString()}');
     }
-
-    if (p == null) {
-      await refresh(year);
-    } else {
-      refresh(year);
-    }
-
-    if (!mounted) return;
-    setState(() {
-      _isLoading = false;
-    });
+    return page;
   }
 
-  Future<void> refresh(int year) async {
-    if (await Connectivity()
-            .checkConnectivity()
-            .timeout(const Duration(seconds: 15)) ==
+  void invalidCredentialsLogout() async {
+    await showAlertDialog(
+      title: 'Fehler',
+      description: 'Deine Anmeldedaten sind nicht mehr gültig!',
+      yesOption: 'Ok',
+      noOption: '',
+      onYes: () {},
+      icon: Icons.error,
+      context: context,
+    );
+
+    deletePrefs();
+    if (!mounted) return null;
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const CredentialsScreen()));
+  }
+
+  Future<KillPage?> refresh(int year) async {
+    if (await Connectivity().checkConnectivity().timeout(const Duration(seconds: 15)) ==
         ConnectivityResult.none) {
       showSnackBar('Kein Internet!', context);
-      return;
+      return null;
     }
 
-    print(
-        'Time since last refresh: ${DateTime.now().difference(_lastRefresh).inSeconds}');
-    if (DateTime.now().difference(_lastRefresh).inSeconds < 60 &&
-        year == _currentYear) {
-      return;
-    }
-    // If last refresh was more than 60 seconds ago we can query again
-
-    print('Refreshing again cooldown is over');
-    // Do not await since this should happen in the background
-    await RequestMethods.getPage(year).then((page) async {
-      if (!mounted) return;
-      if (page == null) {
-        await showAlertDialog(
-          title: 'Fehler',
-          description: 'Deine Anmeldedaten sind nicht mehr gültig!',
-          yesOption: 'Ok',
-          noOption: '',
-          onYes: () {},
-          icon: Icons.error,
-          context: context,
-        );
-
-        deletePrefs();
-        if (!mounted) return;
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const CredentialsScreen()));
-      } else {
-        if (this.page != page) {
-          if (this.page != null &&
-              this.page!.jahr == year &&
-              this.page!.kills.isNotEmpty &&
-              page.kills.isNotEmpty) {
-            newKills = page.kills.where((k) {
-              return !this.page!.kills.contains(k);
-            }).toList();
-
-            showAlertDialog(
-              title: ' Neue Abschüsse',
-              description:
-                  'Es wurden ${newKills.length} neue Abschüsse gefunden!',
-              yesOption: '',
-              noOption: 'Schließen',
-              onYes: () {},
-              icon: Icons.fiber_new_rounded,
-              context: context,
-            );
-
-            // showSnackBar(
-            //     '${newKills.length} neue Abschüsse gefunden!', context);
-            print('Changes found!');
-          }
-
-          this.page = page;
-          wildChips = page.wildarten;
-          ursacheChips = page.ursachen;
-          verwendungChips = page.verwendungen;
-          setState(() {});
-          print('Using HTTP page');
-        } else {
-          print('No changes found');
-        }
-      }
-      _lastRefresh = DateTime.now();
-    }).timeout(const Duration(seconds: 15), onTimeout: () {
+    KillPage? page = await RequestMethods.getPage(year)
+        .timeout(const Duration(seconds: 15), onTimeout: () {
       _lastRefresh = DateTime.now().subtract(const Duration(
-          seconds: 30)); // Can refresh after 30 seconds since error occured
-      if (!mounted) return;
-      showSnackBar('Fehler: Abschüsse konnten nicht geladen werden!', context);
+          seconds: 15)); // Can refresh after 15-30 seconds since error occured
+      if (mounted) {
+        showSnackBar('Fehler: Abschüsse konnten nicht geladen werden!', context);
+      }
+      return null;
     });
+
+    _lastRefresh = DateTime.now();
+
+    if (page == null) {
+      invalidCredentialsLogout();
+    } else {
+      return page;
+    }
+
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     if (page == null) {
-      return const Scaffold(
-        body: Center(
+      return Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          foregroundColor: Theme.of(context).textTheme.headline1!.color,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          scrolledUnderElevation: 0,
+          title: const Text('Revier'),
+          actions: buildActionButtons(),
+        ),
+        body: const Center(
           child: CircularProgressIndicator(
             color: Colors.green,
           ),
@@ -252,7 +303,7 @@ class _KillsScreenState extends State<KillsScreen>
 
     Size size = MediaQuery.of(context).size;
 
-    filteredKills = chipFilter(page!.kills);
+    filteredKills = chipFilter(page == null ? [] : page!.kills);
 
     filteredKills = filteredKills.where((k) {
       if (controller.text.isEmpty) {
@@ -275,15 +326,19 @@ class _KillsScreenState extends State<KillsScreen>
         title: _showSearch
             ? buildToolbarSearchbar()
             : InkWell(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AllMapScreen(page: page!))),
+                onTap: () async {
+                  await Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => AllMapScreen(page: page!)));
+                  setState(() {});
+                },
                 child: Row(
                   children: [
                     const Icon(Icons.map_rounded),
                     const SizedBox(width: 4),
                     Text(page == null ? 'Revier' : page!.revierName),
                   ],
-                )),
+                ),
+              ),
         //backgroundColor: Colors.green,
         actions: buildActionButtons(),
       ),
@@ -291,8 +346,8 @@ class _KillsScreenState extends State<KillsScreen>
         child: Container(
           width: double.infinity,
           alignment: Alignment.center,
-          constraints: const BoxConstraints(
-              minWidth: 100, maxWidth: 1000, minHeight: 400),
+          constraints:
+              const BoxConstraints(minWidth: 100, maxWidth: 1000, minHeight: 400),
           child: Column(
             // mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -320,22 +375,24 @@ class _KillsScreenState extends State<KillsScreen>
               //     ],
               //   ),
               // ),
-              Wrap(
-                alignment: WrapAlignment.spaceEvenly,
-                //scrollDirection: Axis.horizontal,
-                children: buildActionChips(),
+
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
+                  direction: Axis.horizontal,
+                  children: buildActionChips(),
+                ),
               ),
 
               Padding(
                 padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
               ),
               _isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(color: Colors.green))
+                  ? const Center(child: CircularProgressIndicator(color: Colors.green))
                   : filteredKills.isEmpty
                       ? const Expanded(child: NoDataFoundWidget())
-                      : Expanded(
-                          flex: 9, child: buildKillEntries(filteredKills)),
+                      : Expanded(flex: 9, child: buildKillEntries(filteredKills)),
             ],
           ),
         ),
@@ -365,8 +422,7 @@ class _KillsScreenState extends State<KillsScreen>
           icon: Icon(_showSearch ? Icons.close : Icons.search)),
       IconButton(
         onPressed: () => Navigator.of(context)
-            .push(CupertinoPageRoute(
-                builder: (context) => const SettingsScreen()))
+            .push(CupertinoPageRoute(builder: (context) => const SettingsScreen()))
             .then((_) => setState(() {})),
         icon: const Icon(Icons.settings),
       ),
@@ -403,9 +459,8 @@ class _KillsScreenState extends State<KillsScreen>
             icon: controller.text.isEmpty
                 ? Container()
                 : const Icon(Icons.close, color: rehwildFarbe),
-            onPressed: () => controller.text.isEmpty
-                ? {}
-                : setState(() => controller.text = ""),
+            onPressed: () =>
+                controller.text.isEmpty ? {} : setState(() => controller.text = ""),
           ),
           //enabledBorder: InputBorder.none,
           enabledBorder: const OutlineInputBorder(
@@ -433,13 +488,12 @@ class _KillsScreenState extends State<KillsScreen>
         topRight: Radius.circular(20),
       ),
     );
-    EdgeInsets chipPadding =
-        const EdgeInsets.symmetric(horizontal: 5, vertical: 0);
+    EdgeInsets chipPadding = const EdgeInsets.symmetric(horizontal: 6, vertical: 0);
 
     int selectedWildChips = wildChips.where((e) => e.isSelected).length;
     int selectedUrsachenChips = ursacheChips.where((e) => e.isSelected).length;
-    int selectedVerwendungenChips =
-        verwendungChips.where((e) => e.isSelected).length;
+    int selectedVerwendungenChips = verwendungChips.where((e) => e.isSelected).length;
+    int selectedGeschlechterChips = geschlechterChips.where((e) => e.isSelected).length;
 
     return [
       Padding(
@@ -462,21 +516,42 @@ class _KillsScreenState extends State<KillsScreen>
                   shape: modalShape,
                   builder: (BuildContext context) {
                     return ValueSelectorModal<int>(
-                      items: List.generate(
-                        DateTime.now().year - 2000 + 1,
-                        (index) => index + 2000,
-                      ).reversed.toList(),
+                      items: _yearList,
                       selectedItem: _currentYear,
                       onSelect: (selectedYear) async {
                         if (selectedYear != _currentYear) {
-                          await readFromDb(selectedYear)
-                              .then((value) => setState(() {}));
+                          await loadYear(selectedYear);
+                          setState(() {});
                           _currentYear = selectedYear;
                         }
                       },
                     );
                     //return buildYearModalSheet();
                   });
+            }),
+      ),
+      Padding(
+        padding: chipPadding,
+        child: ActionChip(
+            avatar: const CircleAvatar(
+              backgroundColor: Colors.transparent,
+              child: Icon(
+                Icons.sort,
+                color: steinhuhnFarbe,
+                size: 18,
+              ),
+            ),
+            backgroundColor: steinhuhnFarbe.withOpacity(0.25),
+            labelStyle: const TextStyle(color: steinhuhnFarbe),
+            label: const Text('Sortierung'),
+            onPressed: () async {
+              await showMaterialModalBottomSheet(
+                  context: context,
+                  shape: modalShape,
+                  builder: (BuildContext context) {
+                    return buildSortierungModalSheet();
+                  });
+              if (mounted) setState(() {});
             }),
       ),
       Padding(
@@ -500,8 +575,34 @@ class _KillsScreenState extends State<KillsScreen>
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
+                    return ChipSelectorModal(title: 'Wildarten', chips: wildChips);
+                  });
+              if (mounted) setState(() {});
+            }),
+      ),
+      Padding(
+        padding: chipPadding,
+        child: ActionChip(
+            avatar: CircleAvatar(
+              backgroundColor: Colors.transparent,
+              child: Icon(
+                selectedGeschlechterChips < geschlechterChips.length
+                    ? Icons.filter_list_rounded
+                    : Icons.checklist_rtl_sharp,
+                color: protokollFarbe,
+                size: 18,
+              ),
+            ),
+            backgroundColor: protokollFarbe.withOpacity(0.25),
+            labelStyle: const TextStyle(color: protokollFarbe),
+            label: Text('$selectedGeschlechterChips Geschlechter'),
+            onPressed: () async {
+              await showMaterialModalBottomSheet(
+                  context: context,
+                  shape: modalShape,
+                  builder: (BuildContext context) {
                     return ChipSelectorModal(
-                        title: 'Wildarten', chips: wildChips);
+                        title: 'Geschlechter', chips: geschlechterChips);
                   });
               if (mounted) setState(() {});
             }),
@@ -527,8 +628,7 @@ class _KillsScreenState extends State<KillsScreen>
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
-                    return ChipSelectorModal(
-                        title: 'Ursachen', chips: ursacheChips);
+                    return ChipSelectorModal(title: 'Ursachen', chips: ursacheChips);
                   });
               if (mounted) setState(() {});
             }),
@@ -556,30 +656,6 @@ class _KillsScreenState extends State<KillsScreen>
                   builder: (BuildContext context) {
                     return ChipSelectorModal(
                         title: 'Verwendungen', chips: verwendungChips);
-                  });
-              if (mounted) setState(() {});
-            }),
-      ),
-      Padding(
-        padding: chipPadding,
-        child: ActionChip(
-            avatar: const CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Icon(
-                Icons.sort,
-                color: steinhuhnFarbe,
-                size: 18,
-              ),
-            ),
-            backgroundColor: steinhuhnFarbe.withOpacity(0.25),
-            labelStyle: const TextStyle(color: steinhuhnFarbe),
-            label: const Text('Sortierung'),
-            onPressed: () async {
-              await showMaterialModalBottomSheet(
-                  context: context,
-                  shape: modalShape,
-                  builder: (BuildContext context) {
-                    return buildSortierungModalSheet();
                   });
               if (mounted) setState(() {});
             }),
@@ -635,9 +711,7 @@ class _KillsScreenState extends State<KillsScreen>
                 s.label,
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: s == _currentSorting
-                      ? FontWeight.bold
-                      : FontWeight.normal,
+                  fontWeight: s == _currentSorting ? FontWeight.bold : FontWeight.normal,
                   color: s == _currentSorting
                       ? Colors.green
                       : Theme.of(context).textTheme.headline1!.color,
@@ -719,20 +793,25 @@ class _KillsScreenState extends State<KillsScreen>
                   return KillListEntry(
                     key: Key(k.key),
                     kill: k,
-                    initiallyExpanded:
-                        newKills.isEmpty ? false : newKills.contains(k),
+                    initiallyExpanded: newKills.isEmpty ? false : newKills.contains(k),
                     showPerson: showPerson,
                     revier: page!.revierName,
                   );
                 }),
               ),
             ),
-            onRefresh: () async => await refresh(_currentYear),
+            onRefresh: () async {
+              print(
+                  'Time since last refresh: ${DateTime.now().difference(_lastRefresh).inSeconds}');
+              if (DateTime.now().difference(_lastRefresh).inSeconds < 60) {
+                return;
+              }
+              await refresh(_currentYear);
+            },
           );
         }
 
-        return const Center(
-            child: CircularProgressIndicator(color: rehwildFarbe));
+        return const Center(child: CircularProgressIndicator(color: rehwildFarbe));
       }),
     );
   }
@@ -766,8 +845,7 @@ class KillListEntryState extends State<KillListEntry> {
     final keyContext = expansionTileKey.currentContext;
     if (keyContext != null) {
       Future.delayed(const Duration(milliseconds: 200)).then((value) {
-        Scrollable.ensureVisible(keyContext,
-            duration: const Duration(milliseconds: 200));
+        Scrollable.ensureVisible(keyContext, duration: const Duration(milliseconds: 200));
       });
     }
   }
@@ -800,8 +878,7 @@ class KillListEntryState extends State<KillListEntry> {
       ),
       IconButton(
         onPressed: () async {
-          final box =
-              context.findRenderObject() as RenderBox?; // Needed for iPad
+          final box = context.findRenderObject() as RenderBox?; // Needed for iPad
 
           await Share.share(
             'Sieh dir diesen Abschuss in ${widget.revier} an!\n${k.toString()}',
@@ -984,8 +1061,7 @@ class KillListEntryState extends State<KillListEntry> {
                   : ExpandedChildKillEntry(
                       icon: Icons.admin_panel_settings_outlined,
                       title: k.jagdaufseher!['aufseher']!,
-                      value:
-                          "${k.jagdaufseher!['datum']}\n${k.jagdaufseher!['zeit']}",
+                      value: "${k.jagdaufseher!['datum']}\n${k.jagdaufseher!['zeit']}",
                     ),
               SizedBox(width: double.infinity, height: size.height * 0.0025),
               Row(
@@ -1031,27 +1107,24 @@ class ExpandedChildKillEntry extends StatelessWidget {
               icon,
               size: size.height * 0.023,
             ),
-            title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: Text(title)),
+            title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Flexible(
+                child:
+                    Padding(padding: const EdgeInsets.only(left: 5), child: Text(title)),
+              ),
+              Flexible(
+                child: Text(
+                  value!,
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: secondaryColor,
+                    fontSize: 15,
+                    overflow: TextOverflow.fade,
                   ),
-                  Flexible(
-                    child: Text(
-                      value!,
-                      textAlign: TextAlign.end,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: secondaryColor,
-                        fontSize: 15,
-                        overflow: TextOverflow.fade,
-                      ),
-                    ),
-                  ),
-                ]),
+                ),
+              ),
+            ]),
           );
   }
 }

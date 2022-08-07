@@ -55,8 +55,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Container(
           width: double.infinity,
           alignment: Alignment.center,
-          constraints: const BoxConstraints(
-              minWidth: 100, maxWidth: 600, minHeight: 400),
+          constraints: const BoxConstraints(minWidth: 100, maxWidth: 600, minHeight: 400),
           child: _isLoading
               ? const CircularProgressIndicator(color: rehwildFarbe)
               : Column(
@@ -86,8 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                               SettingsTile.switchTile(
                                 onToggle: (value) {
-                                  themeProvider
-                                      .toggleTheme(themeProvider.isDarkMode);
+                                  themeProvider.toggleTheme(themeProvider.isDarkMode);
                                 },
                                 initialValue: themeProvider.isDarkMode,
                                 leading: const Icon(Icons.format_paint),
@@ -100,7 +98,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   setState(() => _showPerson = value);
                                 },
                                 description: const Text(
-                                    'Es kann je nach Benutzer sein, dass dabei nur Sterne angezeigt werden können.'),
+                                    'Es könnte sein, dass dabei nur Sterne angezeigt werden können.'),
                                 initialValue: _showPerson,
                                 leading: const Icon(Icons.person),
                                 title: const Text('Namen anzeigen'),
@@ -123,8 +121,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     noOption: 'Nein',
                                     onYes: () {
                                       deletePrefs().then((value) =>
-                                          Navigator.of(context)
-                                              .pushAndRemoveUntil(
+                                          Navigator.of(context).pushAndRemoveUntil(
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     const CredentialsScreen()),
@@ -154,8 +151,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     );
 
                                     await launchUrl(uri,
-                                            mode:
-                                                LaunchMode.externalApplication)
+                                            mode: LaunchMode.externalApplication)
                                         .timeout(const Duration(seconds: 10));
                                   },
                                   leading: Icon(
@@ -166,18 +162,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                                 SettingsTile(
                                   onPressed: (value) async {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MyStatistikWebView(
-                                          url: 'https://jagdstatistik.com',
-                                        ),
-                                      ),
-                                    );
+                                    // Navigator.of(context).push(
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) => const MyStatistikWebView(
+                                    //       url: 'https://jagdstatistik.com',
+                                    //     ),
+                                    //   ),
+                                    // );
 
-                                    // await launchUrl(uri,
-                                    //         mode: LaunchMode.externalApplication)
-                                    //     .timeout(const Duration(seconds: 10));
+                                    await launchUrl(
+                                            Uri(
+                                              scheme: 'https',
+                                              path: 'www.jagdstatistik.com',
+                                            ),
+                                            mode: LaunchMode.externalApplication)
+                                        .timeout(const Duration(seconds: 10));
                                   },
                                   leading: Icon(
                                     Icons.language_rounded,
@@ -187,9 +186,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                                 SettingsTile(
                                   onPressed: (value) async {
-                                    var cookies =
-                                        await Requests.getStoredCookies(
-                                            'stat.jagdverband.it');
+                                    var cookies = await Requests.getStoredCookies(
+                                        'stat.jagdverband.it');
 
                                     List<WebViewCookie> wvCookies = [];
 
@@ -201,16 +199,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ));
                                     });
 
-                                    String login =
-                                        prefs.getString('revierLogin') ?? "";
-                                    String pass =
-                                        prefs.getString('revierPasswort') ?? "";
+                                    String login = prefs.getString('revierLogin') ?? "";
+                                    String pass = prefs.getString('revierPasswort') ?? "";
 
                                     if (!mounted) return;
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            JagdverbandWebView(
+                                        builder: (context) => JagdverbandWebView(
                                           url: RequestMethods.baseURL,
                                           cookies: wvCookies,
                                           login: login,
@@ -240,10 +235,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 onPressed: (value) async {
                                   Uri uri = Uri(
                                     scheme: 'mailto',
-                                    path: 'dominic.schmid@hotmail.com',
+                                    path: 'feedback@jagdstatistik.com',
                                     queryParameters: {
-                                      'subject':
-                                          'Feedback zur Jagdstatistik App'
+                                      'subject': 'Feedback zur Jagdstatistik App'
                                     },
                                   );
 
@@ -266,8 +260,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   applicationVersion: 'Version $appVersion',
                                   applicationLegalese: 'Dominic Schmid © 2022',
                                 ),
-                                leading:
-                                    const Icon(Icons.app_registration_rounded),
+                                leading: const Icon(Icons.app_registration_rounded),
                                 title: const Text('Über'),
                               ),
                             ],

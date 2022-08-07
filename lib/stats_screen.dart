@@ -59,8 +59,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   ChartGridItem(
                     title: 'Summe',
                     assetImage: 'assets/pie-chart.png',
-                    backgroundColor:
-                        gamswildFarbe.withAlpha(215).withOpacity(0.66),
+                    backgroundColor: gamswildFarbe.withAlpha(215).withOpacity(0.66),
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const YearlyPieChartScreen(),

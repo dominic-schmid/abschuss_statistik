@@ -108,8 +108,7 @@ const spielhahnFarbe = Color.fromRGBO(255, 87, 34, 1);
 const steinhuhnFarbe = Color.fromRGBO(0, 137, 123, 1);
 const schneehuhnFarbe = Color.fromRGBO(116, 77, 169, 1);
 const murmeltierFarbe = Color.fromRGBO(136, 14, 79, 1);
-const dachsFarbe =
-    Color.fromRGBO(144, 164, 174, 1); // Color.fromRGBO(66, 66, 66, 1);
+const dachsFarbe = Color.fromRGBO(144, 164, 174, 1); // Color.fromRGBO(66, 66, 66, 1);
 const fuchsFarbe = Color.fromRGBO(255, 140, 0, 1);
 const schneehaseFarbe = Color.fromRGBO(107, 105, 214, 1);
 const wildFarbe = Color.fromRGBO(16, 137, 62, 1);
@@ -125,7 +124,7 @@ const freizoneFarbe = Color.fromRGBO(92, 107, 192, 1);
 const eigengebrauchFarbe = Color.fromRGBO(76, 175, 80, 1);
 const weiterverarbeitungFarbe = Color.fromRGBO(245, 127, 23, 1);
 const verkaufFarbe = Color.fromRGBO(63, 81, 181, 1);
-const nichtVerwertbarFarbe = Color.fromRGBO(97, 97, 97, 1);
+const nichtVerwertbarFarbe = Color.fromRGBO(144, 97, 97, 1);
 const nichtGefundenFarbe = Color.fromRGBO(0, 121, 107, 1);
 const nichtBekanntFarbe = Color.fromRGBO(233, 30, 99, 1);
 

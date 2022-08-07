@@ -54,7 +54,9 @@ class RequestMethods {
   }
 
   // If called after tryLogin(), returns list of kills using cookie
-  static Future<KillPage?> getPage(int year) async {
+  static Future<KillPage?> getPage(int year, [int recursionCount = 0]) async {
+    if (recursionCount > 5) return null;
+
     var res = await Requests.get(
       '$baseURL?id=4&no_cache=1&tx_jvdb_pi1[filter-year]=$year',
       persistCookies: true,
@@ -73,7 +75,7 @@ class RequestMethods {
         if (!verified) {
           await deletePrefs();
         } else {
-          return getPage(year);
+          return getPage(year, recursionCount + 1);
         }
       } catch (e) {
         await deletePrefs();

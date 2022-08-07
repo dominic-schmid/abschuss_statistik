@@ -8,7 +8,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jagdverband_scraper/models/kill_entry.dart';
 import 'package:jagdverband_scraper/utils/utils.dart';
-import 'package:jagdverband_scraper/widgets/chart_app_bar.dart';
 
 class MapScreen extends StatefulWidget {
   final KillEntry kill;
@@ -21,7 +20,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final Completer<GoogleMapController> _controller = Completer();
 
-  static const double cameraZoom = 14;
+  static const double cameraZoom = 15;
   static const double cameraTilt = 0;
   static const double cameraBearing = 0;
 
@@ -49,8 +48,8 @@ class _MapScreenState extends State<MapScreen> {
     if (path == null || width == null) return Uint8List(0);
 
     ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
-        targetWidth: width);
+    ui.Codec codec =
+        await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
     ui.FrameInfo fi = await codec.getNextFrame();
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
         .buffer
@@ -58,8 +57,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void createMarkerIcon() async {
-    var bytes =
-        await getBytesFromAsset(path: 'assets/location-marker.png', width: 125);
+    var bytes = await getBytesFromAsset(path: 'assets/location-marker.png', width: 125);
 
     _markers.add(
       Marker(
@@ -139,8 +137,7 @@ class _MapScreenState extends State<MapScreen> {
                             color: Colors.black.withOpacity(0.2),
                             spreadRadius: 2,
                             blurRadius: 14,
-                            offset: const Offset(
-                                0, 0), // changes position of shadow
+                            offset: const Offset(0, 0), // changes position of shadow
                           ),
                         ],
                         color: Theme.of(context)
@@ -155,8 +152,7 @@ class _MapScreenState extends State<MapScreen> {
                               icon: const Icon(Icons.arrow_back_rounded),
                             ),
                             Padding(
-                              padding:
-                                  EdgeInsets.only(right: size.width * 0.05),
+                              padding: EdgeInsets.only(right: size.width * 0.05),
                               child: Text('#${widget.kill.nummer}'),
                             ),
                           ],
@@ -176,8 +172,7 @@ class _MapScreenState extends State<MapScreen> {
                             color: Colors.black.withOpacity(0.2),
                             spreadRadius: 2,
                             blurRadius: 14,
-                            offset: const Offset(
-                                0, 0), // changes position of shadow
+                            offset: const Offset(0, 0), // changes position of shadow
                           ),
                         ],
                       ),
