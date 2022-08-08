@@ -7,6 +7,7 @@ import 'charts/historic_bar_chart_screen.dart';
 import 'charts/historic_line_chart_screen.dart';
 import 'charts/historic_pie_chart_screen.dart';
 import 'charts/yearly_bar_chart_screen.dart';
+import 'charts/yearly_line_chart_screen.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({Key? key}) : super(key: key);
@@ -26,7 +27,7 @@ class _StatsScreenState extends State<StatsScreen> {
             showAlertDialog(
               title: ' Verwendung',
               description:
-                  'Um Daten für die Statistiken herunterzuladen, gehe auf die Startseite mit der Abschussliste und klicke auf alle deiner gewünschten Jahre.\n\nDadurch werden diese lokal gespeichert und können für Diagramme verwendet werden!',
+                  'Die Diagramme basieren auf deinen heruntergeladenen Daten. Falls ein Jahr fehlt, kannst du es auf der Startseite auswählen und heruntergeladen.\n\nDiese Diagramme bieten Aufschluss über die historische Entwicklung des Wilds in deinem Revier und wurden so gestaltet, dass du dir den Aufbau selbst konfigurieren kannst!',
               yesOption: '',
               noOption: 'Ok',
               onYes: () {},
@@ -73,6 +74,16 @@ class _StatsScreenState extends State<StatsScreen> {
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const YearlyBarChartScreen(),
+                      ),
+                    ),
+                  ),
+                  ChartGridItem(
+                    title: 'Monatsverlauf',
+                    assetImage: 'assets/increase-line.png',
+                    backgroundColor: erlegtFarbe.withGreen(150),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const YearlyLineChartScreen(),
                       ),
                     ),
                   ),
@@ -124,7 +135,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   //   ),
                   // ),
                   ChartGridItem(
-                    title: 'Verlauf',
+                    title: 'Jahresverlauf',
                     assetImage: 'assets/increase-line.png',
                     backgroundColor: erlegtFarbe.withGreen(150),
                     onTap: () => Navigator.of(context).push(

@@ -14,15 +14,15 @@ import 'package:sqflite/sqflite.dart';
 import '../models/kill_entry.dart';
 import '../widgets/chart_app_bar.dart';
 
-class HistoricLineChartScreen extends StatefulWidget {
-  const HistoricLineChartScreen({Key? key}) : super(key: key);
+class YearlyLineChartScreen extends StatefulWidget {
+  const YearlyLineChartScreen({Key? key}) : super(key: key);
 
   @override
-  State<HistoricLineChartScreen> createState() => _HistoricLineChartScreenState();
+  State<YearlyLineChartScreen> createState() => _YearlyLineChartScreenState();
 }
 
-class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
-  late RangeValues years;
+class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
+  late int year;
   int _minYear = 2000;
   int _maxYear = 2022;
   int maxDisplayValue = 0;
@@ -33,9 +33,9 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
   List<ChartItem> chartItems = [];
 
   bool _isLoading = true;
-  bool _showDots = false;
   bool _showGrid = false;
   bool _showOnlyErlegt = true;
+  bool _showDots = true;
   int _barWidth = 2;
   List<FilterChipData> configurationChips = [];
 
@@ -72,6 +72,7 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
   @override
   void initState() {
     super.initState();
+    year = DateTime.now().year;
     getConfig();
     configurationChips.addAll([
       FilterChipData(label: 'Gitter', color: Colors.blue, isSelected: _showGrid),
@@ -105,7 +106,6 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
       _minYear = 2000;
       _maxYear = DateTime.now().year;
     }
-    years = RangeValues(_minYear.toDouble(), _maxYear.toDouble());
   }
 
   getData() async {
@@ -115,22 +115,22 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
 
     List<Map<String, Object?>> res = groupBy['value'] == 'gewicht' ? await db.rawQuery("""
     SELECT
-    year AS Jahr,
+    CAST(strftime('%m', datetime) AS INT) AS Jahr,
     CAST(AVG(gewicht) AS int) AS Anzahl,
     wildart AS Gruppierung
     FROM Kill
-    WHERE gewicht IS NOT NULL AND gewicht <> 0 AND year >= ${years.start.toInt()} AND year <= ${years.end.toInt()} AND $erlegtQuery
-    GROUP BY year, wildart HAVING AVG(gewicht) > 0
-    ORDER BY year ASC  
+    WHERE gewicht IS NOT NULL AND gewicht <> 0 AND year = $year AND $erlegtQuery
+    GROUP BY wildart, CAST(strftime('%m', datetime) AS INT)
+    ORDER BY  CAST(strftime('%m', datetime) AS INT) ASC
     """) : await db.rawQuery("""
     SELECT
-    year AS Jahr,
+    CAST(strftime('%m', datetime) AS INT) AS Jahr,
     COUNT(*) AS Anzahl,
     ${groupBy['value']} AS Gruppierung
     FROM Kill
-    WHERE year >= ${years.start.toInt()} AND year <= ${years.end.toInt()} AND $erlegtQuery
-    GROUP BY ${groupBy['value']}, year   
-    ORDER BY year ASC
+    WHERE year = $year AND $erlegtQuery
+    GROUP BY ${groupBy['value']}, CAST(strftime('%m', datetime) AS INT) 
+    ORDER BY CAST(strftime('%m', datetime) AS INT) ASC
     """);
     // Get largest value
 
@@ -202,10 +202,6 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
     }
 
     Size size = MediaQuery.of(context).size;
-
-    if (years.end == years.start && _showDots == false) {
-      _showDots = true;
-    }
     var lines = buildLines(res);
 
     return Scaffold(
@@ -251,9 +247,7 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
           Padding(
             padding: EdgeInsets.only(top: size.height * 0.035),
             child: Text(
-              years.start == years.end
-                  ? '${years.start.toInt()}'
-                  : '${years.start.toInt()} - ${years.end.toInt()}',
+              '${year.toString()} pro Monat',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -272,17 +266,19 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
                 inactiveTrackColor: rehwildFarbe.withOpacity(0.2),
                 trackHeight: size.height * 0.01,
                 valueIndicatorColor: rehwildFarbe,
-                valueIndicatorTextStyle: const TextStyle(fontWeight: FontWeight.bold),
+                valueIndicatorTextStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  //color: ,
+                ),
               ),
-              child: RangeSlider(
-                values: years,
-                labels: RangeLabels(
-                    years.start.toInt().toString(), years.end.toInt().toString()),
+              child: Slider(
                 min: _minYear.toDouble(),
                 max: _maxYear.toDouble(),
+                label: year.toString(),
                 divisions: _maxYear - _minYear == 0 ? 1 : _maxYear - _minYear,
-                onChanged: (RangeValues values) async {
-                  years = values;
+                value: year.toDouble(),
+                onChanged: (double value) async {
+                  year = value.toInt();
                   await getData();
                 },
               ),
@@ -390,12 +386,8 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
                             maxY: maxDisplayValue.toDouble() + (maxDisplayValue * 0.05),
                             minY: 0,
                             // Try to create better padding
-                            minX: years.end == years.start
-                                ? years.start - 0.5
-                                : years.start - (0.5 / (years.end - years.start)),
-                            maxX: years.end == years.start
-                                ? years.start + 0.5
-                                : years.end + (0.5 / (years.end - years.start)),
+                            minX: 1,
+                            maxX: 12,
                             clipData: FlClipData.all(),
                             borderData: FlBorderData(show: false),
                             gridData: FlGridData(show: _showGrid),
@@ -442,11 +434,11 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
                                 ),
                               ),
                             ),
-                            lineTouchData: LineTouchData(
-                              touchSpotThreshold: years.end == years.start
-                                  ? size.width * 0.5
-                                  : size.width * 0.35 / (years.end - years.start),
-                            ),
+                            // lineTouchData: LineTouchData(
+                            //   touchSpotThreshold: years.end == years.start
+                            //       ? size.width * 0.5
+                            //       : size.width * 0.35 / (years.end - years.start),
+                            // ),
                           ),
                         ),
                       ),

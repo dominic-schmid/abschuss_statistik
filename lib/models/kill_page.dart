@@ -115,4 +115,38 @@ class KillPage {
   @override
   // TODO: implement hashCode
   int get hashCode => Object.hash(revierName, jahr, kills.length);
+
+  List<List<dynamic>> toCSV() {
+    List<List<dynamic>> allRows = [];
+    allRows.add([
+      'Nummer',
+      'Wildart',
+      'Geschlecht',
+      'Hegering/Gebiet/Revierteil',
+      'Alter',
+      'Alterw',
+      'Gewicht',
+      'Erleger',
+      'Begleiter',
+      'Ursache',
+      'Verwendung',
+      'Ursprungszeichen',
+      'Örtlichkeit',
+      'Lat',
+      'Lon',
+      'Datum',
+      'Zeit',
+      'Aufseher Datum',
+      'Aufseher Zeit',
+      'Aufseher',
+    ]);
+
+    for (KillEntry k in kills) {
+      allRows.add(k.toCSV());
+    }
+
+    return allRows;
+  }
+
+  List<Map<String, dynamic>> toJson() => kills.map((e) => e.toMap()).toList();
 }

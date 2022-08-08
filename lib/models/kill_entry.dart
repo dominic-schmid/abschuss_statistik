@@ -289,6 +289,38 @@ class KillEntry {
     return "$wildart $geschlecht, $ursache $oertlichkeit am $datum um $zeit\nNummer: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\nGebiet: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\nAlter: $alterString'}${gewicht == 0 ? '' : '\nGewicht: $gewicht kg'}$e$b${verwendung.isEmpty ? '' : '\nVerwendung: $verwendung'}${ursprungszeichen.isEmpty ? '' : '\nUrsprungszeichen: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}"; //${} ${} ${} ${} ${} ${} ${} ${}""";
   }
 
+  List<String> toCSV() {
+    // String aufseherString = jagdaufseher == null
+    //     ? ';;'
+    //     : "${jagdaufseher!['aufseher']};${jagdaufseher!['datum']};${jagdaufseher!['zeit']}";
+    //return "$wildart;$geschlecht;$ursache;$oertlichkeit;${datetime.toIso8601String()};$nummer;$hegeinGebietRevierteil;$alter;$alterw;${gewicht.toString()};$erleger;$begleiter;$verwendung;$ursprungszeichen;$aufseherString";
+    String datum = DateFormat('dd.MM.yy').format(datetime);
+    String zeit = DateFormat('kk:mm').format(datetime);
+    return [
+      nummer.toString(),
+      wildart,
+      geschlecht,
+      hegeinGebietRevierteil,
+      alter,
+      alterw,
+      gewicht.toString(),
+      erleger,
+      begleiter,
+      ursache,
+      verwendung,
+      ursprungszeichen,
+      oertlichkeit,
+      gpsLat.toString(),
+      gpsLon.toString(),
+      //datetime.toIso8601String(),
+      datum,
+      zeit,
+      jagdaufseher == null ? '' : jagdaufseher!['aufseher'] as String,
+      jagdaufseher == null ? '' : jagdaufseher!['datum'] as String,
+      jagdaufseher == null ? '' : jagdaufseher!['zeit'] as String,
+    ];
+  }
+
   @override
   bool operator ==(dynamic other) =>
       other != null &&
@@ -325,4 +357,26 @@ class KillEntry {
       verwendung,
       ursache,
       ursprungszeichen);
+
+  Map<String, dynamic> toMap() {
+    return {
+      'Nummer': nummer.toString(),
+      'Wildart': wildart,
+      'Geschlecht': geschlecht,
+      'Hegering/Gebiet/Revierteil': hegeinGebietRevierteil,
+      'Alter': alter,
+      'Alterw': alterw,
+      'Gewicht': gewicht,
+      'Erleger': erleger,
+      'Begleiter': begleiter,
+      'Ursache': ursache,
+      'Verwendung': verwendung,
+      'Ursprungszeichen': ursprungszeichen,
+      'Örtlichkeit': oertlichkeit,
+      'Lat': gpsLat,
+      'Lon': gpsLon,
+      'Datum': datetime.toIso8601String(),
+      'Aufseher': jagdaufseher,
+    };
+  }
 }

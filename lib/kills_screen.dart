@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/add_kill_screen.dart';
@@ -15,10 +19,11 @@ import 'package:jagdverband_scraper/models/filter_chip_data.dart';
 import 'package:jagdverband_scraper/widgets/no_data_found.dart';
 import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
-import 'package:sqflite/sqflite.dart';
 
 import 'models/kill_entry.dart';
 import 'package:intl/intl.dart';
@@ -353,30 +358,6 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
             // mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // Theme(
-              //   data: Theme.of(context)
-              //       .copyWith(dividerColor: Colors.transparent),
-              //   child: ExpansionTile(
-              //     childrenPadding: const EdgeInsets.all(0),
-              //     title: buildSearchbar(),
-              //     initiallyExpanded: true,
-              //     children: [
-              //       Padding(
-              //         padding: EdgeInsets.only(
-              //           left: size.width * 0.02,
-              //           right: size.width * 0.02,
-              //           bottom: size.height * 0.005,
-              //           top: size.height * 0.0025,
-              //         ),
-              //         child: Wrap(
-              //           alignment: WrapAlignment.spaceEvenly,
-              //           children: buildActionChips(),
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Wrap(
@@ -385,7 +366,6 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                   children: buildActionChips(),
                 ),
               ),
-
               Padding(
                 padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
               ),
@@ -662,7 +642,107 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
               if (mounted) setState(() {});
             }),
       ),
+      Padding(
+        padding: chipPadding,
+        child: ActionChip(
+          avatar: const CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: Icon(
+              Icons.download_rounded,
+              color: Colors.limeAccent,
+              size: 18,
+            ),
+          ),
+          backgroundColor: Colors.limeAccent.withOpacity(0.25),
+          labelStyle: const TextStyle(color: Colors.limeAccent),
+          label: const Text('Export'),
+          onPressed: () => _selectExport(context),
+        ),
+      ),
     ];
+  }
+
+  Future<void> _saveAndShareFile({String csvDelimiter = ";", bool isJson = false}) async {
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+    // ONLY AVAILABLE ON ANDROID
+    final dir =
+        (await getExternalStorageDirectories(type: StorageDirectory.downloads))!.first;
+    String filename =
+        '${dir.path}/${page!.revierName}-${DateTime.now().toIso8601String()}';
+
+    filename = isJson ? '$filename.json' : '$filename.csv';
+
+    File f = await File(filename).create(recursive: true);
+
+    if (isJson) {
+      f.writeAsStringSync(jsonEncode(page!.toJson()), encoding: utf8);
+    } else {
+      f.writeAsStringSync(
+          ListToCsvConverter(fieldDelimiter: csvDelimiter).convert(page!.toCSV()),
+          encoding: utf8);
+    }
+
+    await Share.shareFiles([filename]);
+
+    f.delete(); // Delete after sharing
+    return;
+  }
+
+  _selectExport(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: const Text('Abschüsse Exportieren', textAlign: TextAlign.center),
+            children: [
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('CSV (;)', textAlign: TextAlign.center),
+                onPressed: () async {
+                  if (page == null || page!.kills.isEmpty) {
+                    showSnackBar('Keine Abschüsse gefunden!', context);
+                    return;
+                  }
+                  _saveAndShareFile(csvDelimiter: ';');
+
+                  if (!mounted) return;
+                  Navigator.of(context).pop();
+                },
+              ),
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('CSV (,)', textAlign: TextAlign.center),
+                onPressed: () async {
+                  if (page == null || page!.kills.isEmpty) {
+                    showSnackBar('Keine Abschüsse gefunden!', context);
+                    return;
+                  }
+                  _saveAndShareFile(csvDelimiter: ',');
+
+                  if (!mounted) return;
+                  Navigator.of(context).pop();
+                },
+              ),
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('JSON', textAlign: TextAlign.center),
+                onPressed: () {
+                  if (page == null || page!.kills.isEmpty) {
+                    showSnackBar('Keine Abschüsse gefunden!', context);
+                    return;
+                  }
+                  _saveAndShareFile(isJson: true);
+
+                  if (!mounted) return;
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   Widget _buildHandle(BuildContext context) {
