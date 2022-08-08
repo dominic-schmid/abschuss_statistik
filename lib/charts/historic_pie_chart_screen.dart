@@ -114,8 +114,7 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
   }
 
   void resetChips() {
-    Set<String> gruppierungen =
-        res.map((e) => e['Gruppierung'] as String).toSet();
+    Set<String> gruppierungen = res.map((e) => e['Gruppierung'] as String).toSet();
 
     filterChips = [];
     for (int i = 0; i < gruppierungen.length; i++) {
@@ -150,9 +149,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
     Iterable<String> selectedLabels =
         filterChips.where((e) => e.isSelected).map((e) => e.label);
 
-    var toBuild = res
-        .where((e) => selectedLabels.contains(e['Gruppierung'] as String))
-        .toList();
+    var toBuild =
+        res.where((e) => selectedLabels.contains(e['Gruppierung'] as String)).toList();
 
     for (int i = 0; i < toBuild.length; i++) {
       String label = toBuild.elementAt(i)['Gruppierung'] as String;
@@ -194,8 +192,7 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
         //color: KillEntry.getColorFromWildart(e['Gruppierung'] as String),
         color: e.color,
         title: '$percentage%',
-        titleStyle:
-            const TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+        titleStyle: const TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
         value: e.value,
       );
     }).toList();
@@ -204,8 +201,7 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(
-          child: CircularProgressIndicator(color: rehwildFarbe));
+      return const Center(child: CircularProgressIndicator(color: rehwildFarbe));
     }
 
     Size size = MediaQuery.of(context).size;
@@ -252,8 +248,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
               ),
               child: RangeSlider(
                 values: yearRange,
-                labels: RangeLabels(yearRange.start.toInt().toString(),
-                    yearRange.end.toInt().toString()),
+                labels: RangeLabels(
+                    yearRange.start.toInt().toString(), yearRange.end.toInt().toString()),
                 min: _minYear.toDouble(),
                 max: _maxYear.toDouble(),
                 divisions: _maxYear - _minYear == 0 ? 1 : _maxYear - _minYear,
@@ -293,8 +289,7 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
                             return ValueSelectorModal<String>(
                               items: List.generate(
                                 groupBys.length,
-                                (index) =>
-                                    groupBys.elementAt(index)['key'] as String,
+                                (index) => groupBys.elementAt(index)['key'] as String,
                               ),
                               selectedItem: groupBy['key'] as String,
                               padding: false,
@@ -302,8 +297,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
                                 if (groupBy !=
                                     groupBys.firstWhere((element) =>
                                         element['key'] as String == selected)) {
-                                  groupBy = groupBys.firstWhere((element) =>
-                                      element['key'] as String == selected);
+                                  groupBy = groupBys.firstWhere(
+                                      (element) => element['key'] as String == selected);
                                   await getData();
                                   resetChips();
                                   setState(() {});
@@ -344,12 +339,10 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
           ),
           SizedBox(height: size.height * 0.05),
           _isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(color: rehwildFarbe))
+              ? const Center(child: CircularProgressIndicator(color: rehwildFarbe))
               : sections.isEmpty
                   ? const NoDataFoundWidget(
-                      suffix:
-                          "Eventuell musst du diese Daten erst herunterladen",
+                      suffix: "Eventuell musst du diese Daten erst herunterladen",
                     )
                   : ConstrainedBox(
                       constraints: BoxConstraints(
@@ -368,8 +361,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
                           PieChartData(
                             startDegreeOffset: 180,
 
-                            pieTouchData: PieTouchData(touchCallback:
-                                (FlTouchEvent event, pieTouchResponse) {
+                            pieTouchData: PieTouchData(
+                                touchCallback: (FlTouchEvent event, pieTouchResponse) {
                               setState(() {
                                 if (!event.isInterestedForInteractions ||
                                     pieTouchResponse == null ||
@@ -377,8 +370,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
                                   touchedIndex = -1;
                                   return;
                                 }
-                                touchedIndex = pieTouchResponse
-                                    .touchedSection!.touchedSectionIndex;
+                                touchedIndex =
+                                    pieTouchResponse.touchedSection!.touchedSectionIndex;
                               });
                             }),
                             sectionsSpace: 2,

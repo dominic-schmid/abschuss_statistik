@@ -186,12 +186,10 @@ class KillEntry {
       double? lat, lon;
       if (map != null) {
         LinkedHashMap<Object, String>? attrs = map.attributes;
-        String tmpLat = attrs.containsKey('data-gps-lat')
-            ? attrs['data-gps-lat'] as String
-            : "";
-        String tmpLon = attrs.containsKey('data-gps-long')
-            ? attrs['data-gps-long'] as String
-            : "";
+        String tmpLat =
+            attrs.containsKey('data-gps-lat') ? attrs['data-gps-lat'] as String : "";
+        String tmpLon =
+            attrs.containsKey('data-gps-long') ? attrs['data-gps-long'] as String : "";
         lat = double.tryParse(tmpLat);
         lon = double.tryParse(tmpLon);
       }
@@ -203,14 +201,14 @@ class KillEntry {
         datetime: datetime,
         ursache: cols.elementAt(10).text, // Ursache
         verwendung: cols.elementAt(11).text, // Verwendung
-        oertlichkeit:
-            cols.elementAt(13).text.replaceFirst('Auf Karte anzeigen', ''),
+        oertlichkeit: cols.elementAt(13).text.replaceFirst('Auf Karte anzeigen', ''),
         gpsLat: lat, // Örtlichkeit
         gpsLon: lon,
         hegeinGebietRevierteil: cols.elementAt(3).text,
         alter: cols.elementAt(5).text,
         alterw: cols.elementAt(6).text,
-        gewicht: double.tryParse(cols.elementAt(7).text) ?? 0,
+        gewicht: double.tryParse(cols.elementAt(7).text.replaceAll(',', '.')) ?? 0,
+        //gewicht: NumberFormat().parse(cols.elementAt(7).text).toDouble(),
         erleger: cols.elementAt(8).text,
         begleiter: cols.elementAt(9).text,
         ursprungszeichen: cols.elementAt(12).text,
@@ -283,9 +281,8 @@ class KillEntry {
             ursache == 'vom Zug überfahren'
         ? ''
         : '\nErleger: $erleger';
-    String b = begleiter.isEmpty || begleiter.contains('*')
-        ? ''
-        : '\nBegleiter: $begleiter';
+    String b =
+        begleiter.isEmpty || begleiter.contains('*') ? '' : '\nBegleiter: $begleiter';
 
     // String latLong =
     //     gpsLat == null || gpsLon == null ? '' : 'Koordinaten: $gpsLat, $gpsLon';

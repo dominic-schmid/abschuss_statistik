@@ -18,8 +18,7 @@ class HistoricLineChartScreen extends StatefulWidget {
   const HistoricLineChartScreen({Key? key}) : super(key: key);
 
   @override
-  State<HistoricLineChartScreen> createState() =>
-      _HistoricLineChartScreenState();
+  State<HistoricLineChartScreen> createState() => _HistoricLineChartScreenState();
 }
 
 class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
@@ -62,6 +61,10 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
         ],
       );
     }
+    groupBys.add({
+      'key': 'Gewicht',
+      'value': 'gewicht',
+    });
   }
 
   @override
@@ -100,7 +103,16 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
   getData() async {
     Database db = await SqliteDB().db;
 
-    List<Map<String, Object?>> res = await db.rawQuery("""
+    List<Map<String, Object?>> res = groupBy['value'] == 'gewicht' ? await db.rawQuery("""
+    SELECT
+    year AS Jahr,
+    CAST(AVG(gewicht) AS int) AS Anzahl,
+    wildart AS Gruppierung
+    FROM Kill
+    WHERE gewicht IS NOT NULL AND gewicht <> 0 AND year >= ${years.start.toInt()} AND year <= ${years.end.toInt()}
+    GROUP BY year, wildart HAVING AVG(gewicht) > 0
+    ORDER BY year ASC  
+    """) : await db.rawQuery("""
     SELECT
     year AS Jahr,
     COUNT(*) AS Anzahl,
@@ -118,13 +130,12 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
   }
 
   void resetChips() {
-    Set<String> gruppierungen =
-        res.map((e) => e['Gruppierung'] as String).toSet();
+    Set<String> gruppierungen = res.map((e) => e['Gruppierung'] as String).toSet();
 
     lineChips = [];
     for (int i = 0; i < gruppierungen.length; i++) {
       String g = gruppierungen.elementAt(i);
-      Color c = groupBy['value'] == 'wildart'
+      Color c = groupBy['value'] == 'wildart' || groupBy['value'] == 'gewicht'
           ? KillEntry.getColorFromWildart(g)
           : Colors.primaries[i % Colors.primaries.length];
 
@@ -137,8 +148,7 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
     chartItems = [];
     // Hole einzelne gruppierungen (z.b. alle individuellen Wildarten und zeichne daraus dann eine Linie mit allen existierenden Werten)
 
-    List<FilterChipData> selectedChips =
-        lineChips.where((e) => e.isSelected).toList();
+    List<FilterChipData> selectedChips = lineChips.where((e) => e.isSelected).toList();
 
     maxDisplayValue = 0;
     maxValue = 0;
@@ -170,8 +180,7 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
       );
     }
 
-    maxDisplayValue =
-        ((maxValue) % 5 == 0 ? maxValue : 5 - maxValue % 5 + maxValue);
+    maxDisplayValue = ((maxValue) % 5 == 0 ? maxValue : 5 - maxValue % 5 + maxValue);
 
     return lines;
   }
@@ -179,8 +188,7 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(
-          child: CircularProgressIndicator(color: rehwildFarbe));
+      return const Center(child: CircularProgressIndicator(color: rehwildFarbe));
     }
 
     Size size = MediaQuery.of(context).size;
@@ -201,8 +209,7 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
             icon: const Icon(Icons.line_axis_rounded)),
         IconButton(
             onPressed: () => setState(() => _showGrid = !_showGrid),
-            icon: Icon(
-                _showGrid ? Icons.grid_off_outlined : Icons.grid_on_outlined)),
+            icon: Icon(_showGrid ? Icons.grid_off_outlined : Icons.grid_on_outlined)),
         IconButton(
           onPressed: () => setState(() => _showDots = !_showDots),
           icon: Icon(_showDots ? Icons.circle_outlined : Icons.linear_scale),
@@ -249,8 +256,8 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
               ),
               child: RangeSlider(
                 values: years,
-                labels: RangeLabels(years.start.toInt().toString(),
-                    years.end.toInt().toString()),
+                labels: RangeLabels(
+                    years.start.toInt().toString(), years.end.toInt().toString()),
                 min: _minYear.toDouble(),
                 max: _maxYear.toDouble(),
                 divisions: _maxYear - _minYear == 0 ? 1 : _maxYear - _minYear,
@@ -290,8 +297,7 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
                           return ValueSelectorModal<String>(
                             items: List.generate(
                               groupBys.length,
-                              (index) =>
-                                  groupBys.elementAt(index)['key'] as String,
+                              (index) => groupBys.elementAt(index)['key'] as String,
                             ),
                             selectedItem: groupBy['key'] as String,
                             padding: false,
@@ -299,8 +305,8 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
                               if (groupBy !=
                                   groupBys.firstWhere((element) =>
                                       element['key'] as String == selected)) {
-                                groupBy = groupBys.firstWhere((element) =>
-                                    element['key'] as String == selected);
+                                groupBy = groupBys.firstWhere(
+                                    (element) => element['key'] as String == selected);
                                 await getData();
                                 resetChips();
                                 setState(() {});
@@ -340,8 +346,7 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
             ],
           ),
           _isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(color: rehwildFarbe))
+              ? const Center(child: CircularProgressIndicator(color: rehwildFarbe))
               : lines.isEmpty
                   ? const NoDataFoundWidget()
                   : ConstrainedBox(
@@ -362,14 +367,12 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
                           LineChartData(
                             lineBarsData: lines,
                             //alignment: BarChartAlignment.spaceEvenly,
-                            maxY: maxDisplayValue.toDouble() +
-                                (maxDisplayValue * 0.05),
+                            maxY: maxDisplayValue.toDouble() + (maxDisplayValue * 0.05),
                             minY: 0,
                             // Try to create better padding
                             minX: years.end == years.start
                                 ? years.start - 0.5
-                                : years.start -
-                                    (0.5 / (years.end - years.start)),
+                                : years.start - (0.5 / (years.end - years.start)),
                             maxX: years.end == years.start
                                 ? years.start + 0.5
                                 : years.end + (0.5 / (years.end - years.start)),
@@ -413,8 +416,7 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
                                     }
                                     return SideTitleWidget(
                                       axisSide: meta.axisSide,
-                                      child: Text(
-                                          (value.toInt() % 100).toString()),
+                                      child: Text((value.toInt() % 100).toString()),
                                     );
                                   },
                                 ),
@@ -423,9 +425,7 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
                             lineTouchData: LineTouchData(
                               touchSpotThreshold: years.end == years.start
                                   ? size.width * 0.5
-                                  : size.width *
-                                      0.35 /
-                                      (years.end - years.start),
+                                  : size.width * 0.35 / (years.end - years.start),
                             ),
                           ),
                         ),

@@ -74,6 +74,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
       KillPage? p2 = await refresh(
           _currentYear); // Refresh current year if launching app to check for updates
       if (page != null && page!.kills.isNotEmpty && page != p2) {
+        print('COMPARING $page to $p2');
         print('Changes found!');
         newKills = page!.kills.where((k) {
           return !page!.kills.contains(k);
@@ -523,6 +524,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                           await loadYear(selectedYear);
                           setState(() {});
                           _currentYear = selectedYear;
+                          _scrollToTop();
                         }
                       },
                     );
