@@ -32,14 +32,14 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: ((context, value, child) {
           return BottomNavigationBar(
             selectedItemColor: rehwildFarbe.withGreen(160),
-            onTap: (index) => controller.jumpToPage(index),
-            // onTap: (index) => controller
-            //     .animateToPage(
-            //       index,
-            //       duration: const Duration(milliseconds: 250),
-            //       curve: Curves.decelerate,
-            //     )
-            //     .then((value) => currentPage.value = index),
+            // onTap: (index) => controller.jumpToPage(index),
+            onTap: (index) => controller
+                .animateToPage(
+                  index,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.decelerate,
+                )
+                .then((value) => currentPage.value = index),
             currentIndex: currentPage.value,
             showUnselectedLabels: false,
             items: const [

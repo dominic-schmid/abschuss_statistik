@@ -5,12 +5,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/add_kill_screen.dart';
+import 'package:flutter/rendering.dart';
 import 'package:jagdverband_scraper/all_map_screen.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
-import 'package:jagdverband_scraper/map_screen.dart';
 import 'package:jagdverband_scraper/utils/database_methods.dart';
 import 'package:jagdverband_scraper/models/kill_page.dart';
+import 'package:jagdverband_scraper/utils/providers.dart';
 import 'package:jagdverband_scraper/utils/request_methods.dart';
 import 'package:jagdverband_scraper/settings_screen.dart';
 import 'package:jagdverband_scraper/utils/utils.dart';
@@ -21,14 +21,14 @@ import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart';
 
 import 'models/kill_entry.dart';
-import 'package:intl/intl.dart';
 
 import 'models/sorting.dart';
+import 'widgets/kill_list_entry.dart';
 
 class KillsScreen extends StatefulWidget {
   const KillsScreen({Key? key}) : super(key: key);
@@ -42,6 +42,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   final ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
 
   bool _isLoading = true;
+  ValueNotifier<bool> _isFabVisible = ValueNotifier(true);
+
   late int _currentYear;
   List<int> _yearList = [];
   late DateTime _lastRefresh;
@@ -78,9 +80,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
       });
       KillPage? p2 = await refresh(
           _currentYear); // Refresh current year if launching app to check for updates
-      if (page != null && page!.kills.isNotEmpty && page != p2) {
-        print('COMPARING $page to $p2');
-        print('Changes found!');
+      if (page != null && p2 != null && page!.kills.isNotEmpty && page != p2) {
         newKills = page!.kills.where((k) {
           return !page!.kills.contains(k);
         }).toList();
@@ -97,6 +97,17 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
       }
       loadPastYearsIfNotExisting(); // Async loads all historic years in BG if not existing
     });
+
+    // Hide FAB at the bottom of the listview (to see the entries)
+    // _scrollController.addListener(() {
+    //   if (_scrollController.position.atEdge && _scrollController.position.pixels > 0) {
+    //     if (_isFabVisible.value) {
+    //       _isFabVisible.value = false;
+    //     }
+    //   } else if (!_isFabVisible.value) {
+    //     _isFabVisible.value = true;
+    //   }
+    // });
   }
 
   @override
@@ -333,6 +344,13 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
             ? buildToolbarSearchbar()
             : InkWell(
                 onTap: () async {
+                  if (await Connectivity()
+                          .checkConnectivity()
+                          .timeout(const Duration(seconds: 15)) ==
+                      ConnectivityResult.none) {
+                    showSnackBar('Kein Internet!', context);
+                    return;
+                  }
                   await Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => AllMapScreen(page: page!)));
                   setState(() {});
@@ -378,6 +396,37 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
           ),
         ),
       ),
+      floatingActionButton: CustomFab(isVisible: _isFabVisible),
+      // floatingActionButton: ValueListenableBuilder<bool>(
+      //   builder: (BuildContext context, value, Widget? child) {
+      //     return AnimatedSwitcher(
+      //       duration: const Duration(milliseconds: 750),
+      //       child: value
+      //           ? FloatingActionButton(
+      //               onPressed: () {},
+      //               backgroundColor: Theme.of(context).textTheme.headline1!.color,
+      //               foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+      //               child: Icon(Icons.add),
+      //               isExtended: true,
+      //               elevation: 7,
+      //             )
+      //           : Container(),
+      //     );
+
+      //     return value
+      //         ? FloatingActionButton(
+      //             onPressed: () {},
+      //             backgroundColor: Theme.of(context).textTheme.headline1!.color,
+      //             foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+      //             child: Icon(Icons.add),
+      //             isExtended: true,
+      //             elevation: 7,
+      //           )
+      //         : Container();
+      //   },
+      // valueListenable: _isFabVisible,
+
+      // ),
     );
   }
 
@@ -385,16 +434,6 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
 
   List<Widget> buildActionButtons() {
     return <Widget>[
-      // TODO ENABLE WHEN IMPLEMENTED
-      // IconButton(
-      //   onPressed: () {
-      //     Navigator.of(context).push(CupertinoPageRoute(
-      //       builder: (context) => const AddKillScreen(),
-      //       fullscreenDialog: true,
-      //     ));
-      //   },
-      //   icon: const Icon(Icons.add_box_rounded),
-      // ),
       IconButton(
           onPressed: () {
             if (controller.text.isNotEmpty) controller.text = "";
@@ -475,6 +514,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
     int selectedUrsachenChips = ursacheChips.where((e) => e.isSelected).length;
     int selectedVerwendungenChips = verwendungChips.where((e) => e.isSelected).length;
     int selectedGeschlechterChips = geschlechterChips.where((e) => e.isSelected).length;
+
+    bool darkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return [
       Padding(
@@ -645,16 +686,16 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
       Padding(
         padding: chipPadding,
         child: ActionChip(
-          avatar: const CircleAvatar(
+          avatar: CircleAvatar(
             backgroundColor: Colors.transparent,
             child: Icon(
               Icons.download_rounded,
-              color: Colors.limeAccent,
+              color: Colors.lightBlue[700],
               size: 18,
             ),
           ),
-          backgroundColor: Colors.limeAccent.withOpacity(0.25),
-          labelStyle: const TextStyle(color: Colors.limeAccent),
+          backgroundColor: Colors.lightBlue[700]!.withOpacity(0.3),
+          labelStyle: TextStyle(color: Colors.lightBlue[700]),
           label: const Text('Export'),
           onPressed: () => _selectExport(context),
         ),
@@ -696,7 +737,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
         context: context,
         builder: (context) {
           return SimpleDialog(
-            title: const Text('Abschüsse Exportieren', textAlign: TextAlign.center),
+            title: const Text('Exportieren als', textAlign: TextAlign.center),
             children: [
               SimpleDialogOption(
                 padding: const EdgeInsets.all(20),
@@ -860,26 +901,37 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
           bool showPerson = prefs.getBool('showPerson') ?? false;
           return RefreshIndicator(
             color: Theme.of(context).colorScheme.primary,
-            child: Scrollbar(
-              controller: _scrollController,
-              interactive: true,
-              child: ListView.builder(
+            child: NotificationListener<UserScrollNotification>(
+              onNotification: (notification) {
+                if (notification.direction == ScrollDirection.reverse &&
+                    _isFabVisible.value) {
+                  _isFabVisible.value = false;
+                } else if (notification.direction == ScrollDirection.forward &&
+                    !_isFabVisible.value) {
+                  _isFabVisible.value = true;
+                }
+                return true;
+              },
+              child: Scrollbar(
                 controller: _scrollController,
-                cacheExtent: 1000, // pixels both directions
-                //separatorBuilder: (context, index) => Divider(),
-                itemCount: kills.length + 1,
-                itemBuilder: ((context, index) {
-                  if (index == 0) return buildProgressBar(kills);
+                interactive: true,
+                child: ListView.builder(
+                  controller: _scrollController,
+                  cacheExtent: 1250, // pixels both directions
+                  itemCount: kills.length + 1,
+                  itemBuilder: ((context, index) {
+                    if (index == 0) return buildProgressBar(kills);
 
-                  KillEntry k = kills.elementAt(index - 1);
-                  return KillListEntry(
-                    key: Key(k.key),
-                    kill: k,
-                    initiallyExpanded: newKills.isEmpty ? false : newKills.contains(k),
-                    showPerson: showPerson,
-                    revier: page!.revierName,
-                  );
-                }),
+                    KillEntry k = kills.elementAt(index - 1);
+                    return KillListEntry(
+                      key: Key(k.key),
+                      kill: k,
+                      initiallyExpanded: newKills.isEmpty ? false : newKills.contains(k),
+                      showPerson: showPerson,
+                      revier: page!.revierName,
+                    );
+                  }),
+                ),
               ),
             ),
             onRefresh: () async {
@@ -902,311 +954,29 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   bool get wantKeepAlive => true;
 }
 
-class KillListEntry extends StatefulWidget {
-  final KillEntry kill;
-  final bool showPerson;
-  final String revier;
-  final bool initiallyExpanded;
-
-  const KillListEntry({
-    Key? key,
-    required this.kill,
-    required this.showPerson,
-    this.revier = "",
-    this.initiallyExpanded = false,
-  }) : super(key: key);
-
-  @override
-  State<KillListEntry> createState() => KillListEntryState();
-}
-
-class KillListEntryState extends State<KillListEntry> {
-  final GlobalKey expansionTileKey = GlobalKey();
-
-  void _scrollToSelectedContent({required GlobalKey expansionTileKey}) {
-    final keyContext = expansionTileKey.currentContext;
-    if (keyContext != null) {
-      Future.delayed(const Duration(milliseconds: 200)).then((value) {
-        Scrollable.ensureVisible(keyContext, duration: const Duration(milliseconds: 200));
-      });
-    }
-  }
+class CustomFab extends StatelessWidget {
+  final ValueNotifier<bool> isVisible;
+  const CustomFab({Key? key, required this.isVisible}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    KillEntry k = widget.kill;
-
-    String alter = k.alter.isNotEmpty && k.alterw.isEmpty
-        ? k.alter
-        : k.alter.isEmpty && k.alterw.isNotEmpty
-            ? k.alterw
-            : k.alter.isNotEmpty && k.alterw.isNotEmpty
-                ? '${k.alter} - ${k.alterw}'
-                : "";
-    alter = alter.trim();
-
-    Size size = MediaQuery.of(context).size;
-
-    String date = DateFormat('dd.MM.yy').format(k.datetime);
-    String time = DateFormat('kk:mm').format(k.datetime);
-
-    List<Widget> iconButtons = [
-      IconButton(
-        onPressed: () {
-          Clipboard.setData(ClipboardData(text: k.toString()));
-          showSnackBar('In Zwischenablage kopiert!', context);
-        },
-        icon: const Icon(Icons.copy_rounded, color: primaryColor),
-      ),
-      IconButton(
-        onPressed: () async {
-          final box = context.findRenderObject() as RenderBox?; // Needed for iPad
-
-          await Share.share(
-            'Sieh dir diesen Abschuss in ${widget.revier} an!\n${k.toString()}',
-            subject: 'Sieh dir diesen Abschuss in ${widget.revier} an!',
-            sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-          );
-        },
-        icon: const Icon(Icons.share, color: primaryColor),
-      ),
-    ];
-
-    if (k.gpsLat != null && k.gpsLon != null) {
-      iconButtons.add(
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => MapScreen(kill: k),
-              ),
-            );
-          },
-          icon: const Icon(
-            Icons.map_rounded,
-            color: primaryColor,
-          ),
-        ),
-      );
-    }
-
-    return Container(
-      key: expansionTileKey,
-      margin: EdgeInsets.symmetric(
-          horizontal: size.width * 0.05, vertical: size.height * 0.005),
-      child: Card(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(20),
-          ),
-        ),
-        color: k.color.withOpacity(0.8),
-        elevation: 7,
-        clipBehavior: Clip.hardEdge,
-        child: Theme(
-          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-          child: ExpansionTile(
-            onExpansionChanged: (exp) {
-              if (exp) {
-                // Checking expansion status
-                _scrollToSelectedContent(expansionTileKey: expansionTileKey);
-              }
-            },
-            iconColor: primaryColor,
-            collapsedIconColor: primaryColor,
-            initiallyExpanded: widget.initiallyExpanded,
-            leading: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  k.icon,
-                  color: primaryColor,
-                ),
-              ],
-            ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //   children: [
-            //     Icon(k.ursache == 'erlegt' ? Icons.check : Icons.close),
-            //     // Icon(
-            //     //   k.verwendung == 'Eigengebrauch'
-            //     //       ? Icons.person
-            //     //       : k.verwendung == 'verkauf'
-            //     //           ? Icons.euro
-            //     //           : Icons.close,
-            //     // ),
-            //   ],
-            // ),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Text(
-                    k.wildart,
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: primaryColor,
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    k.oertlichkeit,
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: primaryColor,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            subtitle: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(k.geschlecht, style: TextStyle(color: secondaryColor)),
-                Text(
-                  date,
-                  style: TextStyle(color: secondaryColor),
-                ),
-              ],
-            ),
-            // expandedAlignment: Alignment.topLeft,
-
-            childrenPadding: EdgeInsets.only(
-              left: MediaQuery.of(context).size.width * 0.01,
-              //left: MediaQuery.of(context).size.width * 0.05,
-              right: MediaQuery.of(context).size.width * 0.01,
-              bottom: 10,
-            ),
-            expandedCrossAxisAlignment: CrossAxisAlignment.start,
-
-            children: [
-              ExpandedChildKillEntry(
-                icon: Icons.numbers_rounded,
-                title: 'Nummer',
-                value: k.nummer.toString(),
-              ),
-              ExpandedChildKillEntry(
-                icon: Icons.map_rounded,
-                title: 'Gebiet',
-                value: k.hegeinGebietRevierteil,
-              ),
-              time == '00:00' || time == '24:00'
-                  ? Container()
-                  : ExpandedChildKillEntry(
-                      icon: Icons.access_time_outlined,
-                      title: 'Uhrzeit',
-                      value: time,
-                    ),
-              ExpandedChildKillEntry(
-                icon: Icons.calendar_month,
-                title: 'Alter',
-                value: alter,
-              ),
-              ExpandedChildKillEntry(
-                icon: Icons.scale,
-                title: 'Gewicht',
-                value: k.gewicht == 0 ? null : '${k.gewicht} kg',
-              ),
-              widget.showPerson &&
-                      k.ursache != 'Fallwild' &&
-                      k.ursache != 'Straßenunfall' &&
-                      k.ursache != 'vom Zug überfahren'
-                  ? ExpandedChildKillEntry(
-                      icon: Icons.person,
-                      title: 'Erleger',
-                      value: k.erleger,
-                    )
-                  : Container(),
-              widget.showPerson
-                  ? ExpandedChildKillEntry(
-                      icon: Icons.person_add_alt_1,
-                      title: 'Begleiter',
-                      value: k.begleiter,
-                    )
-                  : Container(),
-              ExpandedChildKillEntry(
-                icon: Icons.data_usage,
-                title: 'Verwendung',
-                value: k.verwendung,
-              ),
-              ExpandedChildKillEntry(
-                icon: Icons.history_edu_rounded,
-                title: 'Ursprungszeichen',
-                value: k.ursprungszeichen,
-              ),
-              k.jagdaufseher == null
-                  ? Container()
-                  : ExpandedChildKillEntry(
-                      icon: Icons.admin_panel_settings_outlined,
-                      title: k.jagdaufseher!['aufseher']!,
-                      value: "${k.jagdaufseher!['datum']}\n${k.jagdaufseher!['zeit']}",
-                    ),
-              SizedBox(width: double.infinity, height: size.height * 0.0025),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: iconButtons,
-              ),
-            ],
-          ),
-        ),
-      ),
+    return ValueListenableBuilder<bool>(
+      builder: (BuildContext context, value, Widget? child) {
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 150),
+          child: value
+              ? FloatingActionButton(
+                  onPressed: () {},
+                  backgroundColor: Theme.of(context).textTheme.headline1!.color,
+                  foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  isExtended: true,
+                  elevation: 5,
+                  child: const Icon(Icons.add),
+                )
+              : const SizedBox(),
+        );
+      },
+      valueListenable: isVisible,
     );
-  }
-}
-
-class ExpandedChildKillEntry extends StatelessWidget {
-  final IconData? icon;
-  final String title;
-  final String? value;
-
-  const ExpandedChildKillEntry({
-    Key? key,
-    required this.icon,
-    required this.title,
-    required this.value,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
-    return value == null || value!.isEmpty || value == "null"
-        ? Container()
-        : ListTile(
-            onLongPress: () {
-              Clipboard.setData(ClipboardData(text: value));
-              showSnackBar('In Zwischenablage kopiert!', context);
-            },
-            visualDensity: const VisualDensity(horizontal: 4, vertical: -3.5),
-            textColor: secondaryColor,
-            iconColor: secondaryColor,
-            horizontalTitleGap: 0,
-            leading: Icon(
-              icon,
-              size: size.height * 0.023,
-            ),
-            title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Flexible(
-                child:
-                    Padding(padding: const EdgeInsets.only(left: 5), child: Text(title)),
-              ),
-              Flexible(
-                child: Text(
-                  value!,
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: secondaryColor,
-                    fontSize: 15,
-                    overflow: TextOverflow.fade,
-                  ),
-                ),
-              ),
-            ]),
-          );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdverband_scraper/home_screen.dart';
-import 'package:jagdverband_scraper/kills_screen.dart';
 import 'package:jagdverband_scraper/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -177,16 +176,13 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
       return;
     }
 
-    if (await Connectivity()
-            .checkConnectivity()
-            .timeout(const Duration(seconds: 15)) ==
+    if (await Connectivity().checkConnectivity().timeout(const Duration(seconds: 15)) ==
         ConnectivityResult.none) {
       showSnackBar('Fehler: Kein Internet!', context);
       return;
     }
 
-    if (_loginAttempts > 5 &&
-        DateTime.now().difference(_lastRefresh).inSeconds < 60) {
+    if (_loginAttempts > 5 && DateTime.now().difference(_lastRefresh).inSeconds < 60) {
       showSnackBar(
           'Zu oft angemeldet! Warte 1 Minute bevor du dich erneut anmelden kannst.',
           context);
