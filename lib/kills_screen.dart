@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:jagdverband_scraper/all_map_screen.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
+import 'package:jagdverband_scraper/generated/l10n.dart';
 import 'package:jagdverband_scraper/utils/database_methods.dart';
 import 'package:jagdverband_scraper/models/kill_page.dart';
 import 'package:jagdverband_scraper/utils/providers.dart';
@@ -42,13 +43,13 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   final ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
 
   bool _isLoading = true;
-  ValueNotifier<bool> _isFabVisible = ValueNotifier(true);
+  final ValueNotifier<bool> _isFabVisible = ValueNotifier(true);
 
   late int _currentYear;
   List<int> _yearList = [];
   late DateTime _lastRefresh;
   late Sorting _currentSorting;
-  final List<Sorting> _sortings = Sorting.generateDefault();
+  List<Sorting> _sortings = [];
 
   KillPage? page;
   List<KillEntry> filteredKills = [];
@@ -62,17 +63,20 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   @override
   void initState() {
     super.initState();
+
     _currentYear = DateTime.now().year;
     _yearList = List.generate(
       _currentYear - 2015 + 1,
       (index) => index + 2015,
     ).reversed.toList();
 
-    _currentSorting =
-        _sortings.firstWhere((element) => element.sortType == SortType.datum);
     _lastRefresh = DateTime.now()
         .subtract(const Duration(seconds: 60)); // first refresh can happen instantly
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      _sortings = (Sorting.generateDefault(context));
+      _currentSorting =
+          _sortings.firstWhere((element) => element.sortType == SortType.datum);
+
       await loadYear(_currentYear);
       print('Loaded initial page for year $_currentYear: $page');
       setState(() {
@@ -299,6 +303,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
 
   @override
   Widget build(BuildContext context) {
+    final delegate = S.of(context);
+
     super.build(context);
     if (page == null) {
       return Scaffold(
@@ -348,7 +354,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                           .checkConnectivity()
                           .timeout(const Duration(seconds: 15)) ==
                       ConnectivityResult.none) {
-                    showSnackBar('Kein Internet!', context);
+                    showSnackBar(delegate.noInternetError, context);
                     return;
                   }
                   await Navigator.of(context).push(
@@ -359,7 +365,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                   children: [
                     const Icon(Icons.map_rounded),
                     const SizedBox(width: 4),
-                    Text(page == null ? 'Revier' : page!.revierName),
+                    Text(page == null ? delegate.ksTerritoryTitle : page!.revierName),
                   ],
                 ),
               ),
@@ -450,6 +456,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   }
 
   Widget buildToolbarSearchbar() {
+    final dg = S.of(context);
     return Center(
       child: TextField(
         autofocus: true,
@@ -459,7 +466,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
         decoration: InputDecoration(
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
-          hintText: '${filteredKills.length} Abschüsse filtern',
+          hintText: dg.searchXKills(filteredKills.length),
         ),
         onChanged: (query) => setState(() {}),
       ),
@@ -502,6 +509,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   }
 
   List<Widget> buildActionChips() {
+    final dg = S.of(context);
     ShapeBorder modalShape = const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(20),
@@ -515,7 +523,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
     int selectedVerwendungenChips = verwendungChips.where((e) => e.isSelected).length;
     int selectedGeschlechterChips = geschlechterChips.where((e) => e.isSelected).length;
 
-    bool darkMode = Provider.of<ThemeProvider>(context).isDarkMode;
+    //bool darkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return [
       Padding(
@@ -566,7 +574,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
             ),
             backgroundColor: steinhuhnFarbe.withOpacity(0.25),
             labelStyle: const TextStyle(color: steinhuhnFarbe),
-            label: const Text('Sortierung'),
+            label: Text(dg.sortTitle),
             onPressed: () async {
               await showMaterialModalBottomSheet(
                   context: context,
@@ -592,13 +600,16 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
             ),
             backgroundColor: wildFarbe.withOpacity(0.25),
             labelStyle: const TextStyle(color: wildFarbe),
-            label: Text('$selectedWildChips Wildarten'),
+            label: Text('$selectedWildChips ${dg.gameTypes}'),
             onPressed: () async {
               await showMaterialModalBottomSheet(
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
-                    return ChipSelectorModal(title: 'Wildarten', chips: wildChips);
+                    return ChipSelectorModal(
+                        key: const Key('GameSelectorModal'),
+                        title: dg.gameTypes,
+                        chips: wildChips);
                   });
               if (mounted) setState(() {});
             }),
@@ -618,14 +629,16 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
             ),
             backgroundColor: protokollFarbe.withOpacity(0.25),
             labelStyle: const TextStyle(color: protokollFarbe),
-            label: Text('$selectedGeschlechterChips Geschlechter'),
+            label: Text('$selectedGeschlechterChips ${dg.sexes}'),
             onPressed: () async {
               await showMaterialModalBottomSheet(
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
                     return ChipSelectorModal(
-                        title: 'Geschlechter', chips: geschlechterChips);
+                        key: const Key('SexSelectorModal'),
+                        title: dg.sexes,
+                        chips: geschlechterChips);
                   });
               if (mounted) setState(() {});
             }),
@@ -645,13 +658,17 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
             ),
             backgroundColor: hegeabschussFarbe.withOpacity(0.25),
             labelStyle: const TextStyle(color: hegeabschussFarbe),
-            label: Text('$selectedUrsachenChips Ursachen'),
+            label: Text('$selectedUrsachenChips ${dg.causes}'),
             onPressed: () async {
               await showMaterialModalBottomSheet(
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
-                    return ChipSelectorModal(title: 'Ursachen', chips: ursacheChips);
+                    return ChipSelectorModal(
+                      key: const Key('CauseSelectorModal'),
+                      title: dg.causes,
+                      chips: ursacheChips,
+                    );
                   });
               if (mounted) setState(() {});
             }),
@@ -671,14 +688,16 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
             ),
             backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
             labelStyle: const TextStyle(color: nichtBekanntFarbe),
-            label: Text('$selectedVerwendungenChips Verwendungen'),
+            label: Text('$selectedVerwendungenChips ${dg.usages}'),
             onPressed: () async {
               await showMaterialModalBottomSheet(
                   context: context,
                   shape: modalShape,
                   builder: (BuildContext context) {
                     return ChipSelectorModal(
-                        title: 'Verwendungen', chips: verwendungChips);
+                        key: const Key('UsageSelectorModal'),
+                        title: dg.usages,
+                        chips: verwendungChips);
                   });
               if (mounted) setState(() {});
             }),
@@ -696,7 +715,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
           ),
           backgroundColor: Colors.lightBlue[700]!.withOpacity(0.3),
           labelStyle: TextStyle(color: Colors.lightBlue[700]),
-          label: const Text('Export'),
+          label: Text(dg.ksExport),
           onPressed: () => _selectExport(context),
         ),
       ),
@@ -733,18 +752,19 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   }
 
   _selectExport(BuildContext context) async {
+    final dg = S.of(context);
     return showDialog(
         context: context,
         builder: (context) {
           return SimpleDialog(
-            title: const Text('Exportieren als', textAlign: TextAlign.center),
+            title: Text(dg.ksExportDialogTitle, textAlign: TextAlign.center),
             children: [
               SimpleDialogOption(
                 padding: const EdgeInsets.all(20),
                 child: const Text('CSV (;)', textAlign: TextAlign.center),
                 onPressed: () async {
                   if (page == null || page!.kills.isEmpty) {
-                    showSnackBar('Keine Abschüsse gefunden!', context);
+                    showSnackBar(dg.noKillsFoundError, context);
                     return;
                   }
                   _saveAndShareFile(csvDelimiter: ';');
@@ -758,7 +778,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                 child: const Text('CSV (,)', textAlign: TextAlign.center),
                 onPressed: () async {
                   if (page == null || page!.kills.isEmpty) {
-                    showSnackBar('Keine Abschüsse gefunden!', context);
+                    showSnackBar(dg.noKillsFoundError, context);
                     return;
                   }
                   _saveAndShareFile(csvDelimiter: ',');
@@ -772,7 +792,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                 child: const Text('JSON', textAlign: TextAlign.center),
                 onPressed: () {
                   if (page == null || page!.kills.isEmpty) {
-                    showSnackBar('Keine Abschüsse gefunden!', context);
+                    showSnackBar(dg.noKillsFoundError, context);
                     return;
                   }
                   _saveAndShareFile(isJson: true);
@@ -811,6 +831,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
     buttonList.add(_buildHandle(context));
     Size size = MediaQuery.of(context).size;
 
+    _sortings = Sorting.generateDefault(context);
+
     for (Sorting s in _sortings) {
       buttonList.add(
         MaterialButton(
@@ -844,7 +866,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
               s.sortType == SortType.kein || s != _currentSorting
                   ? Container()
                   : Icon(
-                      s.ascending
+                      _currentSorting.ascending
                           ? Icons.arrow_upward_rounded
                           : Icons.arrow_downward_rounded,
                       color: s == _currentSorting
@@ -865,6 +887,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   }
 
   Widget buildProgressBar(List<KillEntry> kills) {
+    final dg = S.of(context);
     double percentage = kills.length / page!.kills.length;
     double w = MediaQuery.of(context).size.width;
     return Padding(
@@ -879,7 +902,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
           //#c4 > h1
           const SizedBox(height: 10),
           Text(
-            'Zeige ${kills.length} von ${page!.kills.length}',
+            dg.ksShowXFromYProgressBar(kills.length, page!.kills.length),
             style: const TextStyle(fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 12),

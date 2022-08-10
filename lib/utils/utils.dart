@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jagdverband_scraper/generated/l10n.dart';
 import 'package:jagdverband_scraper/utils/database_methods.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -176,6 +177,72 @@ List<Map<String, String>> baseGroupBys = [
   },
   //  'datetime': k.datetime.toIso8601String(),
 ];
+
+const languages = {
+  "en": {"name": "English", "nativeName": "English"},
+  "de": {"name": "German", "nativeName": "Deutsch"},
+  "it": {"name": "Italian", "nativeName": "Italiano"}
+};
+
+String translateValue(BuildContext ctx, String label) {
+  final dg = S.of(ctx);
+  switch (label) {
+    case 'Rehwild':
+      return dg.rehwild;
+    case 'Rotwild':
+      return dg.rotwild;
+    case 'Gamswild':
+      return dg.gamswild;
+    case 'Steinwild':
+      return dg.steinwild;
+    case 'Schwarzwild':
+      return dg.schwarzwild;
+    case 'Spielhahn':
+      return dg.spielhahn;
+    case 'Steinhuhn':
+      return dg.steinhuhn;
+    case 'Schneehuhn':
+      return dg.schneehuhn;
+    case 'Murmeltier':
+      return dg.murmeltier;
+    case 'Dachs':
+      return dg.dachs;
+    case 'Fuchs':
+      return dg.fuchs;
+    case 'Schneehase':
+      return dg.schneehase;
+    case 'Andere Wildart':
+      return dg.andereWildart;
+    case 'erlegt':
+      return dg.erlegt;
+    case 'Fallwild':
+      return dg.fallwild;
+    case 'Hegeabschuss':
+      return dg.hegeabschuss;
+    case 'Straßenunfall':
+      return dg.strassenunfall;
+    case 'Protokoll / beschlagnahmt':
+      return dg.protokollBeschlagnahmt;
+    case 'vom zug überfahren':
+      return dg.vomZug;
+    case 'Freizone':
+      return dg.freizone;
+    case 'Eigengebrauch':
+      return dg.eigengebrauch;
+    case 'Eigengebrauch - Abgabe zur Weiterverarbeitung':
+      return dg.eigengebrauchAbgabe;
+    case 'verkauf':
+      return dg.verkauf;
+    case 'nicht verwertbar':
+      return dg.nichtVerwertbar;
+    case 'nicht gefunden / Nachsuche erfolglos':
+      return dg.nichtGefunden;
+    case 'nicht bekannt':
+      return dg.nichtBekannt;
+    default:
+      return label;
+  }
+}
 
 const ShapeBorder modalShape = RoundedRectangleBorder(
   borderRadius: BorderRadius.only(

@@ -10,7 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'package:jagdverband_scraper/generated/l10n.dart';
 import 'utils/database_methods.dart';
 import 'models/kill_entry.dart';
 import 'models/kill_page.dart';
@@ -41,8 +43,7 @@ Future<void> _showNotification() async {
       KillPage? sqlPage;
       try {
         sqlPage = await SqliteDB.internal().db.then((d) async {
-          List<Map<String, Object?>> kills =
-              await d.query('Kill', where: 'year = $year');
+          List<Map<String, Object?>> kills = await d.query('Kill', where: 'year = $year');
 
           List<KillEntry> killList = [];
           for (Map<String, Object?> m in kills) {
@@ -50,8 +51,7 @@ Future<void> _showNotification() async {
             if (k != null) killList.add(k);
           }
 
-          return KillPage.fromList(
-              kills.first['revier'] as String, year, killList);
+          return KillPage.fromList(kills.first['revier'] as String, year, killList);
         });
       } catch (e) {
         print('Notification error parsing KillPage from db: ${e.toString()}');
@@ -172,7 +172,15 @@ class MyApp extends StatelessWidget {
           final themeProvider = Provider.of<ThemeProvider>(context);
 
           return MaterialApp(
-            title: 'Abschuss Statistik',
+            onGenerateTitle: (context) => S.of(context).appTitle,
+            // title: 'Abschuss Statistik',
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
             theme: ThemeData(
               textTheme: Theme.of(context).textTheme.apply(
                     bodyColor: Colors.black,

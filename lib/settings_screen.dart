@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:jagdverband_scraper/credentials_screen.dart';
+import 'package:jagdverband_scraper/generated/l10n.dart';
 import 'package:jagdverband_scraper/utils/request_methods.dart';
 import 'package:jagdverband_scraper/widgets/chart_app_bar.dart';
 import 'package:provider/provider.dart';
@@ -41,6 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final dg = S.of(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     Color bg = Theme.of(context).scaffoldBackgroundColor;
     Size size = MediaQuery.of(context).size;
@@ -49,7 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         scrolledUnderElevation: 0,
         foregroundColor: Theme.of(context).textTheme.headline1!.color,
         backgroundColor: bg,
-        title: const Text('Einstellungen'),
+        title: Text(dg.settingsTitle),
       ),
       body: Center(
         child: Container(
@@ -69,19 +74,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             .copyWith(settingsListBackground: bg),
                         sections: [
                           SettingsSection(
-                            title: const Text(
-                              'Anzeige',
-                              style: TextStyle(color: rehwildFarbe),
+                            title: Text(
+                              dg.settingsDisplay,
+                              style: const TextStyle(color: rehwildFarbe),
                             ),
                             tiles: <SettingsTile>[
                               SettingsTile.navigation(
-                                onPressed: (context) {
-                                  showSnackBar('Sprache wechseln', context);
-                                },
-                                leading: Icon(Icons.language),
-                                title: Text('Sprache'),
-                                value: Text('Deutsch'),
-                                enabled: false, // TODO enable when implemented
+                                onPressed: (context) => _pickLanguage(context),
+                                leading: const Icon(Icons.language),
+                                title: Text(dg.settingsLanguage),
+                                value: Text(
+                                    languages[Intl.getCurrentLocale()]!['nativeName']!),
+                                //enabled: false, // TODO enable when implemented
                               ),
                               SettingsTile.switchTile(
                                 onToggle: (value) {
@@ -89,7 +93,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 },
                                 initialValue: themeProvider.isDarkMode,
                                 leading: const Icon(Icons.format_paint),
-                                title: const Text('Dunkler Modus'),
+                                title: Text(dg.settingsDarkMode),
                               ),
                               SettingsTile.switchTile(
                                 onToggle: (value) {
@@ -97,28 +101,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                                   setState(() => _showPerson = value);
                                 },
-                                description: const Text(
-                                    'Es könnte sein, dass dabei nur Sterne angezeigt werden können.'),
+                                description: Text(dg.settingsShowNamesBody),
                                 initialValue: _showPerson,
                                 leading: const Icon(Icons.person),
-                                title: const Text('Namen anzeigen'),
+                                title: Text(dg.settingsShowNamesTitle),
                               ),
                             ],
                           ),
                           SettingsSection(
-                            title: const Text(
-                              'Konto',
-                              style: TextStyle(color: rehwildFarbe),
+                            title: Text(
+                              dg.settingsAccount,
+                              style: const TextStyle(color: rehwildFarbe),
                             ),
                             tiles: <SettingsTile>[
                               SettingsTile(
                                 onPressed: (value) async {
                                   await showAlertDialog(
-                                    title: ' Abmelden',
-                                    description:
-                                        'Möchtest du dich wirklich abmelden?\nDeine Anmeldedaten und alle deiner Einstellungen werden dabei gelöscht!',
-                                    yesOption: 'Ja',
-                                    noOption: 'Nein',
+                                    title: ' ${dg.settingsLogout}',
+                                    description: dg.dialogLogoutBody,
+                                    yesOption: dg.dialogYes,
+                                    noOption: dg.dialogNo,
                                     onYes: () {
                                       deletePrefs().then((value) =>
                                           Navigator.of(context).pushAndRemoveUntil(
@@ -133,14 +135,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   );
                                 },
                                 leading: const Icon(Icons.logout),
-                                title: const Text('Abmelden'),
+                                title: Text(dg.settingsLogout),
                               ),
                             ],
                           ),
                           SettingsSection(
-                              title: const Text(
-                                'Links',
-                                style: TextStyle(color: rehwildFarbe),
+                              title: Text(
+                                dg.settingsLinks,
+                                style: const TextStyle(color: rehwildFarbe),
                               ),
                               tiles: <SettingsTile>[
                                 SettingsTile(
@@ -158,7 +160,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     Icons.favorite_rounded,
                                     color: Colors.red.withAlpha(180),
                                   ),
-                                  title: const Text('Speck spendieren'),
+                                  title: Text(dg.settingsDonate),
                                 ),
                                 SettingsTile(
                                   onPressed: (value) async {
@@ -182,7 +184,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     Icons.language_rounded,
                                     color: Colors.blue[300],
                                   ),
-                                  title: const Text('Webseite'),
+                                  title: Text(dg.settingsWebsite),
                                 ),
                                 SettingsTile(
                                   onPressed: (value) async {
@@ -222,13 +224,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     Icons.open_in_browser_rounded,
                                     color: Colors.orange,
                                   ),
-                                  title: const Text('Jagdverband Statistik'),
+                                  title: Text(dg.settingsHuntersAssociationWebsite),
                                 ),
                               ]),
                           SettingsSection(
-                            title: const Text(
-                              'Entwicklung',
-                              style: TextStyle(color: rehwildFarbe),
+                            title: Text(
+                              dg.settingsDevelopment,
+                              style: const TextStyle(color: rehwildFarbe),
                             ),
                             tiles: <SettingsTile>[
                               SettingsTile(
@@ -236,16 +238,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   Uri uri = Uri(
                                     scheme: 'mailto',
                                     path: 'feedback@jagdstatistik.com',
-                                    queryParameters: {
-                                      'subject': 'Feedback zur Jagdstatistik App'
-                                    },
+                                    queryParameters: {'subject': dg.feedbackMailSubject},
                                   );
 
                                   await launchUrl(uri)
                                       .timeout(const Duration(seconds: 10));
                                 },
                                 leading: const Icon(Icons.mail),
-                                title: const Text('Kontakt'),
+                                title: Text(dg.settingsKontakt),
                               ),
                               SettingsTile(
                                 onPressed: (value) => showAboutDialog(
@@ -261,7 +261,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   applicationLegalese: 'Dominic Schmid © 2022',
                                 ),
                                 leading: const Icon(Icons.app_registration_rounded),
-                                title: const Text('Über'),
+                                title: Text(dg.settingsAbout),
                               ),
                             ],
                           )
@@ -282,6 +282,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
+  }
+
+  _pickLanguage(BuildContext context) async {
+    final dg = S.of(context);
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text(dg.settingsLanguage, textAlign: TextAlign.center),
+            children: [
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('English', textAlign: TextAlign.center),
+                onPressed: () {
+                  setState(() {
+                    S.load(const Locale('en'));
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('Deutsch', textAlign: TextAlign.center),
+                onPressed: () {
+                  setState(() {
+                    S.load(const Locale('de'));
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('Italiano', textAlign: TextAlign.center),
+                onPressed: () {
+                  setState(() {
+                    S.load(const Locale('it'));
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 }
 

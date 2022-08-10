@@ -157,6 +157,7 @@ class KillEntry {
   bool contains(String q) {
     q = _r(q);
     return _r(wildart).contains(q) ||
+        _r(nummer.toString()).contains(q) ||
         _r(geschlecht).contains(q) ||
         _r(oertlichkeit).contains(q) ||
         _r(verwendung).contains(q) ||

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:jagdverband_scraper/generated/l10n.dart';
 import 'package:jagdverband_scraper/models/kill_entry.dart';
 
 enum SortType {
@@ -29,46 +31,56 @@ class Sorting {
     this.ascending = true,
   });
 
-  static List<Sorting> generateDefault() {
+  @override
+  bool operator ==(dynamic other) =>
+      other != null && other is Sorting && sortType == other.sortType;
+  //&& ascending == other.ascending;
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => super.hashCode + Object.hash(sortType, '');
+
+  static List<Sorting> generateDefault(BuildContext context) {
+    final dg = S.of(context);
     return <Sorting>[
-      Sorting(label: 'Keine Sortierung', sortType: SortType.kein),
+      Sorting(label: dg.sortNone, sortType: SortType.kein),
       Sorting(
-        label: 'Datum',
+        label: dg.sortDate,
         sortType: SortType.datum,
         ascending: false,
       ),
       Sorting(
-        label: 'Nummer',
+        label: dg.sortNumber,
         sortType: SortType.nummer,
         ascending: true,
       ),
       Sorting(
-        label: 'Wildart',
+        label: dg.sortGameType,
         sortType: SortType.wildart,
         ascending: true,
       ),
       Sorting(
-        label: 'Geschlecht',
+        label: dg.sortGender,
         sortType: SortType.geschlecht,
         ascending: true,
       ),
       Sorting(
-        label: 'Gewicht',
+        label: dg.sortWeight,
         sortType: SortType.gewicht,
         ascending: false,
       ),
       Sorting(
-        label: 'Ursache',
+        label: dg.sortCause,
         sortType: SortType.ursache,
         ascending: true,
       ),
       Sorting(
-        label: 'Verwendung',
+        label: dg.sortUse,
         sortType: SortType.verwendung,
         ascending: true,
       ),
       Sorting(
-        label: 'Örtlichkeit',
+        label: dg.sortPlace,
         sortType: SortType.oertlichkeit,
         ascending: true,
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jagdverband_scraper/generated/l10n.dart';
 
 import '../utils/utils.dart';
 
@@ -17,6 +18,7 @@ class ExpandedChildKillEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dg = S.of(context);
     Size size = MediaQuery.of(context).size;
 
     return value == null || value!.isEmpty || value == "null"
@@ -24,7 +26,7 @@ class ExpandedChildKillEntry extends StatelessWidget {
         : ListTile(
             onLongPress: () {
               Clipboard.setData(ClipboardData(text: value));
-              showSnackBar('In Zwischenablage kopiert!', context);
+              showSnackBar(dg.copiedToClipboardSnackbar, context);
             },
             visualDensity: const VisualDensity(horizontal: 4, vertical: -3.5),
             textColor: secondaryColor,

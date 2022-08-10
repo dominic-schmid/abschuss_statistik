@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jagdverband_scraper/utils/utils.dart';
 
 import '../models/filter_chip_data.dart';
 
@@ -36,8 +37,8 @@ class _ChipSelectorModalState extends State<ChipSelectorModal> {
               children: widget.chips
                   .map((c) => StatefulBuilder(builder: (context, setState) {
                         return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5.0, vertical: 2),
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 5.0, vertical: 2),
                           child: FilterChip(
                             checkmarkColor: c.color,
                             selectedColor: c.color.withOpacity(0.25),
@@ -48,13 +49,12 @@ class _ChipSelectorModalState extends State<ChipSelectorModal> {
                               if (mounted) setState(() {});
                             },
                             label: c.icon == null
-                                ? Text(c.label)
+                                ? Text(translateValue(context, c.label))
                                 : Row(
                                     mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(c.label),
+                                      Text(translateValue(context, c.label)),
                                       const SizedBox(width: 4),
                                       Icon(
                                         c.icon,

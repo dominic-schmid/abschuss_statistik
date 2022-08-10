@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jagdverband_scraper/generated/l10n.dart';
 import 'package:jagdverband_scraper/kills_screen.dart';
 import 'package:jagdverband_scraper/stats_screen.dart';
 import 'package:jagdverband_scraper/utils/utils.dart';
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final dg = S.of(context);
     return Scaffold(
       bottomNavigationBar: ValueListenableBuilder(
         builder: ((context, value, child) {
@@ -42,15 +44,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 .then((value) => currentPage.value = index),
             currentIndex: currentPage.value,
             showUnselectedLabels: false,
-            items: const [
+            items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.home_outlined),
-                activeIcon: Icon(Icons.home_rounded),
-                label: 'Abschüsse',
+                icon: const Icon(Icons.home_outlined),
+                activeIcon: const Icon(Icons.home_rounded),
+                label: dg.kills,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.bar_chart_rounded),
-                label: 'Statistik',
+                icon: const Icon(Icons.bar_chart_rounded),
+                label: dg.statistics,
               ),
             ],
           );

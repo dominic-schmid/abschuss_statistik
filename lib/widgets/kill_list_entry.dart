@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:jagdverband_scraper/generated/l10n.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../map_screen.dart';
@@ -41,6 +42,7 @@ class KillListEntryState extends State<KillListEntry> {
 
   @override
   Widget build(BuildContext context) {
+    final dg = S.of(context);
     KillEntry k = widget.kill;
 
     String alter = k.alter.isNotEmpty && k.alterw.isEmpty
@@ -61,7 +63,7 @@ class KillListEntryState extends State<KillListEntry> {
       IconButton(
         onPressed: () {
           Clipboard.setData(ClipboardData(text: k.toString()));
-          showSnackBar('In Zwischenablage kopiert!', context);
+          showSnackBar(dg.copiedToClipboardSnackbar, context);
         },
         icon: const Icon(Icons.copy_rounded, color: primaryColor),
       ),
@@ -87,7 +89,7 @@ class KillListEntryState extends State<KillListEntry> {
                     .checkConnectivity()
                     .timeout(const Duration(seconds: 15)) ==
                 ConnectivityResult.none) {
-              showSnackBar('Kein Internet!', context);
+              showSnackBar(dg.noInternetError, context);
               return;
             }
             Navigator.of(context).push(
@@ -156,7 +158,7 @@ class KillListEntryState extends State<KillListEntry> {
               children: [
                 Flexible(
                   child: Text(
-                    k.wildart,
+                    translateValue(context, k.wildart),
                     textAlign: TextAlign.start,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
@@ -180,7 +182,8 @@ class KillListEntryState extends State<KillListEntry> {
             subtitle: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(k.geschlecht, style: TextStyle(color: secondaryColor)),
+                Text(translateValue(context, k.geschlecht),
+                    style: TextStyle(color: secondaryColor)),
                 Text(
                   date,
                   style: TextStyle(color: secondaryColor),
@@ -200,29 +203,29 @@ class KillListEntryState extends State<KillListEntry> {
             children: [
               ExpandedChildKillEntry(
                 icon: Icons.numbers_rounded,
-                title: 'Nummer',
+                title: dg.number,
                 value: k.nummer.toString(),
               ),
               ExpandedChildKillEntry(
                 icon: Icons.map_rounded,
-                title: 'Gebiet',
+                title: dg.area,
                 value: k.hegeinGebietRevierteil,
               ),
               time == '00:00' || time == '24:00'
                   ? Container()
                   : ExpandedChildKillEntry(
                       icon: Icons.access_time_outlined,
-                      title: 'Uhrzeit',
+                      title: dg.time,
                       value: time,
                     ),
               ExpandedChildKillEntry(
                 icon: Icons.calendar_month,
-                title: 'Alter',
-                value: alter,
+                title: dg.age,
+                value: translateValue(context, alter),
               ),
               ExpandedChildKillEntry(
                 icon: Icons.scale,
-                title: 'Gewicht',
+                title: dg.weight,
                 value: k.gewicht == 0 ? null : '${k.gewicht} kg',
               ),
               widget.showPerson &&
@@ -231,25 +234,25 @@ class KillListEntryState extends State<KillListEntry> {
                       k.ursache != 'vom Zug überfahren'
                   ? ExpandedChildKillEntry(
                       icon: Icons.person,
-                      title: 'Erleger',
+                      title: dg.killer,
                       value: k.erleger,
                     )
                   : Container(),
               widget.showPerson
                   ? ExpandedChildKillEntry(
                       icon: Icons.person_add_alt_1,
-                      title: 'Begleiter',
+                      title: dg.companion,
                       value: k.begleiter,
                     )
                   : Container(),
               ExpandedChildKillEntry(
                 icon: Icons.data_usage,
-                title: 'Verwendung',
-                value: k.verwendung,
+                title: dg.usage,
+                value: translateValue(context, k.verwendung),
               ),
               ExpandedChildKillEntry(
                 icon: Icons.history_edu_rounded,
-                title: 'Ursprungszeichen',
+                title: dg.signOfOrigin,
                 value: k.ursprungszeichen,
               ),
               k.jagdaufseher == null

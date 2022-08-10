@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:jagdverband_scraper/generated/l10n.dart';
 import 'package:jagdverband_scraper/home_screen.dart';
 import 'package:jagdverband_scraper/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -96,11 +97,13 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
   }
 
   Widget _buildRevierTF() {
+    final delegate = S.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const Text(
-          'Revier',
+        Text(
+          delegate.credsTerritoryFieldTitle,
           style: kLabelStyle,
         ),
         const SizedBox(height: 10.0),
@@ -115,14 +118,14 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
               color: Colors.white,
               fontFamily: 'OpenSans',
             ),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: InputBorder.none,
               //contentPadding: const EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
+              prefixIcon: const Icon(
                 Icons.co_present_rounded,
                 color: Colors.white,
               ),
-              hintText: 'z.B. Bruneck13L',
+              hintText: delegate.credsTerritoryFieldHint,
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -132,11 +135,13 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
   }
 
   Widget _buildPasswordTF() {
+    final delegate = S.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const Text(
-          'Passwort',
+        Text(
+          delegate.credsPasswordFieldTitle,
           style: kLabelStyle,
         ),
         const SizedBox(height: 10.0),
@@ -153,13 +158,13 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
               color: Colors.white,
               fontFamily: 'OpenSans',
             ),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: InputBorder.none,
-              prefixIcon: Icon(
+              prefixIcon: const Icon(
                 Icons.lock,
                 color: Colors.white,
               ),
-              hintText: 'Passwort',
+              hintText: delegate.credsPasswordFieldHint,
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -169,23 +174,22 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
   }
 
   void login() async {
+    final delegate = S.of(context);
     String revier = _revierController.text;
     String pass = _passwortController.text;
     if (revier.isEmpty || pass.isEmpty) {
-      showSnackBar('Du musst beide Felder Angeben!', context, duration: 2500);
+      showSnackBar(delegate.credsEmptySnackbar, context, duration: 2500);
       return;
     }
 
     if (await Connectivity().checkConnectivity().timeout(const Duration(seconds: 15)) ==
         ConnectivityResult.none) {
-      showSnackBar('Fehler: Kein Internet!', context);
+      showSnackBar(delegate.noInternetError, context);
       return;
     }
 
     if (_loginAttempts > 5 && DateTime.now().difference(_lastRefresh).inSeconds < 60) {
-      showSnackBar(
-          'Zu oft angemeldet! Warte 1 Minute bevor du dich erneut anmelden kannst.',
-          context);
+      showSnackBar(delegate.credsTooManySigninsSnackbar, context);
       return;
     }
 
@@ -209,13 +213,14 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
       );
     } else {
       if (!mounted) return;
-      showSnackBar('Fehler: Zu diesen Daten gibt es kein Revier!', context);
+      showSnackBar(delegate.credsLoginErrorSnackbar, context);
     }
 
     if (mounted) setState(() => _isLoading = false);
   }
 
   Widget _buildLoginBtn() {
+    final delegate = S.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
@@ -229,9 +234,9 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
         color: Colors.white,
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
-            : const Text(
-                'ANMELDEN',
-                style: TextStyle(
+            : Text(
+                delegate.credsLoginButton,
+                style: const TextStyle(
                   color: Colors.green,
                   letterSpacing: 1.5,
                   fontSize: 18.0,
