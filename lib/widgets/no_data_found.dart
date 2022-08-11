@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
 
 class NoDataFoundWidget extends StatelessWidget {
   final String suffix;
@@ -6,6 +7,7 @@ class NoDataFoundWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dg = S.of(context);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -20,7 +22,7 @@ class NoDataFoundWidget extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                'Hier gibt es nichts zu sehen...\n$suffix',
+                '${dg.noDataFoundText}\n$suffix',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.grey,

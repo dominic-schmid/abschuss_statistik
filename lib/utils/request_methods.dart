@@ -1,7 +1,7 @@
 import 'package:html/dom.dart' as dom;
-import 'package:jagdverband_scraper/utils/database_methods.dart';
-import 'package:jagdverband_scraper/models/kill_page.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
+import 'package:jagdstatistik/utils/database_methods.dart';
+import 'package:jagdstatistik/models/kill_page.dart';
+import 'package:jagdstatistik/utils/utils.dart';
 import 'package:requests/requests.dart';
 
 class RequestMethods {

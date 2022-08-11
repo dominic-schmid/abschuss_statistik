@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
-import 'package:jagdverband_scraper/models/filter_chip_data.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/models/filter_chip_data.dart';
 
 import 'kill_entry.dart';
 
@@ -113,40 +114,41 @@ class KillPage {
       kills.length == other.kills.length;
 
   @override
-  // TODO: implement hashCode
   int get hashCode => Object.hash(revierName, jahr, kills.length);
 
-  List<List<dynamic>> toCSV() {
+  List<List<dynamic>> toCSV(BuildContext context) {
+    final dg = S.of(context);
     List<List<dynamic>> allRows = [];
     allRows.add([
-      'Nummer',
-      'Wildart',
-      'Geschlecht',
-      'Hegering/Gebiet/Revierteil',
-      'Alter',
-      'Alterw',
-      'Gewicht',
-      'Erleger',
-      'Begleiter',
-      'Ursache',
-      'Verwendung',
-      'Ursprungszeichen',
-      'Örtlichkeit',
+      dg.number,
+      dg.sortGameType,
+      dg.sortGender,
+      dg.area,
+      dg.age,
+      '{$dg.age}w',
+      dg.weight,
+      dg.killer,
+      dg.companion,
+      dg.sortCause,
+      dg.usage,
+      dg.signOfOrigin,
+      dg.area,
       'Lat',
       'Lon',
-      'Datum',
-      'Zeit',
-      'Aufseher Datum',
-      'Aufseher Zeit',
-      'Aufseher',
+      dg.sortDate,
+      dg.time,
+      '${dg.overseer} ${dg.sortDate}',
+      '${dg.overseer} ${dg.time}',
+      dg.overseer,
     ]);
 
     for (KillEntry k in kills) {
-      allRows.add(k.toCSV());
+      allRows.add(k.toCSV(context));
     }
 
     return allRows;
   }
 
-  List<Map<String, dynamic>> toJson() => kills.map((e) => e.toMap()).toList();
+  List<Map<String, dynamic>> toJson(BuildContext ctx) =>
+      kills.map((e) => e.toMap(ctx)).toList();
 }

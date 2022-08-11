@@ -2,17 +2,17 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:jagdverband_scraper/credentials_screen.dart';
-import 'package:jagdverband_scraper/home_screen.dart';
-import 'package:jagdverband_scraper/utils/providers.dart';
-import 'package:jagdverband_scraper/utils/request_methods.dart';
+import 'package:jagdstatistik/credentials_screen.dart';
+import 'package:jagdstatistik/home_screen.dart';
+import 'package:jagdstatistik/utils/providers.dart';
+import 'package:jagdstatistik/utils/request_methods.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:jagdverband_scraper/generated/l10n.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
 import 'utils/database_methods.dart';
 import 'models/kill_entry.dart';
 import 'models/kill_page.dart';
@@ -64,7 +64,7 @@ Future<void> _showNotification() async {
             content: NotificationContent(
           id: Random.secure().nextInt(999999),
           channelKey: 'basic_channel',
-          title: 'Neuer Abschuss',
+          title: 'Neuer Abschuss', // TODO TRANSLATIONS
           body: 'Es gibt einen neuen Abschuss in ${sqlPage.revierName}!',
         ));
       }
@@ -112,11 +112,13 @@ void main() async {
   String revierLogin = prefs.getString('revierLogin') ?? "";
   String revierPasswort = prefs.getString('revierPasswort') ?? "";
   bool? isDarkMode = prefs.getBool('isDarkMode');
+  String? language = prefs.getString('language');
 
   Map<String, dynamic> config = {
     'login': revierLogin,
     'pass': revierPasswort,
     'isDarkMode': isDarkMode,
+    'language': language,
   };
 
   print('Read config: $config');
@@ -156,6 +158,16 @@ class MyApp extends StatelessWidget {
 
   const MyApp({Key? key, required this.config}) : super(key: key);
 
+  Future<void> tryLoadLocale(Locale locale) async {
+    Locale toLoad = locale;
+    if (!S.delegate.supportedLocales.contains(locale)) {
+      toLoad = S.delegate.supportedLocales.first;
+    }
+
+    await S.load(toLoad);
+    return;
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -163,55 +175,68 @@ class MyApp extends StatelessWidget {
     String pass = config['pass'];
     bool isDarkMode = config['isDarkMode'] ??
         SchedulerBinding.instance.window.platformBrightness == Brightness.dark;
+    Locale locale =
+        config['language'] != null && (config['language'] as String).length == 2
+            ? Locale(config['language'] as String)
+            : Localizations.localeOf(context);
 
-    return ChangeNotifierProvider(
-        create: (BuildContext context) => ThemeProvider(
-              themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            ),
-        builder: (context, _) {
-          final themeProvider = Provider.of<ThemeProvider>(context);
+    return FutureBuilder<void>(
+        future: tryLoadLocale(locale),
+        builder: (context, snap) {
+          if (snap.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.green),
+            );
+          }
+          return ChangeNotifierProvider(
+              create: (BuildContext context) => ThemeProvider(
+                    themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                  ),
+              builder: (context, _) {
+                final themeProvider = Provider.of<ThemeProvider>(context);
 
-          return MaterialApp(
-            onGenerateTitle: (context) => S.of(context).appTitle,
-            // title: 'Abschuss Statistik',
-            localizationsDelegates: const [
-              S.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: S.delegate.supportedLocales,
-            theme: ThemeData(
-              textTheme: Theme.of(context).textTheme.apply(
-                    bodyColor: Colors.black,
-                    displayColor: Colors.black,
+                return MaterialApp(
+                  onGenerateTitle: (context) => S.of(context).appTitle,
+                  localizationsDelegates: const [
+                    S.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                  ],
+                  locale: locale,
+                  supportedLocales: S.delegate.supportedLocales,
+                  theme: ThemeData(
+                    textTheme: Theme.of(context).textTheme.apply(
+                          bodyColor: Colors.black,
+                          displayColor: Colors.black,
+                        ),
+                    brightness: Brightness.light,
+                    primarySwatch: Colors.lightGreen,
+                    appBarTheme: const AppBarTheme().copyWith(
+                      foregroundColor: Colors.white,
+                    ),
+                    useMaterial3: true,
+                    //primaryColor: Color.fromRGBO(56, 142, 60, 1),
                   ),
-              brightness: Brightness.light,
-              primarySwatch: Colors.lightGreen,
-              appBarTheme: const AppBarTheme().copyWith(
-                foregroundColor: Colors.white,
-              ),
-              useMaterial3: true,
-              //primaryColor: Color.fromRGBO(56, 142, 60, 1),
-            ),
-            darkTheme: ThemeData(
-              textTheme: Theme.of(context).textTheme.apply(
-                    bodyColor: Colors.white,
-                    displayColor: Colors.white,
+                  darkTheme: ThemeData(
+                    textTheme: Theme.of(context).textTheme.apply(
+                          bodyColor: Colors.white,
+                          displayColor: Colors.white,
+                        ),
+                    appBarTheme: const AppBarTheme().copyWith(
+                      foregroundColor: Colors.white,
+                    ),
+                    brightness: Brightness.dark,
+                    primarySwatch: Colors.lightGreen,
+                    useMaterial3: true,
+                    //primaryColor: Color.fromRGBO(56, 142, 60, 1),
                   ),
-              appBarTheme: const AppBarTheme().copyWith(
-                foregroundColor: Colors.white,
-              ),
-              brightness: Brightness.dark,
-              primarySwatch: Colors.lightGreen,
-              useMaterial3: true,
-              //primaryColor: Color.fromRGBO(56, 142, 60, 1),
-            ),
-            themeMode: themeProvider.themeMode,
-            home: login.isEmpty || pass.isEmpty
-                ? const CredentialsScreen()
-                : const HomeScreen(),
-          );
+                  themeMode: themeProvider.themeMode,
+                  home: login.isEmpty || pass.isEmpty
+                      ? const CredentialsScreen()
+                      : const HomeScreen(),
+                );
+              });
         });
   }
 }

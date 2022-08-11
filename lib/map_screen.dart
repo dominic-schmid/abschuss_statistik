@@ -6,8 +6,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:jagdverband_scraper/models/kill_entry.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/models/kill_entry.dart';
+import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/utils/utils.dart';
 
 class MapScreen extends StatefulWidget {
   final KillEntry kill;
@@ -59,6 +61,7 @@ class _MapScreenState extends State<MapScreen> {
   void createMarkerIcon() async {
     var bytes = await getBytesFromAsset(path: 'assets/location-marker.png', width: 125);
 
+    if (!mounted) return;
     _markers.add(
       Marker(
         markerId: MarkerId(widget.kill.key),
@@ -67,10 +70,11 @@ class _MapScreenState extends State<MapScreen> {
         icon: BitmapDescriptor.defaultMarkerWithHue(
             KillEntry.getMarkerHueFromWildart(widget.kill.wildart)),
         infoWindow: InfoWindow(
-            title: '${widget.kill.wildart} (${widget.kill.geschlecht})',
+            title:
+                '${translateValue(context, widget.kill.wildart)} (${translateValue(context, widget.kill.geschlecht)})',
             onTap: () => showAlertDialog(
                   title: '',
-                  description: widget.kill.toString(),
+                  description: widget.kill.localizedToString(context),
                   yesOption: '',
                   noOption: 'Ok',
                   onYes: () {},
@@ -98,6 +102,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final dg = S.of(context);
     return Scaffold(
       // appBar: ChartAppBar(
       //     title: Text('Abschuss #${widget.kill.nummer}'),
@@ -192,7 +197,7 @@ class _MapScreenState extends State<MapScreen> {
               onPressed: _goToOrigin,
               backgroundColor: rehwildFarbe,
               foregroundColor: Colors.white,
-              label: const Text('Anfangsposition'),
+              label: Text(dg.mapInitialPosition),
               icon: const Icon(Icons.restore_rounded),
             ),
     );

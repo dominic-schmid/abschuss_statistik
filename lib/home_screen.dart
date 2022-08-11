@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/generated/l10n.dart';
-import 'package:jagdverband_scraper/kills_screen.dart';
-import 'package:jagdverband_scraper/stats_screen.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/kills_screen.dart';
+import 'package:jagdstatistik/stats_screen.dart';
+import 'package:jagdstatistik/utils/utils.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

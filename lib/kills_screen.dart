@@ -6,23 +6,21 @@ import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:jagdverband_scraper/all_map_screen.dart';
-import 'package:jagdverband_scraper/credentials_screen.dart';
-import 'package:jagdverband_scraper/generated/l10n.dart';
-import 'package:jagdverband_scraper/utils/database_methods.dart';
-import 'package:jagdverband_scraper/models/kill_page.dart';
-import 'package:jagdverband_scraper/utils/providers.dart';
-import 'package:jagdverband_scraper/utils/request_methods.dart';
-import 'package:jagdverband_scraper/settings_screen.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
-import 'package:jagdverband_scraper/widgets/chip_selector_modal.dart';
-import 'package:jagdverband_scraper/models/filter_chip_data.dart';
-import 'package:jagdverband_scraper/widgets/no_data_found.dart';
-import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
+import 'package:jagdstatistik/all_map_screen.dart';
+import 'package:jagdstatistik/credentials_screen.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/database_methods.dart';
+import 'package:jagdstatistik/models/kill_page.dart';
+import 'package:jagdstatistik/utils/request_methods.dart';
+import 'package:jagdstatistik/settings_screen.dart';
+import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/widgets/chip_selector_modal.dart';
+import 'package:jagdstatistik/models/filter_chip_data.dart';
+import 'package:jagdstatistik/widgets/no_data_found.dart';
+import 'package:jagdstatistik/widgets/value_selector_modal.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -73,6 +71,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
     _lastRefresh = DateTime.now()
         .subtract(const Duration(seconds: 60)); // first refresh can happen instantly
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final dg = S.of(context);
       _sortings = (Sorting.generateDefault(context));
       _currentSorting =
           _sortings.firstWhere((element) => element.sortType == SortType.datum);
@@ -90,10 +89,10 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
         }).toList();
 
         showAlertDialog(
-          title: ' Neue Abschüsse',
-          description: 'Es wurden ${newKills.length} neue Abschüsse gefunden!',
+          title: ' ${dg.newKills}',
+          description: dg.xNewKillsFound(newKills.length),
           yesOption: '',
-          noOption: 'Schließen',
+          noOption: dg.close,
           onYes: () {},
           icon: Icons.fiber_new_rounded,
           context: context,
@@ -151,6 +150,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
       }
 
       KillPage? p2 = await refresh(year);
+      if (!mounted) return;
+      final dg = S.of(context);
 
       if (p2 != null) {
         if (page != null &&
@@ -163,10 +164,10 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
           }).toList();
 
           showAlertDialog(
-            title: ' Neue Abschüsse',
-            description: 'Es wurden ${newKills.length} neue Abschüsse gefunden!',
+            title: ' ${dg.newKills}',
+            description: dg.xNewKillsFound(newKills.length),
             yesOption: '',
-            noOption: 'Schließen',
+            noOption: dg.close,
             onYes: () {},
             icon: Icons.fiber_new_rounded,
             context: context,
@@ -257,9 +258,10 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   }
 
   void invalidCredentialsLogout() async {
+    final dg = S.of(context);
     await showAlertDialog(
-      title: 'Fehler',
-      description: 'Deine Anmeldedaten sind nicht mehr gültig!',
+      title: dg.error,
+      description: dg.loginDataInvalid,
       yesOption: 'Ok',
       noOption: '',
       onYes: () {},
@@ -274,9 +276,10 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   }
 
   Future<KillPage?> refresh(int year) async {
+    final dg = S.of(context);
     if (await Connectivity().checkConnectivity().timeout(const Duration(seconds: 15)) ==
         ConnectivityResult.none) {
-      showSnackBar('Kein Internet!', context);
+      showSnackBar(dg.noInternetError, context);
       return null;
     }
 
@@ -285,7 +288,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
       _lastRefresh = DateTime.now().subtract(const Duration(
           seconds: 15)); // Can refresh after 15-30 seconds since error occured
       if (mounted) {
-        showSnackBar('Fehler: Abschüsse konnten nicht geladen werden!', context);
+        showSnackBar(dg.noKillsLoadedError, context);
       }
       return null;
     });
@@ -313,7 +316,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
           foregroundColor: Theme.of(context).textTheme.headline1!.color,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           scrolledUnderElevation: 0,
-          title: const Text('Revier'),
+          title: Text(delegate.ksTerritoryTitle),
           actions: buildActionButtons(),
         ),
         body: const Center(
@@ -341,7 +344,6 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
 
     return Scaffold(
       appBar: AppBar(
-        //backgroundColor: rehwildFarbe,
         elevation: 0,
         foregroundColor: Theme.of(context).textTheme.headline1!.color,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -449,7 +451,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
       IconButton(
         onPressed: () => Navigator.of(context)
             .push(CupertinoPageRoute(builder: (context) => const SettingsScreen()))
-            .then((_) => setState(() {})),
+            .then((_) => super.setState(() {})),
         icon: const Icon(Icons.settings),
       ),
     ];
@@ -467,41 +469,6 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
           hintText: dg.searchXKills(filteredKills.length),
-        ),
-        onChanged: (query) => setState(() {}),
-      ),
-    );
-  }
-
-  Widget buildSearchbar() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: TextField(
-        autofocus: false,
-        onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-        style: const TextStyle(color: rehwildFarbe),
-        controller: controller,
-        decoration: InputDecoration(
-          suffixIcon: IconButton(
-            icon: controller.text.isEmpty
-                ? Container()
-                : const Icon(Icons.close, color: rehwildFarbe),
-            onPressed: () =>
-                controller.text.isEmpty ? {} : setState(() => controller.text = ""),
-          ),
-          //enabledBorder: InputBorder.none,
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: rehwildFarbe, width: 1),
-          ),
-          focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: rehwildFarbe, width: 1),
-          ),
-          prefixIcon: const Icon(
-            Icons.search,
-            color: rehwildFarbe,
-          ),
-          prefixIconColor: rehwildFarbe,
-          hintText: '${page!.kills.length} Abschüsse filtern',
         ),
         onChanged: (query) => setState(() {}),
       ),
@@ -607,9 +574,10 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                   shape: modalShape,
                   builder: (BuildContext context) {
                     return ChipSelectorModal(
-                        key: const Key('GameSelectorModal'),
-                        title: dg.gameTypes,
-                        chips: wildChips);
+                      key: const Key('GameSelectorModal'),
+                      title: dg.gameTypes,
+                      chips: wildChips,
+                    );
                   });
               if (mounted) setState(() {});
             }),
@@ -636,9 +604,10 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                   shape: modalShape,
                   builder: (BuildContext context) {
                     return ChipSelectorModal(
-                        key: const Key('SexSelectorModal'),
-                        title: dg.sexes,
-                        chips: geschlechterChips);
+                      key: const Key('SexSelectorModal'),
+                      title: dg.sexes,
+                      chips: geschlechterChips,
+                    );
                   });
               if (mounted) setState(() {});
             }),
@@ -737,11 +706,12 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
 
     File f = await File(filename).create(recursive: true);
 
+    if (!mounted) return;
     if (isJson) {
-      f.writeAsStringSync(jsonEncode(page!.toJson()), encoding: utf8);
+      f.writeAsStringSync(jsonEncode(page!.toJson(context)), encoding: utf8);
     } else {
       f.writeAsStringSync(
-          ListToCsvConverter(fieldDelimiter: csvDelimiter).convert(page!.toCSV()),
+          ListToCsvConverter(fieldDelimiter: csvDelimiter).convert(page!.toCSV(context)),
           encoding: utf8);
     }
 

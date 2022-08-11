@@ -31,21 +31,16 @@ class ValueSelectorModal<T> extends StatelessWidget {
           padding: padding
               ? EdgeInsets.symmetric(
                   horizontal: size.width * 0.2, vertical: size.height * 0.02)
-              : EdgeInsets.symmetric(
-                  horizontal: 0, vertical: size.height * 0.02),
+              : EdgeInsets.symmetric(horizontal: 0, vertical: size.height * 0.02),
           child: Text(
             '$i',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 24,
-              fontWeight:
-                  i == selectedItem ? FontWeight.bold : FontWeight.normal,
+              fontWeight: i == selectedItem ? FontWeight.bold : FontWeight.normal,
               color: i == selectedItem
                   ? Colors.green
-                  : Theme.of(context)
-                      .textTheme
-                      .headline1!
-                      .color, // secondaryColor,
+                  : Theme.of(context).textTheme.headline1!.color, // secondaryColor,
             ),
           ),
         ),

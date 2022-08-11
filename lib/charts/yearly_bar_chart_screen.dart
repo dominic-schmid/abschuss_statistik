@@ -1,11 +1,11 @@
-import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/utils/database_methods.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
-import 'package:jagdverband_scraper/widgets/no_data_found.dart';
-import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/database_methods.dart';
+import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/widgets/no_data_found.dart';
+import 'package:jagdstatistik/widgets/value_selector_modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -35,34 +35,33 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
   bool _isLoading = true;
   bool _showLegend = false;
 
-  Map<String, String> groupBy = {
-    'key': 'Wildarten',
-    'value': 'wildart',
-  };
+  Map<String, String> groupBy = {};
 
-  List<Map<String, String>> groupBys = baseGroupBys.toList();
+  List<Map<String, String>> groupBys = [];
 
   List<int> years = [];
 
   showPerson() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool showPerson = prefs.getBool('showPerson') ?? false;
+    if (!mounted) return;
+    final dg = S.of(context);
     if (showPerson) {
       groupBys.addAll(
         [
           {
-            'key': 'Erleger',
+            'key': dg.killer,
             'value': 'erleger',
           },
           {
-            'key': 'Begleiter',
+            'key': dg.companion,
             'value': 'begleiter',
           },
         ],
       );
     }
     groupBys.add({
-      'key': 'Gewicht',
+      'key': dg.weight,
       'value': 'gewicht',
     });
   }
@@ -72,6 +71,10 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
     super.initState();
     year = DateTime.now().year;
     getConfig();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      groupBys = getBaseGroupBys(context).toList();
+      groupBy = groupBys.first;
+    });
   }
 
   getConfig() async {
@@ -135,8 +138,9 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
           : Colors.primaries[i % Colors.primaries.length];
 
       if (value > maxValue) maxValue = value.toInt(); // Get largest value
-
-      chartItems.add(ChartItem(label: label, value: value, color: c));
+      if (!mounted) return;
+      chartItems
+          .add(ChartItem(label: translateValue(context, label), value: value, color: c));
     }
 
     maxDisplayValue = ((maxValue) % 5 == 0 ? maxValue : 5 - maxValue % 5 + maxValue);
@@ -179,6 +183,8 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator(color: rehwildFarbe));
     }
+
+    final dg = S.of(context);
 
     Size size = MediaQuery.of(context).size;
     groupData.clear();
@@ -255,7 +261,7 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
                   ),
                   backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
                   labelStyle: const TextStyle(color: nichtBekanntFarbe),
-                  label: const Text('Anzeige'),
+                  label: Text(dg.display),
                   onPressed: () async {
                     await showModalBottomSheet(
                         context: context,
@@ -294,9 +300,7 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
           _isLoading
               ? const Center(child: CircularProgressIndicator(color: rehwildFarbe))
               : chartItems.isEmpty
-                  ? const NoDataFoundWidget(
-                      suffix: "Eventuell musst du diese Daten erst herunterladen",
-                    )
+                  ? const NoDataFoundWidget()
                   : ConstrainedBox(
                       constraints: BoxConstraints(
                         maxHeight: size.height * 0.5,

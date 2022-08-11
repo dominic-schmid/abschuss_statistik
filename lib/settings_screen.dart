@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:jagdverband_scraper/credentials_screen.dart';
-import 'package:jagdverband_scraper/generated/l10n.dart';
-import 'package:jagdverband_scraper/utils/request_methods.dart';
-import 'package:jagdverband_scraper/widgets/chart_app_bar.dart';
+import 'package:jagdstatistik/credentials_screen.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/request_methods.dart';
+import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/widgets/chart_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:requests/requests.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -80,12 +81,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                             tiles: <SettingsTile>[
                               SettingsTile.navigation(
-                                onPressed: (context) => _pickLanguage(context),
+                                onPressed: (context) async {
+                                  await showLanguagePicker(context);
+                                  setState(() {});
+                                },
                                 leading: const Icon(Icons.language),
                                 title: Text(dg.settingsLanguage),
                                 value: Text(
                                     languages[Intl.getCurrentLocale()]!['nativeName']!),
-                                //enabled: false, // TODO enable when implemented
                               ),
                               SettingsTile.switchTile(
                                 onToggle: (value) {
@@ -282,49 +285,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
-  }
-
-  _pickLanguage(BuildContext context) async {
-    final dg = S.of(context);
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text(dg.settingsLanguage, textAlign: TextAlign.center),
-            children: [
-              SimpleDialogOption(
-                padding: const EdgeInsets.all(20),
-                child: const Text('English', textAlign: TextAlign.center),
-                onPressed: () {
-                  setState(() {
-                    S.load(const Locale('en'));
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-              SimpleDialogOption(
-                padding: const EdgeInsets.all(20),
-                child: const Text('Deutsch', textAlign: TextAlign.center),
-                onPressed: () {
-                  setState(() {
-                    S.load(const Locale('de'));
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-              SimpleDialogOption(
-                padding: const EdgeInsets.all(20),
-                child: const Text('Italiano', textAlign: TextAlign.center),
-                onPressed: () {
-                  setState(() {
-                    S.load(const Locale('it'));
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
   }
 }
 

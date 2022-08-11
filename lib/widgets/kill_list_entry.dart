@@ -2,7 +2,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:jagdverband_scraper/generated/l10n.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../map_screen.dart';
@@ -62,7 +63,7 @@ class KillListEntryState extends State<KillListEntry> {
     List<Widget> iconButtons = [
       IconButton(
         onPressed: () {
-          Clipboard.setData(ClipboardData(text: k.toString()));
+          Clipboard.setData(ClipboardData(text: k.localizedToString(context)));
           showSnackBar(dg.copiedToClipboardSnackbar, context);
         },
         icon: const Icon(Icons.copy_rounded, color: primaryColor),
@@ -72,8 +73,8 @@ class KillListEntryState extends State<KillListEntry> {
           final box = context.findRenderObject() as RenderBox?; // Needed for iPad
 
           await Share.share(
-            'Sieh dir diesen Abschuss in ${widget.revier} an!\n${k.toString()}',
-            subject: 'Sieh dir diesen Abschuss in ${widget.revier} an!',
+            dg.checkOutThisKillXY(widget.revier, k.localizedToString(context)),
+            subject: dg.checkOutThisKillXY(widget.revier, ""),
             sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
           );
         },
@@ -163,6 +164,7 @@ class KillListEntryState extends State<KillListEntry> {
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       color: primaryColor,
+                      overflow: TextOverflow.fade,
                     ),
                   ),
                 ),
@@ -182,11 +184,20 @@ class KillListEntryState extends State<KillListEntry> {
             subtitle: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(translateValue(context, k.geschlecht),
-                    style: TextStyle(color: secondaryColor)),
-                Text(
-                  date,
-                  style: TextStyle(color: secondaryColor),
+                Flexible(
+                  child: Text(
+                    translateValue(context, k.geschlecht),
+                    style: TextStyle(
+                      color: secondaryColor,
+                      overflow: TextOverflow.fade,
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    date,
+                    style: TextStyle(color: secondaryColor),
+                  ),
                 ),
               ],
             ),

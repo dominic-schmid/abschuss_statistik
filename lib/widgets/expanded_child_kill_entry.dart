@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jagdverband_scraper/generated/l10n.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
 
 import '../utils/utils.dart';
 

@@ -1,8 +1,10 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/generated/l10n.dart';
-import 'package:jagdverband_scraper/home_screen.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
+import 'package:intl/intl.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/home_screen.dart';
+import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'utils/request_methods.dart';
@@ -24,6 +26,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final dg = S.of(context);
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
@@ -55,16 +58,18 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
             height: double.infinity,
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 40.0,
-                vertical: 120.0,
+              padding: const EdgeInsets.only(
+                top: 120,
+                left: 40,
+                right: 40,
+                bottom: 20,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  const Text(
-                    'Anmelden',
-                    style: TextStyle(
+                  Text(
+                    dg.credsLoginTitle,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontFamily: 'OpenSans',
                       fontSize: 30.0,
@@ -78,15 +83,29 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
                   const SizedBox(height: 15.0),
                   _buildLoginBtn(),
                   const SizedBox(height: 50.0),
-                  const Text(
-                    'Deine Anmeldedaten werden nur lokal gespeichert und verwendet, um die Abschüsse von der Seite des Jagdverbands herunterzuladen.\nSie werden niemals an Dritte weitergegeben!',
-                    style: TextStyle(
+                  Text(
+                    dg.credsDisclaimerText,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontFamily: 'OpenSans',
                       fontSize: 10,
                     ),
                     textAlign: TextAlign.justify,
                   ),
+                  const SizedBox(height: 50.0),
+                  TextButton(
+                    onPressed: () async {
+                      await showLanguagePicker(context);
+                      setState(() {});
+                    },
+                    child: Text(
+                      languages[Intl.getCurrentLocale()]!['nativeName']!,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 10,
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),

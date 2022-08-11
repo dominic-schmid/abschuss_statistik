@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/generated/l10n.dart';
-import 'package:jagdverband_scraper/models/kill_entry.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/models/kill_entry.dart';
 
 enum SortType {
   kein,
@@ -37,7 +37,6 @@ class Sorting {
   //&& ascending == other.ascending;
 
   @override
-  // TODO: implement hashCode
   int get hashCode => super.hashCode + Object.hash(sortType, '');
 
   static List<Sorting> generateDefault(BuildContext context) {

@@ -230,10 +230,10 @@ class S {
     );
   }
 
-  /// `It could be that only stars can be displayed.`
+  /// `It's possible you may only see stars if you enable this setting`
   String get settingsShowNamesBody {
     return Intl.message(
-      'It could be that only stars can be displayed.',
+      'It\'s possible you may only see stars if you enable this setting',
       name: 'settingsShowNamesBody',
       desc: '',
       args: [],
@@ -450,10 +450,10 @@ class S {
     );
   }
 
-  /// `Game`
+  /// `Species`
   String get sortGameType {
     return Intl.message(
-      'Game',
+      'Species',
       name: 'sortGameType',
       desc: '',
       args: [],
@@ -690,120 +690,120 @@ class S {
     );
   }
 
-  /// `usages`
+  /// `Usages`
   String get usages {
     return Intl.message(
-      'usages',
+      'Usages',
       name: 'usages',
       desc: '',
       args: [],
     );
   }
 
-  /// `roe deer`
+  /// `Roe deer`
   String get rehwild {
     return Intl.message(
-      'roe deer',
+      'Roe deer',
       name: 'rehwild',
       desc: '',
       args: [],
     );
   }
 
-  /// `deer`
+  /// `Deer`
   String get rotwild {
     return Intl.message(
-      'deer',
+      'Deer',
       name: 'rotwild',
       desc: '',
       args: [],
     );
   }
 
-  /// `chamois`
+  /// `Chamois`
   String get gamswild {
     return Intl.message(
-      'chamois',
+      'Chamois',
       name: 'gamswild',
       desc: '',
       args: [],
     );
   }
 
-  /// `ibex`
+  /// `Ibex`
   String get steinwild {
     return Intl.message(
-      'ibex',
+      'Ibex',
       name: 'steinwild',
       desc: '',
       args: [],
     );
   }
 
-  /// `wild boar`
+  /// `Wild boar`
   String get schwarzwild {
     return Intl.message(
-      'wild boar',
+      'Wild boar',
       name: 'schwarzwild',
       desc: '',
       args: [],
     );
   }
 
-  /// `playcock`
+  /// `Playcock`
   String get spielhahn {
     return Intl.message(
-      'playcock',
+      'Playcock',
       name: 'spielhahn',
       desc: '',
       args: [],
     );
   }
 
-  /// `rock partridge`
+  /// `Rock partridge`
   String get steinhuhn {
     return Intl.message(
-      'rock partridge',
+      'Rock partridge',
       name: 'steinhuhn',
       desc: '',
       args: [],
     );
   }
 
-  /// `grouse`
+  /// `Grouse`
   String get schneehuhn {
     return Intl.message(
-      'grouse',
+      'Grouse',
       name: 'schneehuhn',
       desc: '',
       args: [],
     );
   }
 
-  /// `marmot`
+  /// `Marmot`
   String get murmeltier {
     return Intl.message(
-      'marmot',
+      'Marmot',
       name: 'murmeltier',
       desc: '',
       args: [],
     );
   }
 
-  /// `badger`
+  /// `Badger`
   String get dachs {
     return Intl.message(
-      'badger',
+      'Badger',
       name: 'dachs',
       desc: '',
       args: [],
     );
   }
 
-  /// `fox`
+  /// `Fox`
   String get fuchs {
     return Intl.message(
-      'fox',
+      'Fox',
       name: 'fuchs',
       desc: '',
       args: [],
@@ -830,40 +830,40 @@ class S {
     );
   }
 
-  /// `killed`
+  /// `Killed`
   String get erlegt {
     return Intl.message(
-      'killed',
+      'Killed',
       name: 'erlegt',
       desc: '',
       args: [],
     );
   }
 
-  /// `found dead`
+  /// `Found dead`
   String get fallwild {
     return Intl.message(
-      'found dead',
+      'Found dead',
       name: 'fallwild',
       desc: '',
       args: [],
     );
   }
 
-  /// `conservation kill`
+  /// `Conservation kill`
   String get hegeabschuss {
     return Intl.message(
-      'conservation kill',
+      'Conservation kill',
       name: 'hegeabschuss',
       desc: '',
       args: [],
     );
   }
 
-  /// `car accident`
+  /// `Car accident`
   String get strassenunfall {
     return Intl.message(
-      'car accident',
+      'Car accident',
       name: 'strassenunfall',
       desc: '',
       args: [],
@@ -880,10 +880,10 @@ class S {
     );
   }
 
-  /// `killed by train`
+  /// `Killed by train`
   String get vomZug {
     return Intl.message(
-      'killed by train',
+      'Killed by train',
       name: 'vomZug',
       desc: '',
       args: [],
@@ -900,10 +900,10 @@ class S {
     );
   }
 
-  /// `personal use`
+  /// `Personal use`
   String get eigengebrauch {
     return Intl.message(
-      'personal use',
+      'Personal use',
       name: 'eigengebrauch',
       desc: '',
       args: [],
@@ -920,10 +920,10 @@ class S {
     );
   }
 
-  /// `sale`
+  /// `Sale`
   String get verkauf {
     return Intl.message(
-      'sale',
+      'Sale',
       name: 'verkauf',
       desc: '',
       args: [],
@@ -955,6 +955,558 @@ class S {
     return Intl.message(
       'Unknown',
       name: 'nichtBekannt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Initial position`
+  String get mapInitialPosition {
+    return Intl.message(
+      'Initial position',
+      name: 'mapInitialPosition',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{howMany, plural, one{1 Kill} other{{howMany} Kills}}`
+  String xKill_s(num howMany) {
+    return Intl.plural(
+      howMany,
+      one: '1 Kill',
+      other: '$howMany Kills',
+      name: 'xKill_s',
+      desc: '',
+      args: [howMany],
+    );
+  }
+
+  /// `Nothing to see here..`
+  String get noDataFoundText {
+    return Intl.message(
+      'Nothing to see here..',
+      name: 'noDataFoundText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Overseer`
+  String get overseer {
+    return Intl.message(
+      'Overseer',
+      name: 'overseer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error: Kills could not be loaded!`
+  String get noKillsLoadedError {
+    return Intl.message(
+      'Error: Kills could not be loaded!',
+      name: 'noKillsLoadedError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your login credentials are no longer valid!`
+  String get loginDataInvalid {
+    return Intl.message(
+      'Your login credentials are no longer valid!',
+      name: 'loginDataInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error`
+  String get error {
+    return Intl.message(
+      'Error',
+      name: 'error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New kills`
+  String get newKills {
+    return Intl.message(
+      'New kills',
+      name: 'newKills',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{x} new kills were found!`
+  String xNewKillsFound(Object x) {
+    return Intl.message(
+      '$x new kills were found!',
+      name: 'xNewKillsFound',
+      desc: '',
+      args: [x],
+    );
+  }
+
+  /// `Close`
+  String get close {
+    return Intl.message(
+      'Close',
+      name: 'close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Display`
+  String get display {
+    return Intl.message(
+      'Display',
+      name: 'display',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Grid`
+  String get grid {
+    return Intl.message(
+      'Grid',
+      name: 'grid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only shot`
+  String get onlyShot {
+    return Intl.message(
+      'Only shot',
+      name: 'onlyShot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Point`
+  String get points {
+    return Intl.message(
+      'Point',
+      name: 'points',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Configuration`
+  String get configuration {
+    return Intl.message(
+      'Configuration',
+      name: 'configuration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `per Month`
+  String get perMonth {
+    return Intl.message(
+      'per Month',
+      name: 'perMonth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The charts are based on your downloaded data. If a year is missing, you can select and download it on the start page.\n\nThese diagrams provide information about the historical development of the game in your area and have been designed in such a way that you can configure the structure yourself!`
+  String get chartBasedOnDownloaded {
+    return Intl.message(
+      'The charts are based on your downloaded data. If a year is missing, you can select and download it on the start page.\n\nThese diagrams provide information about the historical development of the game in your area and have been designed in such a way that you can configure the structure yourself!',
+      name: 'chartBasedOnDownloaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yearly`
+  String get yearly {
+    return Intl.message(
+      'Yearly',
+      name: 'yearly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Historic`
+  String get historic {
+    return Intl.message(
+      'Historic',
+      name: 'historic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sum`
+  String get sum {
+    return Intl.message(
+      'Sum',
+      name: 'sum',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Distribution`
+  String get distribution {
+    return Intl.message(
+      'Distribution',
+      name: 'distribution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly breakdown`
+  String get monthlyBreakdown {
+    return Intl.message(
+      'Monthly breakdown',
+      name: 'monthlyBreakdown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yearly breakdown`
+  String get yearlyBreakdown {
+    return Intl.message(
+      'Yearly breakdown',
+      name: 'yearlyBreakdown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Seen by {x} on {y} at {z}`
+  String seenByXonYatZ(Object x, Object y, Object z) {
+    return Intl.message(
+      'Seen by $x on $y at $z',
+      name: 'seenByXonYatZ',
+      desc: '',
+      args: [x, y, z],
+    );
+  }
+
+  /// `Check out this kill in {x}!\n{y}`
+  String checkOutThisKillXY(Object x, Object y) {
+    return Intl.message(
+      'Check out this kill in $x!\n$y',
+      name: 'checkOutThisKillXY',
+      desc: '',
+      args: [x, y],
+    );
+  }
+
+  /// `Female chamois`
+  String get gamsgeiss {
+    return Intl.message(
+      'Female chamois',
+      name: 'gamsgeiss',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Trophy buck`
+  String get tBock {
+    return Intl.message(
+      'Trophy buck',
+      name: 'tBock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buck fawn`
+  String get bockkitz {
+    return Intl.message(
+      'Buck fawn',
+      name: 'bockkitz',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chamois buck`
+  String get gamsbock {
+    return Intl.message(
+      'Chamois buck',
+      name: 'gamsbock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Old doe`
+  String get altgeiss {
+    return Intl.message(
+      'Old doe',
+      name: 'altgeiss',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Young buck`
+  String get jahrlingsHirsch {
+    return Intl.message(
+      'Young buck',
+      name: 'jahrlingsHirsch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Young doe`
+  String get schmalreh {
+    return Intl.message(
+      'Young doe',
+      name: 'schmalreh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Young buck`
+  String get jahrlingsbock {
+    return Intl.message(
+      'Young buck',
+      name: 'jahrlingsbock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Female fawn`
+  String get geisskitz {
+    return Intl.message(
+      'Female fawn',
+      name: 'geisskitz',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Young female`
+  String get geissjahrling {
+    return Intl.message(
+      'Young female',
+      name: 'geissjahrling',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Female fawn`
+  String get wildkalb {
+    return Intl.message(
+      'Female fawn',
+      name: 'wildkalb',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Male`
+  String get M {
+    return Intl.message(
+      'Male',
+      name: 'M',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Female`
+  String get W {
+    return Intl.message(
+      'Female',
+      name: 'W',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Male fawn`
+  String get hirschkalb {
+    return Intl.message(
+      'Male fawn',
+      name: 'hirschkalb',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Trophy buck`
+  String get trophaehenHirsch {
+    return Intl.message(
+      'Trophy buck',
+      name: 'trophaehenHirsch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adult female`
+  String get alttier {
+    return Intl.message(
+      'Adult female',
+      name: 'alttier',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Male`
+  String get maennlich {
+    return Intl.message(
+      'Male',
+      name: 'maennlich',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Female`
+  String get weiblich {
+    return Intl.message(
+      'Female',
+      name: 'weiblich',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wild boar`
+  String get frischling {
+    return Intl.message(
+      'Wild boar',
+      name: 'frischling',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Young male boar`
+  String get ueberlaeuferKeiler {
+    return Intl.message(
+      'Young male boar',
+      name: 'ueberlaeuferKeiler',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Male boar`
+  String get keiler {
+    return Intl.message(
+      'Male boar',
+      name: 'keiler',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stone doe`
+  String get steingeiss {
+    return Intl.message(
+      'Stone doe',
+      name: 'steingeiss',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stone buck`
+  String get steinbock {
+    return Intl.message(
+      'Stone buck',
+      name: 'steinbock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `chamois yearlings`
+  String get gamsjahrlinge {
+    return Intl.message(
+      'chamois yearlings',
+      name: 'gamsjahrlinge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Young doe`
+  String get schmaltier {
+    return Intl.message(
+      'Young doe',
+      name: 'schmaltier',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deer`
+  String get kahlwild {
+    return Intl.message(
+      'Deer',
+      name: 'kahlwild',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Female deer`
+  String get weiblicheRehe {
+    return Intl.message(
+      'Female deer',
+      name: 'weiblicheRehe',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Young buck`
+  String get bockjahrling {
+    return Intl.message(
+      'Young buck',
+      name: 'bockjahrling',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Female boar`
+  String get bache {
+    return Intl.message(
+      'Female boar',
+      name: 'bache',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Young female boar`
+  String get ueberlaeuferBache {
+    return Intl.message(
+      'Young female boar',
+      name: 'ueberlaeuferBache',
       desc: '',
       args: [],
     );

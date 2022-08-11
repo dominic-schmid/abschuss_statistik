@@ -1,12 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/utils/database_methods.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
-import 'package:jagdverband_scraper/widgets/chart_legend.dart';
-import 'package:jagdverband_scraper/widgets/chip_selector_modal.dart';
-import 'package:jagdverband_scraper/models/filter_chip_data.dart';
-import 'package:jagdverband_scraper/widgets/no_data_found.dart';
-import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/database_methods.dart';
+import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/widgets/chart_legend.dart';
+import 'package:jagdstatistik/widgets/chip_selector_modal.dart';
+import 'package:jagdstatistik/models/filter_chip_data.dart';
+import 'package:jagdstatistik/widgets/no_data_found.dart';
+import 'package:jagdstatistik/widgets/value_selector_modal.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -39,32 +41,31 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
   int _barWidth = 2;
   List<FilterChipData> configurationChips = [];
 
-  Map<String, String> groupBy = {
-    'key': 'Wildarten',
-    'value': 'wildart',
-  };
+  Map<String, String> groupBy = {};
 
-  List<Map<String, String>> groupBys = baseGroupBys.toList();
+  List<Map<String, String>> groupBys = [];
 
   showPerson() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool showPerson = prefs.getBool('showPerson') ?? false;
+    if (!mounted) return;
+    final dg = S.of(context);
     if (showPerson) {
       groupBys.addAll(
         [
           {
-            'key': 'Erleger',
+            'key': dg.killer,
             'value': 'erleger',
           },
           {
-            'key': 'Begleiter',
+            'key': dg.companion,
             'value': 'begleiter',
           },
         ],
       );
     }
     groupBys.add({
-      'key': 'Gewicht',
+      'key': dg.weight,
       'value': 'gewicht',
     });
   }
@@ -74,12 +75,17 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
     super.initState();
     year = DateTime.now().year;
     getConfig();
-    configurationChips.addAll([
-      FilterChipData(label: 'Gitter', color: Colors.blue, isSelected: _showGrid),
-      FilterChipData(
-          label: 'Nur Erlegte', color: Colors.red, isSelected: _showOnlyErlegt),
-      FilterChipData(label: 'Punkte', color: Colors.orange, isSelected: _showDots),
-    ]);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      groupBys = getBaseGroupBys(context).toList();
+      groupBy = groupBys.first;
+      final dg = S.of(context);
+      configurationChips.addAll([
+        FilterChipData(label: dg.grid, color: Colors.blue, isSelected: _showGrid),
+        FilterChipData(
+            label: dg.onlyShot, color: Colors.red, isSelected: _showOnlyErlegt),
+        FilterChipData(label: dg.points, color: Colors.orange, isSelected: _showDots),
+      ]);
+    });
   }
 
   getConfig() async {
@@ -177,7 +183,7 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
         return FlSpot(year.toDouble(), anzahl.toDouble());
       });
 
-      chartItems.add(ChartItem(label: g, value: 0, color: c));
+      chartItems.add(ChartItem(label: translateValue(context, g), value: 0, color: c));
       lines.add(
         LineChartBarData(
           barWidth: _barWidth.toDouble(),
@@ -203,6 +209,7 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
 
     Size size = MediaQuery.of(context).size;
     var lines = buildLines(res);
+    final dg = S.of(context);
 
     return Scaffold(
       appBar: ChartAppBar(title: Text(groupBy['key'] as String), actions: [
@@ -221,19 +228,19 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
                 ),
                 builder: (BuildContext context) {
                   return ChipSelectorModal(
-                      title: 'Konfiguration', chips: configurationChips);
+                      title: dg.configuration, chips: configurationChips);
                 });
             setState(() {
               _showGrid = configurationChips
-                  .where((element) => element.label == 'Gitter')
+                  .where((element) => element.label == dg.grid)
                   .first
                   .isSelected;
               _showOnlyErlegt = configurationChips
-                  .where((element) => element.label == 'Nur Erlegte')
+                  .where((element) => element.label == dg.onlyShot)
                   .first
                   .isSelected;
               _showDots = configurationChips
-                  .where((element) => element.label == 'Punkte')
+                  .where((element) => element.label == dg.points)
                   .first
                   .isSelected;
             });
@@ -247,7 +254,7 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
           Padding(
             padding: EdgeInsets.only(top: size.height * 0.035),
             child: Text(
-              '${year.toString()} pro Monat',
+              '${year.toString()} ${dg.perMonth}',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -299,7 +306,7 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
                   ),
                   backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
                   labelStyle: const TextStyle(color: nichtBekanntFarbe),
-                  label: const Text('Anzeige'),
+                  label: Text(dg.display),
                   onPressed: () async {
                     await showModalBottomSheet(
                         context: context,

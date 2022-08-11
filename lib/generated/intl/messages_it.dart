@@ -20,20 +20,43 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'it';
 
-  static String m0(x, y) => "Mostrando ${x} di ${y}";
+  static String m0(x, y) =>
+      "Dai un\'occhiata a quell\'uccisione in ${x}!\n${y}";
 
-  static String m1(x) => "Cerca tra ${x} uccisioni";
+  static String m1(x, y) => "Mostrando ${x} di ${y}";
+
+  static String m2(x) => "Cerca tra ${x} uccisioni";
+
+  static String m3(x, y, z) => "Visto da ${x} il ${y} alle ${z}";
+
+  static String m4(howMany) =>
+      "${Intl.plural(howMany, one: '1 Uccisione', other: '${howMany} Uccisioni')}";
+
+  static String m5(x) => "${x} nuove uccisioni trovate!";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "M": MessageLookupByLibrary.simpleMessage("Maschile"),
+        "W": MessageLookupByLibrary.simpleMessage("Femmina"),
         "age": MessageLookupByLibrary.simpleMessage("Età"),
+        "altgeiss": MessageLookupByLibrary.simpleMessage("Femmina adulta"),
+        "alttier": MessageLookupByLibrary.simpleMessage("Femmina adulta"),
         "andereWildart":
             MessageLookupByLibrary.simpleMessage("Altre specie selvatiche"),
         "appTitle":
             MessageLookupByLibrary.simpleMessage("Statistiche sulla caccia"),
         "area": MessageLookupByLibrary.simpleMessage("Zona"),
+        "bache": MessageLookupByLibrary.simpleMessage("Femmina"),
+        "bockjahrling":
+            MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
+        "bockkitz": MessageLookupByLibrary.simpleMessage("Piccolo maschio"),
         "causes": MessageLookupByLibrary.simpleMessage("Causi"),
+        "chartBasedOnDownloaded": MessageLookupByLibrary.simpleMessage(
+            "I grafici si basano sui dati scaricati. Se manca un anno, puoi selezionarlo e scaricarlo nella pagina iniziale.\n\nQuesti diagrammi forniscono informazioni sullo sviluppo storico del gioco nella tua zona e sono stati progettati in modo tale da poter configurare tu stesso la struttura!"),
+        "checkOutThisKillXY": m0,
+        "close": MessageLookupByLibrary.simpleMessage("Chiudere"),
         "companion": MessageLookupByLibrary.simpleMessage("Compagno"),
+        "configuration": MessageLookupByLibrary.simpleMessage("Configurazione"),
         "copiedToClipboardSnackbar":
             MessageLookupByLibrary.simpleMessage("Copiato negli appunti!"),
         "credentialsScreen":
@@ -56,59 +79,98 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Territorio"),
         "credsTooManySigninsSnackbar": MessageLookupByLibrary.simpleMessage(
             "Registrato troppo spesso! Attendi 1 minuto prima di poter accedere nuovamente."),
-        "dachs": MessageLookupByLibrary.simpleMessage("tasso"),
+        "dachs": MessageLookupByLibrary.simpleMessage("Tasso"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Vuoi davvero fare il log-out?\nI tuoi dati di accesso e tutte le tue impostazioni verranno cancellate!"),
         "dialogNo": MessageLookupByLibrary.simpleMessage("No"),
         "dialogYes": MessageLookupByLibrary.simpleMessage("Si"),
-        "eigengebrauch": MessageLookupByLibrary.simpleMessage("uso personale"),
+        "display": MessageLookupByLibrary.simpleMessage("Mostrare"),
+        "distribution": MessageLookupByLibrary.simpleMessage("Distribuzione"),
+        "eigengebrauch": MessageLookupByLibrary.simpleMessage("Uso personale"),
         "eigengebrauchAbgabe": MessageLookupByLibrary.simpleMessage(
             "Uso personale - consegna per ulteriore elaborazione"),
-        "erlegt": MessageLookupByLibrary.simpleMessage("abbattuto"),
-        "fallwild": MessageLookupByLibrary.simpleMessage("trovata morta"),
+        "erlegt": MessageLookupByLibrary.simpleMessage("Abbattuto"),
+        "error": MessageLookupByLibrary.simpleMessage("Errore"),
+        "fallwild": MessageLookupByLibrary.simpleMessage("Trovato morto"),
         "feedbackMailSubject": MessageLookupByLibrary.simpleMessage(
             "Feedback sulla app delle statistiche di caccia"),
-        "freizone": MessageLookupByLibrary.simpleMessage("zona libera"),
-        "fuchs": MessageLookupByLibrary.simpleMessage("volpe"),
+        "freizone": MessageLookupByLibrary.simpleMessage("Zona libera"),
+        "frischling": MessageLookupByLibrary.simpleMessage("Cinghialetto"),
+        "fuchs": MessageLookupByLibrary.simpleMessage("Volpe"),
         "gameTypes": MessageLookupByLibrary.simpleMessage("Specie"),
-        "gamswild": MessageLookupByLibrary.simpleMessage("camoscio"),
+        "gamsbock": MessageLookupByLibrary.simpleMessage("Maschio di camoscio"),
+        "gamsgeiss": MessageLookupByLibrary.simpleMessage("Femmina camoscio"),
+        "gamsjahrlinge":
+            MessageLookupByLibrary.simpleMessage("puledri di camoscio"),
+        "gamswild": MessageLookupByLibrary.simpleMessage("Camoscio"),
+        "geissjahrling":
+            MessageLookupByLibrary.simpleMessage("Femmina di un anno"),
+        "geisskitz": MessageLookupByLibrary.simpleMessage("Piccolo femmina"),
+        "grid": MessageLookupByLibrary.simpleMessage("Griglia"),
         "hegeabschuss":
-            MessageLookupByLibrary.simpleMessage(" abbattimento conservativo"),
+            MessageLookupByLibrary.simpleMessage("Abbattimento conservativo"),
+        "hirschkalb": MessageLookupByLibrary.simpleMessage("Piccolo maschile"),
+        "historic": MessageLookupByLibrary.simpleMessage("Storico"),
         "hunter": MessageLookupByLibrary.simpleMessage("Cacciatore"),
+        "jahrlingsHirsch":
+            MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
+        "jahrlingsbock":
+            MessageLookupByLibrary.simpleMessage("Capriolo maschio di un anno"),
+        "kahlwild": MessageLookupByLibrary.simpleMessage("Cervo"),
+        "keiler": MessageLookupByLibrary.simpleMessage("Maschio"),
         "killer": MessageLookupByLibrary.simpleMessage("Cacciatore"),
         "kills": MessageLookupByLibrary.simpleMessage("Uccisioni"),
         "ksExport": MessageLookupByLibrary.simpleMessage("Esport"),
         "ksExportDialogTitle":
             MessageLookupByLibrary.simpleMessage("Esporta come"),
-        "ksShowXFromYProgressBar": m0,
+        "ksShowXFromYProgressBar": m1,
         "ksTerritoryTitle": MessageLookupByLibrary.simpleMessage("Territorio"),
-        "murmeltier": MessageLookupByLibrary.simpleMessage("marmotta"),
+        "loginDataInvalid": MessageLookupByLibrary.simpleMessage(
+            "I tuoi dati di accesso non sono più validi!"),
+        "maennlich": MessageLookupByLibrary.simpleMessage("Maschile"),
+        "mapInitialPosition":
+            MessageLookupByLibrary.simpleMessage("Posizione iniziale"),
+        "monthlyBreakdown":
+            MessageLookupByLibrary.simpleMessage("Ripartizione mensile"),
+        "murmeltier": MessageLookupByLibrary.simpleMessage("Marmotta"),
+        "newKills": MessageLookupByLibrary.simpleMessage("Nuovi uccisioni"),
         "nichtBekannt": MessageLookupByLibrary.simpleMessage("Non conosciuto"),
         "nichtGefunden": MessageLookupByLibrary.simpleMessage(
             "Non trovato/ricerca non riuscita"),
         "nichtVerwertbar":
             MessageLookupByLibrary.simpleMessage("Non utilizzabile"),
+        "noDataFoundText": MessageLookupByLibrary.simpleMessage(
+            "Non c\'è niente da vedere qui..."),
         "noInternetError":
             MessageLookupByLibrary.simpleMessage("Errore: niente internet"),
         "noKillsFoundError": MessageLookupByLibrary.simpleMessage(
             "Errore: nessuna uccisione trovata!"),
+        "noKillsLoadedError": MessageLookupByLibrary.simpleMessage(
+            "Errore: caricamento delle uccisioni non riuscito!"),
         "number": MessageLookupByLibrary.simpleMessage("Numero"),
+        "onlyShot": MessageLookupByLibrary.simpleMessage("Solo sparati"),
+        "overseer": MessageLookupByLibrary.simpleMessage("Sorvegliante"),
+        "perMonth": MessageLookupByLibrary.simpleMessage("al mese"),
+        "points": MessageLookupByLibrary.simpleMessage("Punti"),
         "protokollBeschlagnahmt":
             MessageLookupByLibrary.simpleMessage("Protocollo / confiscato"),
-        "rehwild": MessageLookupByLibrary.simpleMessage("capriolo"),
-        "rotwild": MessageLookupByLibrary.simpleMessage("cervo"),
+        "rehwild": MessageLookupByLibrary.simpleMessage("Capriolo"),
+        "rotwild": MessageLookupByLibrary.simpleMessage("Cervo"),
+        "schmalreh": MessageLookupByLibrary.simpleMessage("Femmina sottile"),
+        "schmaltier": MessageLookupByLibrary.simpleMessage("Femmina sottile"),
         "schneehase":
             MessageLookupByLibrary.simpleMessage("coniglietto di neve"),
-        "schneehuhn": MessageLookupByLibrary.simpleMessage("gallo cedrone"),
-        "schwarzwild": MessageLookupByLibrary.simpleMessage("cinghiale"),
-        "searchXKills": m1,
+        "schneehuhn": MessageLookupByLibrary.simpleMessage("Gallo cedrone"),
+        "schwarzwild": MessageLookupByLibrary.simpleMessage("Cinghiale"),
+        "searchXKills": m2,
+        "seenByXonYatZ": m3,
         "settingsAbout": MessageLookupByLibrary.simpleMessage("Informazioni"),
         "settingsAccount": MessageLookupByLibrary.simpleMessage("Account"),
         "settingsDarkMode": MessageLookupByLibrary.simpleMessage("Tema scuro"),
         "settingsDevelopment": MessageLookupByLibrary.simpleMessage("Sviluppo"),
         "settingsDisplay": MessageLookupByLibrary.simpleMessage("Schermo"),
         "settingsDonate":
-            MessageLookupByLibrary.simpleMessage("donare la pancetta"),
+            MessageLookupByLibrary.simpleMessage("Donare la pancetta"),
         "settingsHuntersAssociationWebsite":
             MessageLookupByLibrary.simpleMessage(
                 "Statistiche dell\'associazione di caccia"),
@@ -119,7 +181,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsShowNamesBody": MessageLookupByLibrary.simpleMessage(
             "Potrebbe essere che solo le stelle possano essere visualizzate."),
         "settingsShowNamesTitle":
-            MessageLookupByLibrary.simpleMessage("mostra i nomi"),
+            MessageLookupByLibrary.simpleMessage("Mostrare nomi"),
         "settingsTitle": MessageLookupByLibrary.simpleMessage("Impostazioni"),
         "settingsWebsite": MessageLookupByLibrary.simpleMessage("Sito web"),
         "sexes": MessageLookupByLibrary.simpleMessage("Sessi"),
@@ -128,7 +190,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sortCause": MessageLookupByLibrary.simpleMessage("Causa"),
         "sortDate": MessageLookupByLibrary.simpleMessage("Data"),
         "sortGameType":
-            MessageLookupByLibrary.simpleMessage("specie selvatiche"),
+            MessageLookupByLibrary.simpleMessage("Specie selvatiche"),
         "sortGender": MessageLookupByLibrary.simpleMessage("Sesso"),
         "sortNone": MessageLookupByLibrary.simpleMessage("Nessun smistamento"),
         "sortNumber": MessageLookupByLibrary.simpleMessage("Numero"),
@@ -136,17 +198,39 @@ class MessageLookup extends MessageLookupByLibrary {
         "sortTitle": MessageLookupByLibrary.simpleMessage("Ordinamento"),
         "sortUse": MessageLookupByLibrary.simpleMessage("Uso"),
         "sortWeight": MessageLookupByLibrary.simpleMessage("Peso"),
-        "spielhahn": MessageLookupByLibrary.simpleMessage("playcock"),
+        "spielhahn": MessageLookupByLibrary.simpleMessage("Gallo forcello"),
         "statistics": MessageLookupByLibrary.simpleMessage("Statistiche"),
-        "steinhuhn": MessageLookupByLibrary.simpleMessage("coturnice"),
-        "steinwild": MessageLookupByLibrary.simpleMessage("stambecco"),
+        "steinbock":
+            MessageLookupByLibrary.simpleMessage("Capricorno maschile"),
+        "steingeiss":
+            MessageLookupByLibrary.simpleMessage("Capricorno femminile"),
+        "steinhuhn": MessageLookupByLibrary.simpleMessage("Coturnice"),
+        "steinwild": MessageLookupByLibrary.simpleMessage("Stambecco"),
         "strassenunfall":
-            MessageLookupByLibrary.simpleMessage("incidente stradale"),
+            MessageLookupByLibrary.simpleMessage("Incidente stradale"),
+        "sum": MessageLookupByLibrary.simpleMessage("Somma"),
+        "tBock": MessageLookupByLibrary.simpleMessage(
+            "Capriolo maschio di più anni"),
         "time": MessageLookupByLibrary.simpleMessage("Tempo"),
+        "trophaehenHirsch":
+            MessageLookupByLibrary.simpleMessage("Maschio di più anni"),
+        "ueberlaeuferBache":
+            MessageLookupByLibrary.simpleMessage("Femmina di un anno"),
+        "ueberlaeuferKeiler":
+            MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
         "usage": MessageLookupByLibrary.simpleMessage("Destinazione"),
-        "usages": MessageLookupByLibrary.simpleMessage("destinazioni"),
-        "verkauf": MessageLookupByLibrary.simpleMessage("vendita"),
-        "vomZug": MessageLookupByLibrary.simpleMessage("abbatuto del treno"),
-        "weight": MessageLookupByLibrary.simpleMessage("Peso")
+        "usages": MessageLookupByLibrary.simpleMessage("Destinazioni"),
+        "verkauf": MessageLookupByLibrary.simpleMessage("Vendita"),
+        "vomZug": MessageLookupByLibrary.simpleMessage("Abbatuto del treno"),
+        "weiblich": MessageLookupByLibrary.simpleMessage("Femmina"),
+        "weiblicheRehe":
+            MessageLookupByLibrary.simpleMessage("Caprioli femminili"),
+        "weight": MessageLookupByLibrary.simpleMessage("Peso"),
+        "wildkalb": MessageLookupByLibrary.simpleMessage("Non noto"),
+        "xKill_s": m4,
+        "xNewKillsFound": m5,
+        "yearly": MessageLookupByLibrary.simpleMessage("Annuale"),
+        "yearlyBreakdown":
+            MessageLookupByLibrary.simpleMessage("Ripartizione annuale")
       };
 }

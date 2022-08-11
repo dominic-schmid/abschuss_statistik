@@ -1,9 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/utils/database_methods.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
-import 'package:jagdverband_scraper/widgets/no_data_found.dart';
-import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/database_methods.dart';
+import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/widgets/no_data_found.dart';
+import 'package:jagdstatistik/widgets/value_selector_modal.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -39,32 +41,31 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
 
   bool _isLoading = true;
 
-  Map<String, String> groupBy = {
-    'key': 'Wildarten',
-    'value': 'wildart',
-  };
+  Map<String, String> groupBy = {};
 
-  List<Map<String, String>> groupBys = baseGroupBys.toList();
+  List<Map<String, String>> groupBys = [];
 
   showPerson() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool showPerson = prefs.getBool('showPerson') ?? false;
+    if (!mounted) return;
+    final dg = S.of(context);
     if (showPerson) {
       groupBys.addAll(
         [
           {
-            'key': 'Erleger',
+            'key': dg.killer,
             'value': 'erleger',
           },
           {
-            'key': 'Begleiter',
+            'key': dg.companion,
             'value': 'begleiter',
           },
         ],
       );
     }
     groupBys.add({
-      'key': 'Gewicht',
+      'key': dg.weight,
       'value': 'gewicht',
     });
   }
@@ -73,6 +74,10 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
   void initState() {
     super.initState();
     getConfig();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      groupBys = getBaseGroupBys(context).toList();
+      groupBy = groupBys.first;
+    });
   }
 
   getConfig() async {
@@ -142,6 +147,9 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
 
       filterChips.add(FilterChipData(label: g, color: c));
     }
+    // for (var e in groupBys) {
+    //   e['key'] = translateValue(context, e['key'] as String);
+    // }
 
     rebuildMaxValue();
   }
@@ -159,13 +167,15 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
 
     for (int i = 0; i < toBuild.length; i++) {
       String label = toBuild.elementAt(i)['Gruppierung'] as String;
+      // toBuild.elementAt(i)['Gruppierung'] as String;
       double value = (toBuild.elementAt(i)['Anzahl'] as int).toDouble();
 
       Color c = groupBy['value'] == 'wildart'
           ? KillEntry.getColorFromWildart(label)
           : Colors.primaries[i % Colors.primaries.length];
 
-      chartItems.add(ChartItem(label: label, value: value, color: c));
+      chartItems
+          .add(ChartItem(label: translateValue(context, label), value: value, color: c));
     }
 
     rebuildMaxValue();
@@ -215,6 +225,7 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator(color: rehwildFarbe));
     }
+    final dg = S.of(context);
 
     Size size = MediaQuery.of(context).size;
 
@@ -297,7 +308,7 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
                     ),
                     backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
                     labelStyle: const TextStyle(color: nichtBekanntFarbe),
-                    label: const Text('Anzeige'),
+                    label: Text(dg.display),
                     onPressed: () async {
                       await showModalBottomSheet(
                           context: context,

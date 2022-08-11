@@ -20,19 +20,40 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(x, y) => "Showing ${x} of ${y}";
+  static String m0(x, y) => "Check out this kill in ${x}!\n${y}";
 
-  static String m1(x) => "Filter ${x} kills";
+  static String m1(x, y) => "Showing ${x} of ${y}";
+
+  static String m2(x) => "Filter ${x} kills";
+
+  static String m3(x, y, z) => "Seen by ${x} on ${y} at ${z}";
+
+  static String m4(howMany) =>
+      "${Intl.plural(howMany, one: '1 Kill', other: '${howMany} Kills')}";
+
+  static String m5(x) => "${x} new kills were found!";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "M": MessageLookupByLibrary.simpleMessage("Male"),
+        "W": MessageLookupByLibrary.simpleMessage("Female"),
         "age": MessageLookupByLibrary.simpleMessage("Age"),
+        "altgeiss": MessageLookupByLibrary.simpleMessage("Old doe"),
+        "alttier": MessageLookupByLibrary.simpleMessage("Adult female"),
         "andereWildart":
             MessageLookupByLibrary.simpleMessage("Other wild species"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Hunting statistics"),
         "area": MessageLookupByLibrary.simpleMessage("Area"),
+        "bache": MessageLookupByLibrary.simpleMessage("Female boar"),
+        "bockjahrling": MessageLookupByLibrary.simpleMessage("Young buck"),
+        "bockkitz": MessageLookupByLibrary.simpleMessage("Buck fawn"),
         "causes": MessageLookupByLibrary.simpleMessage("Causes"),
+        "chartBasedOnDownloaded": MessageLookupByLibrary.simpleMessage(
+            "The charts are based on your downloaded data. If a year is missing, you can select and download it on the start page.\n\nThese diagrams provide information about the historical development of the game in your area and have been designed in such a way that you can configure the structure yourself!"),
+        "checkOutThisKillXY": m0,
+        "close": MessageLookupByLibrary.simpleMessage("Close"),
         "companion": MessageLookupByLibrary.simpleMessage("Companion"),
+        "configuration": MessageLookupByLibrary.simpleMessage("Configuration"),
         "copiedToClipboardSnackbar":
             MessageLookupByLibrary.simpleMessage("Copied to clipboard!"),
         "credentialsScreen":
@@ -55,50 +76,86 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Territory"),
         "credsTooManySigninsSnackbar": MessageLookupByLibrary.simpleMessage(
             "Signed up too often! Wait 1 minute before you can log in again."),
-        "dachs": MessageLookupByLibrary.simpleMessage("badger"),
+        "dachs": MessageLookupByLibrary.simpleMessage("Badger"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Do you really want to log out?\nYour login data and all your settings will be deleted!"),
         "dialogNo": MessageLookupByLibrary.simpleMessage("No"),
         "dialogYes": MessageLookupByLibrary.simpleMessage("Yes"),
-        "eigengebrauch": MessageLookupByLibrary.simpleMessage("personal use"),
+        "display": MessageLookupByLibrary.simpleMessage("Display"),
+        "distribution": MessageLookupByLibrary.simpleMessage("Distribution"),
+        "eigengebrauch": MessageLookupByLibrary.simpleMessage("Personal use"),
         "eigengebrauchAbgabe": MessageLookupByLibrary.simpleMessage(
             "Personal use - delivery for further processing"),
-        "erlegt": MessageLookupByLibrary.simpleMessage("killed"),
-        "fallwild": MessageLookupByLibrary.simpleMessage("found dead"),
+        "erlegt": MessageLookupByLibrary.simpleMessage("Killed"),
+        "error": MessageLookupByLibrary.simpleMessage("Error"),
+        "fallwild": MessageLookupByLibrary.simpleMessage("Found dead"),
         "feedbackMailSubject": MessageLookupByLibrary.simpleMessage(
             "Feedback for the hunting statistics app"),
         "freizone": MessageLookupByLibrary.simpleMessage("Free zone"),
-        "fuchs": MessageLookupByLibrary.simpleMessage("fox"),
+        "frischling": MessageLookupByLibrary.simpleMessage("Wild boar"),
+        "fuchs": MessageLookupByLibrary.simpleMessage("Fox"),
         "gameTypes": MessageLookupByLibrary.simpleMessage("Species"),
-        "gamswild": MessageLookupByLibrary.simpleMessage("chamois"),
+        "gamsbock": MessageLookupByLibrary.simpleMessage("Chamois buck"),
+        "gamsgeiss": MessageLookupByLibrary.simpleMessage("Female chamois"),
+        "gamsjahrlinge":
+            MessageLookupByLibrary.simpleMessage("chamois yearlings"),
+        "gamswild": MessageLookupByLibrary.simpleMessage("Chamois"),
+        "geissjahrling": MessageLookupByLibrary.simpleMessage("Young female"),
+        "geisskitz": MessageLookupByLibrary.simpleMessage("Female fawn"),
+        "grid": MessageLookupByLibrary.simpleMessage("Grid"),
         "hegeabschuss":
-            MessageLookupByLibrary.simpleMessage("conservation kill"),
+            MessageLookupByLibrary.simpleMessage("Conservation kill"),
+        "hirschkalb": MessageLookupByLibrary.simpleMessage("Male fawn"),
+        "historic": MessageLookupByLibrary.simpleMessage("Historic"),
         "hunter": MessageLookupByLibrary.simpleMessage("Hunter"),
+        "jahrlingsHirsch": MessageLookupByLibrary.simpleMessage("Young buck"),
+        "jahrlingsbock": MessageLookupByLibrary.simpleMessage("Young buck"),
+        "kahlwild": MessageLookupByLibrary.simpleMessage("Deer"),
+        "keiler": MessageLookupByLibrary.simpleMessage("Male boar"),
         "killer": MessageLookupByLibrary.simpleMessage("Hunter"),
         "kills": MessageLookupByLibrary.simpleMessage("Kills"),
         "ksExport": MessageLookupByLibrary.simpleMessage("Export"),
         "ksExportDialogTitle":
             MessageLookupByLibrary.simpleMessage("Export as"),
-        "ksShowXFromYProgressBar": m0,
+        "ksShowXFromYProgressBar": m1,
         "ksTerritoryTitle": MessageLookupByLibrary.simpleMessage("Territory"),
-        "murmeltier": MessageLookupByLibrary.simpleMessage("marmot"),
+        "loginDataInvalid": MessageLookupByLibrary.simpleMessage(
+            "Your login credentials are no longer valid!"),
+        "maennlich": MessageLookupByLibrary.simpleMessage("Male"),
+        "mapInitialPosition":
+            MessageLookupByLibrary.simpleMessage("Initial position"),
+        "monthlyBreakdown":
+            MessageLookupByLibrary.simpleMessage("Monthly breakdown"),
+        "murmeltier": MessageLookupByLibrary.simpleMessage("Marmot"),
+        "newKills": MessageLookupByLibrary.simpleMessage("New kills"),
         "nichtBekannt": MessageLookupByLibrary.simpleMessage("Unknown"),
         "nichtGefunden": MessageLookupByLibrary.simpleMessage(
             "Not found / search unsuccessful"),
         "nichtVerwertbar": MessageLookupByLibrary.simpleMessage("Not usable"),
+        "noDataFoundText":
+            MessageLookupByLibrary.simpleMessage("Nothing to see here.."),
         "noInternetError":
             MessageLookupByLibrary.simpleMessage("Error: No internet!"),
         "noKillsFoundError":
             MessageLookupByLibrary.simpleMessage("Error: No kills found!"),
+        "noKillsLoadedError": MessageLookupByLibrary.simpleMessage(
+            "Error: Kills could not be loaded!"),
         "number": MessageLookupByLibrary.simpleMessage("Number"),
+        "onlyShot": MessageLookupByLibrary.simpleMessage("Only shot"),
+        "overseer": MessageLookupByLibrary.simpleMessage("Overseer"),
+        "perMonth": MessageLookupByLibrary.simpleMessage("per Month"),
+        "points": MessageLookupByLibrary.simpleMessage("Point"),
         "protokollBeschlagnahmt":
             MessageLookupByLibrary.simpleMessage("Protocol / confiscated"),
-        "rehwild": MessageLookupByLibrary.simpleMessage("roe deer"),
-        "rotwild": MessageLookupByLibrary.simpleMessage("deer"),
+        "rehwild": MessageLookupByLibrary.simpleMessage("Roe deer"),
+        "rotwild": MessageLookupByLibrary.simpleMessage("Deer"),
+        "schmalreh": MessageLookupByLibrary.simpleMessage("Young doe"),
+        "schmaltier": MessageLookupByLibrary.simpleMessage("Young doe"),
         "schneehase": MessageLookupByLibrary.simpleMessage("snow bunny"),
-        "schneehuhn": MessageLookupByLibrary.simpleMessage("grouse"),
-        "schwarzwild": MessageLookupByLibrary.simpleMessage("wild boar"),
-        "searchXKills": m1,
+        "schneehuhn": MessageLookupByLibrary.simpleMessage("Grouse"),
+        "schwarzwild": MessageLookupByLibrary.simpleMessage("Wild boar"),
+        "searchXKills": m2,
+        "seenByXonYatZ": m3,
         "settingsAbout": MessageLookupByLibrary.simpleMessage("About"),
         "settingsAccount": MessageLookupByLibrary.simpleMessage("Account"),
         "settingsDarkMode": MessageLookupByLibrary.simpleMessage("Dark theme"),
@@ -114,7 +171,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsLinks": MessageLookupByLibrary.simpleMessage("Links"),
         "settingsLogout": MessageLookupByLibrary.simpleMessage("Log out"),
         "settingsShowNamesBody": MessageLookupByLibrary.simpleMessage(
-            "It could be that only stars can be displayed."),
+            "It\'s possible you may only see stars if you enable this setting"),
         "settingsShowNamesTitle":
             MessageLookupByLibrary.simpleMessage("Show names"),
         "settingsTitle": MessageLookupByLibrary.simpleMessage("Settings"),
@@ -123,7 +180,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "signOfOrigin": MessageLookupByLibrary.simpleMessage("Sign of origin"),
         "sortCause": MessageLookupByLibrary.simpleMessage("Cause"),
         "sortDate": MessageLookupByLibrary.simpleMessage("Date"),
-        "sortGameType": MessageLookupByLibrary.simpleMessage("Game"),
+        "sortGameType": MessageLookupByLibrary.simpleMessage("Species"),
         "sortGender": MessageLookupByLibrary.simpleMessage("Sex"),
         "sortNone": MessageLookupByLibrary.simpleMessage("No sorting"),
         "sortNumber": MessageLookupByLibrary.simpleMessage("Number"),
@@ -131,16 +188,33 @@ class MessageLookup extends MessageLookupByLibrary {
         "sortTitle": MessageLookupByLibrary.simpleMessage("Sorting"),
         "sortUse": MessageLookupByLibrary.simpleMessage("Use"),
         "sortWeight": MessageLookupByLibrary.simpleMessage("Weight"),
-        "spielhahn": MessageLookupByLibrary.simpleMessage("playcock"),
+        "spielhahn": MessageLookupByLibrary.simpleMessage("Playcock"),
         "statistics": MessageLookupByLibrary.simpleMessage("Stats"),
-        "steinhuhn": MessageLookupByLibrary.simpleMessage("rock partridge"),
-        "steinwild": MessageLookupByLibrary.simpleMessage("ibex"),
-        "strassenunfall": MessageLookupByLibrary.simpleMessage("car accident"),
+        "steinbock": MessageLookupByLibrary.simpleMessage("Stone buck"),
+        "steingeiss": MessageLookupByLibrary.simpleMessage("Stone doe"),
+        "steinhuhn": MessageLookupByLibrary.simpleMessage("Rock partridge"),
+        "steinwild": MessageLookupByLibrary.simpleMessage("Ibex"),
+        "strassenunfall": MessageLookupByLibrary.simpleMessage("Car accident"),
+        "sum": MessageLookupByLibrary.simpleMessage("Sum"),
+        "tBock": MessageLookupByLibrary.simpleMessage("Trophy buck"),
         "time": MessageLookupByLibrary.simpleMessage("Time"),
+        "trophaehenHirsch": MessageLookupByLibrary.simpleMessage("Trophy buck"),
+        "ueberlaeuferBache":
+            MessageLookupByLibrary.simpleMessage("Young female boar"),
+        "ueberlaeuferKeiler":
+            MessageLookupByLibrary.simpleMessage("Young male boar"),
         "usage": MessageLookupByLibrary.simpleMessage("Usage"),
-        "usages": MessageLookupByLibrary.simpleMessage("usages"),
-        "verkauf": MessageLookupByLibrary.simpleMessage("sale"),
-        "vomZug": MessageLookupByLibrary.simpleMessage("killed by train"),
-        "weight": MessageLookupByLibrary.simpleMessage("Weight")
+        "usages": MessageLookupByLibrary.simpleMessage("Usages"),
+        "verkauf": MessageLookupByLibrary.simpleMessage("Sale"),
+        "vomZug": MessageLookupByLibrary.simpleMessage("Killed by train"),
+        "weiblich": MessageLookupByLibrary.simpleMessage("Female"),
+        "weiblicheRehe": MessageLookupByLibrary.simpleMessage("Female deer"),
+        "weight": MessageLookupByLibrary.simpleMessage("Weight"),
+        "wildkalb": MessageLookupByLibrary.simpleMessage("Female fawn"),
+        "xKill_s": m4,
+        "xNewKillsFound": m5,
+        "yearly": MessageLookupByLibrary.simpleMessage("Yearly"),
+        "yearlyBreakdown":
+            MessageLookupByLibrary.simpleMessage("Yearly breakdown")
       };
 }

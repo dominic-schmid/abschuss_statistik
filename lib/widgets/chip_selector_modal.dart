@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
+import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/utils/utils.dart';
 
 import '../models/filter_chip_data.dart';
 

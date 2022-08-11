@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/generated/l10n.dart';
-import 'package:jagdverband_scraper/utils/database_methods.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/database_methods.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Map<String, dynamic> getDefaultPrefs() => {
       'login': '',
       'pass': '',
       'isDarkMode': true,
+      'language': 'de',
     };
 
 Future<Map<String, String>?> loadCredentialsFromPrefs() async {
@@ -150,98 +151,35 @@ IconData getUrsacheIcon(String ursache) {
   }
 }
 
-List<Map<String, String>> baseGroupBys = [
-  {
-    'key': 'Wildarten',
-    'value': 'wildart',
-  },
-  {
-    'key': 'Geschlechter',
-    'value': 'geschlecht',
-  },
-  {
-    'key': 'Gebiete',
-    'value': 'hegeinGebietRevierteil',
-  },
-  {
-    'key': 'Ursachen',
-    'value': 'ursache',
-  },
-  {
-    'key': 'Verwendungen',
-    'value': 'verwendung',
-  },
-  {
-    'key': 'Ursprungszeichen',
-    'value': 'ursprungszeichen',
-  },
-  //  'datetime': k.datetime.toIso8601String(),
-];
-
-const languages = {
-  "en": {"name": "English", "nativeName": "English"},
-  "de": {"name": "German", "nativeName": "Deutsch"},
-  "it": {"name": "Italian", "nativeName": "Italiano"}
-};
-
-String translateValue(BuildContext ctx, String label) {
+List<Map<String, String>> getBaseGroupBys(BuildContext ctx) {
   final dg = S.of(ctx);
-  switch (label) {
-    case 'Rehwild':
-      return dg.rehwild;
-    case 'Rotwild':
-      return dg.rotwild;
-    case 'Gamswild':
-      return dg.gamswild;
-    case 'Steinwild':
-      return dg.steinwild;
-    case 'Schwarzwild':
-      return dg.schwarzwild;
-    case 'Spielhahn':
-      return dg.spielhahn;
-    case 'Steinhuhn':
-      return dg.steinhuhn;
-    case 'Schneehuhn':
-      return dg.schneehuhn;
-    case 'Murmeltier':
-      return dg.murmeltier;
-    case 'Dachs':
-      return dg.dachs;
-    case 'Fuchs':
-      return dg.fuchs;
-    case 'Schneehase':
-      return dg.schneehase;
-    case 'Andere Wildart':
-      return dg.andereWildart;
-    case 'erlegt':
-      return dg.erlegt;
-    case 'Fallwild':
-      return dg.fallwild;
-    case 'Hegeabschuss':
-      return dg.hegeabschuss;
-    case 'Straßenunfall':
-      return dg.strassenunfall;
-    case 'Protokoll / beschlagnahmt':
-      return dg.protokollBeschlagnahmt;
-    case 'vom zug überfahren':
-      return dg.vomZug;
-    case 'Freizone':
-      return dg.freizone;
-    case 'Eigengebrauch':
-      return dg.eigengebrauch;
-    case 'Eigengebrauch - Abgabe zur Weiterverarbeitung':
-      return dg.eigengebrauchAbgabe;
-    case 'verkauf':
-      return dg.verkauf;
-    case 'nicht verwertbar':
-      return dg.nichtVerwertbar;
-    case 'nicht gefunden / Nachsuche erfolglos':
-      return dg.nichtGefunden;
-    case 'nicht bekannt':
-      return dg.nichtBekannt;
-    default:
-      return label;
-  }
+  return [
+    {
+      'key': dg.gameTypes,
+      'value': 'wildart',
+    },
+    {
+      'key': dg.sexes,
+      'value': 'geschlecht',
+    },
+    {
+      'key': dg.sortPlace,
+      'value': 'hegeinGebietRevierteil',
+    },
+    {
+      'key': dg.causes,
+      'value': 'ursache',
+    },
+    {
+      'key': dg.usages,
+      'value': 'verwendung',
+    },
+    {
+      'key': dg.signOfOrigin,
+      'value': 'ursprungszeichen',
+    },
+    //  'datetime': k.datetime.toIso8601String(),
+  ];
 }
 
 const ShapeBorder modalShape = RoundedRectangleBorder(
@@ -251,4 +189,50 @@ const ShapeBorder modalShape = RoundedRectangleBorder(
   ),
 );
 
-const String appVersion = "1.2.0";
+Future<void> showLanguagePicker(BuildContext context) async {
+  final dg = S.of(context);
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  return await showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text(dg.settingsLanguage, textAlign: TextAlign.center),
+          children: [
+            SimpleDialogOption(
+              padding: const EdgeInsets.all(20),
+              child: const Text('English', textAlign: TextAlign.center),
+              onPressed: () async {
+                await S.load(const Locale('en'));
+                await prefs.setString('language', 'en');
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop();
+              },
+            ),
+            SimpleDialogOption(
+              padding: const EdgeInsets.all(20),
+              child: const Text('Deutsch', textAlign: TextAlign.center),
+              onPressed: () async {
+                await S.load(const Locale('de'));
+                await prefs.setString('language', 'de');
+                print('wrote de to prefs');
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop();
+              },
+            ),
+            SimpleDialogOption(
+              padding: const EdgeInsets.all(20),
+              child: const Text('Italiano', textAlign: TextAlign.center),
+              onPressed: () async {
+                await S.load(const Locale('it'));
+                await prefs.setString('language', 'it');
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      });
+}
+
+const String appVersion = "1.3.0";

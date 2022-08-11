@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
-import 'package:jagdverband_scraper/widgets/chart_app_bar.dart';
-import 'package:jagdverband_scraper/charts/yearly_pie_chart_screen.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/widgets/chart_app_bar.dart';
+import 'package:jagdstatistik/charts/yearly_pie_chart_screen.dart';
 
 import 'charts/historic_bar_chart_screen.dart';
 import 'charts/historic_line_chart_screen.dart';
@@ -20,14 +21,14 @@ class _StatsScreenState extends State<StatsScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final dg = S.of(context);
     return Scaffold(
-      appBar: ChartAppBar(title: const Text('Statistik'), actions: [
+      appBar: ChartAppBar(title: Text(dg.statistics), actions: [
         IconButton(
           onPressed: () {
             showAlertDialog(
-              title: ' Verwendung',
-              description:
-                  'Die Diagramme basieren auf deinen heruntergeladenen Daten. Falls ein Jahr fehlt, kannst du es auf der Startseite auswählen und heruntergeladen.\n\nDiese Diagramme bieten Aufschluss über die historische Entwicklung des Wilds in deinem Revier und wurden so gestaltet, dass du dir den Aufbau selbst konfigurieren kannst!',
+              title: ' ${dg.usage}',
+              description: dg.chartBasedOnDownloaded,
               yesOption: '',
               noOption: 'Ok',
               onYes: () {},
@@ -45,7 +46,7 @@ class _StatsScreenState extends State<StatsScreen> {
           children: [
             SizedBox(height: size.height * 0.01),
             Text(
-              'Jährlich',
+              dg.yearly,
               style: Theme.of(context).primaryTextTheme.titleLarge,
             ),
             Flexible(
@@ -58,7 +59,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 ),
                 children: [
                   ChartGridItem(
-                    title: 'Summe',
+                    title: dg.sum,
                     assetImage: 'assets/pie-chart.png',
                     backgroundColor: gamswildFarbe.withAlpha(215).withOpacity(0.66),
                     onTap: () => Navigator.of(context).push(
@@ -68,7 +69,7 @@ class _StatsScreenState extends State<StatsScreen> {
                     ),
                   ),
                   ChartGridItem(
-                    title: 'Verteilung',
+                    title: dg.distribution,
                     assetImage: 'assets/bar-graph.png',
                     backgroundColor: schneehaseFarbe.withOpacity(0.66),
                     onTap: () => Navigator.of(context).push(
@@ -78,7 +79,7 @@ class _StatsScreenState extends State<StatsScreen> {
                     ),
                   ),
                   ChartGridItem(
-                    title: 'Monatsverlauf',
+                    title: dg.monthlyBreakdown,
                     assetImage: 'assets/increase-line.png',
                     backgroundColor: erlegtFarbe.withGreen(150),
                     onTap: () => Navigator.of(context).push(
@@ -92,7 +93,7 @@ class _StatsScreenState extends State<StatsScreen> {
             ),
             SizedBox(height: size.height * 0.02),
             Text(
-              'Historisch',
+              dg.historic,
               style: Theme.of(context).primaryTextTheme.titleLarge,
             ),
             Flexible(
@@ -105,7 +106,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 ),
                 children: [
                   ChartGridItem(
-                    title: 'Summe',
+                    title: dg.sum,
                     assetImage: 'assets/pie-chart.png',
                     backgroundColor: gamswildFarbe.withAlpha(215),
                     onTap: () => Navigator.of(context).push(
@@ -115,7 +116,7 @@ class _StatsScreenState extends State<StatsScreen> {
                     ),
                   ),
                   ChartGridItem(
-                    title: 'Verteilung',
+                    title: dg.distribution,
                     assetImage: 'assets/bar-graph.png',
                     backgroundColor: schneehaseFarbe,
                     onTap: () => Navigator.of(context).push(
@@ -135,7 +136,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   //   ),
                   // ),
                   ChartGridItem(
-                    title: 'Jahresverlauf',
+                    title: dg.yearlyBreakdown,
                     assetImage: 'assets/increase-line.png',
                     backgroundColor: erlegtFarbe.withGreen(150),
                     onTap: () => Navigator.of(context).push(

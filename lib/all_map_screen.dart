@@ -6,9 +6,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:jagdverband_scraper/models/kill_entry.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
-import 'package:jagdverband_scraper/widgets/chart_app_bar.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/models/kill_entry.dart';
+import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/utils/utils.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'models/filter_chip_data.dart';
@@ -98,6 +99,7 @@ class _AllMapScreenState extends State<AllMapScreen> {
         avgLon += k.gpsLon!;
         markerCount++;
 
+        if (!mounted) return;
         _markers.add(
           Marker(
             markerId: MarkerId(k.key),
@@ -106,10 +108,11 @@ class _AllMapScreenState extends State<AllMapScreen> {
             icon: BitmapDescriptor.defaultMarkerWithHue(
                 KillEntry.getMarkerHueFromWildart(k.wildart)),
             infoWindow: InfoWindow(
-                title: '${k.wildart} (${k.geschlecht})',
+                title:
+                    '${translateValue(context, k.wildart)} (${translateValue(context, k.geschlecht)})',
                 onTap: () => showAlertDialog(
                       title: '',
-                      description: k.toString(),
+                      description: k.localizedToString(context),
                       yesOption: '',
                       noOption: 'Ok',
                       onYes: () {},
@@ -146,6 +149,8 @@ class _AllMapScreenState extends State<AllMapScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    final dg = S.of(context);
 
     return Scaffold(
       body: _isLoading
@@ -197,7 +202,7 @@ class _AllMapScreenState extends State<AllMapScreen> {
                             ),
                             Padding(
                               padding: EdgeInsets.only(right: size.width * 0.05),
-                              child: Text('${_markers.length} Abschüsse'),
+                              child: Text(dg.xKill_s(_markers.length)),
                             ),
                           ],
                         ),
@@ -241,14 +246,14 @@ class _AllMapScreenState extends State<AllMapScreen> {
                             children: [
                               MapFilterButton(
                                 color: rehwildFarbe,
-                                title: 'Wildarten',
+                                title: dg.gameTypes,
                                 onTap: () async {
                                   await showMaterialModalBottomSheet(
                                       context: context,
                                       shape: modalShape,
                                       builder: (BuildContext context) {
                                         return ChipSelectorModal(
-                                          title: 'Wildarten',
+                                          title: dg.gameTypes,
                                           chips: wildChips,
                                         );
                                       });
@@ -260,14 +265,14 @@ class _AllMapScreenState extends State<AllMapScreen> {
                               const SizedBox(height: 12),
                               MapFilterButton(
                                 color: protokollFarbe,
-                                title: 'Geschlechter',
+                                title: dg.sexes,
                                 onTap: () async {
                                   await showMaterialModalBottomSheet(
                                       context: context,
                                       shape: modalShape,
                                       builder: (BuildContext context) {
                                         return ChipSelectorModal(
-                                          title: 'Geschlechter',
+                                          title: dg.sexes,
                                           chips: geschlechterChips,
                                         );
                                       });
@@ -279,14 +284,14 @@ class _AllMapScreenState extends State<AllMapScreen> {
                               const SizedBox(height: 12),
                               MapFilterButton(
                                 color: hegeabschussFarbe,
-                                title: 'Ursachen',
+                                title: dg.causes,
                                 onTap: () async {
                                   await showMaterialModalBottomSheet(
                                       context: context,
                                       shape: modalShape,
                                       builder: (BuildContext context) {
                                         return ChipSelectorModal(
-                                          title: 'Ursachen',
+                                          title: dg.causes,
                                           chips: ursacheChips,
                                         );
                                       });
@@ -298,14 +303,14 @@ class _AllMapScreenState extends State<AllMapScreen> {
                               const SizedBox(height: 12),
                               MapFilterButton(
                                 color: nichtBekanntFarbe,
-                                title: 'Verwendungen',
+                                title: dg.usages,
                                 onTap: () async {
                                   await showMaterialModalBottomSheet(
                                       context: context,
                                       shape: modalShape,
                                       builder: (BuildContext context) {
                                         return ChipSelectorModal(
-                                          title: 'Verwendungen',
+                                          title: dg.usages,
                                           chips: verwendungChips,
                                         );
                                       });
@@ -350,9 +355,7 @@ class _AllMapScreenState extends State<AllMapScreen> {
               onPressed: _goToOrigin,
               backgroundColor: rehwildFarbe,
               foregroundColor: Colors.white,
-              label: const Text(
-                'Anfangsposition',
-              ),
+              label: Text(dg.mapInitialPosition),
               icon: const Icon(Icons.restore_rounded),
             ),
     );

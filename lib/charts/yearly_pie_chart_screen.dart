@@ -2,10 +2,12 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/utils/database_methods.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
-import 'package:jagdverband_scraper/widgets/no_data_found.dart';
-import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/database_methods.dart';
+import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/widgets/no_data_found.dart';
+import 'package:jagdstatistik/widgets/value_selector_modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -30,25 +32,24 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
   bool _isLoading = true;
   bool _showLegend = false;
 
-  Map<String, String> groupBy = {
-    'key': 'Wildarten',
-    'value': 'wildart',
-  };
+  Map<String, String> groupBy = {};
 
-  List<Map<String, String>> groupBys = baseGroupBys.toList();
+  List<Map<String, String>> groupBys = [];
 
   showPerson() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool showPerson = prefs.getBool('showPerson') ?? false;
+    if (!mounted) return;
+    final dg = S.of(context);
     if (showPerson) {
       groupBys.addAll(
         [
           {
-            'key': 'Erleger',
+            'key': dg.killer,
             'value': 'erleger',
           },
           {
-            'key': 'Begleiter',
+            'key': dg.companion,
             'value': 'begleiter',
           },
         ],
@@ -67,6 +68,10 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
     super.initState();
     year = DateTime.now().year;
     getConfig();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      groupBys = getBaseGroupBys(context).toList();
+      groupBy = groupBys.first;
+    });
   }
 
   getYearList() async {
@@ -108,8 +113,9 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
       Color c = groupBy['value'] == 'wildart'
           ? KillEntry.getColorFromWildart(e['Gruppierung'] as String)
           : Colors.primaries[i % Colors.primaries.length];
-
-      chartItems.add(ChartItem(label: label, value: value, color: c));
+      if (!mounted) return;
+      chartItems
+          .add(ChartItem(label: translateValue(context, label), value: value, color: c));
     }
 
     if (mounted) setState(() => _isLoading = false);
@@ -148,8 +154,7 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
         //color: KillEntry.getColorFromWildart(e['Gruppierung'] as String),
         color: e.color,
         title: '$percentage%',
-        titleStyle:
-            const TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+        titleStyle: const TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
         value: e.value,
       );
     }).toList();
@@ -158,11 +163,11 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(
-          child: CircularProgressIndicator(color: rehwildFarbe));
+      return const Center(child: CircularProgressIndicator(color: rehwildFarbe));
     }
 
     Size size = MediaQuery.of(context).size;
+    final dg = S.of(context);
 
     return Scaffold(
       appBar: ChartAppBar(title: Text(groupBy['key'] as String), actions: [
@@ -224,7 +229,7 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
               ),
               backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
               labelStyle: const TextStyle(color: nichtBekanntFarbe),
-              label: const Text('Anzeige'),
+              label: Text(dg.display),
               onPressed: () async {
                 await showModalBottomSheet(
                     context: context,
@@ -244,10 +249,10 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
                         padding: false,
                         onSelect: (selected) async {
                           if (groupBy !=
-                              groupBys.firstWhere((element) =>
-                                  element['key'] as String == selected)) {
-                            groupBy = groupBys.firstWhere((element) =>
-                                element['key'] as String == selected);
+                              groupBys.firstWhere(
+                                  (element) => element['key'] as String == selected)) {
+                            groupBy = groupBys.firstWhere(
+                                (element) => element['key'] as String == selected);
                             await getData();
                             setState(() {});
                           }
@@ -257,13 +262,9 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
               }),
           SizedBox(height: size.height * 0.05),
           _isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(color: rehwildFarbe))
+              ? const Center(child: CircularProgressIndicator(color: rehwildFarbe))
               : chartItems.isEmpty
-                  ? const NoDataFoundWidget(
-                      suffix:
-                          "Eventuell musst du diese Daten erst herunterladen",
-                    )
+                  ? const NoDataFoundWidget()
                   : ConstrainedBox(
                       constraints: BoxConstraints(
                         maxHeight: size.height * 0.5,
@@ -281,8 +282,8 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
                           PieChartData(
                             startDegreeOffset: 180,
 
-                            pieTouchData: PieTouchData(touchCallback:
-                                (FlTouchEvent event, pieTouchResponse) {
+                            pieTouchData: PieTouchData(
+                                touchCallback: (FlTouchEvent event, pieTouchResponse) {
                               setState(() {
                                 if (!event.isInterestedForInteractions ||
                                     pieTouchResponse == null ||
@@ -290,8 +291,8 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
                                   touchedIndex = -1;
                                   return;
                                 }
-                                touchedIndex = pieTouchResponse
-                                    .touchedSection!.touchedSectionIndex;
+                                touchedIndex =
+                                    pieTouchResponse.touchedSection!.touchedSectionIndex;
                               });
                             }),
                             sectionsSpace: 2,

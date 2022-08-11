@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:intl/intl.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/utils/utils.dart';
 
 class KillEntry {
   final int nummer;
@@ -258,6 +260,39 @@ class KillEntry {
     );
   }
 
+  String localizedToString(BuildContext context) {
+    final dg = S.of(context);
+    String datum = DateFormat('dd.MM.yy').format(datetime);
+    String zeit = DateFormat('kk:mm').format(datetime);
+
+    String alterString = alter.isNotEmpty && alterw.isEmpty
+        ? alter
+        : alter.isEmpty && alterw.isNotEmpty
+            ? alterw
+            : alter.isNotEmpty && alterw.isNotEmpty
+                ? '$alter - $alterw'
+                : "";
+    alterString = alterString.trim();
+
+    String aufseherString = jagdaufseher == null
+        ? ''
+        : dg.seenByXonYatZ(jagdaufseher!['aufseher'] as String,
+            jagdaufseher!['datum'] as String, jagdaufseher!['zeit'] as String);
+
+    String e = erleger.isEmpty ||
+            erleger.contains('*') ||
+            ursache == 'Fallwild' ||
+            ursache == 'Straßenunfall' ||
+            ursache == 'vom Zug überfahren'
+        ? ''
+        : '\n${dg.killer}: $erleger';
+    String b = begleiter.isEmpty || begleiter.contains('*')
+        ? ''
+        : '\n${dg.companion}: $begleiter';
+
+    return "${translateValue(context, wildart)} - ${translateValue(context, geschlecht)}\n${translateValue(context, ursache)} $oertlichkeit ($datum - $zeit)\n${dg.number}: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\n${dg.sortPlace}: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\n${dg.age}: $alterString'}${gewicht == 0 ? '' : '\n${dg.weight}: $gewicht kg'}$e$b${verwendung.isEmpty ? '' : '\n${dg.usage}: ${translateValue(context, verwendung)}'}${ursprungszeichen.isEmpty ? '' : '\n${dg.signOfOrigin}: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}";
+  }
+
   @override
   String toString() {
     String datum = DateFormat('dd.MM.yy').format(datetime);
@@ -290,7 +325,7 @@ class KillEntry {
     return "$wildart $geschlecht, $ursache $oertlichkeit am $datum um $zeit\nNummer: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\nGebiet: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\nAlter: $alterString'}${gewicht == 0 ? '' : '\nGewicht: $gewicht kg'}$e$b${verwendung.isEmpty ? '' : '\nVerwendung: $verwendung'}${ursprungszeichen.isEmpty ? '' : '\nUrsprungszeichen: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}"; //${} ${} ${} ${} ${} ${} ${} ${}""";
   }
 
-  List<String> toCSV() {
+  List<String> toCSV(BuildContext ctx) {
     // String aufseherString = jagdaufseher == null
     //     ? ';;'
     //     : "${jagdaufseher!['aufseher']};${jagdaufseher!['datum']};${jagdaufseher!['zeit']}";
@@ -299,23 +334,23 @@ class KillEntry {
     String zeit = DateFormat('kk:mm').format(datetime);
     return [
       nummer.toString(),
-      wildart,
-      geschlecht,
-      hegeinGebietRevierteil,
-      alter,
-      alterw,
+      translateValue(ctx, wildart),
+      translateValue(ctx, geschlecht),
+      translateValue(ctx, hegeinGebietRevierteil),
+      translateValue(ctx, alter),
+      translateValue(ctx, alterw),
       gewicht.toString(),
       erleger,
       begleiter,
-      ursache,
-      verwendung,
-      ursprungszeichen,
+      translateValue(ctx, ursache),
+      translateValue(ctx, verwendung),
+      translateValue(ctx, ursprungszeichen),
       oertlichkeit,
       gpsLat.toString(),
       gpsLon.toString(),
-      //datetime.toIso8601String(),
       datum,
       zeit,
+      //datetime.toIso8601String(),
       jagdaufseher == null ? '' : jagdaufseher!['aufseher'] as String,
       jagdaufseher == null ? '' : jagdaufseher!['datum'] as String,
       jagdaufseher == null ? '' : jagdaufseher!['zeit'] as String,
@@ -342,7 +377,6 @@ class KillEntry {
       ursprungszeichen == other.ursprungszeichen;
 
   @override
-  // TODO: implement hashCode
   int get hashCode => Object.hash(
       wildart,
       geschlecht,
@@ -359,25 +393,31 @@ class KillEntry {
       ursache,
       ursprungszeichen);
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap(BuildContext ctx) {
+    final dg = S.of(ctx);
     return {
-      'Nummer': nummer.toString(),
-      'Wildart': wildart,
-      'Geschlecht': geschlecht,
-      'Hegering/Gebiet/Revierteil': hegeinGebietRevierteil,
-      'Alter': alter,
-      'Alterw': alterw,
-      'Gewicht': gewicht,
-      'Erleger': erleger,
-      'Begleiter': begleiter,
-      'Ursache': ursache,
-      'Verwendung': verwendung,
-      'Ursprungszeichen': ursprungszeichen,
-      'Örtlichkeit': oertlichkeit,
+      dg.number: nummer.toString(),
+      dg.sortGameType: translateValue(ctx, wildart),
+      dg.sortGender: translateValue(ctx, geschlecht),
+      dg.sortPlace: hegeinGebietRevierteil,
+      dg.age: alter,
+      '${dg.age}w': alterw,
+      dg.weight: gewicht,
+      dg.killer: erleger,
+      dg.companion: begleiter,
+      dg.sortCause: translateValue(ctx, ursache),
+      dg.usage: translateValue(ctx, verwendung),
+      dg.area: oertlichkeit,
       'Lat': gpsLat,
       'Lon': gpsLon,
-      'Datum': datetime.toIso8601String(),
-      'Aufseher': jagdaufseher,
+      dg.sortDate: datetime.toIso8601String(),
+      dg.overseer: jagdaufseher == null
+          ? null
+          : {
+              dg.sortDate: jagdaufseher!['aufseherDatum'] as String,
+              dg.time: jagdaufseher!['aufseherZeit'] as String,
+              dg.overseer: jagdaufseher!['aufseher'] as String,
+            }
     };
   }
 }

@@ -8,8 +8,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:jagdverband_scraper/main.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
+import 'package:jagdstatistik/main.dart';
+import 'package:jagdstatistik/utils/utils.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

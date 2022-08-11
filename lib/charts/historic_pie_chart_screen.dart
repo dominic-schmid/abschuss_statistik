@@ -1,16 +1,16 @@
-import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:jagdverband_scraper/utils/database_methods.dart';
-import 'package:jagdverband_scraper/utils/utils.dart';
-import 'package:jagdverband_scraper/widgets/chart_legend.dart';
-import 'package:jagdverband_scraper/widgets/no_data_found.dart';
-import 'package:jagdverband_scraper/widgets/value_selector_modal.dart';
+import 'package:jagdstatistik/utils/database_methods.dart';
+import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/widgets/chart_legend.dart';
+import 'package:jagdstatistik/widgets/no_data_found.dart';
+import 'package:jagdstatistik/widgets/value_selector_modal.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../generated/l10n.dart';
 import '../models/filter_chip_data.dart';
 import '../models/kill_entry.dart';
 import '../widgets/chart_app_bar.dart';
@@ -38,25 +38,24 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
   bool _isLoading = true;
   bool _showLegend = false;
 
-  Map<String, String> groupBy = {
-    'key': 'Wildarten',
-    'value': 'wildart',
-  };
+  Map<String, String> groupBy = {};
 
-  List<Map<String, String>> groupBys = baseGroupBys.toList();
+  List<Map<String, String>> groupBys = [];
 
   showPerson() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool showPerson = prefs.getBool('showPerson') ?? false;
+    if (!mounted) return;
+    final dg = S.of(context);
     if (showPerson) {
       groupBys.addAll(
         [
           {
-            'key': 'Erleger',
+            'key': dg.killer,
             'value': 'erleger',
           },
           {
-            'key': 'Begleiter',
+            'key': dg.companion,
             'value': 'begleiter',
           },
         ],
@@ -68,6 +67,10 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
   void initState() {
     super.initState();
     getConfig();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      groupBys = getBaseGroupBys(context).toList();
+      groupBy = groupBys.first;
+    });
   }
 
   getConfig() async {
@@ -162,7 +165,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
 
       sum += value;
 
-      chartItems.add(ChartItem(label: label, value: value, color: c));
+      chartItems
+          .add(ChartItem(label: translateValue(context, label), value: value, color: c));
     }
 
     return chartItems.map((e) {
@@ -205,6 +209,7 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
     }
 
     Size size = MediaQuery.of(context).size;
+    final dg = S.of(context);
 
     var sections = buildSections();
 
@@ -275,7 +280,7 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
                     ),
                     backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
                     labelStyle: const TextStyle(color: nichtBekanntFarbe),
-                    label: const Text('Anzeige'),
+                    label: Text(dg.display),
                     onPressed: () async {
                       await showModalBottomSheet(
                           context: context,
@@ -341,9 +346,7 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
           _isLoading
               ? const Center(child: CircularProgressIndicator(color: rehwildFarbe))
               : sections.isEmpty
-                  ? const NoDataFoundWidget(
-                      suffix: "Eventuell musst du diese Daten erst herunterladen",
-                    )
+                  ? const NoDataFoundWidget()
                   : ConstrainedBox(
                       constraints: BoxConstraints(
                         maxHeight: size.height * 0.5,
