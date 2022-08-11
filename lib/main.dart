@@ -178,7 +178,7 @@ class MyApp extends StatelessWidget {
     Locale locale =
         config['language'] != null && (config['language'] as String).length == 2
             ? Locale(config['language'] as String)
-            : Localizations.localeOf(context);
+            : const Locale('de'); // Default to German
 
     return FutureBuilder<void>(
         future: tryLoadLocale(locale),

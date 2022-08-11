@@ -40,7 +40,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "age": MessageLookupByLibrary.simpleMessage("Age"),
         "altgeiss": MessageLookupByLibrary.simpleMessage("Old doe"),
         "alttier": MessageLookupByLibrary.simpleMessage("Adult female"),
-        "andereWildart": MessageLookupByLibrary.simpleMessage("Other wild species"),
+        "andereWildart":
+            MessageLookupByLibrary.simpleMessage("Other wild species"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Hunting statistics"),
         "area": MessageLookupByLibrary.simpleMessage("Area"),
         "bache": MessageLookupByLibrary.simpleMessage("Female boar"),
@@ -55,7 +56,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "configuration": MessageLookupByLibrary.simpleMessage("Configuration"),
         "copiedToClipboardSnackbar":
             MessageLookupByLibrary.simpleMessage("Copied to clipboard!"),
-        "credentialsScreen": MessageLookupByLibrary.simpleMessage("Credentials"),
+        "credentialsScreen":
+            MessageLookupByLibrary.simpleMessage("Credentials"),
         "credsDisclaimerText": MessageLookupByLibrary.simpleMessage(
             "Your login details are only stored locally and used to download the kills from the hunters\' association site.\nThey will never be passed on to third parties!"),
         "credsEmptySnackbar":
@@ -64,11 +66,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "credsLoginErrorSnackbar": MessageLookupByLibrary.simpleMessage(
             "Error: No territory found for the given credentials!"),
         "credsLoginTitle": MessageLookupByLibrary.simpleMessage("Login"),
-        "credsPasswordFieldHint": MessageLookupByLibrary.simpleMessage("Password"),
-        "credsPasswordFieldTitle": MessageLookupByLibrary.simpleMessage("Password"),
+        "credsPasswordFieldHint":
+            MessageLookupByLibrary.simpleMessage("Password"),
+        "credsPasswordFieldTitle":
+            MessageLookupByLibrary.simpleMessage("Password"),
         "credsTerritoryFieldHint":
             MessageLookupByLibrary.simpleMessage("e.g. Bruneck13L"),
-        "credsTerritoryFieldTitle": MessageLookupByLibrary.simpleMessage("Territory"),
+        "credsTerritoryFieldTitle":
+            MessageLookupByLibrary.simpleMessage("Territory"),
         "credsTooManySigninsSnackbar": MessageLookupByLibrary.simpleMessage(
             "Signed up too often! Wait 1 minute before you can log in again."),
         "dachs": MessageLookupByLibrary.simpleMessage("Badger"),
@@ -92,12 +97,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "gameTypes": MessageLookupByLibrary.simpleMessage("Species"),
         "gamsbock": MessageLookupByLibrary.simpleMessage("Chamois buck"),
         "gamsgeiss": MessageLookupByLibrary.simpleMessage("Female chamois"),
-        "gamsjahrlinge": MessageLookupByLibrary.simpleMessage("chamois yearlings"),
+        "gamsjahrlinge":
+            MessageLookupByLibrary.simpleMessage("chamois yearlings"),
         "gamswild": MessageLookupByLibrary.simpleMessage("Chamois"),
         "geissjahrling": MessageLookupByLibrary.simpleMessage("Young female"),
         "geisskitz": MessageLookupByLibrary.simpleMessage("Female fawn"),
         "grid": MessageLookupByLibrary.simpleMessage("Grid"),
-        "hegeabschuss": MessageLookupByLibrary.simpleMessage("Conservation kill"),
+        "hegeabschuss":
+            MessageLookupByLibrary.simpleMessage("Conservation kill"),
         "hirschkalb": MessageLookupByLibrary.simpleMessage("Male fawn"),
         "historic": MessageLookupByLibrary.simpleMessage("Historic"),
         "hunter": MessageLookupByLibrary.simpleMessage("Hunter"),
@@ -108,26 +115,31 @@ class MessageLookup extends MessageLookupByLibrary {
         "killer": MessageLookupByLibrary.simpleMessage("Hunter"),
         "kills": MessageLookupByLibrary.simpleMessage("Kills"),
         "ksExport": MessageLookupByLibrary.simpleMessage("Export"),
-        "ksExportDialogTitle": MessageLookupByLibrary.simpleMessage("Export as"),
+        "ksExportDialogTitle":
+            MessageLookupByLibrary.simpleMessage("Export as"),
         "ksShowXFromYProgressBar": m1,
         "ksTerritoryTitle": MessageLookupByLibrary.simpleMessage("Territory"),
         "loginDataInvalid": MessageLookupByLibrary.simpleMessage(
             "Your login credentials are no longer valid!"),
         "maennlich": MessageLookupByLibrary.simpleMessage("Male"),
-        "mapInitialPosition": MessageLookupByLibrary.simpleMessage("Initial position"),
-        "monthlyBreakdown": MessageLookupByLibrary.simpleMessage("Monthly breakdown"),
+        "mapInitialPosition":
+            MessageLookupByLibrary.simpleMessage("Initial position"),
+        "monthlyBreakdown":
+            MessageLookupByLibrary.simpleMessage("Monthly breakdown"),
         "murmeltier": MessageLookupByLibrary.simpleMessage("Marmot"),
         "newKills": MessageLookupByLibrary.simpleMessage("New kills"),
         "nichtBekannt": MessageLookupByLibrary.simpleMessage("Unknown"),
-        "nichtGefunden":
-            MessageLookupByLibrary.simpleMessage("Not found / search unsuccessful"),
+        "nichtGefunden": MessageLookupByLibrary.simpleMessage(
+            "Not found / search unsuccessful"),
         "nichtVerwertbar": MessageLookupByLibrary.simpleMessage("Not usable"),
-        "noDataFoundText": MessageLookupByLibrary.simpleMessage("Nothing to see here.."),
-        "noInternetError": MessageLookupByLibrary.simpleMessage("Error: No internet!"),
+        "noDataFoundText":
+            MessageLookupByLibrary.simpleMessage("Nothing to see here.."),
+        "noInternetError":
+            MessageLookupByLibrary.simpleMessage("Error: No internet!"),
         "noKillsFoundError":
             MessageLookupByLibrary.simpleMessage("Error: No kills found!"),
-        "noKillsLoadedError":
-            MessageLookupByLibrary.simpleMessage("Error: Kills could not be loaded!"),
+        "noKillsLoadedError": MessageLookupByLibrary.simpleMessage(
+            "Error: Kills could not be loaded!"),
         "number": MessageLookupByLibrary.simpleMessage("Number"),
         "onlyShot": MessageLookupByLibrary.simpleMessage("Only shot"),
         "overseer": MessageLookupByLibrary.simpleMessage("Overseer"),
@@ -147,18 +159,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsAbout": MessageLookupByLibrary.simpleMessage("About"),
         "settingsAccount": MessageLookupByLibrary.simpleMessage("Account"),
         "settingsDarkMode": MessageLookupByLibrary.simpleMessage("Dark theme"),
-        "settingsDevelopment": MessageLookupByLibrary.simpleMessage("Development"),
+        "settingsDevelopment":
+            MessageLookupByLibrary.simpleMessage("Development"),
         "settingsDisplay": MessageLookupByLibrary.simpleMessage("Display"),
         "settingsDonate": MessageLookupByLibrary.simpleMessage("Donate Speck"),
         "settingsHuntersAssociationWebsite":
-            MessageLookupByLibrary.simpleMessage("Hunter\'s association\'s statistics"),
+            MessageLookupByLibrary.simpleMessage(
+                "Hunter\'s association\'s statistics"),
         "settingsKontakt": MessageLookupByLibrary.simpleMessage("Contact"),
         "settingsLanguage": MessageLookupByLibrary.simpleMessage("Language"),
         "settingsLinks": MessageLookupByLibrary.simpleMessage("Links"),
         "settingsLogout": MessageLookupByLibrary.simpleMessage("Log out"),
         "settingsShowNamesBody": MessageLookupByLibrary.simpleMessage(
             "It\'s possible you may only see stars if you enable this setting"),
-        "settingsShowNamesTitle": MessageLookupByLibrary.simpleMessage("Show names"),
+        "settingsShowNamesTitle":
+            MessageLookupByLibrary.simpleMessage("Show names"),
         "settingsTitle": MessageLookupByLibrary.simpleMessage("Settings"),
         "settingsWebsite": MessageLookupByLibrary.simpleMessage("Website"),
         "sexes": MessageLookupByLibrary.simpleMessage("Sexes"),
@@ -184,8 +199,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "tBock": MessageLookupByLibrary.simpleMessage("Trophy buck"),
         "time": MessageLookupByLibrary.simpleMessage("Time"),
         "trophaehenHirsch": MessageLookupByLibrary.simpleMessage("Trophy buck"),
-        "ueberlaeuferBache": MessageLookupByLibrary.simpleMessage("Young female boar"),
-        "ueberlaeuferKeiler": MessageLookupByLibrary.simpleMessage("Young male boar"),
+        "ueberlaeuferBache":
+            MessageLookupByLibrary.simpleMessage("Young female boar"),
+        "ueberlaeuferKeiler":
+            MessageLookupByLibrary.simpleMessage("Young male boar"),
         "usage": MessageLookupByLibrary.simpleMessage("Usage"),
         "usages": MessageLookupByLibrary.simpleMessage("Usages"),
         "verkauf": MessageLookupByLibrary.simpleMessage("Sale"),
@@ -197,6 +214,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "xKill_s": m4,
         "xNewKillsFound": m5,
         "yearly": MessageLookupByLibrary.simpleMessage("Yearly"),
-        "yearlyBreakdown": MessageLookupByLibrary.simpleMessage("Yearly breakdown")
+        "yearlyBreakdown":
+            MessageLookupByLibrary.simpleMessage("Yearly breakdown")
       };
 }

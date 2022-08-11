@@ -59,7 +59,7 @@ class SqliteDB {
     return _db;
   }
 
-  insertKills(int year, KillPage page) async {
+  Future<void> insertKills(int year, KillPage page) async {
     for (KillEntry k in page.kills) {
       // await d.rawDelete('Delete FROM Kill ');
       var database = await db;
@@ -86,16 +86,22 @@ class SqliteDB {
               'gpsLat': k.gpsLat,
               'gpsLon': k.gpsLon,
               'datetime': k.datetime.toIso8601String(),
-              'aufseherDatum':
-                  k.jagdaufseher == null ? null : k.jagdaufseher!['datum'],
-              'aufseherZeit':
-                  k.jagdaufseher == null ? null : k.jagdaufseher!['zeit'],
-              'aufseher':
-                  k.jagdaufseher == null ? null : k.jagdaufseher!['aufseher'],
+              'aufseherDatum': k.jagdaufseher == null ? null : k.jagdaufseher!['datum'],
+              'aufseherZeit': k.jagdaufseher == null ? null : k.jagdaufseher!['zeit'],
+              'aufseher': k.jagdaufseher == null ? null : k.jagdaufseher!['aufseher'],
             },
             conflictAlgorithm: ConflictAlgorithm.ignore,
           ));
     }
+    return;
+  }
+
+  Future<void> deleteYear(int year) async {
+    var database = await db;
+
+    await database
+        .transaction((txn) async => await txn.delete('Kill', where: 'year = $year'));
+    return;
   }
 
   delteDb() async {

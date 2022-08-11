@@ -55,20 +55,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "configuration": MessageLookupByLibrary.simpleMessage("Konfiguration"),
         "copiedToClipboardSnackbar":
             MessageLookupByLibrary.simpleMessage("In Zwischenablage kopiert!"),
-        "credentialsScreen": MessageLookupByLibrary.simpleMessage("Anmeldedaten"),
+        "credentialsScreen":
+            MessageLookupByLibrary.simpleMessage("Anmeldedaten"),
         "credsDisclaimerText": MessageLookupByLibrary.simpleMessage(
             "Deine Anmeldedaten werden nur lokal gespeichert und verwendet, um die Abschüsse von der Seite des Jagdverbands herunterzuladen.\nSie werden niemals an Dritte weitergegeben!"),
-        "credsEmptySnackbar":
-            MessageLookupByLibrary.simpleMessage("Du musst beide Felder angeben!"),
+        "credsEmptySnackbar": MessageLookupByLibrary.simpleMessage(
+            "Du musst beide Felder angeben!"),
         "credsLoginButton": MessageLookupByLibrary.simpleMessage("ANMELDEN"),
         "credsLoginErrorSnackbar": MessageLookupByLibrary.simpleMessage(
             "Fehler: Zu diesen Daten gibt es kein Revier!"),
         "credsLoginTitle": MessageLookupByLibrary.simpleMessage("Anmelden"),
-        "credsPasswordFieldHint": MessageLookupByLibrary.simpleMessage("Passwort"),
-        "credsPasswordFieldTitle": MessageLookupByLibrary.simpleMessage("Passwort"),
+        "credsPasswordFieldHint":
+            MessageLookupByLibrary.simpleMessage("Passwort"),
+        "credsPasswordFieldTitle":
+            MessageLookupByLibrary.simpleMessage("Passwort"),
         "credsTerritoryFieldHint":
             MessageLookupByLibrary.simpleMessage("z.B. Bruneck13L"),
-        "credsTerritoryFieldTitle": MessageLookupByLibrary.simpleMessage("Revier"),
+        "credsTerritoryFieldTitle":
+            MessageLookupByLibrary.simpleMessage("Revier"),
         "credsTooManySigninsSnackbar": MessageLookupByLibrary.simpleMessage(
             "Zu oft angemeldet! Warte 1 Minute bevor du dich erneut anmelden kannst."),
         "dachs": MessageLookupByLibrary.simpleMessage("Dachs"),
@@ -84,8 +88,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "erlegt": MessageLookupByLibrary.simpleMessage("Erlegt"),
         "error": MessageLookupByLibrary.simpleMessage("Fehler"),
         "fallwild": MessageLookupByLibrary.simpleMessage("Fallwild"),
-        "feedbackMailSubject":
-            MessageLookupByLibrary.simpleMessage("Feedback zur Jagdstatistik App"),
+        "feedbackMailSubject": MessageLookupByLibrary.simpleMessage(
+            "Feedback zur Jagdstatistik App"),
         "freizone": MessageLookupByLibrary.simpleMessage("Freizone"),
         "frischling": MessageLookupByLibrary.simpleMessage("Frischling"),
         "fuchs": MessageLookupByLibrary.simpleMessage("Fuchs"),
@@ -101,32 +105,38 @@ class MessageLookup extends MessageLookupByLibrary {
         "hirschkalb": MessageLookupByLibrary.simpleMessage("Hirschkalb"),
         "historic": MessageLookupByLibrary.simpleMessage("Historisch"),
         "hunter": MessageLookupByLibrary.simpleMessage("Jäger"),
-        "jahrlingsHirsch": MessageLookupByLibrary.simpleMessage("Jährlingshirsch"),
+        "jahrlingsHirsch":
+            MessageLookupByLibrary.simpleMessage("Jährlingshirsch"),
         "jahrlingsbock": MessageLookupByLibrary.simpleMessage("Jährlingsbock"),
         "kahlwild": MessageLookupByLibrary.simpleMessage("Kahlwild"),
         "keiler": MessageLookupByLibrary.simpleMessage("Keiler"),
         "killer": MessageLookupByLibrary.simpleMessage("Erleger"),
         "kills": MessageLookupByLibrary.simpleMessage("Abschüsse"),
         "ksExport": MessageLookupByLibrary.simpleMessage("Export"),
-        "ksExportDialogTitle": MessageLookupByLibrary.simpleMessage("Exportieren als"),
+        "ksExportDialogTitle":
+            MessageLookupByLibrary.simpleMessage("Exportieren als"),
         "ksShowXFromYProgressBar": m1,
         "ksTerritoryTitle": MessageLookupByLibrary.simpleMessage("Revier"),
         "loginDataInvalid": MessageLookupByLibrary.simpleMessage(
             "Deine Anmeldedaten sind nicht mehr gültig!"),
         "maennlich": MessageLookupByLibrary.simpleMessage("Männlich"),
-        "mapInitialPosition": MessageLookupByLibrary.simpleMessage("Anfangsposition"),
-        "monthlyBreakdown": MessageLookupByLibrary.simpleMessage("Monatsverlauf"),
+        "mapInitialPosition":
+            MessageLookupByLibrary.simpleMessage("Anfangsposition"),
+        "monthlyBreakdown":
+            MessageLookupByLibrary.simpleMessage("Monatsverlauf"),
         "murmeltier": MessageLookupByLibrary.simpleMessage("Murmeltier"),
         "newKills": MessageLookupByLibrary.simpleMessage("Neue Abschüsse"),
         "nichtBekannt": MessageLookupByLibrary.simpleMessage("Nicht bekannt"),
-        "nichtGefunden":
-            MessageLookupByLibrary.simpleMessage("Nicht gefunden / Nachsuche erfolglos"),
-        "nichtVerwertbar": MessageLookupByLibrary.simpleMessage("Nicht verwertbar"),
-        "noDataFoundText":
-            MessageLookupByLibrary.simpleMessage("Hier gibt es nichts zu sehen..."),
-        "noInternetError": MessageLookupByLibrary.simpleMessage("Fehler: Kein Internet"),
-        "noKillsFoundError":
-            MessageLookupByLibrary.simpleMessage("Fehler: Keine Abschüsse gefunden!"),
+        "nichtGefunden": MessageLookupByLibrary.simpleMessage(
+            "Nicht gefunden / Nachsuche erfolglos"),
+        "nichtVerwertbar":
+            MessageLookupByLibrary.simpleMessage("Nicht verwertbar"),
+        "noDataFoundText": MessageLookupByLibrary.simpleMessage(
+            "Hier gibt es nichts zu sehen..."),
+        "noInternetError":
+            MessageLookupByLibrary.simpleMessage("Fehler: Kein Internet"),
+        "noKillsFoundError": MessageLookupByLibrary.simpleMessage(
+            "Fehler: Keine Abschüsse gefunden!"),
         "noKillsLoadedError": MessageLookupByLibrary.simpleMessage(
             "Fehler: Abschüsse konnten nicht geladen werden!"),
         "number": MessageLookupByLibrary.simpleMessage("Nummer"),
@@ -147,10 +157,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "seenByXonYatZ": m3,
         "settingsAbout": MessageLookupByLibrary.simpleMessage("Über"),
         "settingsAccount": MessageLookupByLibrary.simpleMessage("Konto"),
-        "settingsDarkMode": MessageLookupByLibrary.simpleMessage("Dunkler Modus"),
-        "settingsDevelopment": MessageLookupByLibrary.simpleMessage("Entwicklung"),
+        "settingsDarkMode":
+            MessageLookupByLibrary.simpleMessage("Dunkler Modus"),
+        "settingsDevelopment":
+            MessageLookupByLibrary.simpleMessage("Entwicklung"),
         "settingsDisplay": MessageLookupByLibrary.simpleMessage("Anzeige"),
-        "settingsDonate": MessageLookupByLibrary.simpleMessage("Speck spendieren"),
+        "settingsDonate":
+            MessageLookupByLibrary.simpleMessage("Speck spendieren"),
         "settingsHuntersAssociationWebsite":
             MessageLookupByLibrary.simpleMessage("Jagdverband Statistik"),
         "settingsKontakt": MessageLookupByLibrary.simpleMessage("Kontakt"),
@@ -159,11 +172,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsLogout": MessageLookupByLibrary.simpleMessage("Abmelden"),
         "settingsShowNamesBody": MessageLookupByLibrary.simpleMessage(
             "Es könnte sein, dass dabei nur Sterne angezeigt werden können."),
-        "settingsShowNamesTitle": MessageLookupByLibrary.simpleMessage("Namen anzeigen"),
+        "settingsShowNamesTitle":
+            MessageLookupByLibrary.simpleMessage("Namen anzeigen"),
         "settingsTitle": MessageLookupByLibrary.simpleMessage("Einstellunge"),
         "settingsWebsite": MessageLookupByLibrary.simpleMessage("Webseite"),
         "sexes": MessageLookupByLibrary.simpleMessage("Geschlechter"),
-        "signOfOrigin": MessageLookupByLibrary.simpleMessage("Ursprungszeichen"),
+        "signOfOrigin":
+            MessageLookupByLibrary.simpleMessage("Ursprungszeichen"),
         "sortCause": MessageLookupByLibrary.simpleMessage("Ursache"),
         "sortDate": MessageLookupByLibrary.simpleMessage("Datum"),
         "sortGameType": MessageLookupByLibrary.simpleMessage("Wildart"),
@@ -184,9 +199,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "sum": MessageLookupByLibrary.simpleMessage("Summe"),
         "tBock": MessageLookupByLibrary.simpleMessage("T-Bock"),
         "time": MessageLookupByLibrary.simpleMessage("Uhrzeit"),
-        "trophaehenHirsch": MessageLookupByLibrary.simpleMessage("Trophäenhirsch"),
-        "ueberlaeuferBache": MessageLookupByLibrary.simpleMessage("Überläuferbache"),
-        "ueberlaeuferKeiler": MessageLookupByLibrary.simpleMessage("Überläuferkeiler"),
+        "trophaehenHirsch":
+            MessageLookupByLibrary.simpleMessage("Trophäenhirsch"),
+        "ueberlaeuferBache":
+            MessageLookupByLibrary.simpleMessage("Überläuferbache"),
+        "ueberlaeuferKeiler":
+            MessageLookupByLibrary.simpleMessage("Überläuferkeiler"),
         "usage": MessageLookupByLibrary.simpleMessage("Verwendung"),
         "usages": MessageLookupByLibrary.simpleMessage("Verwendungen"),
         "verkauf": MessageLookupByLibrary.simpleMessage("Verkauf"),

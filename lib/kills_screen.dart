@@ -84,33 +84,30 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
       KillPage? p2 = await refresh(
           _currentYear); // Refresh current year if launching app to check for updates
       if (page != null && p2 != null && page!.kills.isNotEmpty && page != p2) {
-        newKills = page!.kills.where((k) {
-          return !page!.kills.contains(k);
-        }).toList();
+        // If internet is returning LESS kills, delete from DB and replace with internet
+        if (p2.kills.length < page!.kills.length) {
+          await SqliteDB().deleteYear(_currentYear);
+          await SqliteDB().insertKills(_currentYear, p2);
+          print('Internet returned less kills. Replaced SQL');
+          return;
+        } else {
+          newKills = p2.kills.where((k) {
+            return !page!.kills.contains(k);
+          }).toList();
 
-        showAlertDialog(
-          title: ' ${dg.newKills}',
-          description: dg.xNewKillsFound(newKills.length),
-          yesOption: '',
-          noOption: dg.close,
-          onYes: () {},
-          icon: Icons.fiber_new_rounded,
-          context: context,
-        );
+          showAlertDialog(
+            title: ' ${dg.newKills}',
+            description: dg.xNewKillsFound(newKills.length),
+            yesOption: '',
+            noOption: dg.close,
+            onYes: () {},
+            icon: Icons.fiber_new_rounded,
+            context: context,
+          );
+        }
       }
       loadPastYearsIfNotExisting(); // Async loads all historic years in BG if not existing
     });
-
-    // Hide FAB at the bottom of the listview (to see the entries)
-    // _scrollController.addListener(() {
-    //   if (_scrollController.position.atEdge && _scrollController.position.pixels > 0) {
-    //     if (_isFabVisible.value) {
-    //       _isFabVisible.value = false;
-    //     }
-    //   } else if (!_isFabVisible.value) {
-    //     _isFabVisible.value = true;
-    //   }
-    // });
   }
 
   @override
@@ -157,25 +154,32 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
         if (page != null &&
             page!.jahr == year &&
             page!.kills.isNotEmpty &&
-            p2.kills.isNotEmpty) {
-          print('Changes found!');
-          newKills = page!.kills.where((k) {
-            return !page!.kills.contains(k);
-          }).toList();
+            p2.kills.isNotEmpty &&
+            page != p2) {
+          // If internet is returning LESS kills, delete from DB and replace with internet
+          if (p2.kills.length < page!.kills.length) {
+            await SqliteDB().deleteYear(_currentYear);
+            await SqliteDB().insertKills(_currentYear, p2);
+            return;
+          } else {
+            print('Changes found!');
+            newKills = p2.kills.where((k) {
+              return !page!.kills.contains(k);
+            }).toList();
 
-          showAlertDialog(
-            title: ' ${dg.newKills}',
-            description: dg.xNewKillsFound(newKills.length),
-            yesOption: '',
-            noOption: dg.close,
-            onYes: () {},
-            icon: Icons.fiber_new_rounded,
-            context: context,
-          );
+            showAlertDialog(
+              title: ' ${dg.newKills}',
+              description: dg.xNewKillsFound(newKills.length),
+              yesOption: '',
+              noOption: dg.close,
+              onYes: () {},
+              icon: Icons.fiber_new_rounded,
+              context: context,
+            );
+          }
         }
 
         p = p2; // Prioritize Internet loaded data
-        print('Internet returned $p2');
       }
     }
 

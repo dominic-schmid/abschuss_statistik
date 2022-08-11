@@ -12,7 +12,7 @@ Du benötigst einen Login des [Südtiroler Jagdverbands](https://jagdverband.it/
 
 
 
-Verfügbar für **Android** und bald auch für **iOS**.
+Verfügbar für **Android** und vielleicht auch irgendwann für **iOS**.
 
 ## Funktionen
 
@@ -22,10 +22,10 @@ Verfügbar für **Android** und bald auch für **iOS**.
 - Sortieren nach allen Attributen, in beide Richtungen
 - Balkendiagramme, Kreisdiagramme, Liniendiagramme über mehrere Jahre hinweg
 - Ein oder mehrere Abschüsse auf einer Karte anzeigen lassen
-- Anzeigen-Personalisierung (Theme, Namen, ...)
+- Anzeigen-Personalisierung (Theme, Namen, Sprache, ...)
 - Offline Nutzbarkeit nach erstmaliger Ausführung
 
 ## Disclaimer
 
-Die App ist noch aktiv im Aufbau und es könnte somit jederzeit zu unerwünschten Bugs oder Problemen kommen.
+Die App ist noch aktiv im Aufbau und es könnte somit jederzeit zu unerwünschten Bugs oder Problemen kommen. Um die Erfahrung aller Nutzer zu verbessern
 Weiter geplante Features werden im Laufe der Zeit hinzugefügt werden, sodass ein voller Funktionsumfang gewährleistet werden kann.
