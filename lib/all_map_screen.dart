@@ -33,6 +33,7 @@ class _AllMapScreenState extends State<AllMapScreen> {
 
   bool _isLoading = true;
   bool _showFilter = false;
+  bool _showButtons = true;
 
   late LatLng kLocation;
   late CameraPosition originCamPosition;
@@ -133,6 +134,28 @@ class _AllMapScreenState extends State<AllMapScreen> {
         tilt: cameraTilt,
         zoom: cameraZoom,
       );
+    } else if (widget.page.kills.isNotEmpty &&
+        widget.page.kills
+            .where((element) => element.gpsLat != null && element.gpsLat != null)
+            .isNotEmpty) {
+      var kill = widget.page.kills
+          .where((element) => element.gpsLat != null && element.gpsLat != null)
+          .first;
+
+      originCamPosition = CameraPosition(
+        target: LatLng(kill.gpsLat!, kill.gpsLon!),
+        bearing: cameraBearing,
+        tilt: cameraTilt,
+        zoom: cameraZoom,
+      );
+    } else {
+      // Fallback default position: Bolzano
+      originCamPosition = const CameraPosition(
+        target: LatLng(46.500000, 11.350000),
+        bearing: cameraBearing,
+        tilt: cameraTilt,
+        zoom: cameraZoom,
+      );
     }
   }
 
@@ -162,82 +185,148 @@ class _AllMapScreenState extends State<AllMapScreen> {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: GoogleMap(
-                      mapType: _currentMapType,
-                      zoomControlsEnabled: false,
-                      mapToolbarEnabled: false,
-                      initialCameraPosition: originCamPosition,
-                      markers: _markers,
-                      onMapCreated: (GoogleMapController controller) {
-                        _controller.complete(controller);
-                        //createMarkerIcon();
+                    child: Listener(
+                      onPointerMove: (move) {
+                        if (_showButtons || _showFilter) {
+                          setState(() {
+                            _showButtons = false;
+                            _showFilter = false;
+                          });
+                        }
                       },
+                      onPointerUp: (_) {
+                        if (!_showButtons) setState(() => _showButtons = true);
+                      },
+                      child: GoogleMap(
+                        mapType: _currentMapType,
+                        zoomControlsEnabled: false,
+                        mapToolbarEnabled: false,
+                        compassEnabled: _showButtons ? false : true,
+                        initialCameraPosition: originCamPosition,
+                        markers: _markers,
+                        // onCameraMoveStarted: () {
+                        //   if (_showButtons) setState(() => _showButtons = false);
+                        // },
+                        // onCameraMove: (pos) {
+
+                        //   if (_showButtons || _showFilter) {
+                        //     setState(() {
+                        //       _showButtons = false;
+                        //       _showFilter = false;
+                        //     });
+                        //   }
+                        // },
+                        // onCameraIdle: () {
+                        //   if (!_showButtons) setState(() => _showButtons = true);
+                        // },
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller.complete(controller);
+                          //createMarkerIcon();
+                        },
+                      ),
+                    ),
+                  ),
+
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: AnimatedSwitcher(
+                        switchInCurve: Curves.easeInOut,
+                        switchOutCurve: Curves.easeInOut,
+                        duration: const Duration(milliseconds: 225),
+                        child: _showFilter
+                            ? Container(color: Colors.black.withOpacity(0.8))
+                            : const SizedBox(),
+                      ),
                     ),
                   ),
                   // GO BACK BUTTON
                   Positioned(
                     top: size.height * 0.026,
                     left: size.width * 0.05,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 14,
-                            offset: const Offset(0, 0), // changes position of shadow
-                          ),
-                        ],
-                        color: Theme.of(context)
-                            .scaffoldBackgroundColor, //.withOpacity(0.8),
-                      ),
-                      child: InkWell(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              icon: const Icon(Icons.arrow_back_rounded),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(right: size.width * 0.05),
-                              child: Text(dg.xKill_s(_markers.length)),
-                            ),
-                          ],
-                        ),
-                      ),
+                    child: AnimatedSwitcher(
+                      switchInCurve: Curves.easeInOut,
+                      switchOutCurve: Curves.easeInOut,
+                      reverseDuration: const Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 100),
+                      child: _showButtons
+                          ? Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    spreadRadius: 2,
+                                    blurRadius: 14,
+                                    offset:
+                                        const Offset(0, 0), // changes position of shadow
+                                  ),
+                                ],
+                                color: Theme.of(context)
+                                    .scaffoldBackgroundColor, //.withOpacity(0.8),
+                              ),
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).pop(),
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () => Navigator.of(context).pop(),
+                                      icon: const Icon(Icons.arrow_back_rounded),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(right: size.width * 0.05),
+                                      child: Text(dg.xKill_s(_markers.length)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
                     ),
                   ),
+
                   // ACTIVATE FILTER BUTTONS
                   Positioned(
                     top: size.height * 0.026,
                     right: size.width * 0.05,
-                    child: MapFilterButton(
-                      iconColor: _showFilter
-                          ? Theme.of(context).primaryTextTheme.bodyMedium!.color!
-                          : primaryColor,
-                      color: _showFilter
-                          ? Theme.of(context).scaffoldBackgroundColor
-                          : rehwildFarbe,
-                      onTap: () => setState(() {
-                        _showFilter = !_showFilter;
-                      }),
-                      iconData: _showFilter
-                          ? Icons.close
-                          : widget.page.wildarten.length ==
-                                      wildChips.where((e) => e.isSelected).length &&
-                                  widget.page.geschlechter.length ==
-                                      geschlechterChips
-                                          .where((e) => e.isSelected)
-                                          .length &&
-                                  widget.page.verwendungen.length ==
-                                      verwendungChips.where((e) => e.isSelected).length
-                              ? Icons.filter_alt
-                              : Icons.filter_alt_off_rounded,
+                    child: AnimatedSwitcher(
+                      switchInCurve: Curves.easeInOut,
+                      switchOutCurve: Curves.easeInOut,
+                      reverseDuration: const Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 100),
+                      child: _showButtons
+                          ? MapFilterButton(
+                              iconColor: _showFilter
+                                  ? Theme.of(context).primaryTextTheme.bodyMedium!.color!
+                                  : primaryColor,
+                              color: _showFilter
+                                  ? Theme.of(context).scaffoldBackgroundColor
+                                  : rehwildFarbe,
+                              onTap: () {
+                                setState(() {
+                                  _showFilter = !_showFilter;
+                                });
+                              },
+                              iconData: _showFilter
+                                  ? Icons.close
+                                  : widget.page.wildarten.length ==
+                                              wildChips
+                                                  .where((e) => e.isSelected)
+                                                  .length &&
+                                          widget.page.geschlechter.length ==
+                                              geschlechterChips
+                                                  .where((e) => e.isSelected)
+                                                  .length &&
+                                          widget.page.verwendungen.length ==
+                                              verwendungChips
+                                                  .where((e) => e.isSelected)
+                                                  .length
+                                      ? Icons.filter_alt
+                                      : Icons.filter_alt_off_rounded,
+                            )
+                          : const SizedBox(),
                     ),
                   ),
-                  _showFilter
+                  _showFilter && _showButtons
                       ? Positioned(
                           top: size.height * 0.12,
                           right: size.width * 0.05,
@@ -327,23 +416,32 @@ class _AllMapScreenState extends State<AllMapScreen> {
                   Positioned(
                     top: size.height * 0.026,
                     right: size.width * 0.225,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 14,
-                            offset: const Offset(0, 0), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: IconButton(
-                        onPressed: toggleMapType,
-                        icon: const Icon(Icons.map_rounded),
-                      ),
+                    child: AnimatedSwitcher(
+                      switchInCurve: Curves.easeInOut,
+                      switchOutCurve: Curves.easeInOut,
+                      reverseDuration: const Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 100),
+                      child: _showButtons
+                          ? Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    spreadRadius: 2,
+                                    blurRadius: 14,
+                                    offset:
+                                        const Offset(0, 0), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: IconButton(
+                                onPressed: toggleMapType,
+                                icon: const Icon(Icons.map_rounded),
+                              ),
+                            )
+                          : const SizedBox(),
                     ),
                   ),
                 ],
@@ -368,14 +466,14 @@ class _AllMapScreenState extends State<AllMapScreen> {
 }
 
 class MapFilterButton extends StatelessWidget {
-  VoidCallback? onTap;
-  String title;
-  Color color;
-  IconData iconData;
-  Color iconColor;
-  Color textColor;
+  final VoidCallback? onTap;
+  final String title;
+  final Color color;
+  final IconData iconData;
+  final Color iconColor;
+  final Color textColor;
 
-  MapFilterButton({
+  const MapFilterButton({
     Key? key,
     required this.onTap,
     this.title = "",

@@ -47,6 +47,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Statistiche sulla caccia"),
         "area": MessageLookupByLibrary.simpleMessage("Zona"),
         "bache": MessageLookupByLibrary.simpleMessage("Femmina"),
+        "betaModeDescription": MessageLookupByLibrary.simpleMessage(
+            "Alcune funzioni potrebbero non funzionare correttamente."),
+        "betaModeTitle": MessageLookupByLibrary.simpleMessage("Modo beta"),
         "bockjahrling":
             MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
         "bockkitz": MessageLookupByLibrary.simpleMessage("Piccolo maschio"),
@@ -115,7 +118,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "jahrlingsHirsch":
             MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
         "jahrlingsbock":
-            MessageLookupByLibrary.simpleMessage("Capriolo maschio di un anno"),
+            MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
         "kahlwild": MessageLookupByLibrary.simpleMessage("Cervo"),
         "keiler": MessageLookupByLibrary.simpleMessage("Maschio"),
         "killer": MessageLookupByLibrary.simpleMessage("Cacciatore"),
@@ -123,6 +126,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "ksExport": MessageLookupByLibrary.simpleMessage("Esport"),
         "ksExportDialogTitle":
             MessageLookupByLibrary.simpleMessage("Esporta come"),
+        "ksExportErrorSnackbar": MessageLookupByLibrary.simpleMessage(
+            "Errore: nessuni uccisioni da esportare."),
+        "ksExportSubtitle": MessageLookupByLibrary.simpleMessage(
+            "Verranno esportate solo le uccisioni visualizzate."),
         "ksShowXFromYProgressBar": m1,
         "ksTerritoryTitle": MessageLookupByLibrary.simpleMessage("Territorio"),
         "loginDataInvalid": MessageLookupByLibrary.simpleMessage(
@@ -209,8 +216,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "strassenunfall":
             MessageLookupByLibrary.simpleMessage("Incidente stradale"),
         "sum": MessageLookupByLibrary.simpleMessage("Somma"),
-        "tBock": MessageLookupByLibrary.simpleMessage(
-            "Capriolo maschio di più anni"),
+        "tBock": MessageLookupByLibrary.simpleMessage("Maschio di più anni"),
         "time": MessageLookupByLibrary.simpleMessage("Tempo"),
         "trophaehenHirsch":
             MessageLookupByLibrary.simpleMessage("Maschio di più anni"),

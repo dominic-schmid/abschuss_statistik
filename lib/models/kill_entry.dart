@@ -378,20 +378,21 @@ class KillEntry {
 
   @override
   int get hashCode => Object.hash(
-      wildart,
-      geschlecht,
-      oertlichkeit,
-      datetime,
-      nummer,
-      hegeinGebietRevierteil,
-      alter,
-      alterw,
-      gewicht,
-      erleger,
-      begleiter,
-      verwendung,
-      ursache,
-      ursprungszeichen);
+        wildart,
+        geschlecht,
+        oertlichkeit,
+        datetime,
+        nummer,
+        hegeinGebietRevierteil,
+        alter,
+        alterw,
+        gewicht,
+        erleger,
+        begleiter,
+        verwendung,
+        ursache,
+        ursprungszeichen,
+      );
 
   Map<String, dynamic> toMap(BuildContext ctx) {
     final dg = S.of(ctx);
@@ -399,7 +400,7 @@ class KillEntry {
       dg.number: nummer.toString(),
       dg.sortGameType: translateValue(ctx, wildart),
       dg.sortGender: translateValue(ctx, geschlecht),
-      dg.sortPlace: hegeinGebietRevierteil,
+      dg.area: hegeinGebietRevierteil,
       dg.age: alter,
       '${dg.age}w': alterw,
       dg.weight: gewicht,
@@ -407,15 +408,15 @@ class KillEntry {
       dg.companion: begleiter,
       dg.sortCause: translateValue(ctx, ursache),
       dg.usage: translateValue(ctx, verwendung),
-      dg.area: oertlichkeit,
+      dg.sortPlace: oertlichkeit,
       'Lat': gpsLat,
       'Lon': gpsLon,
       dg.sortDate: datetime.toIso8601String(),
       dg.overseer: jagdaufseher == null
           ? null
           : {
-              dg.sortDate: jagdaufseher!['aufseherDatum'] as String,
-              dg.time: jagdaufseher!['aufseherZeit'] as String,
+              dg.sortDate: jagdaufseher!['datum'] as String,
+              dg.time: jagdaufseher!['zeit'] as String,
               dg.overseer: jagdaufseher!['aufseher'] as String,
             }
     };

@@ -7,15 +7,6 @@ const languages = {
   "it": {"name": "Italian", "nativeName": "Italiano"}
 };
 
-// Translate some of the values the page is going to return
-String translateSex(BuildContext context, String sex) {
-  final dg = S.of(context);
-  switch (sex) {
-    default:
-      return sex;
-  }
-}
-
 String translateValue(BuildContext ctx, String label) {
   final dg = S.of(ctx);
   switch (label) {

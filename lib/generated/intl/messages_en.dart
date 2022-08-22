@@ -45,6 +45,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "appTitle": MessageLookupByLibrary.simpleMessage("Hunting statistics"),
         "area": MessageLookupByLibrary.simpleMessage("Area"),
         "bache": MessageLookupByLibrary.simpleMessage("Female boar"),
+        "betaModeDescription": MessageLookupByLibrary.simpleMessage(
+            "Some features may not work correctly."),
+        "betaModeTitle": MessageLookupByLibrary.simpleMessage("Beta mode"),
         "bockjahrling": MessageLookupByLibrary.simpleMessage("Young buck"),
         "bockkitz": MessageLookupByLibrary.simpleMessage("Buck fawn"),
         "causes": MessageLookupByLibrary.simpleMessage("Causes"),
@@ -117,6 +120,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "ksExport": MessageLookupByLibrary.simpleMessage("Export"),
         "ksExportDialogTitle":
             MessageLookupByLibrary.simpleMessage("Export as"),
+        "ksExportErrorSnackbar":
+            MessageLookupByLibrary.simpleMessage("Error: No kills to export."),
+        "ksExportSubtitle": MessageLookupByLibrary.simpleMessage(
+            "Only visible kills are exported."),
         "ksShowXFromYProgressBar": m1,
         "ksTerritoryTitle": MessageLookupByLibrary.simpleMessage("Territory"),
         "loginDataInvalid": MessageLookupByLibrary.simpleMessage(

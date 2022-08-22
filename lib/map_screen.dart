@@ -27,6 +27,7 @@ class _MapScreenState extends State<MapScreen> {
   static const double cameraBearing = 0;
 
   bool _isLoading = true;
+  bool _showButtons = true;
 
   late LatLng kLocation;
   late CameraPosition kCamPosition;
@@ -104,12 +105,6 @@ class _MapScreenState extends State<MapScreen> {
     Size size = MediaQuery.of(context).size;
     final dg = S.of(context);
     return Scaffold(
-      // appBar: ChartAppBar(
-      //     title: Text('Abschuss #${widget.kill.nummer}'),
-      //     actions: [
-      //       IconButton(
-      //           onPressed: toggleMapType, icon: const Icon(Icons.map_rounded))
-      //     ]),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(
@@ -119,73 +114,100 @@ class _MapScreenState extends State<MapScreen> {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: GoogleMap(
-                      mapType: _currentMapType,
-                      zoomControlsEnabled: false,
-                      mapToolbarEnabled: false,
-                      initialCameraPosition: kCamPosition,
-                      markers: _markers,
-                      onMapCreated: (GoogleMapController controller) {
-                        _controller.complete(controller);
-                        //createMarkerIcon();
+                    child: Listener(
+                      onPointerMove: (move) {
+                        if (_showButtons) setState(() => _showButtons = false);
                       },
+                      onPointerUp: (_) {
+                        if (!_showButtons) setState(() => _showButtons = true);
+                      },
+                      child: GoogleMap(
+                        mapType: _currentMapType,
+                        zoomControlsEnabled: false,
+                        mapToolbarEnabled: false,
+                        compassEnabled: _showButtons ? false : true,
+                        initialCameraPosition: kCamPosition,
+                        markers: _markers,
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller.complete(controller);
+                          //createMarkerIcon();
+                        },
+                      ),
                     ),
                   ),
                   // BACK BUTTON
                   Positioned(
                     top: size.height * 0.026,
                     left: size.width * 0.05,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 14,
-                            offset: const Offset(0, 0), // changes position of shadow
-                          ),
-                        ],
-                        color: Theme.of(context)
-                            .scaffoldBackgroundColor, //.withOpacity(0.8),
-                      ),
-                      child: InkWell(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              icon: const Icon(Icons.arrow_back_rounded),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(right: size.width * 0.05),
-                              child: Text('#${widget.kill.nummer}'),
-                            ),
-                          ],
-                        ),
-                      ),
+                    child: AnimatedSwitcher(
+                      switchInCurve: Curves.easeInOut,
+                      switchOutCurve: Curves.easeInOut,
+                      reverseDuration: const Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 100),
+                      child: _showButtons
+                          ? Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    spreadRadius: 2,
+                                    blurRadius: 14,
+                                    offset:
+                                        const Offset(0, 0), // changes position of shadow
+                                  ),
+                                ],
+                                color: Theme.of(context)
+                                    .scaffoldBackgroundColor, //.withOpacity(0.8),
+                              ),
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).pop(),
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () => Navigator.of(context).pop(),
+                                      icon: const Icon(Icons.arrow_back_rounded),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(right: size.width * 0.05),
+                                      child: Text('#${widget.kill.nummer}'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
                     ),
                   ),
                   Positioned(
                     top: size.height * 0.026,
                     right: size.width * 0.05,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 14,
-                            offset: const Offset(0, 0), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: IconButton(
-                        onPressed: toggleMapType,
-                        icon: const Icon(Icons.map_rounded),
-                      ),
+                    child: AnimatedSwitcher(
+                      switchInCurve: Curves.easeInOut,
+                      switchOutCurve: Curves.easeInOut,
+                      reverseDuration: const Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 100),
+                      child: _showButtons
+                          ? Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    spreadRadius: 2,
+                                    blurRadius: 14,
+                                    offset:
+                                        const Offset(0, 0), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: IconButton(
+                                onPressed: toggleMapType,
+                                icon: const Icon(Icons.map_rounded),
+                              ),
+                            )
+                          : const SizedBox(),
                     ),
                   ),
                 ],

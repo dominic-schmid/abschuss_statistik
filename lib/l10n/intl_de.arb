@@ -12,7 +12,7 @@
   "credsLoginErrorSnackbar": "Fehler: Zu diesen Daten gibt es kein Revier!",
   "noInternetError": "Fehler: Kein Internet",
   "credsTooManySigninsSnackbar": "Zu oft angemeldet! Warte 1 Minute bevor du dich erneut anmelden kannst.",
-  "settingsTitle": "Einstellunge",
+  "settingsTitle": "Einstellungen",
   "settingsDisplay": "Anzeige",
   "settingsLanguage": "Sprache",
   "settingsDarkMode": "Dunkler Modus",
@@ -144,5 +144,9 @@
   "weiblicheRehe": "Weibliche Rehe",
   "bockjahrling": "Bockjährling",
   "bache": "Bache",
-  "ueberlaeuferBache": "Überläuferbache"
+  "ueberlaeuferBache": "Überläuferbache",
+  "betaModeTitle": "Beta Modus",
+  "betaModeDescription": "Einige Features funktionieren möglicherweise nicht richtig.",
+  "ksExportSubtitle": "Nur die angezeigten Abschüsse werden exportiert.",
+  "ksExportErrorSnackbar": "Fehler: Keine Abschüsse zum exportieren."
 }

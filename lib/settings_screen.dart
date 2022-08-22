@@ -28,6 +28,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   late SharedPreferences prefs;
   late bool _showPerson;
+  late bool _betaMode;
 
   @override
   void initState() {
@@ -38,6 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void loadPrefs() async {
     prefs = await SharedPreferences.getInstance();
     _showPerson = prefs.getBool('showPerson') ?? false;
+    _betaMode = prefs.getBool('betaMode') ?? false;
     //await prefs.setBool('showPerson', value);
 
     if (!mounted) return;
@@ -83,6 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               SettingsTile.navigation(
                                 onPressed: (context) async {
                                   await showLanguagePicker(context);
+                                  // await prefs.setString('language', );
                                   setState(() {});
                                 },
                                 leading: const Icon(Icons.language),
@@ -109,36 +112,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 leading: const Icon(Icons.person),
                                 title: Text(dg.settingsShowNamesTitle),
                               ),
-                            ],
-                          ),
-                          SettingsSection(
-                            title: Text(
-                              dg.settingsAccount,
-                              style: const TextStyle(color: rehwildFarbe),
-                            ),
-                            tiles: <SettingsTile>[
-                              SettingsTile(
-                                onPressed: (value) async {
-                                  await showAlertDialog(
-                                    title: ' ${dg.settingsLogout}',
-                                    description: dg.dialogLogoutBody,
-                                    yesOption: dg.dialogYes,
-                                    noOption: dg.dialogNo,
-                                    onYes: () {
-                                      deletePrefs().then((value) =>
-                                          Navigator.of(context).pushAndRemoveUntil(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const CredentialsScreen()),
-                                            (route) => false,
-                                          ));
-                                    },
-                                    icon: Icons.warning,
-                                    context: context,
-                                  );
+                              SettingsTile.switchTile(
+                                onToggle: (value) {
+                                  prefs.setBool('betaMode', value);
+
+                                  setState(() => _betaMode = value);
                                 },
-                                leading: const Icon(Icons.logout),
-                                title: Text(dg.settingsLogout),
+                                description: Text(dg.betaModeDescription),
+                                initialValue: _betaMode,
+                                leading: const Icon(Icons.construction_rounded),
+                                title: Text(dg.betaModeTitle),
                               ),
                             ],
                           ),
@@ -267,7 +250,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 title: Text(dg.settingsAbout),
                               ),
                             ],
-                          )
+                          ),
+                          SettingsSection(
+                            title: Text(
+                              dg.settingsAccount,
+                              style: const TextStyle(color: rehwildFarbe),
+                            ),
+                            tiles: <SettingsTile>[
+                              SettingsTile(
+                                onPressed: (value) async {
+                                  await showAlertDialog(
+                                    title: ' ${dg.settingsLogout}',
+                                    description: dg.dialogLogoutBody,
+                                    yesOption: dg.dialogYes,
+                                    noOption: dg.dialogNo,
+                                    onYes: () {
+                                      deletePrefs().then((value) =>
+                                          Navigator.of(context).pushAndRemoveUntil(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const CredentialsScreen()),
+                                            (route) => false,
+                                          ));
+                                    },
+                                    icon: Icons.warning,
+                                    context: context,
+                                  );
+                                },
+                                leading: const Icon(Icons.logout),
+                                title: Text(dg.settingsLogout),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),

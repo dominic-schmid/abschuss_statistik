@@ -1511,6 +1511,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Beta mode`
+  String get betaModeTitle {
+    return Intl.message(
+      'Beta mode',
+      name: 'betaModeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some features may not work correctly.`
+  String get betaModeDescription {
+    return Intl.message(
+      'Some features may not work correctly.',
+      name: 'betaModeDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only visible kills are exported.`
+  String get ksExportSubtitle {
+    return Intl.message(
+      'Only visible kills are exported.',
+      name: 'ksExportSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error: No kills to export.`
+  String get ksExportErrorSnackbar {
+    return Intl.message(
+      'Error: No kills to export.',
+      name: 'ksExportErrorSnackbar',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

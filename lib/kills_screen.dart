@@ -104,6 +104,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
             icon: Icons.fiber_new_rounded,
             context: context,
           );
+
+          updateYearUI(p2);
         }
       }
       loadPastYearsIfNotExisting(); // Async loads all historic years in BG if not existing
@@ -176,6 +178,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
               icon: Icons.fiber_new_rounded,
               context: context,
             );
+
+            updateUI = true;
           }
         }
 
@@ -409,36 +413,6 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
         ),
       ),
       floatingActionButton: CustomFab(isVisible: _isFabVisible),
-      // floatingActionButton: ValueListenableBuilder<bool>(
-      //   builder: (BuildContext context, value, Widget? child) {
-      //     return AnimatedSwitcher(
-      //       duration: const Duration(milliseconds: 750),
-      //       child: value
-      //           ? FloatingActionButton(
-      //               onPressed: () {},
-      //               backgroundColor: Theme.of(context).textTheme.headline1!.color,
-      //               foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //               child: Icon(Icons.add),
-      //               isExtended: true,
-      //               elevation: 7,
-      //             )
-      //           : Container(),
-      //     );
-
-      //     return value
-      //         ? FloatingActionButton(
-      //             onPressed: () {},
-      //             backgroundColor: Theme.of(context).textTheme.headline1!.color,
-      //             foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //             child: Icon(Icons.add),
-      //             isExtended: true,
-      //             elevation: 7,
-      //           )
-      //         : Container();
-      //   },
-      // valueListenable: _isFabVisible,
-
-      // ),
     );
   }
 
@@ -696,6 +670,12 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   }
 
   Future<void> _saveAndShareFile({String csvDelimiter = ";", bool isJson = false}) async {
+    final dg = S.of(context);
+    if (filteredKills.isEmpty || page == null) {
+      showSnackBar(dg.ksExportErrorSnackbar, context);
+      return;
+    }
+
     var status = await Permission.storage.status;
     if (!status.isGranted) {
       await Permission.storage.request();
@@ -703,8 +683,12 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
     // ONLY AVAILABLE ON ANDROID
     final dir =
         (await getExternalStorageDirectories(type: StorageDirectory.downloads))!.first;
+
+    final filteredPage =
+        KillPage(jahr: page!.jahr, revierName: page!.revierName, kills: filteredKills);
+
     String filename =
-        '${dir.path}/${page!.revierName}-${DateTime.now().toIso8601String()}';
+        '${dir.path}/${filteredPage.revierName}-${DateTime.now().toIso8601String()}';
 
     filename = isJson ? '$filename.json' : '$filename.csv';
 
@@ -712,10 +696,11 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
 
     if (!mounted) return;
     if (isJson) {
-      f.writeAsStringSync(jsonEncode(page!.toJson(context)), encoding: utf8);
+      f.writeAsStringSync(jsonEncode(filteredPage.toJson(context)), encoding: utf8);
     } else {
       f.writeAsStringSync(
-          ListToCsvConverter(fieldDelimiter: csvDelimiter).convert(page!.toCSV(context)),
+          ListToCsvConverter(fieldDelimiter: csvDelimiter)
+              .convert(filteredPage.toCSV(context)),
           encoding: utf8);
     }
 
@@ -727,6 +712,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
 
   _selectExport(BuildContext context) async {
     final dg = S.of(context);
+    Size size = MediaQuery.of(context).size;
     return showDialog(
         context: context,
         builder: (context) {
@@ -774,6 +760,16 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                   if (!mounted) return;
                   Navigator.of(context).pop();
                 },
+              ),
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
+                  child: Text(
+                    dg.ksExportSubtitle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ),
               ),
             ],
           );

@@ -144,5 +144,9 @@
   "weiblicheRehe": "Female deer",
   "bockjahrling": "Young buck",
   "bache": "Female boar",
-  "ueberlaeuferBache": "Young female boar"
+  "ueberlaeuferBache": "Young female boar",
+  "betaModeTitle": "Beta mode",
+  "betaModeDescription": "Some features may not work correctly.",
+  "ksExportSubtitle": "Only visible kills are exported.",
+  "ksExportErrorSnackbar": "Error: No kills to export."
 }

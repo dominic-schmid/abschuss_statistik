@@ -44,6 +44,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "appTitle": MessageLookupByLibrary.simpleMessage("Jagdstatistik"),
         "area": MessageLookupByLibrary.simpleMessage("Gebiet"),
         "bache": MessageLookupByLibrary.simpleMessage("Bache"),
+        "betaModeDescription": MessageLookupByLibrary.simpleMessage(
+            "Einige Features funktionieren möglicherweise nicht richtig."),
+        "betaModeTitle": MessageLookupByLibrary.simpleMessage("Beta Modus"),
         "bockjahrling": MessageLookupByLibrary.simpleMessage("Bockjährling"),
         "bockkitz": MessageLookupByLibrary.simpleMessage("Bockkitz"),
         "causes": MessageLookupByLibrary.simpleMessage("Ursachen"),
@@ -115,6 +118,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "ksExport": MessageLookupByLibrary.simpleMessage("Export"),
         "ksExportDialogTitle":
             MessageLookupByLibrary.simpleMessage("Exportieren als"),
+        "ksExportErrorSnackbar": MessageLookupByLibrary.simpleMessage(
+            "Fehler: Keine Abschüsse zum exportieren."),
+        "ksExportSubtitle": MessageLookupByLibrary.simpleMessage(
+            "Nur die angezeigten Abschüsse werden exportiert."),
         "ksShowXFromYProgressBar": m1,
         "ksTerritoryTitle": MessageLookupByLibrary.simpleMessage("Revier"),
         "loginDataInvalid": MessageLookupByLibrary.simpleMessage(
@@ -174,7 +181,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Es könnte sein, dass dabei nur Sterne angezeigt werden können."),
         "settingsShowNamesTitle":
             MessageLookupByLibrary.simpleMessage("Namen anzeigen"),
-        "settingsTitle": MessageLookupByLibrary.simpleMessage("Einstellunge"),
+        "settingsTitle": MessageLookupByLibrary.simpleMessage("Einstellungen"),
         "settingsWebsite": MessageLookupByLibrary.simpleMessage("Webseite"),
         "sexes": MessageLookupByLibrary.simpleMessage("Geschlechter"),
         "signOfOrigin":

@@ -116,13 +116,13 @@
   "seenByXonYatZ": "Visto da {x} il {y} alle {z}",
   "checkOutThisKillXY": "Dai un'occhiata a quell'uccisione in {x}!\n{y}",
   "gamsgeiss": "Femmina camoscio",
-  "tBock": "Capriolo maschio di più anni",
+  "tBock": "Maschio di più anni",
   "bockkitz": "Piccolo maschio",
   "gamsbock": "Maschio di camoscio",
   "altgeiss": "Femmina adulta",
   "jahrlingsHirsch": "Maschio di un anno",
   "schmalreh": "Femmina sottile",
-  "jahrlingsbock": "Capriolo maschio di un anno",
+  "jahrlingsbock": "Maschio di un anno",
   "geisskitz": "Piccolo femmina",
   "geissjahrling": "Femmina di un anno",
   "wildkalb": "Non noto",
@@ -144,5 +144,9 @@
   "weiblicheRehe": "Caprioli femminili",
   "bockjahrling": "Maschio di un anno",
   "bache": "Femmina",
-  "ueberlaeuferBache": "Femmina di un anno"
+  "ueberlaeuferBache": "Femmina di un anno",
+  "betaModeTitle": "Modo beta",
+  "betaModeDescription": "Alcune funzioni potrebbero non funzionare correttamente.",
+  "ksExportSubtitle": "Verranno esportate solo le uccisioni visualizzate.",
+  "ksExportErrorSnackbar": "Errore: nessuni uccisioni da esportare."
 }
