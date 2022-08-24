@@ -148,5 +148,9 @@
   "betaModeTitle": "Modo beta",
   "betaModeDescription": "Alcune funzioni potrebbero non funzionare correttamente.",
   "ksExportSubtitle": "Verranno esportate solo le uccisioni visualizzate.",
-  "ksExportErrorSnackbar": "Errore: nessuni uccisioni da esportare."
+  "ksExportErrorSnackbar": "Errore: nessuni uccisioni da esportare.",
+  "xJagdzeiten": "Tempi caccia {x} ",
+  "open": "Aperto",
+  "geschlossen": "Chiuso",
+  "selectYear": "Seleziona anno"
 }

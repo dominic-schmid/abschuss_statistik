@@ -28,10 +28,12 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(x, y, z) => "Gesehen von ${x} am ${y} um ${z}";
 
-  static String m4(howMany) =>
+  static String m4(x) => "Jagdzeiten ${x} ";
+
+  static String m5(howMany) =>
       "${Intl.plural(howMany, one: '1 Abschuss', other: '${howMany} Abschüsse')}";
 
-  static String m5(x) => "Es wurden ${x} neue Abschüsse gefunden!";
+  static String m6(x) => "Es wurden ${x} neue Abschüsse gefunden!";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -103,6 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gamswild": MessageLookupByLibrary.simpleMessage("Gamswild"),
         "geissjahrling": MessageLookupByLibrary.simpleMessage("Geißjährling"),
         "geisskitz": MessageLookupByLibrary.simpleMessage("Geißkitz"),
+        "geschlossen": MessageLookupByLibrary.simpleMessage("Geschlossen"),
         "grid": MessageLookupByLibrary.simpleMessage("Gitter"),
         "hegeabschuss": MessageLookupByLibrary.simpleMessage("Hegeabschuss"),
         "hirschkalb": MessageLookupByLibrary.simpleMessage("Hirschkalb"),
@@ -148,6 +151,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Fehler: Abschüsse konnten nicht geladen werden!"),
         "number": MessageLookupByLibrary.simpleMessage("Nummer"),
         "onlyShot": MessageLookupByLibrary.simpleMessage("Nur Erlegte"),
+        "open": MessageLookupByLibrary.simpleMessage("Offen"),
         "overseer": MessageLookupByLibrary.simpleMessage("Aufseher"),
         "perMonth": MessageLookupByLibrary.simpleMessage("pro Monat"),
         "points": MessageLookupByLibrary.simpleMessage("Punkte"),
@@ -162,6 +166,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "schwarzwild": MessageLookupByLibrary.simpleMessage("Schwarzwild"),
         "searchXKills": m2,
         "seenByXonYatZ": m3,
+        "selectYear": MessageLookupByLibrary.simpleMessage("Wähle Jahr"),
         "settingsAbout": MessageLookupByLibrary.simpleMessage("Über"),
         "settingsAccount": MessageLookupByLibrary.simpleMessage("Konto"),
         "settingsDarkMode":
@@ -220,8 +225,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "weiblicheRehe": MessageLookupByLibrary.simpleMessage("Weibliche Rehe"),
         "weight": MessageLookupByLibrary.simpleMessage("Gewicht"),
         "wildkalb": MessageLookupByLibrary.simpleMessage("Wildkalb"),
-        "xKill_s": m4,
-        "xNewKillsFound": m5,
+        "xJagdzeiten": m4,
+        "xKill_s": m5,
+        "xNewKillsFound": m6,
         "yearly": MessageLookupByLibrary.simpleMessage("Jährlich"),
         "yearlyBreakdown": MessageLookupByLibrary.simpleMessage("Jahresverlauf")
       };

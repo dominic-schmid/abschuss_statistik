@@ -29,10 +29,12 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(x, y, z) => "Visto da ${x} il ${y} alle ${z}";
 
-  static String m4(howMany) =>
+  static String m4(x) => "Tempi caccia ${x} ";
+
+  static String m5(howMany) =>
       "${Intl.plural(howMany, one: '1 Uccisione', other: '${howMany} Uccisioni')}";
 
-  static String m5(x) => "${x} nuove uccisioni trovate!";
+  static String m6(x) => "${x} nuove uccisioni trovate!";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -109,6 +111,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "geissjahrling":
             MessageLookupByLibrary.simpleMessage("Femmina di un anno"),
         "geisskitz": MessageLookupByLibrary.simpleMessage("Piccolo femmina"),
+        "geschlossen": MessageLookupByLibrary.simpleMessage("Chiuso"),
         "grid": MessageLookupByLibrary.simpleMessage("Griglia"),
         "hegeabschuss":
             MessageLookupByLibrary.simpleMessage("Abbattimento conservativo"),
@@ -156,6 +159,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Errore: caricamento delle uccisioni non riuscito!"),
         "number": MessageLookupByLibrary.simpleMessage("Numero"),
         "onlyShot": MessageLookupByLibrary.simpleMessage("Solo sparati"),
+        "open": MessageLookupByLibrary.simpleMessage("Aperto"),
         "overseer": MessageLookupByLibrary.simpleMessage("Sorvegliante"),
         "perMonth": MessageLookupByLibrary.simpleMessage("al mese"),
         "points": MessageLookupByLibrary.simpleMessage("Punti"),
@@ -171,6 +175,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "schwarzwild": MessageLookupByLibrary.simpleMessage("Cinghiale"),
         "searchXKills": m2,
         "seenByXonYatZ": m3,
+        "selectYear": MessageLookupByLibrary.simpleMessage("Seleziona anno"),
         "settingsAbout": MessageLookupByLibrary.simpleMessage("Informazioni"),
         "settingsAccount": MessageLookupByLibrary.simpleMessage("Account"),
         "settingsDarkMode": MessageLookupByLibrary.simpleMessage("Tema scuro"),
@@ -233,8 +238,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Caprioli femminili"),
         "weight": MessageLookupByLibrary.simpleMessage("Peso"),
         "wildkalb": MessageLookupByLibrary.simpleMessage("Non noto"),
-        "xKill_s": m4,
-        "xNewKillsFound": m5,
+        "xJagdzeiten": m4,
+        "xKill_s": m5,
+        "xNewKillsFound": m6,
         "yearly": MessageLookupByLibrary.simpleMessage("Annuale"),
         "yearlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Ripartizione annuale")

@@ -148,5 +148,9 @@
   "betaModeTitle": "Beta Modus",
   "betaModeDescription": "Einige Features funktionieren möglicherweise nicht richtig.",
   "ksExportSubtitle": "Nur die angezeigten Abschüsse werden exportiert.",
-  "ksExportErrorSnackbar": "Fehler: Keine Abschüsse zum exportieren."
+  "ksExportErrorSnackbar": "Fehler: Keine Abschüsse zum exportieren.",
+  "xJagdzeiten": "Jagdzeiten {x} ",
+  "open": "Offen",
+  "geschlossen": "Geschlossen",
+  "selectYear": "Wähle Jahr"
 }

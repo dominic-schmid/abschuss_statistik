@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/hunting_time_screen.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/widgets/chart_app_bar.dart';
 import 'package:jagdstatistik/charts/yearly_pie_chart_screen.dart';
@@ -37,6 +38,16 @@ class _StatsScreenState extends State<StatsScreen> {
             );
           },
           icon: const Icon(Icons.help_outline_rounded),
+        ),
+        IconButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const HuntingTimeScreen(),
+              ),
+            );
+          },
+          icon: const Icon(Icons.calendar_month_rounded),
         ),
       ]),
       body: SingleChildScrollView(

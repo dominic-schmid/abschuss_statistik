@@ -148,5 +148,9 @@
   "betaModeTitle": "Beta mode",
   "betaModeDescription": "Some features may not work correctly.",
   "ksExportSubtitle": "Only visible kills are exported.",
-  "ksExportErrorSnackbar": "Error: No kills to export."
+  "ksExportErrorSnackbar": "Error: No kills to export.",
+  "xJagdzeiten": "Hunting times {x} ",
+  "open": "Open",
+  "geschlossen": "Closed",
+  "selectYear": "Select year"
 }

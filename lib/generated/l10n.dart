@@ -1551,6 +1551,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Hunting times {x} `
+  String xJagdzeiten(Object x) {
+    return Intl.message(
+      'Hunting times $x ',
+      name: 'xJagdzeiten',
+      desc: '',
+      args: [x],
+    );
+  }
+
+  /// `Open`
+  String get open {
+    return Intl.message(
+      'Open',
+      name: 'open',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Closed`
+  String get geschlossen {
+    return Intl.message(
+      'Closed',
+      name: 'geschlossen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select year`
+  String get selectYear {
+    return Intl.message(
+      'Select year',
+      name: 'selectYear',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
