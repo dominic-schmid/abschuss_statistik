@@ -1,0 +1,56 @@
+{
+    "Rehwild": [
+        "Jährlingsbock",
+        "Trophäenbock",
+        "Schmalgaisen",
+        "Nicht führende Gaisen",
+        "Führende Gaisen",
+        "Kitze"
+    ],
+    "Rotwild": [
+        "Jährlingshirsch",
+        "Trophäenhirsch",
+        "Schmaltiere",
+        "Nicht führende Tiere",
+        "Führende Tiere",
+        "Kälber"
+    ],
+    "Gamswild": [
+        "Gamsbock",
+        "Gamsgais (auch mit Kitz)",
+        "Gamsjahrling"
+    ],
+    "Schwarzwild": [
+        ""
+    ],
+    "Damwild": [
+        ""
+    ],
+    "Muffelwild": [
+        ""
+    ],
+    "Fuchs": [
+        ""
+    ],
+    "Feldhase": [
+        ""
+    ],
+    "Schneehase": [
+        ""
+    ],
+    "Wildkaninchen": [
+        ""
+    ],
+    "Spielhahn, Steinhühner": [
+        ""
+    ],
+    "Schneehuhn": [
+        ""
+    ],
+    "Fasan, Ringeltaube, Waldschnepfe, Wachtel, Amsel, Aaskrähe, Eichelhäher, Elster, Blässhuhn, Stockente, Knäckente, Krickente": [
+        ""
+    ],
+    "Wacholderdrossel, Singdrossel": [
+        ""
+    ]
+}

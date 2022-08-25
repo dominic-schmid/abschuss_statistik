@@ -51,6 +51,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "betaModeTitle": MessageLookupByLibrary.simpleMessage("Beta Modus"),
         "bockjahrling": MessageLookupByLibrary.simpleMessage("Bockjährling"),
         "bockkitz": MessageLookupByLibrary.simpleMessage("Bockkitz"),
+        "both": MessageLookupByLibrary.simpleMessage("Beide"),
+        "brutzeit": MessageLookupByLibrary.simpleMessage("Brutzeit"),
         "causes": MessageLookupByLibrary.simpleMessage("Ursachen"),
         "chartBasedOnDownloaded": MessageLookupByLibrary.simpleMessage(
             "Die Diagramme basieren auf deinen heruntergeladenen Daten. Falls ein Jahr fehlt, kannst du es auf der Startseite auswählen und heruntergeladen.\n\nDiese Diagramme bieten Aufschluss über die historische Entwicklung des Wilds in deinem Revier und wurden so gestaltet, dass du dir den Aufbau selbst konfigurieren kannst!"),
@@ -95,6 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "fallwild": MessageLookupByLibrary.simpleMessage("Fallwild"),
         "feedbackMailSubject": MessageLookupByLibrary.simpleMessage(
             "Feedback zur Jagdstatistik App"),
+        "filter": MessageLookupByLibrary.simpleMessage("Filtern"),
         "freizone": MessageLookupByLibrary.simpleMessage("Freizone"),
         "frischling": MessageLookupByLibrary.simpleMessage("Frischling"),
         "fuchs": MessageLookupByLibrary.simpleMessage("Fuchs"),
@@ -111,6 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hirschkalb": MessageLookupByLibrary.simpleMessage("Hirschkalb"),
         "historic": MessageLookupByLibrary.simpleMessage("Historisch"),
         "hunter": MessageLookupByLibrary.simpleMessage("Jäger"),
+        "jagdzeiten": MessageLookupByLibrary.simpleMessage("Jagdzeiten"),
         "jahrlingsHirsch":
             MessageLookupByLibrary.simpleMessage("Jährlingshirsch"),
         "jahrlingsbock": MessageLookupByLibrary.simpleMessage("Jährlingsbock"),
@@ -132,6 +136,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "maennlich": MessageLookupByLibrary.simpleMessage("Männlich"),
         "mapInitialPosition":
             MessageLookupByLibrary.simpleMessage("Anfangsposition"),
+        "mitKeimruhe": MessageLookupByLibrary.simpleMessage("mit Keimruhe"),
+        "monate": MessageLookupByLibrary.simpleMessage("Monate"),
         "monthlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Monatsverlauf"),
         "murmeltier": MessageLookupByLibrary.simpleMessage("Murmeltier"),
@@ -153,6 +159,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "onlyShot": MessageLookupByLibrary.simpleMessage("Nur Erlegte"),
         "open": MessageLookupByLibrary.simpleMessage("Offen"),
         "overseer": MessageLookupByLibrary.simpleMessage("Aufseher"),
+        "paarungszeiten":
+            MessageLookupByLibrary.simpleMessage("Paarungszeiten"),
         "perMonth": MessageLookupByLibrary.simpleMessage("pro Monat"),
         "points": MessageLookupByLibrary.simpleMessage("Punkte"),
         "protokollBeschlagnahmt":
@@ -210,7 +218,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "strassenunfall": MessageLookupByLibrary.simpleMessage("Straßenunfall"),
         "sum": MessageLookupByLibrary.simpleMessage("Summe"),
         "tBock": MessageLookupByLibrary.simpleMessage("T-Bock"),
+        "tage": MessageLookupByLibrary.simpleMessage("Tage"),
         "time": MessageLookupByLibrary.simpleMessage("Uhrzeit"),
+        "tragzeit": MessageLookupByLibrary.simpleMessage("Tragzeit"),
         "trophaehenHirsch":
             MessageLookupByLibrary.simpleMessage("Trophäenhirsch"),
         "ueberlaeuferBache":
@@ -224,7 +234,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "weiblich": MessageLookupByLibrary.simpleMessage("Weiblich"),
         "weiblicheRehe": MessageLookupByLibrary.simpleMessage("Weibliche Rehe"),
         "weight": MessageLookupByLibrary.simpleMessage("Gewicht"),
+        "wild": MessageLookupByLibrary.simpleMessage("Wild"),
         "wildkalb": MessageLookupByLibrary.simpleMessage("Wildkalb"),
+        "wochen": MessageLookupByLibrary.simpleMessage("Wochen"),
         "xJagdzeiten": m4,
         "xKill_s": m5,
         "xNewKillsFound": m6,

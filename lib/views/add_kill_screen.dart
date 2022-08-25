@@ -23,7 +23,7 @@ class _AddKillScreenState extends State<AddKillScreen> {
               ),
         ),
         //backgroundColor: Colors.green,
-        actions: [],
+        actions: const [],
       ),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () => showSnackBar('Hinzufügen...', context),

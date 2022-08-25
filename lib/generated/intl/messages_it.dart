@@ -55,6 +55,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "bockjahrling":
             MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
         "bockkitz": MessageLookupByLibrary.simpleMessage("Piccolo maschio"),
+        "both": MessageLookupByLibrary.simpleMessage("Tutti e due"),
+        "brutzeit": MessageLookupByLibrary.simpleMessage(
+            "stagione degli accoppiamenti"),
         "causes": MessageLookupByLibrary.simpleMessage("Causi"),
         "chartBasedOnDownloaded": MessageLookupByLibrary.simpleMessage(
             "I grafici si basano sui dati scaricati. Se manca un anno, puoi selezionarlo e scaricarlo nella pagina iniziale.\n\nQuesti diagrammi forniscono informazioni sullo sviluppo storico del gioco nella tua zona e sono stati progettati in modo tale da poter configurare tu stesso la struttura!"),
@@ -99,6 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "fallwild": MessageLookupByLibrary.simpleMessage("Trovato morto"),
         "feedbackMailSubject": MessageLookupByLibrary.simpleMessage(
             "Feedback sulla app delle statistiche di caccia"),
+        "filter": MessageLookupByLibrary.simpleMessage("Filtro"),
         "freizone": MessageLookupByLibrary.simpleMessage("Zona libera"),
         "frischling": MessageLookupByLibrary.simpleMessage("Cinghialetto"),
         "fuchs": MessageLookupByLibrary.simpleMessage("Volpe"),
@@ -118,6 +122,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hirschkalb": MessageLookupByLibrary.simpleMessage("Piccolo maschile"),
         "historic": MessageLookupByLibrary.simpleMessage("Storico"),
         "hunter": MessageLookupByLibrary.simpleMessage("Cacciatore"),
+        "jagdzeiten": MessageLookupByLibrary.simpleMessage("Tempi caccia"),
         "jahrlingsHirsch":
             MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
         "jahrlingsbock":
@@ -140,6 +145,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "maennlich": MessageLookupByLibrary.simpleMessage("Maschile"),
         "mapInitialPosition":
             MessageLookupByLibrary.simpleMessage("Posizione iniziale"),
+        "mitKeimruhe": MessageLookupByLibrary.simpleMessage("con dormienza"),
+        "monate": MessageLookupByLibrary.simpleMessage("mesi"),
         "monthlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Ripartizione mensile"),
         "murmeltier": MessageLookupByLibrary.simpleMessage("Marmotta"),
@@ -161,6 +168,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "onlyShot": MessageLookupByLibrary.simpleMessage("Solo sparati"),
         "open": MessageLookupByLibrary.simpleMessage("Aperto"),
         "overseer": MessageLookupByLibrary.simpleMessage("Sorvegliante"),
+        "paarungszeiten":
+            MessageLookupByLibrary.simpleMessage("Tempi di accoppiamento"),
         "perMonth": MessageLookupByLibrary.simpleMessage("al mese"),
         "points": MessageLookupByLibrary.simpleMessage("Punti"),
         "protokollBeschlagnahmt":
@@ -222,7 +231,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Incidente stradale"),
         "sum": MessageLookupByLibrary.simpleMessage("Somma"),
         "tBock": MessageLookupByLibrary.simpleMessage("Maschio di più anni"),
+        "tage": MessageLookupByLibrary.simpleMessage("giorni"),
         "time": MessageLookupByLibrary.simpleMessage("Tempo"),
+        "tragzeit":
+            MessageLookupByLibrary.simpleMessage("periodo di gestazione"),
         "trophaehenHirsch":
             MessageLookupByLibrary.simpleMessage("Maschio di più anni"),
         "ueberlaeuferBache":
@@ -237,7 +249,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "weiblicheRehe":
             MessageLookupByLibrary.simpleMessage("Caprioli femminili"),
         "weight": MessageLookupByLibrary.simpleMessage("Peso"),
+        "wild": MessageLookupByLibrary.simpleMessage("Specie"),
         "wildkalb": MessageLookupByLibrary.simpleMessage("Non noto"),
+        "wochen": MessageLookupByLibrary.simpleMessage("settimane"),
         "xJagdzeiten": m4,
         "xKill_s": m5,
         "xNewKillsFound": m6,

@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/utils/database_methods.dart';
 import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
@@ -11,7 +10,6 @@ import 'package:jagdstatistik/widgets/value_selector_modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../models/kill_entry.dart';
 import '../widgets/chart_app_bar.dart';
 import '../widgets/chart_legend.dart';
 
@@ -111,7 +109,7 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
       double value = (e['Anzahl'] as int).toDouble();
 
       Color c = groupBy['value'] == 'wildart'
-          ? KillEntry.getColorFromWildart(e['Gruppierung'] as String)
+          ? GameType.all.firstWhere((f) => f.wildart == e['Gruppierung'] as String).color
           : Colors.primaries[i % Colors.primaries.length];
       if (!mounted) return;
       chartItems

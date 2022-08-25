@@ -6,13 +6,13 @@ import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:jagdstatistik/all_map_screen.dart';
-import 'package:jagdstatistik/credentials_screen.dart';
+import 'package:jagdstatistik/views/all_map_screen.dart';
+import 'package:jagdstatistik/views/credentials_screen.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/utils/database_methods.dart';
 import 'package:jagdstatistik/models/kill_page.dart';
 import 'package:jagdstatistik/utils/request_methods.dart';
-import 'package:jagdstatistik/settings_screen.dart';
+import 'package:jagdstatistik/views/settings_screen.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/widgets/chip_selector_modal.dart';
 import 'package:jagdstatistik/models/filter_chip_data.dart';
@@ -24,10 +24,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'models/kill_entry.dart';
+import '../models/kill_entry.dart';
 
-import 'models/sorting.dart';
-import 'widgets/kill_list_entry.dart';
+import '../models/sorting.dart';
+import '../widgets/kill_list_entry.dart';
 
 class KillsScreen extends StatefulWidget {
   const KillsScreen({Key? key}) : super(key: key);

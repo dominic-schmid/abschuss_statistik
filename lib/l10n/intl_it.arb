@@ -152,5 +152,16 @@
   "xJagdzeiten": "Tempi caccia {x} ",
   "open": "Aperto",
   "geschlossen": "Chiuso",
-  "selectYear": "Seleziona anno"
+  "selectYear": "Seleziona anno",
+  "both": "Tutti e due",
+  "jagdzeiten": "Tempi caccia",
+  "paarungszeiten": "Tempi di accoppiamento",
+  "wild": "Specie",
+  "filter": "Filtro",
+  "wochen": "settimane",
+  "tage": "giorni",
+  "monate": "mesi",
+  "brutzeit": "stagione degli accoppiamenti",
+  "tragzeit": "periodo di gestazione",
+  "mitKeimruhe": "con dormienza"
 }

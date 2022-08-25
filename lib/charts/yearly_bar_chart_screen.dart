@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/utils/database_methods.dart';
 import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
@@ -9,7 +10,6 @@ import 'package:jagdstatistik/widgets/value_selector_modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../models/kill_entry.dart';
 import '../widgets/chart_app_bar.dart';
 import '../widgets/chart_legend.dart';
 
@@ -134,7 +134,7 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
       double value = (e['Anzahl'] as int).toDouble();
 
       Color c = groupBy['value'] == 'wildart' || groupBy['value'] == 'gewicht'
-          ? KillEntry.getColorFromWildart(label)
+          ? GameType.all.firstWhere((e) => e.wildart == label).color
           : Colors.primaries[i % Colors.primaries.length];
 
       if (value > maxValue) maxValue = value.toInt(); // Get largest value

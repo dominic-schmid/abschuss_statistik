@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
-import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/models/constants/cause.dart';
+import 'package:jagdstatistik/models/constants/game_type.dart';
+import 'package:jagdstatistik/models/constants/usage.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../map_screen.dart';
+import '../views/map_screen.dart';
 import '../models/kill_entry.dart';
 import '../utils/utils.dart';
 import 'expanded_child_kill_entry.dart';
@@ -159,7 +161,7 @@ class KillListEntryState extends State<KillListEntry> {
               children: [
                 Flexible(
                   child: Text(
-                    translateValue(context, k.wildart),
+                    GameType.translate(context, k.wildart),
                     textAlign: TextAlign.start,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
@@ -186,7 +188,7 @@ class KillListEntryState extends State<KillListEntry> {
               children: [
                 Flexible(
                   child: Text(
-                    translateValue(context, k.geschlecht),
+                    GameType.translateGeschlecht(context, k.geschlecht),
                     style: TextStyle(
                       color: secondaryColor,
                       overflow: TextOverflow.fade,
@@ -232,7 +234,8 @@ class KillListEntryState extends State<KillListEntry> {
               ExpandedChildKillEntry(
                 icon: Icons.calendar_month,
                 title: dg.age,
-                value: translateValue(context, alter),
+                value:
+                    alter, // TODO CHECK IF REALLY TRANSLATABLE translateValue(context, alter),
               ),
               ExpandedChildKillEntry(
                 icon: Icons.scale,
@@ -258,8 +261,13 @@ class KillListEntryState extends State<KillListEntry> {
                   : Container(),
               ExpandedChildKillEntry(
                 icon: Icons.data_usage,
+                title: dg.sortCause,
+                value: Cause.translate(context, k.ursache),
+              ),
+              ExpandedChildKillEntry(
+                icon: Icons.data_usage,
                 title: dg.usage,
-                value: translateValue(context, k.verwendung),
+                value: Usage.translate(context, k.verwendung),
               ),
               ExpandedChildKillEntry(
                 icon: Icons.history_edu_rounded,

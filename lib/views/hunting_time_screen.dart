@@ -1,11 +1,16 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
-import 'package:jagdstatistik/models/kill_entry.dart';
-import 'package:jagdstatistik/utils/hunting_times.dart';
-import 'package:jagdstatistik/utils/translation_helper.dart';
+import 'package:jagdstatistik/models/constants/game_type.dart';
+import 'package:jagdstatistik/models/constants/hunting_time.dart';
+import 'package:jagdstatistik/models/filter_chip_data.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/widgets/chart_app_bar.dart';
+import 'package:jagdstatistik/widgets/chip_selector_modal.dart';
+import 'package:jagdstatistik/widgets/no_data_found.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class HuntingTimeScreen extends StatefulWidget {
   const HuntingTimeScreen({Key? key}) : super(key: key);
@@ -15,9 +20,11 @@ class HuntingTimeScreen extends StatefulWidget {
 }
 
 class _HuntingTimeScreenState extends State<HuntingTimeScreen> {
+  final ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
   DateTime year = DateTime.now();
 
   List<HuntingTime> huntingTimes = [];
+  List<FilterChipData> _filters = [];
 
   @override
   void initState() {
@@ -26,13 +33,28 @@ class _HuntingTimeScreenState extends State<HuntingTimeScreen> {
   }
 
   rebuildHuntingTimes() {
-    huntingTimes = HuntingTimeCollection(year.year).huntingTimes;
+    huntingTimes = HuntingTime.all(year.year);
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final dg = S.of(context);
+
+    // Init first start
+    if (_filters.isEmpty) {
+      _filters = [
+        FilterChipData(label: dg.open, color: rehwildFarbe),
+        FilterChipData(label: dg.geschlossen, color: rotwildFarbe),
+      ];
+    }
+
+    bool showOpen = _filters.firstWhere((e) => e.label == dg.open).isSelected;
+    bool showClosed = _filters.firstWhere((e) => e.label == dg.geschlossen).isSelected;
+
+    List<HuntingTime> filteredList = huntingTimes
+        .where((ht) => ht.open && showOpen || !ht.open && showClosed)
+        .toList();
 
     return Scaffold(
       appBar: ChartAppBar(
@@ -63,6 +85,11 @@ class _HuntingTimeScreenState extends State<HuntingTimeScreen> {
                         setState(() {
                           year = dateTime;
                           rebuildHuntingTimes();
+                          try {
+                            _scrollToTop();
+                          } catch (e) {
+                            /* Not the end of the world, controller not attached */
+                          }
                         });
                       }
                     },
@@ -72,33 +99,61 @@ class _HuntingTimeScreenState extends State<HuntingTimeScreen> {
             ),
             icon: const Icon(Icons.edit_calendar_rounded),
           ),
+          IconButton(
+            onPressed: () async {
+              await showMaterialModalBottomSheet(
+                context: context,
+                builder: (context) =>
+                    ChipSelectorModal(title: dg.filter, chips: _filters),
+              );
+              // Only refresh if changes (so as to not rebuild colors)
+              if (showOpen != _filters.firstWhere((e) => e.label == dg.open).isSelected ||
+                  showClosed !=
+                      _filters.firstWhere((e) => e.label == dg.geschlossen).isSelected) {
+                setState(() {});
+              }
+            },
+            icon: Icon(
+              showOpen && showClosed
+                  ? Icons.filter_alt_rounded
+                  : Icons.filter_alt_off_rounded,
+            ),
+          ),
         ],
       ),
-      body: ListView.builder(
-        shrinkWrap: true,
-        itemBuilder: ((context, index) {
-          // if (index == 0) {
-          //   return Padding(
-          //     padding: EdgeInsets.symmetric(
-          //         horizontal: size.width * 0.05, vertical: size.height * 0.01),
-          //     child: Center(
-          //         child: Text(
-          //       "${year.year}",
-          //       style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          //     )),
-          //   );
-          // }
+      body: !showOpen && !showClosed
+          ? const Center(child: NoDataFoundWidget())
+          : ListView.builder(
+              shrinkWrap: true,
+              controller: _scrollController,
+              itemBuilder: ((context, index) {
+                // if (index == 0) {
+                //   return Padding(
+                //     padding: EdgeInsets.symmetric(
+                //         horizontal: size.width * 0.05, vertical: size.height * 0.01),
+                //     child: Center(
+                //         child: Text(
+                //       "${year.year}",
+                //       style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                //     )),
+                //   );
+                // }
 
-          var t = huntingTimes.elementAt(index);
-          return HuntingTimeListEntry(
-            key: Key('${t.wildart}-${t.geschlecht}-${t.von.year}'),
-            time: t,
-            year: year.year,
-          );
-        }),
-        itemCount: huntingTimes.length,
-      ),
+                var t = filteredList.elementAt(index);
+                return HuntingTimeListEntry(
+                  key: Key('${t.wildart}-${t.geschlecht}-${t.von.year}'),
+                  time: t,
+                  year: year.year,
+                );
+              }),
+              itemCount: filteredList.length,
+            ),
     );
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(0,
+        duration: const Duration(milliseconds: 1500), curve: Curves.decelerate);
   }
 }
 
@@ -113,6 +168,7 @@ class HuntingTimeListEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final dg = S.of(context);
+    var gt = GameType.all.where((e) => e.wildart == time.wildart).toList();
 
     DateFormat df = DateFormat.MMMMd();
     DateFormat dfNxt = DateFormat.yMMMMd();
@@ -134,7 +190,10 @@ class HuntingTimeListEntry extends StatelessWidget {
             Radius.circular(20),
           ),
         ),
-        color: KillEntry.getColorFromWildart(time.wildart).withOpacity(0.8),
+        color: (gt.isEmpty
+                ? Colors.primaries[Random().nextInt(Colors.primaries.length)]
+                : gt.first.color)
+            .withOpacity(0.8),
         elevation: 7,
         clipBehavior: Clip.hardEdge,
         child: Theme(
@@ -151,7 +210,7 @@ class HuntingTimeListEntry extends StatelessWidget {
                   ? [
                       Flexible(
                         child: Text(
-                          translateValue(context, time.wildart),
+                          time.translateWildart(context),
                           textAlign: TextAlign.end,
                           style: const TextStyle(
                             fontWeight: FontWeight.w600,
@@ -164,7 +223,7 @@ class HuntingTimeListEntry extends StatelessWidget {
                   : [
                       Flexible(
                         child: Text(
-                          translateValue(context, time.geschlecht),
+                          time.translateGeschlecht(context),
                           textAlign: TextAlign.start,
                           style: const TextStyle(
                             fontWeight: FontWeight.w600,
@@ -175,7 +234,7 @@ class HuntingTimeListEntry extends StatelessWidget {
                       ),
                       Flexible(
                         child: Text(
-                          translateValue(context, time.wildart),
+                          time.translateWildart(context),
                           textAlign: TextAlign.end,
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
@@ -186,27 +245,49 @@ class HuntingTimeListEntry extends StatelessWidget {
                       ),
                     ],
             ),
-            subtitle: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            subtitle: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Flexible(
-                  child: Text(
-                    time.von.year == year ? df.format(time.von) : dfNxt.format(time.von),
-                    style: TextStyle(
-                      color: secondaryColor,
-                      overflow: TextOverflow.fade,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        time.von.year == year
+                            ? df.format(time.von)
+                            : dfNxt.format(time.von),
+                        style: TextStyle(
+                          color: secondaryColor,
+                          overflow: TextOverflow.fade,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    time.bis.year == year ? df.format(time.bis) : dfNxt.format(time.bis),
-                    style: TextStyle(
-                      color: secondaryColor,
-                      overflow: TextOverflow.fade,
+                    Flexible(
+                      child: Text(
+                        time.bis.year == year
+                            ? df.format(time.bis)
+                            : dfNxt.format(time.bis),
+                        style: TextStyle(
+                          color: secondaryColor,
+                          overflow: TextOverflow.fade,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
+                time.note == null
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 3),
+                        child: Text(
+                          time.note!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: secondaryColor,
+                            overflow: TextOverflow.fade,
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),

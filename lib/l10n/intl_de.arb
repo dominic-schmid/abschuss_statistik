@@ -152,5 +152,16 @@
   "xJagdzeiten": "Jagdzeiten {x} ",
   "open": "Offen",
   "geschlossen": "Geschlossen",
-  "selectYear": "Wähle Jahr"
+  "selectYear": "Wähle Jahr",
+  "both": "Beide",
+  "jagdzeiten": "Jagdzeiten",
+  "paarungszeiten": "Paarungszeiten",
+  "wild": "Wild",
+  "filter": "Filtern",
+  "wochen": "Wochen",
+  "tage": "Tage",
+  "monate": "Monate",
+  "brutzeit": "Brutzeit",
+  "tragzeit": "Tragzeit",
+  "mitKeimruhe": "mit Keimruhe"
 }

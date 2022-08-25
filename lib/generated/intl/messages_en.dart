@@ -52,6 +52,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "betaModeTitle": MessageLookupByLibrary.simpleMessage("Beta mode"),
         "bockjahrling": MessageLookupByLibrary.simpleMessage("Young buck"),
         "bockkitz": MessageLookupByLibrary.simpleMessage("Buck fawn"),
+        "both": MessageLookupByLibrary.simpleMessage("Both"),
+        "brutzeit": MessageLookupByLibrary.simpleMessage("breeding season"),
         "causes": MessageLookupByLibrary.simpleMessage("Causes"),
         "chartBasedOnDownloaded": MessageLookupByLibrary.simpleMessage(
             "The charts are based on your downloaded data. If a year is missing, you can select and download it on the start page.\n\nThese diagrams provide information about the historical development of the game in your area and have been designed in such a way that you can configure the structure yourself!"),
@@ -96,6 +98,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "fallwild": MessageLookupByLibrary.simpleMessage("Found dead"),
         "feedbackMailSubject": MessageLookupByLibrary.simpleMessage(
             "Feedback for the hunting statistics app"),
+        "filter": MessageLookupByLibrary.simpleMessage("Filter"),
         "freizone": MessageLookupByLibrary.simpleMessage("Free zone"),
         "frischling": MessageLookupByLibrary.simpleMessage("Wild boar"),
         "fuchs": MessageLookupByLibrary.simpleMessage("Fox"),
@@ -114,6 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hirschkalb": MessageLookupByLibrary.simpleMessage("Male fawn"),
         "historic": MessageLookupByLibrary.simpleMessage("Historic"),
         "hunter": MessageLookupByLibrary.simpleMessage("Hunter"),
+        "jagdzeiten": MessageLookupByLibrary.simpleMessage("Hunting times"),
         "jahrlingsHirsch": MessageLookupByLibrary.simpleMessage("Young buck"),
         "jahrlingsbock": MessageLookupByLibrary.simpleMessage("Young buck"),
         "kahlwild": MessageLookupByLibrary.simpleMessage("Deer"),
@@ -134,6 +138,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "maennlich": MessageLookupByLibrary.simpleMessage("Male"),
         "mapInitialPosition":
             MessageLookupByLibrary.simpleMessage("Initial position"),
+        "mitKeimruhe": MessageLookupByLibrary.simpleMessage("with dormancy"),
+        "monate": MessageLookupByLibrary.simpleMessage("months"),
         "monthlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Monthly breakdown"),
         "murmeltier": MessageLookupByLibrary.simpleMessage("Marmot"),
@@ -154,6 +160,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "onlyShot": MessageLookupByLibrary.simpleMessage("Only shot"),
         "open": MessageLookupByLibrary.simpleMessage("Open"),
         "overseer": MessageLookupByLibrary.simpleMessage("Overseer"),
+        "paarungszeiten": MessageLookupByLibrary.simpleMessage("Mating times"),
         "perMonth": MessageLookupByLibrary.simpleMessage("per Month"),
         "points": MessageLookupByLibrary.simpleMessage("Point"),
         "protokollBeschlagnahmt":
@@ -209,7 +216,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "strassenunfall": MessageLookupByLibrary.simpleMessage("Car accident"),
         "sum": MessageLookupByLibrary.simpleMessage("Sum"),
         "tBock": MessageLookupByLibrary.simpleMessage("Trophy buck"),
+        "tage": MessageLookupByLibrary.simpleMessage("days"),
         "time": MessageLookupByLibrary.simpleMessage("Time"),
+        "tragzeit": MessageLookupByLibrary.simpleMessage("gestation period"),
         "trophaehenHirsch": MessageLookupByLibrary.simpleMessage("Trophy buck"),
         "ueberlaeuferBache":
             MessageLookupByLibrary.simpleMessage("Young female boar"),
@@ -222,7 +231,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "weiblich": MessageLookupByLibrary.simpleMessage("Female"),
         "weiblicheRehe": MessageLookupByLibrary.simpleMessage("Female deer"),
         "weight": MessageLookupByLibrary.simpleMessage("Weight"),
+        "wild": MessageLookupByLibrary.simpleMessage("Species"),
         "wildkalb": MessageLookupByLibrary.simpleMessage("Female fawn"),
+        "wochen": MessageLookupByLibrary.simpleMessage("weeks"),
         "xJagdzeiten": m4,
         "xKill_s": m5,
         "xNewKillsFound": m6,

@@ -130,27 +130,6 @@ const nichtVerwertbarFarbe = Color.fromRGBO(144, 97, 97, 1);
 const nichtGefundenFarbe = Color.fromRGBO(0, 121, 107, 1);
 const nichtBekanntFarbe = Color.fromRGBO(233, 30, 99, 1);
 
-IconData getUrsacheIcon(String ursache) {
-  switch (ursache) {
-    case 'erlegt':
-      return Icons.person;
-    case 'Fallwild':
-      return Icons.cloudy_snowing;
-    case 'Straßenunfall':
-      return Icons.car_crash;
-    case 'Hegeabschuss':
-      return Icons.admin_panel_settings_outlined;
-    case 'Protokoll / beschlagnahmt':
-      return Icons.list_alt;
-    case 'vom Zug überfahren':
-      return Icons.train;
-    case 'Freizone':
-      return Icons.forest;
-    default:
-      return Icons.question_mark_rounded;
-  }
-}
-
 List<Map<String, String>> getBaseGroupBys(BuildContext ctx) {
   final dg = S.of(ctx);
   return [
@@ -234,5 +213,3 @@ Future<void> showLanguagePicker(BuildContext context) async {
         );
       });
 }
-
-const String appVersion = "1.3.0";

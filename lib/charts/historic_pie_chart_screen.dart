@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/utils/database_methods.dart';
 import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
@@ -12,7 +13,6 @@ import 'package:sqflite/sqflite.dart';
 
 import '../generated/l10n.dart';
 import '../models/filter_chip_data.dart';
-import '../models/kill_entry.dart';
 import '../widgets/chart_app_bar.dart';
 import '../widgets/chip_selector_modal.dart';
 
@@ -123,7 +123,7 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
     for (int i = 0; i < gruppierungen.length; i++) {
       String g = gruppierungen.elementAt(i);
       Color c = groupBy['value'] == 'wildart'
-          ? KillEntry.getColorFromWildart(g)
+          ? GameType.all.firstWhere((e) => e.wildart == g).color
           : Colors.primaries[i % Colors.primaries.length];
 
       filterChips.add(FilterChipData(label: g, color: c));
@@ -160,7 +160,7 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
       double value = (toBuild.elementAt(i)['Anzahl'] as int).toDouble();
 
       Color c = groupBy['value'] == 'wildart'
-          ? KillEntry.getColorFromWildart(label)
+          ? GameType.all.firstWhere((e) => e.wildart == label).color
           : Colors.primaries[i % Colors.primaries.length];
 
       sum += value;

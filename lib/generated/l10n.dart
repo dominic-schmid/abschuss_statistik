@@ -1591,6 +1591,116 @@ class S {
       args: [],
     );
   }
+
+  /// `Both`
+  String get both {
+    return Intl.message(
+      'Both',
+      name: 'both',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hunting times`
+  String get jagdzeiten {
+    return Intl.message(
+      'Hunting times',
+      name: 'jagdzeiten',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mating times`
+  String get paarungszeiten {
+    return Intl.message(
+      'Mating times',
+      name: 'paarungszeiten',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Species`
+  String get wild {
+    return Intl.message(
+      'Species',
+      name: 'wild',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filter`
+  String get filter {
+    return Intl.message(
+      'Filter',
+      name: 'filter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `weeks`
+  String get wochen {
+    return Intl.message(
+      'weeks',
+      name: 'wochen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `days`
+  String get tage {
+    return Intl.message(
+      'days',
+      name: 'tage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `months`
+  String get monate {
+    return Intl.message(
+      'months',
+      name: 'monate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `breeding season`
+  String get brutzeit {
+    return Intl.message(
+      'breeding season',
+      name: 'brutzeit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `gestation period`
+  String get tragzeit {
+    return Intl.message(
+      'gestation period',
+      name: 'tragzeit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `with dormancy`
+  String get mitKeimruhe {
+    return Intl.message(
+      'with dormancy',
+      name: 'mitKeimruhe',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

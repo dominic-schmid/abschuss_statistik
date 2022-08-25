@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/utils/database_methods.dart';
 import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
@@ -13,7 +14,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../models/kill_entry.dart';
 import '../widgets/chart_app_bar.dart';
 
 class YearlyLineChartScreen extends StatefulWidget {
@@ -152,7 +152,7 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
     for (int i = 0; i < gruppierungen.length; i++) {
       String g = gruppierungen.elementAt(i);
       Color c = groupBy['value'] == 'wildart' || groupBy['value'] == 'gewicht'
-          ? KillEntry.getColorFromWildart(g)
+          ? GameType.all.firstWhere((e) => e.wildart == g).color
           : Colors.primaries[i % Colors.primaries.length];
 
       lineChips.add(FilterChipData(label: g, color: c));

@@ -152,5 +152,16 @@
   "xJagdzeiten": "Hunting times {x} ",
   "open": "Open",
   "geschlossen": "Closed",
-  "selectYear": "Select year"
+  "selectYear": "Select year",
+  "both": "Both",
+  "jagdzeiten": "Hunting times",
+  "paarungszeiten": "Mating times",
+  "wild": "Species",
+  "filter": "Filter",
+  "wochen": "weeks",
+  "tage": "days",
+  "monate": "months",
+  "brutzeit": "breeding season",
+  "tragzeit": "gestation period",
+  "mitKeimruhe": "with dormancy"
 }

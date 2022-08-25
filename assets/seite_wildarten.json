@@ -1,0 +1,88 @@
+{
+    "Rehwild": [
+        "Geißkitz",
+        "Schmalreh",
+        "Altgeiß",
+        "Bockkitz",
+        "Jährlingsbock",
+        "T-Bock",
+        "nicht bekannt",
+        "Weibliche Rehe"
+    ],
+    "Rotwild": [
+        "Jährlingshirsch",
+        "Trophäenhirsch",
+        "Hirschkalb",
+        "Wildkalb",
+        "Schmaltier",
+        "Alttier",
+        "nicht bekannt",
+        "Kahlwild"
+    ],
+    "Gamswild": [
+        "Bockjährling",
+        "Geißjährling",
+        "Gamsgeiß",
+        "Gamsbock",
+        "Bockkitz",
+        "Geißkitz",
+        "nicht bekannt"
+    ],
+    "Steinwild": [
+        "Bockjährling",
+        "Geißjährling",
+        "Steingeiß",
+        "Steinbock",
+        "Bockkitz",
+        "Geißkitz",
+        "nicht bekannt",
+        "Gamsjahrlinge"
+    ],
+    "Schwarzwild": [
+        "Frischling",
+        "Überläuferbache",
+        "Überläuferkeiler",
+        "Keiler",
+        "Bache",
+        "nicht bekannt"
+    ],
+    "Spielhahn": [
+        "nicht bekannt",
+        "M"
+    ],
+    "Steinhuhn": [
+        "nicht bekannt",
+        "M",
+        "W"
+    ],
+    "Schneehuhn": [
+        "nicht bekannt",
+        "M",
+        "W"
+    ],
+    "Murmeltier": [
+        "nicht bekannt",
+        "M",
+        "W"
+    ],
+    "Dachs": [
+        "nicht bekannt",
+        "M",
+        "W"
+    ],
+    "Fuchs": [
+        "nicht bekannt",
+        "M",
+        "W"
+    ],
+    "Schneehase": [
+        "nicht bekannt",
+        "männlich",
+        "weiblich"
+    ],
+    "Andere Wildart": [
+        "nicht bekannt",
+        "männlich",
+        "weiblich"
+    ]
+}

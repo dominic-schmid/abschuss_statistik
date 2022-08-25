@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/kill_entry.dart';
-import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-import 'models/filter_chip_data.dart';
-import 'models/kill_page.dart';
-import 'widgets/chip_selector_modal.dart';
+import '../models/filter_chip_data.dart';
+import '../models/kill_page.dart';
+import '../widgets/chip_selector_modal.dart';
 
 class AllMapScreen extends StatefulWidget {
   final KillPage page;
@@ -101,16 +101,16 @@ class _AllMapScreenState extends State<AllMapScreen> {
         markerCount++;
 
         if (!mounted) return;
+        GameType gt = GameType.all.firstWhere((e) => e.wildart == k.wildart);
         _markers.add(
           Marker(
             markerId: MarkerId(k.key),
             position: LatLng(k.gpsLat!, k.gpsLon!),
             //icon: BitmapDescriptor.fromBytes(markerBytes),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-                KillEntry.getMarkerHueFromWildart(k.wildart)),
+            icon: BitmapDescriptor.defaultMarkerWithHue(gt.bitmapDescriptor),
             infoWindow: InfoWindow(
                 title:
-                    '${translateValue(context, k.wildart)} (${translateValue(context, k.geschlecht)})',
+                    '${GameType.translate(context, k.wildart)} (${GameType.translateGeschlecht(context, k.geschlecht)})',
                 onTap: () => showAlertDialog(
                       title: '',
                       description: k.localizedToString(context),

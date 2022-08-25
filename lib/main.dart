@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:jagdstatistik/credentials_screen.dart';
-import 'package:jagdstatistik/home_screen.dart';
+import 'package:jagdstatistik/views/credentials_screen.dart';
+import 'package:jagdstatistik/views/home_screen.dart';
 import 'package:jagdstatistik/utils/providers.dart';
 import 'package:jagdstatistik/utils/request_methods.dart';
 import 'package:provider/provider.dart';

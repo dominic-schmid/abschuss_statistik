@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
-import 'package:jagdstatistik/hunting_time_screen.dart';
 import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/views/hunting_time_screen.dart';
+import 'package:jagdstatistik/views/mating_time_screen.dart';
 import 'package:jagdstatistik/widgets/chart_app_bar.dart';
 import 'package:jagdstatistik/charts/yearly_pie_chart_screen.dart';
 
-import 'charts/historic_bar_chart_screen.dart';
-import 'charts/historic_line_chart_screen.dart';
-import 'charts/historic_pie_chart_screen.dart';
-import 'charts/yearly_bar_chart_screen.dart';
-import 'charts/yearly_line_chart_screen.dart';
+import '../charts/historic_bar_chart_screen.dart';
+import '../charts/historic_line_chart_screen.dart';
+import '../charts/historic_pie_chart_screen.dart';
+import '../charts/yearly_bar_chart_screen.dart';
+import '../charts/yearly_line_chart_screen.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({Key? key}) : super(key: key);
@@ -38,16 +39,6 @@ class _StatsScreenState extends State<StatsScreen> {
             );
           },
           icon: const Icon(Icons.help_outline_rounded),
-        ),
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const HuntingTimeScreen(),
-              ),
-            );
-          },
-          icon: const Icon(Icons.calendar_month_rounded),
         ),
       ]),
       body: SingleChildScrollView(
@@ -159,6 +150,43 @@ class _StatsScreenState extends State<StatsScreen> {
                 ],
               ),
             ),
+            SizedBox(height: size.height * 0.02),
+            Text(
+              dg.wild,
+              style: Theme.of(context).primaryTextTheme.titleLarge,
+            ),
+            Flexible(
+              child: GridView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                ),
+                children: [
+                  ChartGridItem(
+                    title: dg.jagdzeiten,
+                    assetImage: 'assets/planning.png',
+                    backgroundColor: nichtGefundenFarbe.withAlpha(215),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const HuntingTimeScreen(),
+                      ),
+                    ),
+                  ),
+                  ChartGridItem(
+                    title: dg.paarungszeiten,
+                    assetImage: 'assets/calendar.png',
+                    backgroundColor: wildFarbe,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const MatingTimeScreen(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -202,6 +230,7 @@ class ChartGridItem extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 title,
+                textAlign: TextAlign.center,
                 style: const TextStyle(color: primaryColor),
               ),
             ],

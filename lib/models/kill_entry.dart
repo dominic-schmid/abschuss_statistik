@@ -1,12 +1,12 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
-import 'package:jagdstatistik/utils/translation_helper.dart';
-import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/models/constants/cause.dart';
+import 'package:jagdstatistik/models/constants/game_type.dart';
+import 'package:jagdstatistik/models/constants/usage.dart';
 
 class KillEntry {
   final int nummer;
@@ -28,6 +28,9 @@ class KillEntry {
   DateTime datetime = DateTime.now();
   IconData icon = Icons.question_mark;
   Color color = Colors.grey;
+  late GameType gameType;
+  late Cause cause;
+  late Usage usage;
 
   KillEntry({
     required this.nummer,
@@ -48,101 +51,11 @@ class KillEntry {
     this.gpsLat = 0,
     this.gpsLon = 0,
   }) {
-    icon = getUrsacheIcon(ursache);
-    color = getColorFromWildart(wildart);
-  }
-
-  static double getMarkerHueFromWildart(String wildart) {
-    double color = 0;
-
-    switch (wildart) {
-      case 'Rehwild':
-        color = BitmapDescriptor.hueGreen;
-        break;
-      case 'Rotwild':
-        color = BitmapDescriptor.hueRed;
-        break;
-      case 'Gamswild':
-        color = BitmapDescriptor.hueCyan;
-        break;
-      case 'Steinwild':
-        color = BitmapDescriptor.hueYellow; // special - yellow;
-        break;
-      case 'Schwarzwild':
-        color = BitmapDescriptor.hueYellow; // special - yellow
-        break;
-      case 'Spielhahn':
-        color = BitmapDescriptor.hueOrange;
-        break;
-      case 'Steinhuhn':
-        color = BitmapDescriptor.hueAzure;
-        break;
-      case 'Schneehuhn':
-        color = BitmapDescriptor.hueViolet;
-        break;
-      case 'Murmeltier':
-        color = BitmapDescriptor.hueRose;
-        break;
-      case 'Dachs':
-        color = BitmapDescriptor.hueYellow; // special - yellow;
-        break;
-      case 'Fuchs':
-        color = BitmapDescriptor.hueOrange;
-        break;
-      case 'Schneehase':
-        color = BitmapDescriptor.hueViolet; // Duplicate
-        break;
-      case 'Andere Wildart':
-        color = BitmapDescriptor.hueBlue;
-        break;
-    }
-    return color;
-  }
-
-  static Color getColorFromWildart(String wildart) {
-    Color color = Colors.green;
-    switch (wildart) {
-      case 'Rehwild':
-        color = rehwildFarbe;
-        break;
-      case 'Rotwild':
-        color = rotwildFarbe;
-        break;
-      case 'Gamswild':
-        color = gamswildFarbe;
-        break;
-      case 'Steinwild':
-        color = steinwildFarbe;
-        break;
-      case 'Schwarzwild':
-        color = schwarzwildFarbe;
-        break;
-      case 'Spielhahn':
-        color = spielhahnFarbe;
-        break;
-      case 'Steinhuhn':
-        color = steinhuhnFarbe;
-        break;
-      case 'Schneehuhn':
-        color = schneehuhnFarbe;
-        break;
-      case 'Murmeltier':
-        color = murmeltierFarbe;
-        break;
-      case 'Dachs':
-        color = dachsFarbe;
-        break;
-      case 'Fuchs':
-        color = fuchsFarbe;
-        break;
-      case 'Schneehase':
-        color = schneehaseFarbe;
-        break;
-      case 'Andere Wildart':
-        color = wildFarbe;
-        break;
-    }
-    return color;
+    icon = Cause.all.firstWhere((e) => e.cause == ursache).icon;
+    color = GameType.all.firstWhere((e) => e.wildart == wildart).color;
+    gameType = GameType.all.firstWhere((e) => e.wildart == wildart);
+    cause = Cause.all.firstWhere((e) => e.cause == ursache);
+    usage = Usage.all.firstWhere((e) => e.usage == verwendung);
   }
 
   String get key =>
@@ -227,6 +140,7 @@ class KillEntry {
     } catch (e) {
       print(e.toString());
     }
+    return null;
   }
 
   static KillEntry? fromMap(Map<String, Object?> map) {
@@ -256,7 +170,6 @@ class KillEntry {
               'zeit': m['aufseherZeit'] as String,
               'aufseher': m['aufseher'] as String,
             },
-      // Oertlichkeit
     );
   }
 
@@ -290,7 +203,7 @@ class KillEntry {
         ? ''
         : '\n${dg.companion}: $begleiter';
 
-    return "${translateValue(context, wildart)} - ${translateValue(context, geschlecht)}\n${translateValue(context, ursache)} $oertlichkeit ($datum - $zeit)\n${dg.number}: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\n${dg.sortPlace}: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\n${dg.age}: $alterString'}${gewicht == 0 ? '' : '\n${dg.weight}: $gewicht kg'}$e$b${verwendung.isEmpty ? '' : '\n${dg.usage}: ${translateValue(context, verwendung)}'}${ursprungszeichen.isEmpty ? '' : '\n${dg.signOfOrigin}: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}";
+    return "${GameType.translate(context, wildart)} - ${GameType.translateGeschlecht(context, geschlecht)}\n${Cause.translate(context, ursache)} $oertlichkeit ($datum - $zeit)\n${dg.number}: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\n${dg.sortPlace}: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\n${dg.age}: $alterString'}${gewicht == 0 ? '' : '\n${dg.weight}: $gewicht kg'}$e$b${verwendung.isEmpty ? '' : '\n${dg.usage}: ${Usage.translate(context, verwendung)}'}${ursprungszeichen.isEmpty ? '' : '\n${dg.signOfOrigin}: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}";
   }
 
   @override
@@ -320,31 +233,25 @@ class KillEntry {
     String b =
         begleiter.isEmpty || begleiter.contains('*') ? '' : '\nBegleiter: $begleiter';
 
-    // String latLong =
-    //     gpsLat == null || gpsLon == null ? '' : 'Koordinaten: $gpsLat, $gpsLon';
     return "$wildart $geschlecht, $ursache $oertlichkeit am $datum um $zeit\nNummer: $nummer${hegeinGebietRevierteil.isEmpty ? '' : '\nGebiet: $hegeinGebietRevierteil'}${alterString.isEmpty ? '' : '\nAlter: $alterString'}${gewicht == 0 ? '' : '\nGewicht: $gewicht kg'}$e$b${verwendung.isEmpty ? '' : '\nVerwendung: $verwendung'}${ursprungszeichen.isEmpty ? '' : '\nUrsprungszeichen: $ursprungszeichen'}${aufseherString.isEmpty ? '' : '\n$aufseherString'}"; //${} ${} ${} ${} ${} ${} ${} ${}""";
   }
 
   List<String> toCSV(BuildContext ctx) {
-    // String aufseherString = jagdaufseher == null
-    //     ? ';;'
-    //     : "${jagdaufseher!['aufseher']};${jagdaufseher!['datum']};${jagdaufseher!['zeit']}";
-    //return "$wildart;$geschlecht;$ursache;$oertlichkeit;${datetime.toIso8601String()};$nummer;$hegeinGebietRevierteil;$alter;$alterw;${gewicht.toString()};$erleger;$begleiter;$verwendung;$ursprungszeichen;$aufseherString";
     String datum = DateFormat('dd.MM.yy').format(datetime);
     String zeit = DateFormat('kk:mm').format(datetime);
     return [
       nummer.toString(),
-      translateValue(ctx, wildart),
-      translateValue(ctx, geschlecht),
-      translateValue(ctx, hegeinGebietRevierteil),
-      translateValue(ctx, alter),
-      translateValue(ctx, alterw),
+      GameType.translate(ctx, wildart),
+      GameType.translateGeschlecht(ctx, geschlecht),
+      hegeinGebietRevierteil, // TODO CHECK IF REALLY TRANSLATABLE translateValue(ctx, hegeinGebietRevierteil),
+      alter, // TODO CHECK IF REALLY TRANSLATABLE translateValue(ctx, alter),
+      alterw, //TODO CHECK IF REALLY TRANSLATABLE  translateValue(ctx, alterw),
       gewicht.toString(),
       erleger,
       begleiter,
-      translateValue(ctx, ursache),
-      translateValue(ctx, verwendung),
-      translateValue(ctx, ursprungszeichen),
+      Cause.translate(ctx, ursache),
+      Usage.translate(ctx, verwendung),
+      ursprungszeichen, // TODO CHECK IF REALLY TRANSLATABLE translateValue(ctx, ursprungszeichen),
       oertlichkeit,
       gpsLat.toString(),
       gpsLon.toString(),
@@ -398,16 +305,16 @@ class KillEntry {
     final dg = S.of(ctx);
     return {
       dg.number: nummer.toString(),
-      dg.sortGameType: translateValue(ctx, wildart),
-      dg.sortGender: translateValue(ctx, geschlecht),
+      dg.sortGameType: GameType.translate(ctx, wildart),
+      dg.sortGender: GameType.translateGeschlecht(ctx, geschlecht),
       dg.area: hegeinGebietRevierteil,
       dg.age: alter,
       '${dg.age}w': alterw,
       dg.weight: gewicht,
       dg.killer: erleger,
       dg.companion: begleiter,
-      dg.sortCause: translateValue(ctx, ursache),
-      dg.usage: translateValue(ctx, verwendung),
+      dg.sortCause: Cause.translate(ctx, ursache),
+      dg.usage: Usage.translate(ctx, verwendung),
       dg.sortPlace: oertlichkeit,
       'Lat': gpsLat,
       'Lon': gpsLon,

@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/kill_entry.dart';
-import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 
 class MapScreen extends StatefulWidget {
@@ -63,16 +63,16 @@ class _MapScreenState extends State<MapScreen> {
     var bytes = await getBytesFromAsset(path: 'assets/location-marker.png', width: 125);
 
     if (!mounted) return;
+    GameType gt = GameType.all.firstWhere((e) => e.wildart == widget.kill.wildart);
     _markers.add(
       Marker(
         markerId: MarkerId(widget.kill.key),
         position: kLocation,
         // icon: BitmapDescriptor.fromBytes(bytes),
-        icon: BitmapDescriptor.defaultMarkerWithHue(
-            KillEntry.getMarkerHueFromWildart(widget.kill.wildart)),
+        icon: BitmapDescriptor.defaultMarkerWithHue(gt.bitmapDescriptor),
         infoWindow: InfoWindow(
             title:
-                '${translateValue(context, widget.kill.wildart)} (${translateValue(context, widget.kill.geschlecht)})',
+                '${GameType.translate(context, widget.kill.wildart)} (${GameType.translateGeschlecht(context, widget.kill.geschlecht)})',
             onTap: () => showAlertDialog(
                   title: '',
                   description: widget.kill.localizedToString(context),

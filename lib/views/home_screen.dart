@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
-import 'package:jagdstatistik/kills_screen.dart';
-import 'package:jagdstatistik/stats_screen.dart';
+import 'package:jagdstatistik/views/kills_screen.dart';
+import 'package:jagdstatistik/views/stats_screen.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 
 class HomeScreen extends StatefulWidget {

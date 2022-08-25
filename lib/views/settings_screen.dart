@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:jagdstatistik/credentials_screen.dart';
+import 'package:jagdstatistik/views/credentials_screen.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/constants.dart';
 import 'package:jagdstatistik/utils/request_methods.dart';
 import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/widgets/chart_app_bar.dart';
@@ -13,8 +12,8 @@ import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'utils/utils.dart';
-import 'utils/providers.dart';
+import '../utils/utils.dart';
+import '../utils/providers.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -243,7 +242,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     size: size.width * 0.1,
                                   ),
                                   applicationName: 'Jagdstatistik',
-                                  applicationVersion: 'Version $appVersion',
+                                  applicationVersion: 'Version ${Constants.appVersion}',
                                   applicationLegalese: 'Dominic Schmid © 2022',
                                 ),
                                 leading: const Icon(Icons.app_registration_rounded),
