@@ -261,113 +261,130 @@ class HuntingTime {
     final dg = S.of(ctx);
     return [
       HuntingTime(
-        wildart: "Auerhahn", // TODO translate
+        wildart: "Federwild", // TODO translate
+        geschlecht: "Auerhahn",
         von: DateTime(year, 3, 1),
         bis: DateTime(year, 5, 31),
-        note: "4 ${dg.wochen} ${dg.brutzeit}", // TODO translate
+        note: "4 ${dg.wochen} ${dg.brutzeit}",
       ),
       HuntingTime(
-        wildart: "Birkwild", // TODO translate
+        wildart: "Federwild", // TODO translate
+        geschlecht: "Birkwild",
         von: DateTime(year, 4, 1),
         bis: DateTime(year, 6, 31),
-        note: "40 ${dg.wochen} ${dg.brutzeit}", // TODO translate
+        note: "40 ${dg.wochen} ${dg.brutzeit}",
       ),
       HuntingTime(
-        wildart: "Dachs",
+        wildart: "Haarwild",
+        geschlecht: "Dachs",
         von: DateTime(year, 7, 1),
         bis: DateTime(year, 8, 31),
-        note: "9 ${dg.monate} ${dg.tragzeit} (${dg.mitKeimruhe})", // TODO translate
+        note: "9 ${dg.monate} ${dg.tragzeit} (${dg.mitKeimruhe})",
       ),
       HuntingTime(
-        wildart: "Feldhase",
+        wildart: "Hasenartige",
+        geschlecht: "Feldhase",
         von: DateTime(year, 12, 1),
         bis: DateTime(year + 1, 8, 31),
-        note: "10 ${dg.tage} ${dg.tragzeit}", // TODO translate
+        note: "10 ${dg.tage} ${dg.tragzeit}",
       ),
       HuntingTime(
-        wildart: "Fuchs",
+        wildart: "Haarwild",
+        geschlecht: "Fuchs",
         von: DateTime(year, 1, 1),
         bis: DateTime(year, 2, 28),
-        note: "53 ${dg.tage} ${dg.tragzeit}", // TODO translate
+        note: "53 ${dg.tage} ${dg.tragzeit}",
       ),
       HuntingTime(
-        wildart: "Gamswild",
+        wildart: "Schalenwild",
+        geschlecht: "Gamswild",
         von: DateTime(year, 10, 1),
         bis: DateTime(year, 11, 30),
-        note: "26 ${dg.wochen} ${dg.tragzeit}", // TODO translate
+        note: "26 ${dg.wochen} ${dg.tragzeit}",
       ),
       HuntingTime(
-        wildart: "Hermelin",
+        wildart: "Marderartige",
+        geschlecht: "Hermelin",
         von: DateTime(year, 2, 1),
         bis: DateTime(year, 3, 31),
-        note: "7-12 ${dg.monate} ${dg.tragzeit}", // TODO translate
+        note: "7-12 ${dg.monate} ${dg.tragzeit}",
       ),
       HuntingTime(
-        wildart: "Rotwild",
+        wildart: "Schalenwild",
+        geschlecht: "Rotwild",
         von: DateTime(year, 9, 1),
         bis: DateTime(year, 10, 31),
-        note: "9 ${dg.monate} ${dg.tragzeit}", // TODO translate
+        note: "9 ${dg.monate} ${dg.tragzeit}",
       ),
       HuntingTime(
-        wildart: "Luchs",
-        geschlecht: "Schmaltiere",
+        wildart: "Haarwild",
+        geschlecht: "Luchs",
         von: DateTime(year, 3, 1),
         bis: DateTime(year, 4, 30),
         note: "65-75 ${dg.tage} ${dg.tragzeit}",
       ),
       HuntingTime(
-        wildart: "Muffelwild",
+        wildart: "Schalenwild",
+        geschlecht: "Muffelwild",
         von: DateTime(year, 11, 1),
         bis: DateTime(year, 12, 31),
-        note: "5,5 ${dg.monate} ${dg.tragzeit}", // TODO translate
+        note: "5,5 ${dg.monate} ${dg.tragzeit}",
       ),
       HuntingTime(
-        wildart: "Murmeltier",
+        wildart: "Nagetiere",
+        geschlecht: "Murmeltier",
         von: DateTime(year, 5, 1),
         bis: DateTime(year, 5, 31),
-        note: "5 ${dg.wochen} ${dg.tragzeit}", // TODO translate
+        note: "5 ${dg.wochen} ${dg.tragzeit}",
       ),
       HuntingTime(
-        wildart: "Rehwild",
+        wildart: "Schalenwild",
+        geschlecht: "Rehwild",
         von: DateTime(year, 7, 15),
         bis: DateTime(year, 8, 31),
-        note: "40 ${dg.wochen} ${dg.tragzeit}", // TODO translate
+        note: "40 ${dg.wochen} ${dg.tragzeit}",
       ),
       HuntingTime(
-        wildart: "Schneehase",
+        wildart: "Hasenartige",
+        geschlecht: "Schneehase",
         von: DateTime(year, 1, 1),
         bis: DateTime(year, 9, 30),
-        note: "50 ${dg.tage} ${dg.tragzeit}", // TODO translate
+        note: "50 ${dg.tage} ${dg.tragzeit}",
       ),
       HuntingTime(
-        wildart: "Steinbock",
+        wildart: "Schalenwild",
+        geschlecht: "Steinbock",
         von: DateTime(year, 11, 1),
         bis: DateTime(year + 1, 1, 15),
-        note: "23 ${dg.wochen} ${dg.tragzeit}", // TODO translate
+        note: "23 ${dg.wochen} ${dg.tragzeit}",
       ),
       HuntingTime(
-        wildart: "Steinhuhn",
+        wildart: "Federwild",
+        geschlecht: "Steinhuhn",
         von: DateTime(year, 3, 1),
         bis: DateTime(year, 5, 31),
-        note: "24-26 ${dg.tage} ${dg.brutzeit}", // TODO translate
+        note: "24-26 ${dg.tage} ${dg.brutzeit}",
       ),
       HuntingTime(
-        wildart: "Schneehuhn",
+        wildart: "Federwild",
+        geschlecht: "Schneehuhn",
         von: DateTime(year, 4, 1),
         bis: DateTime(year, 6, 30),
-        note: "2,5 ${dg.wochen} ${dg.brutzeit}", // TODO translate
+        note: "2,5 ${dg.wochen} ${dg.brutzeit}",
       ),
       HuntingTime(
-        wildart: "Steinmarder, Edelmarder",
+        wildart: "Marderartige",
+        geschlecht: "Steinmarder, Edelmarder",
         von: DateTime(year, 6, 1),
         bis: DateTime(year, 8, 31),
-        note: "9 ${dg.monate} ${dg.tragzeit} (${dg.mitKeimruhe})", // TODO translate
+        note: "9 ${dg.monate} ${dg.tragzeit} (${dg.mitKeimruhe})",
       ),
       HuntingTime(
-        wildart: "Wildschwein",
+        wildart: "Schalenwild",
+        geschlecht: "Wildschwein",
         von: DateTime(year, 11, 1),
         bis: DateTime(year, 12, 31),
-        note: "4 ${dg.monate} ${dg.tragzeit}", // TODO translate
+        note: "4 ${dg.monate} ${dg.tragzeit}",
       ),
     ];
   }

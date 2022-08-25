@@ -9,6 +9,7 @@ import 'package:jagdstatistik/models/filter_chip_data.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/widgets/chart_app_bar.dart';
 import 'package:jagdstatistik/widgets/chip_selector_modal.dart';
+import 'package:jagdstatistik/widgets/hunting_time_list_entry.dart';
 import 'package:jagdstatistik/widgets/no_data_found.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -25,6 +26,8 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
 
   List<HuntingTime> huntingTimes = [];
   List<FilterChipData> _filters = [];
+
+  Map<String, Color> _colors = {};
 
   @override
   void initState() {
@@ -58,7 +61,9 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
 
     return Scaffold(
       appBar: ChartAppBar(
-        title: Text("${dg.paarungszeiten} $year"),
+        title: GestureDetector(
+            onTap: () => print(_colors),
+            child: Text("${dg.paarungszeiten} ${year.year}")),
         actions: [
           IconButton(
             onPressed: () => showDialog(
@@ -107,11 +112,7 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
                     ChipSelectorModal(title: dg.filter, chips: _filters),
               );
               // Only refresh if changes (so as to not rebuild colors)
-              if (showOpen != _filters.firstWhere((e) => e.label == dg.open).isSelected ||
-                  showClosed !=
-                      _filters.firstWhere((e) => e.label == dg.geschlossen).isSelected) {
-                setState(() {});
-              }
+              setState(() {});
             },
             icon: Icon(
               showOpen && showClosed
@@ -121,7 +122,7 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
           ),
         ],
       ),
-      body: !showOpen && !showClosed
+      body: filteredList.isEmpty
           ? const Center(child: NoDataFoundWidget())
           : ListView.builder(
               shrinkWrap: true,
@@ -140,10 +141,27 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
                 // }
 
                 var t = filteredList.elementAt(index);
+                Color c = Colors.red;
+
+                // Not in map, need to generate it first
+                if (!_colors.containsKey(t.wildart)) {
+                  // If is translatable game (-> has a color)
+                  if (GameType.translate(context, t.wildart, false).isNotEmpty) {
+                    c = GameType.all.firstWhere((e) => e.wildart == t.wildart).color;
+                  } else {
+                    c = Colors.primaries[Random().nextInt(Colors.primaries.length)];
+                  }
+
+                  _colors.addAll({t.wildart: c});
+                } else {
+                  c = _colors[t.wildart]!; // Otherwise get color
+                }
+
                 return HuntingTimeListEntry(
                   key: Key('${t.wildart}-${t.geschlecht}-${t.von.year}'),
                   time: t,
                   year: year.year,
+                  color: c,
                 );
               }),
               itemCount: filteredList.length,
@@ -154,145 +172,5 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
   void _scrollToTop() {
     _scrollController.animateTo(0,
         duration: const Duration(milliseconds: 1500), curve: Curves.decelerate);
-  }
-}
-
-class HuntingTimeListEntry extends StatelessWidget {
-  final HuntingTime time;
-  final int year;
-
-  const HuntingTimeListEntry({Key? key, required this.time, required this.year})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    final dg = S.of(context);
-    var gt = GameType.all.where((e) => e.wildart == time.wildart).toList();
-
-    DateFormat df = DateFormat.MMMMd();
-    DateFormat dfNxt = DateFormat.yMMMMd();
-
-    bool isOpen = DateTime.now().isAfter(time.von) && DateTime.now().isBefore(time.bis);
-
-    return Container(
-      key: key,
-      margin: EdgeInsets.symmetric(
-          horizontal: size.width * 0.05, vertical: size.height * 0.005),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            color: Theme.of(context).textTheme.headline1!.color ?? Colors.red,
-            style: isOpen ? BorderStyle.solid : BorderStyle.none,
-            width: 4,
-          ),
-          borderRadius: const BorderRadius.all(
-            Radius.circular(20),
-          ),
-        ),
-        color: (gt.isEmpty
-                ? Colors.primaries[Random().nextInt(Colors.primaries.length)]
-                : gt.first.color)
-            .withOpacity(0.8),
-        elevation: 7,
-        clipBehavior: Clip.hardEdge,
-        child: Theme(
-          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-          child: ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: size.width * 0.075),
-            iconColor: primaryColor,
-            onTap: () {
-              showSnackBar(isOpen ? dg.open : dg.geschlossen, context);
-            },
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: time.geschlecht.isEmpty
-                  ? [
-                      Flexible(
-                        child: Text(
-                          time.translateWildart(context),
-                          textAlign: TextAlign.end,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: primaryColor,
-                            overflow: TextOverflow.fade,
-                          ),
-                        ),
-                      ),
-                    ]
-                  : [
-                      Flexible(
-                        child: Text(
-                          time.translateGeschlecht(context),
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: primaryColor,
-                            overflow: TextOverflow.fade,
-                          ),
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          time.translateWildart(context),
-                          textAlign: TextAlign.end,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: primaryColor,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ],
-            ),
-            subtitle: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        time.von.year == year
-                            ? df.format(time.von)
-                            : dfNxt.format(time.von),
-                        style: TextStyle(
-                          color: secondaryColor,
-                          overflow: TextOverflow.fade,
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        time.bis.year == year
-                            ? df.format(time.bis)
-                            : dfNxt.format(time.bis),
-                        style: TextStyle(
-                          color: secondaryColor,
-                          overflow: TextOverflow.fade,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                time.note == null
-                    ? Container()
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 3),
-                        child: Text(
-                          time.note!,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: secondaryColor,
-                            overflow: TextOverflow.fade,
-                          ),
-                        ),
-                      ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
