@@ -149,7 +149,7 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
                   if (GameType.translate(context, t.wildart, false).isNotEmpty) {
                     c = GameType.all.firstWhere((e) => e.wildart == t.wildart).color;
                   } else {
-                    c = Colors.primaries[Random().nextInt(Colors.primaries.length)];
+                    c = Colors.primaries[_colors.length % Colors.primaries.length];
                   }
 
                   _colors.addAll({t.wildart: c});

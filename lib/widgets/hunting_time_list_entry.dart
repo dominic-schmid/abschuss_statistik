@@ -49,7 +49,8 @@ class HuntingTimeListEntry extends StatelessWidget {
         child: Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: size.width * 0.075),
+            contentPadding: EdgeInsets.symmetric(
+                horizontal: size.width * 0.075, vertical: size.height * 0.0075),
             iconColor: primaryColor,
             onTap: () {
               showSnackBar(isOpen ? dg.open : dg.geschlossen, context);

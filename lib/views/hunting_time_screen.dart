@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/constants/hunting_time.dart';
@@ -48,7 +45,10 @@ class _HuntingTimeScreenState extends State<HuntingTimeScreen> {
     if (_filters.isEmpty) {
       _filters = [
         FilterChipData(label: dg.open, color: rehwildFarbe),
-        FilterChipData(label: dg.geschlossen, color: rotwildFarbe),
+        FilterChipData(
+            label: dg.geschlossen,
+            color: rotwildFarbe,
+            isSelected: false), // By default, closed filterings are hidden
       ];
     }
 
@@ -146,7 +146,7 @@ class _HuntingTimeScreenState extends State<HuntingTimeScreen> {
                   if (GameType.translate(context, t.wildart, false).isNotEmpty) {
                     c = GameType.all.firstWhere((e) => e.wildart == t.wildart).color;
                   } else {
-                    c = Colors.primaries[Random().nextInt(Colors.primaries.length)];
+                    c = Colors.primaries[_colors.length % Colors.primaries.length];
                   }
 
                   _colors.addAll({t.wildart: c});

@@ -260,12 +260,12 @@ class KillListEntryState extends State<KillListEntry> {
                     )
                   : Container(),
               ExpandedChildKillEntry(
-                icon: Icons.data_usage,
+                icon: Icons.input_rounded,
                 title: dg.sortCause,
                 value: Cause.translate(context, k.ursache),
               ),
               ExpandedChildKillEntry(
-                icon: Icons.data_usage,
+                icon: Icons.output_rounded,
                 title: dg.usage,
                 value: Usage.translate(context, k.verwendung),
               ),
