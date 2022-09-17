@@ -51,11 +51,19 @@ class KillEntry {
     this.gpsLat = 0,
     this.gpsLon = 0,
   }) {
-    icon = Cause.all.firstWhere((e) => e.cause == ursache).icon;
-    color = GameType.all.firstWhere((e) => e.wildart == wildart).color;
-    gameType = GameType.all.firstWhere((e) => e.wildart == wildart);
-    cause = Cause.all.firstWhere((e) => e.cause == ursache);
-    usage = Usage.all.firstWhere((e) => e.usage == verwendung);
+    try {
+      color = GameType.all.firstWhere((e) => e.wildart == wildart).color;
+      gameType = GameType.all.firstWhere((e) => e.wildart == wildart);
+      cause = Cause.all.firstWhere((e) => e.cause == ursache);
+      icon = cause.icon;
+
+      usage = Usage.all.firstWhere((e) => e.usage == verwendung);
+    } catch (e) {
+      color = Colors.black12;
+      gameType = GameType.all.first;
+      cause = Cause.all.first;
+      icon = cause.icon;
+    }
   }
 
   String get key =>

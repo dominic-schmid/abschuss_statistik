@@ -58,7 +58,7 @@ class DropDownState {
     showModalBottomSheet(
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
       ),
       context: context,
       builder: (context) {
@@ -97,8 +97,8 @@ class _MainBodyState extends State<MainBody> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
-      minChildSize: 0.13,
-      maxChildSize: 0.9,
+      minChildSize: 0.3,
+      maxChildSize: 0.885,
       expand: false,
       builder: (BuildContext context, ScrollController scrollController) {
         return Column(

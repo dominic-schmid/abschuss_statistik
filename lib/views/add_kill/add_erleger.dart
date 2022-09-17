@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/widgets/app_text_field.dart';
 import 'package:jagdstatistik/widgets/custom_drop_down.dart';
 
 class AddErleger extends StatefulWidget {
-  const AddErleger({Key? key}) : super(key: key);
+  final GlobalKey<FormState> formState;
+
+  final TextEditingController erlegerController;
+  final TextEditingController begleiterController;
+
+  final TextEditingController datumController;
+  final TextEditingController zeitController;
+
+  final Function(DateTime) onDateTimeChanged;
+
+  const AddErleger({
+    Key? key,
+    required this.erlegerController,
+    required this.begleiterController,
+    required this.datumController,
+    required this.zeitController,
+    required this.onDateTimeChanged,
+    required this.formState,
+  }) : super(key: key);
 
   @override
   State<AddErleger> createState() => _AddErlegerState();
@@ -13,119 +30,126 @@ class AddErleger extends StatefulWidget {
 
 class _AddErlegerState extends State<AddErleger> {
   // Make these public so stepper can acces selected values later
-  final TextEditingController erlegerController = TextEditingController();
-  final TextEditingController begleiterController = TextEditingController();
-
-  DateTime dateTime = DateTime.now();
 
   List<SelectedListItem>? _personenSelect;
 
-  @override
-  void dispose() {
-    super.dispose();
-    erlegerController.dispose();
-    begleiterController.dispose();
-  }
+  DateTime _dateTime = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     _personenSelect = [SelectedListItem(name: 'Dominic Schmid')];
+    widget.datumController.text = DateFormat.yMd().format(_dateTime);
+    widget.zeitController.text = DateFormat.Hm().format(_dateTime);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Flexible(
-          child: AppTextField(
-            textEditingController: erlegerController,
-            title: 'Erleger',
-            hint: 'Max Mustermann',
-            enableModalBottomSheet: true,
-            disableTyping: false,
-            listItems: _personenSelect,
-            onSelect: (_) {},
-          ),
-        ),
-        Flexible(
-          child: AppTextField(
-            textEditingController: erlegerController,
-            title: 'Begleiter (opt)',
-            hint: 'Frieda Feuerstein',
-            enableModalBottomSheet: true,
-            disableTyping: false,
-            listItems: _personenSelect,
-            onSelect: (_) {},
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              flex: 5,
-              child: AppTextField(
-                textEditingController: TextEditingController(),
-                title: 'Datum',
-                hint: DateFormat.yMd().format(dateTime),
-                disableTyping: true,
-                onTextFieldTap: () async {
-                  DateTime? selectedDate = await showDatePicker(
-                    context: context,
-                    initialDate: dateTime,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime.now(),
-                  );
-
-                  if (selectedDate != null) {
-                    dateTime = DateTime(
-                      selectedDate.year,
-                      selectedDate.month,
-                      selectedDate.day,
-                      dateTime.hour,
-                      dateTime.minute,
-                    );
-                    setState(() {});
-                  }
-                },
-                listItems: _personenSelect,
-                onSelect: (_) {},
-              ),
+    return Form(
+      key: widget.formState,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: AppTextField(
+              textEditingController: widget.erlegerController,
+              title: 'Erleger',
+              hint: 'Max Mustermann',
+              validator: (_) {
+                if (_ == null || _.isEmpty) return "Pflichtfeld!";
+              },
+              enableModalBottomSheet: true,
+              disableTyping: false,
+              listItems: _personenSelect,
+              onSelect: (_) {},
             ),
-            const Spacer(
-              flex: 1,
+          ),
+          Flexible(
+            child: AppTextField(
+              textEditingController: widget.begleiterController,
+              title: 'Begleiter (opt)',
+              hint: 'Frieda Feuerstein',
+              enableModalBottomSheet: true,
+              disableTyping: false,
+              listItems: _personenSelect,
+              onSelect: (_) {},
             ),
-            Flexible(
-              flex: 5,
-              child: AppTextField(
-                textEditingController: TextEditingController(),
-                title: 'Zeit',
-                hint: DateFormat.Hm().format(dateTime),
-                disableTyping: true,
-                onTextFieldTap: () async {
-                  TimeOfDay? selectedTime = await showTimePicker(
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                flex: 5,
+                child: AppTextField(
+                  textEditingController: widget.datumController,
+                  title: 'Datum',
+                  hint: DateFormat.yMd().format(_dateTime),
+                  disableTyping: true,
+                  validator: (_) {
+                    if (_ == null) return "Datum darf nicht leer sein!";
+                  },
+                  onTextFieldTap: () async {
+                    DateTime? selectedDate = await showDatePicker(
                       context: context,
-                      initialTime: TimeOfDay.fromDateTime(DateTime.now()));
-
-                  if (selectedTime != null) {
-                    dateTime = DateTime(
-                      dateTime.year,
-                      dateTime.month,
-                      dateTime.day,
-                      selectedTime.hour,
-                      selectedTime.minute,
+                      initialDate: _dateTime,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime.now(),
                     );
-                    setState(() {});
-                  }
-                },
-                listItems: _personenSelect,
-                onSelect: (_) {},
+
+                    if (selectedDate != null) {
+                      _dateTime = DateTime(
+                        selectedDate.year,
+                        selectedDate.month,
+                        selectedDate.day,
+                        _dateTime.hour,
+                        _dateTime.minute,
+                      );
+                      widget.datumController.text = DateFormat.yMd().format(_dateTime);
+                      widget.onDateTimeChanged(_dateTime);
+                    }
+                  },
+                  listItems: _personenSelect,
+                  onSelect: (_) {},
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
+              const Spacer(
+                flex: 1,
+              ),
+              Flexible(
+                flex: 5,
+                child: AppTextField(
+                  textEditingController: widget.zeitController,
+                  title: 'Zeit',
+                  validator: (_) {
+                    if (_ == null) return "Zeit darf nicht leer sein!";
+                  },
+                  hint: DateFormat.Hm().format(_dateTime),
+                  disableTyping: true,
+                  onTextFieldTap: () async {
+                    TimeOfDay? selectedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(DateTime.now()));
+
+                    if (selectedTime != null) {
+                      _dateTime = DateTime(
+                        _dateTime.year,
+                        _dateTime.month,
+                        _dateTime.day,
+                        selectedTime.hour,
+                        selectedTime.minute,
+                      );
+                      widget.zeitController.text = DateFormat.Hm().format(_dateTime);
+                      widget.onDateTimeChanged(_dateTime);
+                    }
+                  },
+                  listItems: _personenSelect,
+                  onSelect: (_) {},
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

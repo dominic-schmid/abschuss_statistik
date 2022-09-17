@@ -15,6 +15,9 @@ class AppTextField extends StatefulWidget {
   final bool? disableTyping;
   final bool? enableMultiSelection;
   final bool? enabled;
+  final IconData? suffixIcon;
+  final TextInputType? keyboardType;
+  final Function(String?)? validator;
 
   const AppTextField({
     required this.textEditingController,
@@ -27,6 +30,9 @@ class AppTextField extends StatefulWidget {
     this.enableMultiSelection,
     this.listItems,
     this.enabled,
+    this.suffixIcon,
+    this.keyboardType,
+    this.validator,
     Key? key,
   }) : super(key: key);
 
@@ -84,60 +90,68 @@ class _AppTextFieldState extends State<AppTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(widget.title),
-        const SizedBox(height: 5.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: TextFormField(
-                enabled: widget.enabled,
-                readOnly: widget.disableTyping ?? false,
-                controller: widget.textEditingController,
-                onTap:
-                    widget.enableModalBottomSheet == true && widget.disableTyping == true
-                        ? () {
-                            FocusScope.of(context).unfocus();
-                            onTextFieldTap();
-                          }
-                        : widget.onTextFieldTap,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.black12,
-                  contentPadding:
-                      const EdgeInsets.only(left: 8, bottom: 0, top: 0, right: 15),
-                  hintText: widget.hint,
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                      width: 0,
-                      style: BorderStyle.none,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(widget.title),
+          const SizedBox(height: 5.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) =>
+                      widget.validator == null ? null : widget.validator!(value),
+                  keyboardType: widget.keyboardType,
+                  enabled: widget.enabled,
+                  readOnly: widget.disableTyping ?? false,
+                  controller: widget.textEditingController,
+                  onTap: widget.enableModalBottomSheet == true &&
+                          widget.disableTyping == true
+                      ? () {
+                          FocusScope.of(context).unfocus();
+                          onTextFieldTap();
+                        }
+                      : widget.onTextFieldTap,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.black12,
+                    contentPadding:
+                        const EdgeInsets.only(left: 8, bottom: 0, top: 0, right: 15),
+                    hintText: widget.hint,
+                    border: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 0,
+                        style: BorderStyle.none,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
                   ),
                 ),
               ),
-            ),
-            widget.enableModalBottomSheet == true && widget.disableTyping == false
-                ? const SizedBox(width: 12)
-                : Container(),
-            widget.enableModalBottomSheet == true && widget.disableTyping == false
-                ? InkWell(
-                    onTap: onTextFieldTap,
-                    child: Container(
-                      padding: const EdgeInsets.all(9),
-                      decoration: BoxDecoration(
-                          color: Colors.black12, borderRadius: BorderRadius.circular(25)),
-                      child: const Icon(Icons.list_rounded),
-                    ),
-                  )
-                : Container()
-          ],
-        ),
-        const SizedBox(height: 15.0),
-      ],
+              widget.enableModalBottomSheet == true && widget.disableTyping == false
+                  ? const SizedBox(width: 12)
+                  : Container(),
+              widget.enableModalBottomSheet == true && widget.disableTyping == false
+                  ? InkWell(
+                      onTap: onTextFieldTap,
+                      child: Container(
+                        padding: const EdgeInsets.all(9),
+                        decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(25)),
+                        child: Icon(widget.suffixIcon ?? Icons.list_rounded),
+                      ),
+                    )
+                  : Container()
+            ],
+          ),
+          // const SizedBox(height: 15.0),
+        ],
+      ),
     );
   }
 }
