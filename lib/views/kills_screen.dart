@@ -6,6 +6,7 @@ import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:jagdstatistik/views/add_kill_screen.dart';
 import 'package:jagdstatistik/views/all_map_screen.dart';
 import 'package:jagdstatistik/views/credentials_screen.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
@@ -959,7 +960,8 @@ class CustomFab extends StatelessWidget {
           duration: const Duration(milliseconds: 150),
           child: value
               ? FloatingActionButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const AddKillScreen())),
                   backgroundColor: Theme.of(context).textTheme.headline1!.color,
                   foregroundColor: Theme.of(context).scaffoldBackgroundColor,
                   isExtended: true,
