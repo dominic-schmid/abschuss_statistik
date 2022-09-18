@@ -39,6 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "M": MessageLookupByLibrary.simpleMessage("Male"),
         "W": MessageLookupByLibrary.simpleMessage("Female"),
+        "addKill": MessageLookupByLibrary.simpleMessage("Add kill"),
         "age": MessageLookupByLibrary.simpleMessage("Age"),
         "altgeiss": MessageLookupByLibrary.simpleMessage("Old doe"),
         "alttier": MessageLookupByLibrary.simpleMessage("Adult female"),
@@ -61,6 +62,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "close": MessageLookupByLibrary.simpleMessage("Close"),
         "companion": MessageLookupByLibrary.simpleMessage("Companion"),
         "configuration": MessageLookupByLibrary.simpleMessage("Configuration"),
+        "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "confirmAddKillCancel": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to cancel editing the new kill?"),
         "copiedToClipboardSnackbar":
             MessageLookupByLibrary.simpleMessage("Copied to clipboard!"),
         "credentialsScreen":
@@ -84,6 +88,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "credsTooManySigninsSnackbar": MessageLookupByLibrary.simpleMessage(
             "Signed up too often! Wait 1 minute before you can log in again."),
         "dachs": MessageLookupByLibrary.simpleMessage("Badger"),
+        "details": MessageLookupByLibrary.simpleMessage("Details"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Do you really want to log out?\nYour login data and all your settings will be deleted!"),
         "dialogNo": MessageLookupByLibrary.simpleMessage("No"),
@@ -174,6 +179,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "schwarzwild": MessageLookupByLibrary.simpleMessage("Wild boar"),
         "searchXKills": m2,
         "seenByXonYatZ": m3,
+        "selectCoordinates":
+            MessageLookupByLibrary.simpleMessage("Choose coordinates on map"),
         "selectYear": MessageLookupByLibrary.simpleMessage("Select year"),
         "settingsAbout": MessageLookupByLibrary.simpleMessage("About"),
         "settingsAccount": MessageLookupByLibrary.simpleMessage("Account"),

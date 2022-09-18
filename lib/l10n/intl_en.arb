@@ -163,5 +163,10 @@
   "monate": "months",
   "brutzeit": "breeding season",
   "tragzeit": "gestation period",
-  "mitKeimruhe": "with dormancy"
+  "mitKeimruhe": "with dormancy",
+  "details": "Details",
+  "addKill": "Add kill",
+  "confirmAddKillCancel": "Are you sure you want to cancel editing the new kill?",
+  "confirm": "Confirm",
+  "selectCoordinates": "Choose coordinates on map"
 }

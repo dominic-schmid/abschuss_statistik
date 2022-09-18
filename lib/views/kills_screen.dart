@@ -960,8 +960,10 @@ class CustomFab extends StatelessWidget {
           duration: const Duration(milliseconds: 150),
           child: value
               ? FloatingActionButton(
-                  onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const AddKillScreen())),
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const AddKillScreen(),
+                    fullscreenDialog: true,
+                  )),
                   backgroundColor: Theme.of(context).textTheme.headline1!.color,
                   foregroundColor: Theme.of(context).scaffoldBackgroundColor,
                   isExtended: true,

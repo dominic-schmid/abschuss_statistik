@@ -206,14 +206,14 @@ class HuntingTime {
           wildart: "Fuchs",
           geschlecht: "",
           von:
-              _getXDayOfWeekIn(2022, weekday: DateTime.sunday, month: DateTime.september),
+              _getXDayOfWeekIn(year, weekday: DateTime.sunday, month: DateTime.september),
           bis: DateTime(year + 1, 1, 31), // 31st January next year
         ),
         HuntingTime(
           wildart: "Feldhase",
           geschlecht: "",
           von:
-              _getXDayOfWeekIn(2022, weekday: DateTime.sunday, month: DateTime.september),
+              _getXDayOfWeekIn(year, weekday: DateTime.sunday, month: DateTime.september),
           bis: DateTime(year, 12, 15),
         ),
         HuntingTime(

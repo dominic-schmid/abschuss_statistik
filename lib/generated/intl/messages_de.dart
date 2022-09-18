@@ -39,6 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "M": MessageLookupByLibrary.simpleMessage("Männlich"),
         "W": MessageLookupByLibrary.simpleMessage("Weiblich"),
+        "addKill": MessageLookupByLibrary.simpleMessage("Abschuss hinzufügen"),
         "age": MessageLookupByLibrary.simpleMessage("Alter"),
         "altgeiss": MessageLookupByLibrary.simpleMessage("Altgeiß"),
         "alttier": MessageLookupByLibrary.simpleMessage("Alttier"),
@@ -60,6 +61,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "close": MessageLookupByLibrary.simpleMessage("Schließen"),
         "companion": MessageLookupByLibrary.simpleMessage("Begleiter"),
         "configuration": MessageLookupByLibrary.simpleMessage("Konfiguration"),
+        "confirm": MessageLookupByLibrary.simpleMessage("Bestätigen"),
+        "confirmAddKillCancel": MessageLookupByLibrary.simpleMessage(
+            "Willst du die Bearbeitung des neuen Abschusses wirklich abbrechen?"),
         "copiedToClipboardSnackbar":
             MessageLookupByLibrary.simpleMessage("In Zwischenablage kopiert!"),
         "credentialsScreen":
@@ -83,6 +87,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "credsTooManySigninsSnackbar": MessageLookupByLibrary.simpleMessage(
             "Zu oft angemeldet! Warte 1 Minute bevor du dich erneut anmelden kannst."),
         "dachs": MessageLookupByLibrary.simpleMessage("Dachs"),
+        "details": MessageLookupByLibrary.simpleMessage("Details"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Möchtest du dich wirklich abmelden?\nDeine Anmeldedaten und alle deiner Einstellungen werden dabei gelöscht!"),
         "dialogNo": MessageLookupByLibrary.simpleMessage("Nein"),
@@ -174,6 +179,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "schwarzwild": MessageLookupByLibrary.simpleMessage("Schwarzwild"),
         "searchXKills": m2,
         "seenByXonYatZ": m3,
+        "selectCoordinates": MessageLookupByLibrary.simpleMessage(
+            "Koordinaten auf Karte wählen"),
         "selectYear": MessageLookupByLibrary.simpleMessage("Wähle Jahr"),
         "settingsAbout": MessageLookupByLibrary.simpleMessage("Über"),
         "settingsAccount": MessageLookupByLibrary.simpleMessage("Konto"),

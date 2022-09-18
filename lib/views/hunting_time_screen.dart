@@ -29,11 +29,7 @@ class _HuntingTimeScreenState extends State<HuntingTimeScreen> {
   @override
   void initState() {
     super.initState();
-    rebuildHuntingTimes();
-  }
-
-  rebuildHuntingTimes() {
-    huntingTimes = HuntingTime.all(year.year);
+    huntingTimes = HuntingTime.all(DateTime.now().year);
   }
 
   @override
@@ -63,45 +59,45 @@ class _HuntingTimeScreenState extends State<HuntingTimeScreen> {
       appBar: ChartAppBar(
         title: Text(dg.xJagdzeiten(year.year)),
         actions: [
-          IconButton(
-            onPressed: () => showDialog(
-              // Show custom year dialog
-              context: context,
-              builder: (BuildContext context) => AlertDialog(
-                title: Text(
-                  dg.selectYear,
-                  textAlign: TextAlign.center,
-                ),
-                content: SizedBox(
-                  // Need to use container to add size constraint.
-                  width: size.width * 0.75,
-                  height: size.height * 0.425,
-                  child: YearPicker(
-                    initialDate: year,
-                    firstDate: DateTime(2000, 1, 1),
-                    lastDate: DateTime.now().add(const Duration(days: 365 * 20)),
-                    selectedDate: year,
-                    onChanged: (DateTime dateTime) {
-                      // close the dialog when year is selected.
-                      Navigator.pop(context);
-                      if (dateTime.year != year.year) {
-                        setState(() {
-                          year = dateTime;
-                          rebuildHuntingTimes();
-                          try {
-                            _scrollToTop();
-                          } catch (e) {
-                            /* Not the end of the world, controller not attached */
-                          }
-                        });
-                      }
-                    },
-                  ),
-                ),
-              ),
-            ),
-            icon: const Icon(Icons.edit_calendar_rounded),
-          ),
+          // IconButton(
+          //   onPressed: () => showDialog(
+          //     // Show custom year dialog
+          //     context: context,
+          //     builder: (BuildContext context) => AlertDialog(
+          //       title: Text(
+          //         dg.selectYear,
+          //         textAlign: TextAlign.center,
+          //       ),
+          //       content: SizedBox(
+          //         // Need to use container to add size constraint.
+          //         width: size.width * 0.75,
+          //         height: size.height * 0.425,
+          //         child: YearPicker(
+          //           initialDate: year,
+          //           firstDate: DateTime(2000, 1, 1),
+          //           lastDate: DateTime.now().add(const Duration(days: 365 * 20)),
+          //           selectedDate: year,
+          //           onChanged: (DateTime dateTime) {
+          //             // close the dialog when year is selected.
+          //             Navigator.pop(context);
+          //             if (dateTime.year != year.year) {
+          //               setState(() {
+          //                 year = dateTime;
+          //                 rebuildHuntingTimes();
+          //                 try {
+          //                   _scrollToTop();
+          //                 } catch (e) {
+          //                   /* Not the end of the world, controller not attached */
+          //                 }
+          //               });
+          //             }
+          //           },
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          //   icon: const Icon(Icons.edit_calendar_rounded),
+          // ),
           IconButton(
             onPressed: () async {
               await showMaterialModalBottomSheet(

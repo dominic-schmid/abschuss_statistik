@@ -12,6 +12,7 @@ class AddErleger extends StatefulWidget {
   final TextEditingController datumController;
   final TextEditingController zeitController;
 
+  final DateTime initialDateTime;
   final Function(DateTime) onDateTimeChanged;
 
   const AddErleger({
@@ -22,6 +23,7 @@ class AddErleger extends StatefulWidget {
     required this.zeitController,
     required this.onDateTimeChanged,
     required this.formState,
+    required this.initialDateTime,
   }) : super(key: key);
 
   @override
@@ -33,12 +35,13 @@ class _AddErlegerState extends State<AddErleger> {
 
   List<SelectedListItem>? _personenSelect;
 
-  DateTime _dateTime = DateTime.now();
+  late DateTime _dateTime;
 
   @override
   void initState() {
     super.initState();
     _personenSelect = [SelectedListItem(name: 'Dominic Schmid')];
+    _dateTime = widget.initialDateTime;
     widget.datumController.text = DateFormat.yMd().format(_dateTime);
     widget.zeitController.text = DateFormat.Hm().format(_dateTime);
   }

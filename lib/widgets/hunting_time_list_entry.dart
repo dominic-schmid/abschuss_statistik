@@ -28,6 +28,9 @@ class HuntingTimeListEntry extends StatelessWidget {
 
     bool isOpen = DateTime.now().isAfter(time.von) && DateTime.now().isBefore(time.bis);
 
+    double progress = time.von.difference(DateTime.now()).inDays.toDouble() /
+        time.von.difference(time.bis).inDays.toDouble();
+
     return Container(
       key: key,
       margin: EdgeInsets.symmetric(
@@ -37,7 +40,7 @@ class HuntingTimeListEntry extends StatelessWidget {
           side: BorderSide(
             color: Theme.of(context).textTheme.headline1!.color ?? Colors.red,
             style: isOpen ? BorderStyle.solid : BorderStyle.none,
-            width: 4,
+            width: 3.5,
           ),
           borderRadius: const BorderRadius.all(
             Radius.circular(20),
@@ -139,6 +142,16 @@ class HuntingTimeListEntry extends StatelessWidget {
                           ),
                         ),
                       ),
+                isOpen
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: secondaryColor,
+                          color: primaryColor,
+                        ),
+                      )
+                    : Container(),
               ],
             ),
           ),

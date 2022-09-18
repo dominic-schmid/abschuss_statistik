@@ -36,13 +36,6 @@ class _AddWildState extends State<AddWild> {
     _gameTypesSelect = GameType.all.map((e) {
       return SelectedListItem(name: e.wildart);
     }).toList();
-    widget.wildartController.text = _gameTypesSelect!.first.name;
-    widget.geschlechtController.text = GameType.all
-        .map((e) {
-          return e.geschlechter.first;
-        })
-        .toList()
-        .first;
   }
 
   @override

@@ -92,6 +92,8 @@ class GameType {
         return dg.M;
       case 'W':
         return dg.W;
+      case 'nicht bekannt':
+        return dg.nichtBekannt;
       case 'Frischling':
         return dg.frischling;
       case 'Überläuferbache':
@@ -114,6 +116,7 @@ class GameType {
         return dg.kahlwild;
       case 'Weibliche Rehe':
         return dg.weiblicheRehe;
+
       default:
         return forceReturn ? geschlecht : "";
     }

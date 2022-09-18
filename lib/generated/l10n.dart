@@ -1701,6 +1701,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Details`
+  String get details {
+    return Intl.message(
+      'Details',
+      name: 'details',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add kill`
+  String get addKill {
+    return Intl.message(
+      'Add kill',
+      name: 'addKill',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to cancel editing the new kill?`
+  String get confirmAddKillCancel {
+    return Intl.message(
+      'Are you sure you want to cancel editing the new kill?',
+      name: 'confirmAddKillCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm`
+  String get confirm {
+    return Intl.message(
+      'Confirm',
+      name: 'confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose coordinates on map`
+  String get selectCoordinates {
+    return Intl.message(
+      'Choose coordinates on map',
+      name: 'selectCoordinates',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

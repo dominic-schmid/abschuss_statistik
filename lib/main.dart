@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:jagdstatistik/views/add_kill/add_map_coordinates.dart';
 import 'package:jagdstatistik/views/add_kill_screen.dart';
 import 'package:jagdstatistik/views/credentials_screen.dart';
 import 'package:jagdstatistik/views/home_screen.dart';
@@ -233,11 +234,11 @@ class MyApp extends StatelessWidget {
                     //primaryColor: Color.fromRGBO(56, 142, 60, 1),
                   ),
                   themeMode: themeProvider.themeMode,
-                  home: AddKillScreen(),
+                  home: //const AddMapCoordsScreen(),
 
-                  // login.isEmpty || pass.isEmpty
-                  //     ? const CredentialsScreen()
-                  //     : const HomeScreen(),
+                      login.isEmpty || pass.isEmpty
+                          ? const CredentialsScreen()
+                          : const HomeScreen(),
                 );
               });
         });

@@ -163,5 +163,10 @@
   "monate": "mesi",
   "brutzeit": "stagione degli accoppiamenti",
   "tragzeit": "periodo di gestazione",
-  "mitKeimruhe": "con dormienza"
+  "mitKeimruhe": "con dormienza",
+  "details": "Detagli",
+  "addKill": "Aggiungi uccisione",
+  "confirmAddKillCancel": "Sei sicuro di voler annullare l'elaborazione della nuova uccisione?",
+  "confirm": "Confirmare",
+  "selectCoordinates": "Scegli le coordinate sulla mappa"
 }

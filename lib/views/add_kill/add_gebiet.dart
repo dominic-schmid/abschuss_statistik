@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:jagdstatistik/utils/utils.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/views/add_kill/add_map_coordinates.dart';
 import 'package:jagdstatistik/widgets/app_text_field.dart';
 import 'package:jagdstatistik/widgets/custom_drop_down.dart';
 
@@ -9,12 +11,17 @@ class AddGebiet extends StatefulWidget {
   final TextEditingController hegeringController;
   final TextEditingController ursprungszeichenController;
   final TextEditingController oertlichkeitController;
+  final LatLng initialLatLng;
+  final Function(LatLng) onLatLngSelect;
+
   const AddGebiet({
     Key? key,
     required this.hegeringController,
     required this.ursprungszeichenController,
     required this.oertlichkeitController,
     required this.formState,
+    required this.initialLatLng,
+    required this.onLatLngSelect,
   }) : super(key: key);
 
   @override
@@ -26,6 +33,8 @@ class _AddGebietState extends State<AddGebiet> {
   List<SelectedListItem>? _ursprungszeichenTypesSelect = [];
   List<SelectedListItem>? _oertlichkeitTypesSelect = [];
 
+  LatLng? _latLng;
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +45,9 @@ class _AddGebietState extends State<AddGebiet> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    final dg = S.of(context);
+
     return Form(
       key: widget.formState,
       child: Column(
@@ -56,29 +68,48 @@ class _AddGebietState extends State<AddGebiet> {
             ),
           ),
           Flexible(
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 12.5),
-              decoration: BoxDecoration(
-                color: rehwildFarbe,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: InkWell(
-                onTap: () {
-                  showSnackBar('add', context);
-                  // TODO: navigate to google map and place marker, then return LatLng from the route or null
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.map),
-                    const SizedBox(width: 10),
-                    Text('Ort auf Karte wählen'),
-                  ],
-                ),
-              ),
+            // child: Container(
+            //   padding: const EdgeInsets.symmetric(vertical: 12.5),
+            //   decoration: BoxDecoration(
+            //     color: rehwildFarbe,
+            //     borderRadius: BorderRadius.circular(20),
+            //   ),
+            //   child: InkWell(
+            //     onTap: () {
+            //       showSnackBar('add', context);
+            //       // TODO: navigate to google map and place marker, then return LatLng from the route or null
+            //     },
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         Icon(Icons.map),
+            //         const SizedBox(width: 10),
+            //         Text('Ort auf Karte wählen'),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                LatLng? newLatLng = await Navigator.of(context).push(
+                  MaterialPageRoute<LatLng>(
+                    builder: (context) => AddMapCoordsScreen(
+                      initCoords: _latLng ?? widget.initialLatLng,
+                    ),
+                  ), // Bolzano default
+                );
+                if (newLatLng != null) {
+                  setState(() {
+                    _latLng = newLatLng; // don't need this except for icon below
+                  });
+                  widget.onLatLngSelect(newLatLng);
+                }
+              },
+              icon: Icon(_latLng == null ? Icons.map_rounded : Icons.check_rounded),
+              label: Text(dg.selectCoordinates),
             ),
           ),
-          Divider(),
+          Divider(height: size.height * 0.05),
           Flexible(
             child: AppTextField(
               textEditingController: widget.hegeringController,

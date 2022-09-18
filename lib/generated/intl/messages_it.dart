@@ -40,6 +40,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "M": MessageLookupByLibrary.simpleMessage("Maschile"),
         "W": MessageLookupByLibrary.simpleMessage("Femmina"),
+        "addKill": MessageLookupByLibrary.simpleMessage("Aggiungi uccisione"),
         "age": MessageLookupByLibrary.simpleMessage("Età"),
         "altgeiss": MessageLookupByLibrary.simpleMessage("Femmina adulta"),
         "alttier": MessageLookupByLibrary.simpleMessage("Femmina adulta"),
@@ -65,6 +66,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "close": MessageLookupByLibrary.simpleMessage("Chiudere"),
         "companion": MessageLookupByLibrary.simpleMessage("Compagno"),
         "configuration": MessageLookupByLibrary.simpleMessage("Configurazione"),
+        "confirm": MessageLookupByLibrary.simpleMessage("Confirmare"),
+        "confirmAddKillCancel": MessageLookupByLibrary.simpleMessage(
+            "Sei sicuro di voler annullare l\'elaborazione della nuova uccisione?"),
         "copiedToClipboardSnackbar":
             MessageLookupByLibrary.simpleMessage("Copiato negli appunti!"),
         "credentialsScreen":
@@ -88,6 +92,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "credsTooManySigninsSnackbar": MessageLookupByLibrary.simpleMessage(
             "Registrato troppo spesso! Attendi 1 minuto prima di poter accedere nuovamente."),
         "dachs": MessageLookupByLibrary.simpleMessage("Tasso"),
+        "details": MessageLookupByLibrary.simpleMessage("Detagli"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Vuoi davvero fare il log-out?\nI tuoi dati di accesso e tutte le tue impostazioni verranno cancellate!"),
         "dialogNo": MessageLookupByLibrary.simpleMessage("No"),
@@ -184,6 +189,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "schwarzwild": MessageLookupByLibrary.simpleMessage("Cinghiale"),
         "searchXKills": m2,
         "seenByXonYatZ": m3,
+        "selectCoordinates": MessageLookupByLibrary.simpleMessage(
+            "Scegli le coordinate sulla mappa"),
         "selectYear": MessageLookupByLibrary.simpleMessage("Seleziona anno"),
         "settingsAbout": MessageLookupByLibrary.simpleMessage("Informazioni"),
         "settingsAccount": MessageLookupByLibrary.simpleMessage("Account"),

@@ -163,5 +163,10 @@
   "monate": "Monate",
   "brutzeit": "Brutzeit",
   "tragzeit": "Tragzeit",
-  "mitKeimruhe": "mit Keimruhe"
+  "mitKeimruhe": "mit Keimruhe",
+  "details": "Details",
+  "addKill": "Abschuss hinzufügen",
+  "confirmAddKillCancel": "Willst du die Bearbeitung des neuen Abschusses wirklich abbrechen?",
+  "confirm": "Bestätigen",
+  "selectCoordinates": "Koordinaten auf Karte wählen"
 }

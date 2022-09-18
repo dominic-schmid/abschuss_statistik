@@ -1,22 +1,26 @@
 import 'package:enhance_stepper/enhance_stepper.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/kill_entry.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/views/add_kill/add_details.dart';
 import 'package:jagdstatistik/views/add_kill/add_erleger.dart';
 import 'package:jagdstatistik/views/add_kill/add_gebiet.dart';
 import 'package:jagdstatistik/views/add_kill/add_wild.dart';
-import 'package:jagdstatistik/widgets/kill_list_entry.dart';
+import 'package:jagdstatistik/views/add_kill/confirm_add.dart';
+import 'package:jagdstatistik/widgets/chart_app_bar.dart';
 
 class AddKillScreen extends StatefulWidget {
-  const AddKillScreen({Key? key}) : super(key: key);
+  final KillEntry? killEntry;
+  const AddKillScreen({Key? key, this.killEntry}) : super(key: key);
 
   @override
   State<AddKillScreen> createState() => _AddKillScreenState();
 }
 
 class _AddKillScreenState extends State<AddKillScreen> {
-  final List<EnhanceStep> _steps = <EnhanceStep>[];
+  List<EnhanceStep> _steps = <EnhanceStep>[];
   final List<GlobalKey<FormState>> _formKeys = [];
 
   int _currentStep = 0;
@@ -46,29 +50,12 @@ class _AddKillScreenState extends State<AddKillScreen> {
   final TextEditingController _oertlichkeitController = TextEditingController();
 
   DateTime _dateTime = DateTime.now();
+  LatLng? _latLng;
 
-  ValueNotifier<KillEntry> k = ValueNotifier<KillEntry>(KillEntry(
-    nummer: 0,
-    wildart: "",
-    geschlecht: "",
-    datetime: DateTime.now(),
-    ursache: "",
-    verwendung: "",
-    oertlichkeit: "",
-    hegeinGebietRevierteil: "",
-    alter: "",
-    alterw: "",
-    gewicht: 0,
-    erleger: "",
-    begleiter: "",
-    ursprungszeichen: "",
-    //gpsLat = 0,
-    //gpsLon = 0,
-  ));
-
-  void _submit() {
+  void _submit() async {
     // send to server
-    showSnackBar('Data saved!', context);
+    await showSnackBar('Data saved!', context);
+    if (mounted) Navigator.of(context).pop();
   }
 
   @override
@@ -103,9 +90,19 @@ class _AddKillScreenState extends State<AddKillScreen> {
       GlobalKey<FormState>(),
     ]);
 
-    _steps.addAll(<EnhanceStep>[
+    // If an entry was already sent, it should be edited
+    // Pre-set all controller values
+    if (widget.killEntry != null) {}
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dg = S.of(context);
+
+    _steps = <EnhanceStep>[
       EnhanceStep(
-        title: Text('Wild'),
+        title: Text(dg.wild),
+        icon: const Icon(Icons.pets_rounded),
         content: AddWild(
           formState: _formKeys[0],
           alterController: _alterController,
@@ -116,18 +113,21 @@ class _AddKillScreenState extends State<AddKillScreen> {
         ),
       ),
       EnhanceStep(
-        title: Text('Erleger'),
+        title: Text(dg.hunter),
+        icon: const Icon(Icons.person_rounded),
         content: AddErleger(
           formState: _formKeys[1],
           begleiterController: _begleiterController,
           datumController: _datumController,
           erlegerController: _erlegerController,
           zeitController: _zeitController,
+          initialDateTime: widget.killEntry?.datetime ?? _dateTime,
           onDateTimeChanged: (dt) => _dateTime = dt,
         ),
       ),
       EnhanceStep(
-        title: Text('Details'),
+        title: Text(dg.details),
+        icon: const Icon(Icons.edit_rounded),
         content: AddDetails(
           formState: _formKeys[2],
           ursacheController: _ursacheController,
@@ -135,191 +135,118 @@ class _AddKillScreenState extends State<AddKillScreen> {
         ),
       ),
       EnhanceStep(
-        title: Text('Gebiet'),
+        title: Text(dg.area),
+        icon: const Icon(Icons.map_rounded),
         content: AddGebiet(
           formState: _formKeys[3],
           hegeringController: _hegeringController,
           oertlichkeitController: _oertlichkeitController,
-          ursprungszeichenController: _ursacheController,
+          ursprungszeichenController: _ursprungszeichenController,
+          initialLatLng:
+              widget.killEntry?.gpsLat == null || widget.killEntry?.gpsLon == null
+                  ? _latLng ??
+                      const LatLng(
+                        46.500000,
+                        11.350000,
+                      ) // Default bolzano if none selected yet,
+                  : LatLng(widget.killEntry!.gpsLat!, widget.killEntry!.gpsLon!),
+          onLatLngSelect: (pos) {
+            setState(() {
+              _latLng = pos;
+            });
+          },
         ),
       ),
-      // EnhanceStep(
-      //     title: Text('Übersicht'),
-      // content: KillListEntry(
-      //   initiallyExpanded: true,
-      //   kill: KillEntry(
-      //     nummer: 0,
-      //     wildart: _wildartController.text,
-      //     geschlecht: _geschlechtController.text,
-      //     datetime: _dateTime,
-      //     ursache: _ursacheController.text,
-      //     verwendung: _verwendungController.text,
-      //     oertlichkeit: _oertlichkeitController.text,
-      //     hegeinGebietRevierteil: _hegeringController.text,
-      //     alter: _alterController.text,
-      //     alterw: _alterWController.text,
-      //     gewicht: double.tryParse(_gewichtController.text) ?? 0,
-      //     erleger: _erlegerController.text,
-      //     begleiter: _begleiterController.text,
-      //     ursprungszeichen: _ursprungszeichenController.text,
-      //     //gpsLat = 0,
-      //     //gpsLon = 0,
-      //   ),
-      //   showPerson: true,
-      // )
+    ];
 
-// _formKeys.every((element) => element.currentState!.validate())
-//               ? const Card(
-//                   child: NoDataFoundWidget(
-//                     suffix: 'Du musst zuerst alle benötigten Daten eingeben.',
-//                   ),
-//                 )
-
-      // return Center(child: Text("") // k.toString()),
-      //     );
-
-      // return allValid
-      //     ? KillListEntry(
-      //         initiallyExpanded: true,
-      //         kill: KillEntry(
-      //           nummer: 0,
-      //           wildart: _wildartController.text,
-      //           geschlecht: _geschlechtController.text,
-      //           datetime: _dateTime,
-      //           ursache: _ursacheController.text,
-      //           verwendung: _verwendungController.text,
-      //           oertlichkeit: _oertlichkeitController.text,
-      //           hegeinGebietRevierteil: _hegeringController.text,
-      //           alter: _alterController.text,
-      //           alterw: _alterWController.text,
-      //           gewicht: double.tryParse(_gewichtController.text) ?? 0,
-      //           erleger: _erlegerController.text,
-      //           begleiter: _begleiterController.text,
-      //           ursprungszeichen: _ursprungszeichenController.text,
-      //           //gpsLat = 0,
-      //           //gpsLon = 0,
-      //         ),
-      //         showPerson: true,
-      //       )
-      //     :
-      // }),
-      // ),
-    ]);
-    assert(_steps.length == _formKeys.length); // Overview page doesn't count as form
-  }
-
-  @override
-  Widget build(BuildContext context) {
-// Update valuenotifier kill entry
-    // k.value = KillEntry(
-    //   nummer: 0,
-    //   wildart: _wildartController.text,
-    //   geschlecht: _geschlechtController.text,
-    //   datetime: _dateTime,
-    //   ursache: _ursacheController.text,
-    //   verwendung: _verwendungController.text,
-    //   oertlichkeit: _oertlichkeitController.text,
-    //   hegeinGebietRevierteil: _hegeringController.text,
-    //   alter: _alterController.text,
-    //   alterw: _alterWController.text,
-    //   gewicht: double.tryParse(_gewichtController.text) ?? 0,
-    //   erleger: _erlegerController.text,
-    //   begleiter: _begleiterController.text,
-    //   ursprungszeichen: _ursprungszeichenController.text,
-    //   //gpsLat = 0,
-    //   //gpsLon = 0,
-    // );
+    assert(_steps.length == _formKeys.length);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: rehwildFarbe,
-        title: const Text(
-            'Abschuss hinzufügen' //,style: TextStyle(color: ThemeData.estimateBrightnessForColor(color)),
-            ),
+      appBar: ChartAppBar(
+        title: Text(dg.addKill),
         actions: const [],
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: EnhanceStepper(
-              steps: _steps,
-              currentStep: _currentStep,
-              onStepContinue: () async {
-                if (_formKeys[_currentStep].currentState?.validate() ??
-                    false || _currentStep >= _steps.length - 1) {
-                  if (_currentStep >= _steps.length - 1) {
-                    showSnackBar('Clicked next on the last step', context);
-                    await showDialog(
-                        barrierColor: Colors.black,
-                        context: context,
-                        builder: (context) {
-                          return Center(
-                            child: KillListEntry(
-                              initiallyExpanded: true,
-                              kill: KillEntry(
-                                nummer: 0,
-                                wildart: _wildartController.text,
-                                geschlecht: _geschlechtController.text,
-                                datetime: _dateTime,
-                                ursache: _ursacheController.text,
-                                verwendung: _verwendungController.text,
-                                oertlichkeit: _oertlichkeitController.text,
-                                hegeinGebietRevierteil: _hegeringController.text,
-                                alter: _alterController.text,
-                                alterw: _alterWController.text,
-                                gewicht: double.tryParse(_gewichtController.text) ?? 0,
-                                erleger: _erlegerController.text,
-                                begleiter: _begleiterController.text,
-                                ursprungszeichen: _ursprungszeichenController.text,
-                                //gpsLat = 0,
-                                //gpsLon = 0,
-                              ),
-                              showPerson: true,
-                            ),
-                          );
-                        });
-                    // TODO
-                    _submit();
-                  } else {
-                    setState(() => _currentStep += 1);
-                  }
-                }
-              },
-              onStepCancel: () {
-                if (_currentStep < 1) {
-                  showSnackBar('First step. Cannot go back any further', context);
-                } else {
-                  setState(() => _currentStep -= 1);
-                }
-              },
-              onStepTapped: (index) {
-                // TODO
-                setState(() {
-                  _currentStep = index;
-                });
-              },
-              controlsBuilder: (BuildContext context, ControlsDetails details) {
-                final MaterialLocalizations localizations =
-                    MaterialLocalizations.of(context);
-                return Row(
-                  children: [
-                    const SizedBox(height: 30),
-                    ElevatedButton(
-                      onPressed: details.onStepContinue,
-                      child: Text(localizations.continueButtonLabel),
+      body: EnhanceStepper(
+        steps: _steps,
+        currentStep: _currentStep,
+        onStepContinue: () async {
+          // Only continue if the current step is valid
+          if (_formKeys[_currentStep].currentState?.validate() ??
+              false || _currentStep >= _steps.length - 1) {
+            // Catch 'continue' on the last step
+            if (_currentStep >= _steps.length - 1) {
+              bool? kState = await Navigator.of(context).push(
+                MaterialPageRoute<bool>(
+                  builder: (context) => ConfirmAddKill(
+                    kill: KillEntry(
+                      nummer: 0,
+                      wildart: _wildartController.text,
+                      geschlecht: _geschlechtController.text,
+                      datetime: _dateTime,
+                      ursache: _ursacheController.text,
+                      verwendung: _verwendungController.text,
+                      oertlichkeit: _oertlichkeitController.text,
+                      hegeinGebietRevierteil: _hegeringController.text,
+                      alter: _alterController.text,
+                      alterw: _alterWController.text,
+                      gewicht: double.tryParse(_gewichtController.text) ?? 0,
+                      erleger: _erlegerController.text,
+                      begleiter: _begleiterController.text,
+                      ursprungszeichen: _ursprungszeichenController.text,
+                      gpsLat: _latLng?.latitude,
+                      gpsLon: _latLng?.longitude,
                     ),
-                    const SizedBox(width: 8),
-                    TextButton(
-                      onPressed: details.onStepCancel,
-                      child: Text(localizations.cancelButtonLabel),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ],
+                  ),
+                ),
+              );
+
+              if (kState == true) _submit(); // Adds kill to database
+            } else {
+              setState(() => _currentStep += 1);
+            }
+          }
+        },
+        onStepCancel: () async {
+          if (_currentStep < 1) {
+            await showAlertDialog(
+              title: ' ${dg.close}',
+              description: dg.confirmAddKillCancel,
+              yesOption: dg.dialogYes,
+              noOption: dg.dialogNo,
+              onYes: () => Navigator.of(context).pop(),
+              icon: Icons.warning_rounded,
+              context: context,
+            );
+          } else {
+            setState(() => _currentStep -= 1);
+          }
+        },
+        onStepTapped: (index) {
+          // Validate every step up until the one just clicked
+          if (List.generate(index, (i) => i)
+              .every((st) => (_formKeys[st].currentState?.validate() ?? false))) {
+            setState(() {
+              _currentStep = index;
+            });
+          }
+        },
+        controlsBuilder: (BuildContext context, ControlsDetails details) {
+          final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+          return Row(
+            children: [
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: details.onStepContinue,
+                child: Text(localizations.continueButtonLabel),
+              ),
+              const SizedBox(width: 8),
+              TextButton(
+                onPressed: details.onStepCancel,
+                child: Text(localizations.cancelButtonLabel),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

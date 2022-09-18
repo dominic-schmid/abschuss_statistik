@@ -48,8 +48,8 @@ class KillEntry {
     this.begleiter = "",
     this.ursprungszeichen = "",
     this.jagdaufseher,
-    this.gpsLat = 0,
-    this.gpsLon = 0,
+    this.gpsLat,
+    this.gpsLon,
   }) {
     try {
       color = GameType.all.firstWhere((e) => e.wildart == wildart).color;
