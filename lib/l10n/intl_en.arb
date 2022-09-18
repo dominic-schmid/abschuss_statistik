@@ -168,5 +168,13 @@
   "addKill": "Add kill",
   "confirmAddKillCancel": "Are you sure you want to cancel editing the new kill?",
   "confirm": "Confirm",
-  "selectCoordinates": "Choose coordinates on map"
+  "selectCoordinates": "Choose coordinates on map",
+  "editKill": "Edit kill",
+  "pflichtfeld": "Mandatory",
+  "zahlNichtGelesenError": "Number unreadable",
+  "zahlNegativError": "No negative numbers",
+  "weightInKg": "Weight in kg",
+  "dateEmptyError": "Date cannot be empty",
+  "timeEmptyError": "Time cannot be empty",
+  "dateInFutureError": "Time invalid"
 }

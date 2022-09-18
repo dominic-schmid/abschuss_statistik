@@ -15,6 +15,7 @@ import 'package:jagdstatistik/models/kill_page.dart';
 import 'package:jagdstatistik/utils/request_methods.dart';
 import 'package:jagdstatistik/views/settings_screen.dart';
 import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/widgets/chart_app_bar.dart';
 import 'package:jagdstatistik/widgets/chip_selector_modal.dart';
 import 'package:jagdstatistik/models/filter_chip_data.dart';
 import 'package:jagdstatistik/widgets/no_data_found.dart';
@@ -320,11 +321,11 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
     super.build(context);
     if (page == null) {
       return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          foregroundColor: Theme.of(context).textTheme.headline1!.color,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          scrolledUnderElevation: 0,
+        appBar: ChartAppBar(
+          // elevation: 0,
+          // foregroundColor: Theme.of(context).textTheme.headline1!.color,
+          // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          // scrolledUnderElevation: 0,
           title: Text(delegate.ksTerritoryTitle),
           actions: buildActionButtons(),
         ),
@@ -422,11 +423,23 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   List<Widget> buildActionButtons() {
     return <Widget>[
       IconButton(
-          onPressed: () {
-            if (controller.text.isNotEmpty) controller.text = "";
-            setState(() => _showSearch = !_showSearch);
-          },
-          icon: Icon(_showSearch ? Icons.close : Icons.search)),
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => AddKillScreen(
+              killEntry: filteredKills.first,
+            ),
+            fullscreenDialog: true,
+          ),
+        ),
+        icon: Icon(Icons.add),
+      ),
+      IconButton(
+        onPressed: () {
+          if (controller.text.isNotEmpty) controller.text = "";
+          setState(() => _showSearch = !_showSearch);
+        },
+        icon: Icon(_showSearch ? Icons.close : Icons.search),
+      ),
       IconButton(
         onPressed: () => Navigator.of(context)
             .push(CupertinoPageRoute(builder: (context) => const SettingsScreen()))

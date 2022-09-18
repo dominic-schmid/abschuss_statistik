@@ -59,8 +59,8 @@ class KillListEntryState extends State<KillListEntry> {
 
     Size size = MediaQuery.of(context).size;
 
-    String date = DateFormat('dd.MM.yy').format(k.datetime);
-    String time = DateFormat('kk:mm').format(k.datetime);
+    String date = DateFormat.yMd().format(k.datetime);
+    String time = DateFormat.Hm().format(k.datetime);
 
     List<Widget> iconButtons = [
       IconButton(

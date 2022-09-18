@@ -82,7 +82,7 @@
   "hegeabschuss": "Hegeabschuss",
   "strassenunfall": "Straßenunfall",
   "protokollBeschlagnahmt": "Protokoll / beschlagnahmt",
-  "vomZug": "Vom zug überfahren",
+  "vomZug": "Vom Zug überfahren",
   "freizone": "Freizone",
   "eigengebrauch": "Eigengebrauch",
   "eigengebrauchAbgabe": "Eigengebrauch - Abgabe zur Weiterverarbeitung",
@@ -168,5 +168,13 @@
   "addKill": "Abschuss hinzufügen",
   "confirmAddKillCancel": "Willst du die Bearbeitung des neuen Abschusses wirklich abbrechen?",
   "confirm": "Bestätigen",
-  "selectCoordinates": "Koordinaten auf Karte wählen"
+  "selectCoordinates": "Koordinaten auf Karte wählen",
+  "editKill": "Abschuss bearbeiten",
+  "pflichtfeld": "Pflichtfeld",
+  "zahlNichtGelesenError": "Zahl konnte nicht gelesen werden",
+  "zahlNegativError": "Keine negativen Zahlen",
+  "weightInKg": "Gewicht in kg",
+  "dateEmptyError": "Datum darf nicht leer sein",
+  "timeEmptyError": "Zeit darf nicht leer sein",
+  "dateInFutureError": "Zeitpunkt ungültig"
 }

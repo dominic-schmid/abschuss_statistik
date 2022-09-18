@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/widgets/app_text_field.dart';
 import 'package:jagdstatistik/widgets/custom_drop_down.dart';
@@ -8,10 +9,13 @@ class AddWild extends StatefulWidget {
   final TextEditingController wildartController;
   final TextEditingController geschlechtController;
 
+  final List<SelectedListItem>? gameTypesSelect;
+
   final TextEditingController alterController;
   final TextEditingController alterWController;
 
   final TextEditingController gewichtController;
+  final Function(SelectedListItem) onSexSelect;
 
   const AddWild({
     Key? key,
@@ -21,6 +25,8 @@ class AddWild extends StatefulWidget {
     required this.alterController,
     required this.alterWController,
     required this.gewichtController,
+    required this.gameTypesSelect,
+    required this.onSexSelect,
   }) : super(key: key);
 
   @override
@@ -28,18 +34,28 @@ class AddWild extends StatefulWidget {
 }
 
 class _AddWildState extends State<AddWild> {
-  List<SelectedListItem>? _gameTypesSelect = [];
-
   @override
   void initState() {
     super.initState();
-    _gameTypesSelect = GameType.all.map((e) {
-      return SelectedListItem(name: e.wildart);
-    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
+    final dg = S.of(context);
+
+    var geschlechterList = widget.wildartController.text.isEmpty
+        ? <SelectedListItem>[]
+        : GameType.all
+            .firstWhere((g) =>
+                g.wildart ==
+                widget.gameTypesSelect
+                    ?.firstWhere((element) => element.isSelected ?? false)
+                    .value)
+            .geschlechter
+            .map((e) => SelectedListItem(
+                name: GameType.translateGeschlecht(context, e), value: e))
+            .toList();
+
     return Form(
       key: widget.formState,
       child: Column(
@@ -48,14 +64,14 @@ class _AddWildState extends State<AddWild> {
           Flexible(
             child: AppTextField(
                 textEditingController: widget.wildartController,
-                title: 'Wildart',
-                hint: 'Rehwild',
+                title: dg.wild,
+                hint: dg.rehwild,
                 validator: (_) {
-                  if (_ == null || _.isEmpty) return "Pflichtfeld!";
+                  if (_ == null || _.isEmpty) return dg.pflichtfeld;
                 },
                 enableModalBottomSheet: true,
                 disableTyping: true,
-                listItems: _gameTypesSelect,
+                listItems: widget.gameTypesSelect,
                 onSelect: (oldValue) {
                   if (oldValue != widget.wildartController.text) {
                     widget.geschlechtController.clear();
@@ -65,31 +81,39 @@ class _AddWildState extends State<AddWild> {
           ),
           Flexible(
             child: AppTextField(
-              onSelect: (_) {},
+              onSelect: (_) {
+                widget.onSexSelect(geschlechterList
+                    .firstWhere((element) => element.isSelected ?? false));
+              },
               enabled: widget.wildartController.text.isNotEmpty,
               textEditingController: widget.geschlechtController,
-              title: 'Geschlecht',
+              title: dg.sortGender,
               validator: (_) {
-                if (_ == null || _.isEmpty) return "Pflichtfeld!";
+                if (_ == null || _.isEmpty) return dg.pflichtfeld;
               },
               hint: widget.wildartController.text.isEmpty
-                  ? 'Rehbock'
-                  : GameType.all
-                      .firstWhere((g) => g.wildart == widget.wildartController.text)
-                      .geschlechter
-                      .first,
+                  ? dg.tBock
+                  : geschlechterList.first.name,
+
+              // GameType.translateGeschlecht(
+              //     context,
+              //     GameType.all
+              //         .firstWhere((g) =>
+              //             g.wildart ==
+              //             widget.gameTypesSelect!
+              //                 .firstWhere((element) => element.isSelected ?? false)
+              //                 .value)
+              //         .geschlechter
+              //         .first,
+              //   ),
               enableModalBottomSheet: true,
               disableTyping: true,
               listItems: widget.wildartController.text.isEmpty
-                  ? []
-                  : GameType.all
-                      .firstWhere((g) => g.wildart == widget.wildartController.text)
-                      .geschlechter
-                      .map((e) => SelectedListItem(name: e))
-                      .toList(),
+                  ? <SelectedListItem>[]
+                  : geschlechterList,
             ),
           ),
-          Divider(),
+          const Divider(),
           Flexible(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -98,7 +122,7 @@ class _AddWildState extends State<AddWild> {
                   child: AppTextField(
                     onSelect: (_) {},
                     textEditingController: widget.alterController,
-                    title: 'Alter (opt)',
+                    title: dg.age,
                     hint: '4-5',
                     enableModalBottomSheet: false,
                     enableMultiSelection: false,
@@ -109,8 +133,8 @@ class _AddWildState extends State<AddWild> {
                   child: AppTextField(
                     onSelect: (_) {},
                     textEditingController: widget.alterWController,
-                    title: 'Alter W (opt)',
-                    hint: 'alt (6+)',
+                    title: "${dg.age} W",
+                    hint: '6+',
                     enableModalBottomSheet: false,
                     enableMultiSelection: false,
                   ),
@@ -122,7 +146,7 @@ class _AddWildState extends State<AddWild> {
             child: AppTextField(
               onSelect: (_) {},
               textEditingController: widget.gewichtController,
-              title: 'Gewicht in kg (opt)',
+              title: dg.weightInKg,
               hint: '14.8 kg',
               enableModalBottomSheet: false,
               enableMultiSelection: false,
@@ -131,9 +155,9 @@ class _AddWildState extends State<AddWild> {
                 if (content == null || content.isEmpty) {
                   return null;
                 } else if (double.tryParse(content) == null) {
-                  return 'Zahl konnte nicht gelesen werden!';
+                  return dg.zahlNichtGelesenError;
                 } else if (double.parse(content) < 0) {
-                  return 'Negative Zahlen sind nicht erlaubt!';
+                  return dg.zahlNegativError;
                 }
               },
             ),

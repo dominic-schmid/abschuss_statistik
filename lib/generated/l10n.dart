@@ -1751,6 +1751,86 @@ class S {
       args: [],
     );
   }
+
+  /// `Edit kill`
+  String get editKill {
+    return Intl.message(
+      'Edit kill',
+      name: 'editKill',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mandatory`
+  String get pflichtfeld {
+    return Intl.message(
+      'Mandatory',
+      name: 'pflichtfeld',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Number unreadable`
+  String get zahlNichtGelesenError {
+    return Intl.message(
+      'Number unreadable',
+      name: 'zahlNichtGelesenError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No negative numbers`
+  String get zahlNegativError {
+    return Intl.message(
+      'No negative numbers',
+      name: 'zahlNegativError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Weight in kg`
+  String get weightInKg {
+    return Intl.message(
+      'Weight in kg',
+      name: 'weightInKg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date cannot be empty`
+  String get dateEmptyError {
+    return Intl.message(
+      'Date cannot be empty',
+      name: 'dateEmptyError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time cannot be empty`
+  String get timeEmptyError {
+    return Intl.message(
+      'Time cannot be empty',
+      name: 'timeEmptyError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time must not be in the future`
+  String get dateInFutureError {
+    return Intl.message(
+      'Time must not be in the future',
+      name: 'dateInFutureError',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

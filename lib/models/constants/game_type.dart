@@ -82,6 +82,10 @@ class GameType {
         return dg.maennlich;
       case 'Weiblich':
         return dg.weiblich;
+      case 'männlich':
+        return dg.maennlich;
+      case 'weiblich':
+        return dg.weiblich;
       case 'Hirschkalb':
         return dg.hirschkalb;
       case 'Trophäenhirsch':

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/widgets/app_text_field.dart';
 import 'package:jagdstatistik/widgets/custom_drop_down.dart';
 
@@ -48,6 +49,7 @@ class _AddErlegerState extends State<AddErleger> {
 
   @override
   Widget build(BuildContext context) {
+    final dg = S.of(context);
     return Form(
       key: widget.formState,
       child: Column(
@@ -56,10 +58,10 @@ class _AddErlegerState extends State<AddErleger> {
           Flexible(
             child: AppTextField(
               textEditingController: widget.erlegerController,
-              title: 'Erleger',
+              title: dg.hunter,
               hint: 'Max Mustermann',
               validator: (_) {
-                if (_ == null || _.isEmpty) return "Pflichtfeld!";
+                if (_ == null || _.isEmpty) return dg.pflichtfeld;
               },
               enableModalBottomSheet: true,
               disableTyping: false,
@@ -70,8 +72,8 @@ class _AddErlegerState extends State<AddErleger> {
           Flexible(
             child: AppTextField(
               textEditingController: widget.begleiterController,
-              title: 'Begleiter (opt)',
-              hint: 'Frieda Feuerstein',
+              title: dg.companion,
+              hint: 'Josef',
               enableModalBottomSheet: true,
               disableTyping: false,
               listItems: _personenSelect,
@@ -85,11 +87,12 @@ class _AddErlegerState extends State<AddErleger> {
                 flex: 5,
                 child: AppTextField(
                   textEditingController: widget.datumController,
-                  title: 'Datum',
+                  title: dg.sortDate,
                   hint: DateFormat.yMd().format(_dateTime),
                   disableTyping: true,
                   validator: (_) {
-                    if (_ == null) return "Datum darf nicht leer sein!";
+                    if (_ == null) return dg.dateEmptyError;
+                    if (_dateTime.isAfter(DateTime.now())) return dg.dateInFutureError;
                   },
                   onTextFieldTap: () async {
                     DateTime? selectedDate = await showDatePicker(
@@ -122,9 +125,10 @@ class _AddErlegerState extends State<AddErleger> {
                 flex: 5,
                 child: AppTextField(
                   textEditingController: widget.zeitController,
-                  title: 'Zeit',
+                  title: dg.time,
                   validator: (_) {
-                    if (_ == null) return "Zeit darf nicht leer sein!";
+                    if (_ == null) return dg.timeEmptyError;
+                    if (_dateTime.isAfter(DateTime.now())) return dg.dateInFutureError;
                   },
                   hint: DateFormat.Hm().format(_dateTime),
                   disableTyping: true,

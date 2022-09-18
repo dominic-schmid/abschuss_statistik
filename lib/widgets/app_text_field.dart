@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/utils/utils.dart';
-import 'package:jagdstatistik/widgets/app_search_text_field.dart';
 import 'package:jagdstatistik/widgets/custom_drop_down.dart';
 
 /// This is Common App textfiled class.

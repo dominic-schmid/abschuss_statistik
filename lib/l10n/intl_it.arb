@@ -168,5 +168,13 @@
   "addKill": "Aggiungi uccisione",
   "confirmAddKillCancel": "Sei sicuro di voler annullare l'elaborazione della nuova uccisione?",
   "confirm": "Confirmare",
-  "selectCoordinates": "Scegli le coordinate sulla mappa"
+  "selectCoordinates": "Scegli le coordinate sulla mappa",
+  "editKill": "Modifica uccisione",
+  "pflichtfeld": "Obbligatorio",
+  "zahlNichtGelesenError": "Impossibile leggere il numero",
+  "zahlNegativError": "Nessun numero negativo",
+  "weightInKg": "Peso in kg",
+  "dateEmptyError": "La data non può essere vuota",
+  "timeEmptyError": "Il tempo non può essere vuoto",
+  "dateInFutureError": "Tempo invalido"
 }

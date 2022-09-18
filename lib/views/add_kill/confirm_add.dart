@@ -38,6 +38,7 @@ class ConfirmAddKill extends StatelessWidget {
                 icon: const Icon(Icons.check_rounded),
                 label: Text(dg.confirm),
                 style: ButtonStyle(
+                  elevation: MaterialStateProperty.all<double>(7),
                   maximumSize: MaterialStateProperty.all<Size>(
                       Size(size.width * 0.9, size.height * 0.2)),
                   minimumSize: MaterialStateProperty.all<Size>(

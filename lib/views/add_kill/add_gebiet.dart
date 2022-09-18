@@ -13,6 +13,7 @@ class AddGebiet extends StatefulWidget {
   final TextEditingController oertlichkeitController;
   final LatLng initialLatLng;
   final Function(LatLng) onLatLngSelect;
+  final bool isLatLngPreset;
 
   const AddGebiet({
     Key? key,
@@ -22,6 +23,7 @@ class AddGebiet extends StatefulWidget {
     required this.formState,
     required this.initialLatLng,
     required this.onLatLngSelect,
+    this.isLatLngPreset = false,
   }) : super(key: key);
 
   @override
@@ -57,9 +59,9 @@ class _AddGebietState extends State<AddGebiet> {
             child: AppTextField(
               onSelect: (_) {},
               textEditingController: widget.oertlichkeitController,
-              title: 'Örtlichkeit',
+              title: dg.sortPlace,
               validator: (_) {
-                if (_ == null || _.isEmpty) return "Pflichtfeld!";
+                if (_ == null || _.isEmpty) return dg.pflichtfeld;
               },
               hint: 'Musterwald',
               enableModalBottomSheet: true,
@@ -105,7 +107,9 @@ class _AddGebietState extends State<AddGebiet> {
                   widget.onLatLngSelect(newLatLng);
                 }
               },
-              icon: Icon(_latLng == null ? Icons.map_rounded : Icons.check_rounded),
+              icon: Icon(_latLng == null && !widget.isLatLngPreset
+                  ? Icons.map_rounded
+                  : Icons.check_rounded),
               label: Text(dg.selectCoordinates),
             ),
           ),
@@ -113,8 +117,8 @@ class _AddGebietState extends State<AddGebiet> {
           Flexible(
             child: AppTextField(
               textEditingController: widget.hegeringController,
-              title: 'Hegering',
-              hint: '',
+              title: dg.area,
+              hint: dg.area,
               enableModalBottomSheet: true,
               disableTyping: false,
               listItems: _hegeringTypesSelect,
@@ -124,8 +128,8 @@ class _AddGebietState extends State<AddGebiet> {
           Flexible(
             child: AppTextField(
               textEditingController: widget.ursprungszeichenController,
-              title: 'Ursprungszeichen',
-              hint: '',
+              title: dg.signOfOrigin,
+              hint: dg.signOfOrigin,
               enableModalBottomSheet: true,
               disableTyping: false,
               listItems: _ursprungszeichenTypesSelect,

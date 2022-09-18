@@ -88,6 +88,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "credsTooManySigninsSnackbar": MessageLookupByLibrary.simpleMessage(
             "Signed up too often! Wait 1 minute before you can log in again."),
         "dachs": MessageLookupByLibrary.simpleMessage("Badger"),
+        "dateEmptyError":
+            MessageLookupByLibrary.simpleMessage("Date cannot be empty"),
+        "dateInFutureError": MessageLookupByLibrary.simpleMessage(
+            "Time must not be in the future"),
         "details": MessageLookupByLibrary.simpleMessage("Details"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Do you really want to log out?\nYour login data and all your settings will be deleted!"),
@@ -95,6 +99,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dialogYes": MessageLookupByLibrary.simpleMessage("Yes"),
         "display": MessageLookupByLibrary.simpleMessage("Display"),
         "distribution": MessageLookupByLibrary.simpleMessage("Distribution"),
+        "editKill": MessageLookupByLibrary.simpleMessage("Edit kill"),
         "eigengebrauch": MessageLookupByLibrary.simpleMessage("Personal use"),
         "eigengebrauchAbgabe": MessageLookupByLibrary.simpleMessage(
             "Personal use - delivery for further processing"),
@@ -167,6 +172,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "overseer": MessageLookupByLibrary.simpleMessage("Overseer"),
         "paarungszeiten": MessageLookupByLibrary.simpleMessage("Mating times"),
         "perMonth": MessageLookupByLibrary.simpleMessage("per Month"),
+        "pflichtfeld": MessageLookupByLibrary.simpleMessage("Mandatory"),
         "points": MessageLookupByLibrary.simpleMessage("Point"),
         "protokollBeschlagnahmt":
             MessageLookupByLibrary.simpleMessage("Protocol / confiscated"),
@@ -225,6 +231,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "tBock": MessageLookupByLibrary.simpleMessage("Trophy buck"),
         "tage": MessageLookupByLibrary.simpleMessage("days"),
         "time": MessageLookupByLibrary.simpleMessage("Time"),
+        "timeEmptyError":
+            MessageLookupByLibrary.simpleMessage("Time cannot be empty"),
         "tragzeit": MessageLookupByLibrary.simpleMessage("gestation period"),
         "trophaehenHirsch": MessageLookupByLibrary.simpleMessage("Trophy buck"),
         "ueberlaeuferBache":
@@ -238,6 +246,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "weiblich": MessageLookupByLibrary.simpleMessage("Female"),
         "weiblicheRehe": MessageLookupByLibrary.simpleMessage("Female deer"),
         "weight": MessageLookupByLibrary.simpleMessage("Weight"),
+        "weightInKg": MessageLookupByLibrary.simpleMessage("Weight in kg"),
         "wild": MessageLookupByLibrary.simpleMessage("Species"),
         "wildkalb": MessageLookupByLibrary.simpleMessage("Female fawn"),
         "wochen": MessageLookupByLibrary.simpleMessage("weeks"),
@@ -246,6 +255,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "xNewKillsFound": m6,
         "yearly": MessageLookupByLibrary.simpleMessage("Yearly"),
         "yearlyBreakdown":
-            MessageLookupByLibrary.simpleMessage("Yearly breakdown")
+            MessageLookupByLibrary.simpleMessage("Yearly breakdown"),
+        "zahlNegativError":
+            MessageLookupByLibrary.simpleMessage("No negative numbers"),
+        "zahlNichtGelesenError":
+            MessageLookupByLibrary.simpleMessage("Number unreadable")
       };
 }

@@ -25,6 +25,7 @@ class Usage {
       case 'nicht gefunden / Nachsuche erfolglos':
         return dg.nichtGefunden;
       case 'nicht bekannt':
+        return dg.nichtBekannt;
       default:
         return forceReturn ? usage : "";
     }

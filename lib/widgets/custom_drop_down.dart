@@ -161,6 +161,14 @@ class _MainBodyState extends State<MainBody> {
                     onTap: widget.dropDown.enableMultipleSelection
                         ? null
                         : () {
+                            for (int i = 0; i < mainList.length; i++) {
+                              if (i == index) {
+                                mainList[i].isSelected = true;
+                              } else {
+                                mainList[i].isSelected = false;
+                              }
+                            }
+
                             widget.dropDown.selectedItems?.call([mainList[index]]);
                             _onUnFocusKeyboardAndPop();
                           },
@@ -233,7 +241,7 @@ class _MainBodyState extends State<MainBody> {
 class SelectedListItem {
   bool? isSelected;
   String name;
-  String? value;
+  dynamic value;
 
   SelectedListItem({
     required this.name,

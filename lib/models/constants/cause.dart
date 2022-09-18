@@ -26,7 +26,7 @@ class Cause {
         return dg.strassenunfall;
       case 'Protokoll / beschlagnahmt':
         return dg.protokollBeschlagnahmt;
-      case 'vom zug überfahren':
+      case 'vom Zug überfahren':
         return dg.vomZug;
       case 'Freizone':
         return dg.freizone;
