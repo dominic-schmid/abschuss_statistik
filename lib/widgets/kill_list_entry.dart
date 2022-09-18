@@ -6,6 +6,7 @@ import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/constants/cause.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/constants/usage.dart';
+import 'package:jagdstatistik/views/add_kill_screen.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../views/map_screen.dart';
@@ -105,6 +106,22 @@ class KillListEntryState extends State<KillListEntry> {
             Icons.map_rounded,
             color: primaryColor,
           ),
+        ),
+      );
+    }
+
+    if (true /* TODO "IS ADMIN" */) {
+      iconButtons.add(
+        IconButton(
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => AddKillScreen(
+                killEntry: k,
+              ),
+              fullscreenDialog: true,
+            ),
+          ),
+          icon: const Icon(Icons.edit_rounded),
         ),
       );
     }

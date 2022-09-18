@@ -20,10 +20,11 @@ class _ChipSelectorModalState extends State<ChipSelectorModal> {
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.only(
-            top: size.height * 0.01,
-            left: size.width * 0.075,
-            right: size.width * 0.075,
-            bottom: size.height * 0.015),
+          top: size.height * 0.01,
+          left: size.width * 0.075,
+          right: size.width * 0.075,
+          bottom: size.height * 0.015,
+        ),
         child: Column(
           children: [
             _buildHandle(context),

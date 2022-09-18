@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/widgets/custom_drop_down.dart';
 
@@ -40,23 +41,52 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
-  //final TextEditingController _searchTextEditingController = TextEditingController();
+  Widget _buildHandle(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return FractionallySizedBox(
+      widthFactor: 0.25,
+      child: Container(
+        margin: const EdgeInsets.symmetric(
+          vertical: 12.0,
+        ),
+        child: Container(
+          height: 5.0,
+          decoration: BoxDecoration(
+            color: theme.dividerColor,
+            borderRadius: const BorderRadius.all(Radius.circular(2.5)),
+          ),
+        ),
+      ),
+    );
+  }
 
   /// This is on text changed method which will display on city text field on changed.
   void onTextFieldTap() {
+    final dg = S.of(context);
     DropDownState(
       DropDown(
-        bottomSheetTitle: Text(
-          widget.title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20.0,
-          ),
+        bottomSheetTitle: Column(
+          children: [
+            _buildHandle(context),
+            Text(
+              widget.title,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 10),
+          ],
         ),
+        // bottomSheetTitle: Text(
+        //   widget.title,
+        //   style: const TextStyle(
+        //     fontWeight: FontWeight.bold,
+        //     fontSize: 20.0,
+        //   ),
+        // ),
         submitButtonChild: (widget.enableMultiSelection) ?? false
-            ? const Text(
-                'Done',
-                style: TextStyle(
+            ? Text(
+                dg.confirm,
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -73,7 +103,7 @@ class _AppTextFieldState extends State<AppTextField> {
             for (var item in selectedList) {
               if (item is SelectedListItem) {
                 list.add(item.name);
-                placeHolder += "$placeHolder, ${item.name}";
+                placeHolder = "$placeHolder, ${item.name}";
               }
             }
             widget.textEditingController.text =
@@ -101,6 +131,7 @@ class _AppTextFieldState extends State<AppTextField> {
             children: [
               Expanded(
                 child: TextFormField(
+                  scrollPhysics: const BouncingScrollPhysics(),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) =>
                       widget.validator == null ? null : widget.validator!(value),

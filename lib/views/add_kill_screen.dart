@@ -267,7 +267,7 @@ class _AddKillScreenState extends State<AddKillScreen> {
                 MaterialPageRoute<bool>(
                   builder: (context) => ConfirmAddKill(
                     kill: KillEntry(
-                      nummer: 0,
+                      nummer: widget.killEntry?.nummer ?? 0,
                       wildart: _gameTypeSelectList
                           .firstWhere((element) => element.isSelected ?? false)
                           .value,

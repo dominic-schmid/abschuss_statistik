@@ -109,6 +109,18 @@ class _MainBodyState extends State<MainBody> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   /// Bottom sheet title text
+                  /// Column(
+                  // Column(
+                  //   children: [
+                  //     _buildHandle(context),
+                  //     Text(
+                  //       dg.wild,
+                  //       style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                  //     ),
+                  //     const SizedBox(height: 10),
+                  //   ],
+                  // ),
+
                   Expanded(child: widget.dropDown.bottomSheetTitle ?? Container()),
 
                   /// Done button
@@ -159,7 +171,9 @@ class _MainBodyState extends State<MainBody> {
                   bool isSelected = mainList[index].isSelected ?? false;
                   return InkWell(
                     onTap: widget.dropDown.enableMultipleSelection
-                        ? null
+                        ? () => setState(() {
+                              mainList[index].isSelected = !isSelected;
+                            })
                         : () {
                             for (int i = 0; i < mainList.length; i++) {
                               if (i == index) {

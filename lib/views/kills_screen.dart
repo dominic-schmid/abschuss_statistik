@@ -423,17 +423,6 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   List<Widget> buildActionButtons() {
     return <Widget>[
       IconButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AddKillScreen(
-              killEntry: filteredKills.first,
-            ),
-            fullscreenDialog: true,
-          ),
-        ),
-        icon: Icon(Icons.add),
-      ),
-      IconButton(
         onPressed: () {
           if (controller.text.isNotEmpty) controller.text = "";
           setState(() => _showSearch = !_showSearch);
