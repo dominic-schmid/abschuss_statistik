@@ -51,6 +51,9 @@ class _AddKillScreenState extends State<AddKillScreen> {
   // Add Details
   final TextEditingController _ursacheController = TextEditingController();
   final TextEditingController _verwendungController = TextEditingController();
+  final TextEditingController _aufseherController = TextEditingController();
+  final TextEditingController _aufseherDatumController = TextEditingController();
+  final TextEditingController _aufseherZeitController = TextEditingController();
 
   List<SelectedListItem> _ursacheSelectList = [];
   List<SelectedListItem> _verwendungSelectList = [];
@@ -62,6 +65,7 @@ class _AddKillScreenState extends State<AddKillScreen> {
 
   DateTime _dateTime = DateTime.now();
   LatLng? _latLng;
+  bool _saveAufseher = false;
 
   void _submit() async {
     // send to server
@@ -130,6 +134,13 @@ class _AddKillScreenState extends State<AddKillScreen> {
       _hegeringController.text = widget.killEntry!.hegeinGebietRevierteil;
       _ursprungszeichenController.text = widget.killEntry!.ursprungszeichen;
       _oertlichkeitController.text = widget.killEntry!.oertlichkeit;
+      if (widget.killEntry!.jagdaufseher != null) {
+        _aufseherController.text = widget.killEntry!.jagdaufseher!['aufseher'] as String;
+        _aufseherDatumController.text =
+            widget.killEntry!.jagdaufseher!['datum'] as String;
+        _aufseherZeitController.text = widget.killEntry!.jagdaufseher!['zeit'] as String;
+        _saveAufseher = true;
+      }
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -218,6 +229,10 @@ class _AddKillScreenState extends State<AddKillScreen> {
           verwendungController: _verwendungController,
           ursacheTypesSelect: _ursacheSelectList,
           verwendungTypesSelect: _verwendungSelectList,
+          aufseherController: _aufseherController,
+          aufseherDatumController: _aufseherDatumController,
+          aufseherZeitController: _aufseherZeitController,
+          onAufseherSave: () => _saveAufseher = true,
         ),
       ),
       EnhanceStep(
@@ -289,6 +304,16 @@ class _AddKillScreenState extends State<AddKillScreen> {
                       ursprungszeichen: _ursprungszeichenController.text,
                       gpsLat: _latLng?.latitude,
                       gpsLon: _latLng?.longitude,
+                      jagdaufseher: _saveAufseher &&
+                              _aufseherController.text.isNotEmpty &&
+                              _aufseherDatumController.text.isNotEmpty &
+                                  _aufseherZeitController.text.isNotEmpty
+                          ? {
+                              'aufseher': _aufseherController.text,
+                              'datum': _aufseherDatumController.text,
+                              'zeit': _aufseherZeitController.text,
+                            }
+                          : null,
                     ),
                   ),
                 ),

@@ -121,7 +121,10 @@ class KillListEntryState extends State<KillListEntry> {
               fullscreenDialog: true,
             ),
           ),
-          icon: const Icon(Icons.edit_rounded),
+          icon: const Icon(
+            Icons.edit_rounded,
+            color: primaryColor,
+          ),
         ),
       );
     }
