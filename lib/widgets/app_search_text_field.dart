@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/widgets/custom_drop_down.dart';
 
 /// This is search text field class.
@@ -6,9 +7,11 @@ class AppSearchTextField extends StatefulWidget {
   final DropDown dropDown;
   final Function(String) onTextChanged;
 
-  const AppSearchTextField(
-      {required this.dropDown, required this.onTextChanged, Key? key})
-      : super(key: key);
+  const AppSearchTextField({
+    required this.dropDown,
+    required this.onTextChanged,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<AppSearchTextField> createState() => _AppSearchTextFieldState();
@@ -19,6 +22,7 @@ class _AppSearchTextFieldState extends State<AppSearchTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final dg = S.of(context);
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: TextFormField(
@@ -30,7 +34,7 @@ class _AppSearchTextFieldState extends State<AppSearchTextField> {
           filled: true,
           fillColor: Colors.black12,
           contentPadding: const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 15),
-          hintText: 'Search',
+          hintText: dg.search,
           border: const OutlineInputBorder(
             borderSide: BorderSide(
               width: 0,

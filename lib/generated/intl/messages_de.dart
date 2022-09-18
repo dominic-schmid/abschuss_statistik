@@ -89,8 +89,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "dachs": MessageLookupByLibrary.simpleMessage("Dachs"),
         "dateEmptyError":
             MessageLookupByLibrary.simpleMessage("Datum darf nicht leer sein"),
-        "dateInFutureError": MessageLookupByLibrary.simpleMessage(
-            "Zeitpunkt darf nicht in der Zukunft liegen"),
+        "dateInFutureError":
+            MessageLookupByLibrary.simpleMessage("Zeitpunkt ungültig"),
         "details": MessageLookupByLibrary.simpleMessage("Details"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Möchtest du dich wirklich abmelden?\nDeine Anmeldedaten und alle deiner Einstellungen werden dabei gelöscht!"),
@@ -183,6 +183,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "schneehase": MessageLookupByLibrary.simpleMessage("Schneehase"),
         "schneehuhn": MessageLookupByLibrary.simpleMessage("Schneehuhn"),
         "schwarzwild": MessageLookupByLibrary.simpleMessage("Schwarzwild"),
+        "search": MessageLookupByLibrary.simpleMessage("Suchen"),
         "searchXKills": m2,
         "seenByXonYatZ": m3,
         "selectCoordinates": MessageLookupByLibrary.simpleMessage(
@@ -245,7 +246,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "usage": MessageLookupByLibrary.simpleMessage("Verwendung"),
         "usages": MessageLookupByLibrary.simpleMessage("Verwendungen"),
         "verkauf": MessageLookupByLibrary.simpleMessage("Verkauf"),
-        "vomZug": MessageLookupByLibrary.simpleMessage("Vom zug überfahren"),
+        "vomZug": MessageLookupByLibrary.simpleMessage("Vom Zug überfahren"),
         "weiblich": MessageLookupByLibrary.simpleMessage("Weiblich"),
         "weiblicheRehe": MessageLookupByLibrary.simpleMessage("Weibliche Rehe"),
         "weight": MessageLookupByLibrary.simpleMessage("Gewicht"),

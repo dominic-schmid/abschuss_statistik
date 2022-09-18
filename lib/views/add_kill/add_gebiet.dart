@@ -39,13 +39,12 @@ class _AddGebietState extends State<AddGebiet> {
 
   LatLng? _latLng;
 
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
-    // TODO later add these suggestions
-    _hegeringTypesSelect = [];
-    _ursprungszeichenTypesSelect = [];
-    _oertlichkeitTypesSelect = [];
+    _loadSuggestions();
   }
 
   Future<void> _loadSuggestions() async {
@@ -89,6 +88,7 @@ class _AddGebietState extends State<AddGebiet> {
         trim(hegeinGebietRevierteil) as gebiet,
         count(*) as anzahl
         FROM Kill
+        WHERE hegeinGebietRevierteil IS NOT NULL ANd hegeinGebietRevierteil <> ""
         GROUP BY trim(hegeinGebietRevierteil)
        '''),
     );
@@ -112,6 +112,7 @@ class _AddGebietState extends State<AddGebiet> {
         trim(ursprungszeichen) as ursprungszeichen,
         count(*) as anzahl
         FROM Kill
+        WHERE ursprungszeichen IS NOT NULL AND ursprungszeichen <> ""
         GROUP BY trim(ursprungszeichen)
        '''),
     );
@@ -123,6 +124,10 @@ class _AddGebietState extends State<AddGebiet> {
         )
         .map((e) => SelectedListItem(name: e.name, value: e.value))
         .toList();
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -130,14 +135,9 @@ class _AddGebietState extends State<AddGebiet> {
     Size size = MediaQuery.of(context).size;
     final dg = S.of(context);
 
-    return FutureBuilder<void>(
-        future: _loadSuggestions(),
-        builder: (context, snap) {
-          if (snap.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator(color: rehwildFarbe));
-          }
-
-          return Form(
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator(color: rehwildFarbe))
+        : Form(
             key: widget.formState,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -212,7 +212,6 @@ class _AddGebietState extends State<AddGebiet> {
               ],
             ),
           );
-        });
   }
 }
 

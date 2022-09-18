@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/utils/database_methods.dart';
+import 'package:jagdstatistik/utils/providers.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Map<String, dynamic> getDefaultPrefs() => {
@@ -168,11 +170,11 @@ const ShapeBorder modalShape = RoundedRectangleBorder(
   ),
 );
 
-Future<void> showLanguagePicker(BuildContext context) async {
+Future<Locale?> showLanguagePicker(BuildContext context) async {
   final dg = S.of(context);
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  return await showDialog(
+  return await showDialog<Locale?>(
       context: context,
       builder: (context) {
         return SimpleDialog(
@@ -183,9 +185,10 @@ Future<void> showLanguagePicker(BuildContext context) async {
               child: const Text('English', textAlign: TextAlign.center),
               onPressed: () async {
                 await S.load(const Locale('en'));
+
                 await prefs.setString('language', 'en');
                 // ignore: use_build_context_synchronously
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(const Locale('en'));
               },
             ),
             SimpleDialogOption(
@@ -196,7 +199,7 @@ Future<void> showLanguagePicker(BuildContext context) async {
                 await prefs.setString('language', 'de');
                 print('wrote de to prefs');
                 // ignore: use_build_context_synchronously
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(const Locale('de'));
               },
             ),
             SimpleDialogOption(
@@ -206,7 +209,7 @@ Future<void> showLanguagePicker(BuildContext context) async {
                 await S.load(const Locale('it'));
                 await prefs.setString('language', 'it');
                 // ignore: use_build_context_synchronously
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(const Locale('it'));
               },
             ),
           ],

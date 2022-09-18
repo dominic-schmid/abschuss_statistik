@@ -151,14 +151,15 @@ void main() async {
     );
   }
 
-  runApp(MyApp(config: config));
+  runApp(MyApp(config: config, prefs: prefs));
 }
 
 class MyApp extends StatelessWidget {
   // Default config
   final Map<String, dynamic> config;
+  final SharedPreferences prefs;
 
-  const MyApp({Key? key, required this.config}) : super(key: key);
+  const MyApp({Key? key, required this.config, required this.prefs}) : super(key: key);
 
   Future<void> tryLoadLocale(Locale locale) async {
     Locale toLoad = locale;
@@ -190,10 +191,24 @@ class MyApp extends StatelessWidget {
               child: CircularProgressIndicator(color: Colors.green),
             );
           }
-          return ChangeNotifierProvider(
-              create: (BuildContext context) => ThemeProvider(
+          return MultiProvider(
+              providers: [
+                ChangeNotifierProvider(
+                  create: (BuildContext context) => ThemeProvider(
                     themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
                   ),
+                ),
+                ChangeNotifierProvider(
+                  create: (BuildContext context) => LocaleProvider(
+                    locale: locale,
+                  ),
+                ),
+                ChangeNotifierProvider(
+                  create: (BuildContext context) => PrefProvider(
+                    prefInstance: prefs,
+                  ),
+                ),
+              ],
               builder: (context, _) {
                 final themeProvider = Provider.of<ThemeProvider>(context);
 
@@ -234,11 +249,9 @@ class MyApp extends StatelessWidget {
                     //primaryColor: Color.fromRGBO(56, 142, 60, 1),
                   ),
                   themeMode: themeProvider.themeMode,
-                  home: //const AddMapCoordsScreen(),
-
-                      login.isEmpty || pass.isEmpty
-                          ? const CredentialsScreen()
-                          : const HomeScreen(),
+                  home: login.isEmpty || pass.isEmpty
+                      ? const CredentialsScreen()
+                      : const HomeScreen(),
                 );
               });
         });

@@ -177,6 +177,7 @@ class _AddKillScreenState extends State<AddKillScreen> {
   @override
   Widget build(BuildContext context) {
     final dg = S.of(context);
+    Size size = MediaQuery.of(context).size;
 
     // Translate names in case of context change
     _gameTypeSelectList.forEach((element) {
@@ -355,6 +356,9 @@ class _AddKillScreenState extends State<AddKillScreen> {
             children: [
               const SizedBox(height: 30),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(size.height * 0.2, 36),
+                ),
                 onPressed: details.onStepContinue,
                 child: Text(localizations.continueButtonLabel),
               ),

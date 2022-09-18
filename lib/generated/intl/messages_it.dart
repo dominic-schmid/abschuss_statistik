@@ -94,8 +94,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "dachs": MessageLookupByLibrary.simpleMessage("Tasso"),
         "dateEmptyError": MessageLookupByLibrary.simpleMessage(
             "La data non può essere vuota"),
-        "dateInFutureError": MessageLookupByLibrary.simpleMessage(
-            "Il tempo non deve essere nel futuro"),
+        "dateInFutureError":
+            MessageLookupByLibrary.simpleMessage("Tempo invalido"),
         "details": MessageLookupByLibrary.simpleMessage("Detagli"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Vuoi davvero fare il log-out?\nI tuoi dati di accesso e tutte le tue impostazioni verranno cancellate!"),
@@ -193,6 +193,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("coniglietto di neve"),
         "schneehuhn": MessageLookupByLibrary.simpleMessage("Gallo cedrone"),
         "schwarzwild": MessageLookupByLibrary.simpleMessage("Cinghiale"),
+        "search": MessageLookupByLibrary.simpleMessage("Cercare"),
         "searchXKills": m2,
         "seenByXonYatZ": m3,
         "selectCoordinates": MessageLookupByLibrary.simpleMessage(

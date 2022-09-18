@@ -6,6 +6,7 @@ import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:jagdstatistik/utils/providers.dart';
 import 'package:jagdstatistik/views/add_kill_screen.dart';
 import 'package:jagdstatistik/views/all_map_screen.dart';
 import 'package:jagdstatistik/views/credentials_screen.dart';
@@ -23,8 +24,8 @@ import 'package:jagdstatistik/widgets/value_selector_modal.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/kill_entry.dart';
 
@@ -43,7 +44,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   final ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
 
   bool _isLoading = true;
-  final ValueNotifier<bool> _isFabVisible = ValueNotifier(true);
+  ValueNotifier<bool>? _isFabVisible;
 
   late int _currentYear;
   List<int> _yearList = [];
@@ -316,16 +317,18 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
 
   @override
   Widget build(BuildContext context) {
+    // listen for locale changes
+    final localeProvider = Provider.of<LocaleProvider>(context);
+    final prefs = Provider.of<PrefProvider>(context);
+    _isFabVisible = prefs.betaMode ? ValueNotifier(true) : null;
+
     final delegate = S.of(context);
 
-    super.build(context);
+    super.build(context); // explicit
+
     if (page == null) {
       return Scaffold(
         appBar: ChartAppBar(
-          // elevation: 0,
-          // foregroundColor: Theme.of(context).textTheme.headline1!.color,
-          // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          // scrolledUnderElevation: 0,
           title: Text(delegate.ksTerritoryTitle),
           actions: buildActionButtons(),
         ),
@@ -414,7 +417,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
           ),
         ),
       ),
-      floatingActionButton: CustomFab(isVisible: _isFabVisible),
+      floatingActionButton: CustomFab(isVisible: _isFabVisible ?? ValueNotifier(false)),
     );
   }
 
@@ -430,9 +433,9 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
         icon: Icon(_showSearch ? Icons.close : Icons.search),
       ),
       IconButton(
-        onPressed: () => Navigator.of(context)
-            .push(CupertinoPageRoute(builder: (context) => const SettingsScreen()))
-            .then((_) => super.setState(() {})),
+        onPressed: () => Navigator.of(context).push(
+          CupertinoPageRoute(builder: (context) => const SettingsScreen()),
+        ),
         icon: const Icon(Icons.settings),
       ),
     ];
@@ -889,60 +892,53 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
   }
 
   Widget buildKillEntries(List<KillEntry> kills) {
-    return FutureBuilder<SharedPreferences>(
-      future: SharedPreferences.getInstance(),
-      builder: ((context, snapshot) {
-        if (snapshot.hasData) {
-          SharedPreferences prefs = snapshot.data!;
-          bool showPerson = prefs.getBool('showPerson') ?? false;
-          return RefreshIndicator(
-            color: Theme.of(context).colorScheme.primary,
-            child: NotificationListener<UserScrollNotification>(
-              onNotification: (notification) {
-                if (notification.direction == ScrollDirection.reverse &&
-                    _isFabVisible.value) {
-                  _isFabVisible.value = false;
-                } else if (notification.direction == ScrollDirection.forward &&
-                    !_isFabVisible.value) {
-                  _isFabVisible.value = true;
-                }
-                return true;
-              },
-              child: Scrollbar(
-                controller: _scrollController,
-                interactive: true,
-                child: ListView.builder(
-                  controller: _scrollController,
-                  cacheExtent: 1250, // pixels both directions
-                  itemCount: kills.length + 1,
-                  itemBuilder: ((context, index) {
-                    if (index == 0) return buildProgressBar(kills);
+    final prefs = Provider.of<PrefProvider>(context);
+    return RefreshIndicator(
+      color: Theme.of(context).colorScheme.primary,
+      child: NotificationListener<UserScrollNotification>(
+        onNotification: (notification) {
+          if (_isFabVisible != null) {
+            if (notification.direction == ScrollDirection.reverse &&
+                _isFabVisible!.value) {
+              _isFabVisible!.value = false;
+            } else if (notification.direction == ScrollDirection.forward &&
+                !_isFabVisible!.value) {
+              _isFabVisible!.value = true;
+            }
+          }
+          return true;
+        },
+        child: Scrollbar(
+          controller: _scrollController,
+          interactive: true,
+          child: ListView.builder(
+            controller: _scrollController,
+            cacheExtent: 1250, // pixels both directions
+            itemCount: kills.length + 1,
+            itemBuilder: ((context, index) {
+              if (index == 0) return buildProgressBar(kills);
 
-                    KillEntry k = kills.elementAt(index - 1);
-                    return KillListEntry(
-                      key: Key(k.key),
-                      kill: k,
-                      initiallyExpanded: newKills.isEmpty ? false : newKills.contains(k),
-                      showPerson: showPerson,
-                      revier: page!.revierName,
-                    );
-                  }),
-                ),
-              ),
-            ),
-            onRefresh: () async {
-              print(
-                  'Time since last refresh: ${DateTime.now().difference(_lastRefresh).inSeconds}');
-              if (DateTime.now().difference(_lastRefresh).inSeconds < 60) {
-                return;
-              }
-              await refresh(_currentYear);
-            },
-          );
+              KillEntry k = kills.elementAt(index - 1);
+              return KillListEntry(
+                key: Key(k.key),
+                kill: k,
+                initiallyExpanded: newKills.isEmpty ? false : newKills.contains(k),
+                showPerson: prefs.showPerson,
+                showEdit: prefs.betaMode,
+                revier: page!.revierName,
+              );
+            }),
+          ),
+        ),
+      ),
+      onRefresh: () async {
+        print(
+            'Time since last refresh: ${DateTime.now().difference(_lastRefresh).inSeconds}');
+        if (DateTime.now().difference(_lastRefresh).inSeconds < 60) {
+          return;
         }
-
-        return const Center(child: CircularProgressIndicator(color: rehwildFarbe));
-      }),
+        await refresh(_currentYear);
+      },
     );
   }
 

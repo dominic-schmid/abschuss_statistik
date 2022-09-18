@@ -1822,11 +1822,21 @@ class S {
     );
   }
 
-  /// `Time must not be in the future`
+  /// `Time invalid`
   String get dateInFutureError {
     return Intl.message(
-      'Time must not be in the future',
+      'Time invalid',
       name: 'dateInFutureError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search`
+  String get search {
+    return Intl.message(
+      'Search',
+      name: 'search',
       desc: '',
       args: [],
     );

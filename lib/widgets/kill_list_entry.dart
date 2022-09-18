@@ -17,6 +17,7 @@ import 'expanded_child_kill_entry.dart';
 class KillListEntry extends StatefulWidget {
   final KillEntry kill;
   final bool showPerson;
+  final bool showEdit;
   final String revier;
   final bool initiallyExpanded;
 
@@ -24,6 +25,7 @@ class KillListEntry extends StatefulWidget {
     Key? key,
     required this.kill,
     required this.showPerson,
+    this.showEdit = false,
     this.revier = "",
     this.initiallyExpanded = false,
   }) : super(key: key);
@@ -110,7 +112,7 @@ class KillListEntryState extends State<KillListEntry> {
       );
     }
 
-    if (true /* TODO "IS ADMIN" */) {
+    if (widget.showEdit) {
       iconButtons.add(
         IconButton(
           onPressed: () => Navigator.of(context).push(

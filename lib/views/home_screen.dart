@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/providers.dart';
 import 'package:jagdstatistik/views/kills_screen.dart';
 import 'package:jagdstatistik/views/stats_screen.dart';
 import 'package:jagdstatistik/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -28,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<LocaleProvider>(context).locale; // listen for locale changes
     final dg = S.of(context);
     return Scaffold(
       bottomNavigationBar: ValueListenableBuilder(

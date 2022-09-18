@@ -91,7 +91,7 @@ class _AddJagdaufseherScreenState extends State<AddJagdaufseherScreen> {
                             hint: DateFormat.yMd().format(_dateTime ?? DateTime.now()),
                             disableTyping: true,
                             validator: (_) {
-                              if (_ == null) return dg.timeEmptyError;
+                              if (_ == null || _.isEmpty) return dg.timeEmptyError;
                               if (_dateTime != null &&
                                   _dateTime!.isAfter(DateTime.now())) {
                                 return dg.dateInFutureError;
@@ -131,7 +131,7 @@ class _AddJagdaufseherScreenState extends State<AddJagdaufseherScreen> {
                             textEditingController: widget.zeitController,
                             title: dg.time,
                             validator: (_) {
-                              if (_ == null) return dg.timeEmptyError;
+                              if (_ == null || _.isEmpty) return dg.timeEmptyError;
                               if (_dateTime != null &&
                                   _dateTime!.isAfter(DateTime.now())) {
                                 return dg.dateInFutureError;
@@ -180,10 +180,10 @@ class _AddJagdaufseherScreenState extends State<AddJagdaufseherScreen> {
                   label: Text(dg.confirm),
                   style: ButtonStyle(
                     elevation: MaterialStateProperty.all<double>(7),
-                    maximumSize: MaterialStateProperty.all<Size>(
-                        Size(size.width * 0.9, size.height * 0.2)),
-                    minimumSize: MaterialStateProperty.all<Size>(
-                        Size(size.width * 0.7, size.height * 0.1)),
+                    maximumSize:
+                        MaterialStateProperty.all<Size>(Size(size.width * 0.9, 100)),
+                    minimumSize:
+                        MaterialStateProperty.all<Size>(Size(size.width * 0.7, 72)),
                   ),
                 ),
               ],

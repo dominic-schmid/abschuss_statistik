@@ -176,5 +176,6 @@
   "weightInKg": "Gewicht in kg",
   "dateEmptyError": "Datum darf nicht leer sein",
   "timeEmptyError": "Zeit darf nicht leer sein",
-  "dateInFutureError": "Zeitpunkt ungültig"
+  "dateInFutureError": "Zeitpunkt ungültig",
+  "search": "Suchen"
 }

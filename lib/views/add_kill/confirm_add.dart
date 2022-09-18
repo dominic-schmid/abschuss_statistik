@@ -28,6 +28,7 @@ class ConfirmAddKill extends StatelessWidget {
                   initiallyExpanded: true,
                   kill: kill,
                   showPerson: true,
+                  showEdit: false,
                 ),
                 ElevatedButton.icon(
                   onPressed: () => Navigator.of(context).pop(true),

@@ -176,5 +176,6 @@
   "weightInKg": "Weight in kg",
   "dateEmptyError": "Date cannot be empty",
   "timeEmptyError": "Time cannot be empty",
-  "dateInFutureError": "Time invalid"
+  "dateInFutureError": "Time invalid",
+  "search": "Search"
 }
