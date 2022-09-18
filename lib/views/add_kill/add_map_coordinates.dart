@@ -13,7 +13,9 @@ import 'package:jagdstatistik/utils/utils.dart';
 
 class AddMapCoordsScreen extends StatefulWidget {
   final LatLng initCoords;
-  const AddMapCoordsScreen({Key? key, required this.initCoords}) : super(key: key);
+  final double zoom;
+  const AddMapCoordsScreen({Key? key, required this.initCoords, this.zoom = 10})
+      : super(key: key);
 
   @override
   State<AddMapCoordsScreen> createState() => _AddMapCoordsScreenState();
@@ -22,9 +24,8 @@ class AddMapCoordsScreen extends StatefulWidget {
 class _AddMapCoordsScreenState extends State<AddMapCoordsScreen> {
   final Completer<GoogleMapController> _controller = Completer();
 
-  static const double cameraZoom = 10;
-  static const double cameraTilt = 0;
-  static const double cameraBearing = 0;
+  final double cameraTilt = 0;
+  final double cameraBearing = 0;
 
   late CameraPosition _cameraPosition;
   late ValueNotifier<LatLng> _camPos;
@@ -41,7 +42,7 @@ class _AddMapCoordsScreenState extends State<AddMapCoordsScreen> {
       target: _camPos.value,
       bearing: cameraBearing,
       tilt: cameraTilt,
-      zoom: cameraZoom,
+      zoom: widget.zoom,
     );
   }
 
