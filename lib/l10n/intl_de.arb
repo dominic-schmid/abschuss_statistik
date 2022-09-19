@@ -177,5 +177,9 @@
   "dateEmptyError": "Datum darf nicht leer sein",
   "timeEmptyError": "Zeit darf nicht leer sein",
   "dateInFutureError": "Zeitpunkt ungültig",
-  "search": "Suchen"
+  "search": "Suchen",
+  "schusszeiten": "Schusszeiten",
+  "jetztFestlegen": "Jetzt festlegen",
+  "ortFestlegen": "Du musst zuerst einen Ort für die Sonnenzeiten festlegen.",
+  "timeInLocal": "Die Uhrzeiten basieren auf UTC und werden in das Format des Geräts umgewandelt."
 }

@@ -1841,6 +1841,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Shooting times`
+  String get schusszeiten {
+    return Intl.message(
+      'Shooting times',
+      name: 'schusszeiten',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set now`
+  String get jetztFestlegen {
+    return Intl.message(
+      'Set now',
+      name: 'jetztFestlegen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You must first set a location for the solar times.`
+  String get ortFestlegen {
+    return Intl.message(
+      'You must first set a location for the solar times.',
+      name: 'ortFestlegen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The times are based on UTC and are converted to the format of the device.`
+  String get timeInLocal {
+    return Intl.message(
+      'The times are based on UTC and are converted to the format of the device.',
+      name: 'timeInLocal',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

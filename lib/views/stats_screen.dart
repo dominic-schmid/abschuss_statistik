@@ -1,10 +1,14 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/utils/providers.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/views/hunting_time_screen.dart';
 import 'package:jagdstatistik/views/mating_time_screen.dart';
+import 'package:jagdstatistik/views/shooting_times_screen.dart';
 import 'package:jagdstatistik/widgets/chart_app_bar.dart';
 import 'package:jagdstatistik/charts/yearly_pie_chart_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../charts/historic_bar_chart_screen.dart';
 import '../charts/historic_line_chart_screen.dart';
@@ -24,6 +28,8 @@ class _StatsScreenState extends State<StatsScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final dg = S.of(context);
+    final prefProvider = Provider.of<PrefProvider>(context);
+
     return Scaffold(
       appBar: ChartAppBar(title: Text(dg.statistics), actions: [
         IconButton(
@@ -184,6 +190,25 @@ class _StatsScreenState extends State<StatsScreen> {
                       ),
                     ),
                   ),
+                  prefProvider.betaMode
+                      ? ChartGridItem(
+                          title: dg.schusszeiten,
+                          assetImage: 'assets/sunrise.png',
+                          backgroundColor: hegeabschussFarbe.withAlpha(166),
+                          onTap: () async {
+                            if (await Connectivity()
+                                    .checkConnectivity()
+                                    .timeout(const Duration(seconds: 15)) ==
+                                ConnectivityResult.none) {
+                              showSnackBar(dg.noInternetError, context);
+                              return;
+                            }
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const ShootingTimesScreen(),
+                            ));
+                          },
+                        )
+                      : Container(),
                 ],
               ),
             ),

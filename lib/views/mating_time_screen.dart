@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/constants/hunting_time.dart';
@@ -21,28 +18,18 @@ class MatingTimeScreen extends StatefulWidget {
 }
 
 class _MatingTimeScreenState extends State<MatingTimeScreen> {
-  final ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
-  DateTime year = DateTime.now();
-
   List<HuntingTime> huntingTimes = [];
   List<FilterChipData> _filters = [];
 
-  Map<String, Color> _colors = {};
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void rebuildHuntingTimes(BuildContext ctx) {
-    huntingTimes = HuntingTime.matingTimes(year.year, ctx);
-  }
+  final Map<String, Color> _colors = {};
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    rebuildHuntingTimes(context);
+    // Size size = MediaQuery.of(context).size;
     final dg = S.of(context);
+    _colors.clear();
+
+    huntingTimes = HuntingTime.matingTimes(DateTime.now().year, context);
 
     // Init first start
     if (_filters.isEmpty) {
@@ -61,52 +48,14 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
 
     return Scaffold(
       appBar: ChartAppBar(
-        title: GestureDetector(
-            onTap: () => print(_colors),
-            child: Text("${dg.paarungszeiten} ${year.year}")),
+        title: Text(dg.paarungszeiten),
         actions: [
-          IconButton(
-            onPressed: () => showDialog(
-              // Show custom year dialog
-              context: context,
-              builder: (BuildContext context) => AlertDialog(
-                title: Text(
-                  dg.selectYear,
-                  textAlign: TextAlign.center,
-                ),
-                content: SizedBox(
-                  // Need to use container to add size constraint.
-                  width: size.width * 0.75,
-                  height: size.height * 0.425,
-                  child: YearPicker(
-                    initialDate: year,
-                    firstDate: DateTime(2000, 1, 1),
-                    lastDate: DateTime.now().add(const Duration(days: 365 * 20)),
-                    selectedDate: year,
-                    onChanged: (DateTime dateTime) {
-                      // close the dialog when year is selected.
-                      Navigator.pop(context);
-                      if (dateTime.year != year.year) {
-                        setState(() {
-                          year = dateTime;
-                          rebuildHuntingTimes(context);
-                          try {
-                            _scrollToTop();
-                          } catch (e) {
-                            /* Not the end of the world, controller not attached */
-                          }
-                        });
-                      }
-                    },
-                  ),
-                ),
-              ),
-            ),
-            icon: const Icon(Icons.edit_calendar_rounded),
-          ),
           IconButton(
             onPressed: () async {
               await showMaterialModalBottomSheet(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                ),
                 context: context,
                 builder: (context) =>
                     ChipSelectorModal(title: dg.filter, chips: _filters),
@@ -126,20 +75,7 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
           ? const Center(child: NoDataFoundWidget())
           : ListView.builder(
               shrinkWrap: true,
-              controller: _scrollController,
               itemBuilder: ((context, index) {
-                // if (index == 0) {
-                //   return Padding(
-                //     padding: EdgeInsets.symmetric(
-                //         horizontal: size.width * 0.05, vertical: size.height * 0.01),
-                //     child: Center(
-                //         child: Text(
-                //       "${year.year}",
-                //       style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                //     )),
-                //   );
-                // }
-
                 var t = filteredList.elementAt(index);
                 Color c = Colors.red;
 
@@ -160,17 +96,12 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
                 return HuntingTimeListEntry(
                   key: Key('${t.wildart}-${t.geschlecht}-${t.von.year}'),
                   time: t,
-                  year: year.year,
+                  year: DateTime.now().year,
                   color: c,
                 );
               }),
               itemCount: filteredList.length,
             ),
     );
-  }
-
-  void _scrollToTop() {
-    _scrollController.animateTo(0,
-        duration: const Duration(milliseconds: 1500), curve: Curves.decelerate);
   }
 }

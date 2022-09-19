@@ -186,7 +186,8 @@ class _AddGebietState extends State<AddGebiet> {
                     label: Text(dg.selectCoordinates),
                   ),
                 ),
-                Divider(height: size.height * 0.05),
+                //Divider(height: size.height * 0.05),
+                const Divider(),
                 Flexible(
                   child: AppTextField(
                     textEditingController: widget.hegeringController,
@@ -209,6 +210,7 @@ class _AddGebietState extends State<AddGebiet> {
                     onSelect: (_) {},
                   ),
                 ),
+                const Divider(),
               ],
             ),
           );

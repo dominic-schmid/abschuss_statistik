@@ -20,5 +20,11 @@
 			"final dg = S.of(context);"
 		],
 		"description": "Localization delegate from context"
+	},
+	"size": {
+		"body": [
+			"Size size = MediaQuery.of(context).size;"
+		],
+		"description": "Query for screen size"
 	}
 }

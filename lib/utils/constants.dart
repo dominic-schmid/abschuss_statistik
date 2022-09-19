@@ -1,3 +1,5 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 /// This class contains constants that do not change to be used when loading data
 /// e.g.  "Rehwild": ["Jährlingsbock", "Trophäenbock", ...]
 class Constants {
@@ -11,4 +13,6 @@ class Constants {
     'vom Zug überfahren',
     'Freizone',
   ];
+
+  static const bolzanoCoords = LatLng(46.500000, 11.350000);
 }

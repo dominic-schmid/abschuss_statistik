@@ -34,6 +34,8 @@ class AddWild extends StatefulWidget {
 }
 
 class _AddWildState extends State<AddWild> {
+  double gewicht = 0;
+
   @override
   void initState() {
     super.initState();

@@ -48,8 +48,8 @@ class _AddErlegerState extends State<AddErleger> {
     loadSuggestions();
     //_personenSelect = [SelectedListItem(name: 'Dominic Schmid')];
     _dateTime = widget.initialDateTime;
-    widget.datumController.text = DateFormat.yMd().format(_dateTime);
-    widget.zeitController.text = DateFormat.Hm().format(_dateTime);
+    //widget.datumController.text = DateFormat.yMd().format(_dateTime);
+    //widget.zeitController.text = DateFormat.Hm().format(_dateTime);
   }
 
   Future<void> loadSuggestions() async {
@@ -123,7 +123,7 @@ class _AddErlegerState extends State<AddErleger> {
                         hint: DateFormat.yMd().format(_dateTime),
                         disableTyping: true,
                         validator: (_) {
-                          if (_ == null) return dg.dateEmptyError;
+                          if (_ == null || _.isEmpty) return dg.dateEmptyError;
                           if (_dateTime.isAfter(DateTime.now())) {
                             return dg.dateInFutureError;
                           }
@@ -162,7 +162,7 @@ class _AddErlegerState extends State<AddErleger> {
                         textEditingController: widget.zeitController,
                         title: dg.time,
                         validator: (_) {
-                          if (_ == null) return dg.timeEmptyError;
+                          if (_ == null || _.isEmpty) return dg.timeEmptyError;
                           if (_dateTime.isAfter(DateTime.now())) {
                             return dg.dateInFutureError;
                           }

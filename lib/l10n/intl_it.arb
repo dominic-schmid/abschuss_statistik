@@ -177,5 +177,9 @@
   "dateEmptyError": "La data non può essere vuota",
   "timeEmptyError": "Il tempo non può essere vuoto",
   "dateInFutureError": "Tempo invalido",
-  "search": "Cercare"
+  "search": "Cercare",
+  "schusszeiten": "Tempi di caccia",
+  "jetztFestlegen": "Imposta ora",
+  "ortFestlegen": "Devi prima determinare una posizione per l'ora solare.",
+  "timeInLocal": "Gli orari si basano sull'UTC e vengono convertiti nel formato del dispositivo."
 }

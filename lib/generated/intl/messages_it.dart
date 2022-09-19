@@ -137,6 +137,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
         "jahrlingsbock":
             MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
+        "jetztFestlegen": MessageLookupByLibrary.simpleMessage("Imposta ora"),
         "kahlwild": MessageLookupByLibrary.simpleMessage("Cervo"),
         "keiler": MessageLookupByLibrary.simpleMessage("Maschio"),
         "killer": MessageLookupByLibrary.simpleMessage("Cacciatore"),
@@ -177,6 +178,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "number": MessageLookupByLibrary.simpleMessage("Numero"),
         "onlyShot": MessageLookupByLibrary.simpleMessage("Solo sparati"),
         "open": MessageLookupByLibrary.simpleMessage("Aperto"),
+        "ortFestlegen": MessageLookupByLibrary.simpleMessage(
+            "Devi prima determinare una posizione per l\'ora solare."),
         "overseer": MessageLookupByLibrary.simpleMessage("Sorvegliante"),
         "paarungszeiten":
             MessageLookupByLibrary.simpleMessage("Tempi di accoppiamento"),
@@ -192,6 +195,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "schneehase":
             MessageLookupByLibrary.simpleMessage("coniglietto di neve"),
         "schneehuhn": MessageLookupByLibrary.simpleMessage("Gallo cedrone"),
+        "schusszeiten": MessageLookupByLibrary.simpleMessage("Tempi di caccia"),
         "schwarzwild": MessageLookupByLibrary.simpleMessage("Cinghiale"),
         "search": MessageLookupByLibrary.simpleMessage("Cercare"),
         "searchXKills": m2,
@@ -249,6 +253,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "time": MessageLookupByLibrary.simpleMessage("Tempo"),
         "timeEmptyError": MessageLookupByLibrary.simpleMessage(
             "Il tempo non può essere vuoto"),
+        "timeInLocal": MessageLookupByLibrary.simpleMessage(
+            "Gli orari si basano sull\'UTC e vengono convertiti nel formato del dispositivo."),
         "tragzeit":
             MessageLookupByLibrary.simpleMessage("periodo di gestazione"),
         "trophaehenHirsch":

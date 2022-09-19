@@ -7,6 +7,7 @@ import 'package:jagdstatistik/models/constants/cause.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/constants/usage.dart';
 import 'package:jagdstatistik/models/kill_entry.dart';
+import 'package:jagdstatistik/utils/constants.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/views/add_kill/add_details.dart';
 import 'package:jagdstatistik/views/add_kill/add_erleger.dart';
@@ -249,10 +250,7 @@ class _AddKillScreenState extends State<AddKillScreen> {
           initialLatLng:
               widget.killEntry?.gpsLat == null || widget.killEntry?.gpsLon == null
                   ? _latLng ??
-                      const LatLng(
-                        46.500000,
-                        11.350000,
-                      ) // Default bolzano if none selected yet,
+                      Constants.bolzanoCoords // Default bolzano if none selected yet,
                   : LatLng(widget.killEntry!.gpsLat!, widget.killEntry!.gpsLon!),
           onLatLngSelect: (pos) {
             setState(() {

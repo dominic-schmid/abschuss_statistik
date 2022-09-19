@@ -17,9 +17,9 @@ class ConfirmAddKill extends StatelessWidget {
     return Scaffold(
       appBar: ChartAppBar(title: Text(dg.confirm), actions: const []),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
-          child: SingleChildScrollView(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(top: size.height * 0.05),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -30,6 +30,7 @@ class ConfirmAddKill extends StatelessWidget {
                   showPerson: true,
                   showEdit: false,
                 ),
+                SizedBox(height: size.height * 0.075),
                 ElevatedButton.icon(
                   onPressed: () => Navigator.of(context).pop(true),
                   icon: const Icon(Icons.check_rounded),

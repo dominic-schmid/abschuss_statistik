@@ -128,6 +128,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "jahrlingsHirsch":
             MessageLookupByLibrary.simpleMessage("Jährlingshirsch"),
         "jahrlingsbock": MessageLookupByLibrary.simpleMessage("Jährlingsbock"),
+        "jetztFestlegen":
+            MessageLookupByLibrary.simpleMessage("Jetzt festlegen"),
         "kahlwild": MessageLookupByLibrary.simpleMessage("Kahlwild"),
         "keiler": MessageLookupByLibrary.simpleMessage("Keiler"),
         "killer": MessageLookupByLibrary.simpleMessage("Erleger"),
@@ -168,6 +170,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "number": MessageLookupByLibrary.simpleMessage("Nummer"),
         "onlyShot": MessageLookupByLibrary.simpleMessage("Nur Erlegte"),
         "open": MessageLookupByLibrary.simpleMessage("Offen"),
+        "ortFestlegen": MessageLookupByLibrary.simpleMessage(
+            "Du musst zuerst einen Ort für die Sonnenzeiten festlegen."),
         "overseer": MessageLookupByLibrary.simpleMessage("Aufseher"),
         "paarungszeiten":
             MessageLookupByLibrary.simpleMessage("Paarungszeiten"),
@@ -182,6 +186,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "schmaltier": MessageLookupByLibrary.simpleMessage("Schmaltier"),
         "schneehase": MessageLookupByLibrary.simpleMessage("Schneehase"),
         "schneehuhn": MessageLookupByLibrary.simpleMessage("Schneehuhn"),
+        "schusszeiten": MessageLookupByLibrary.simpleMessage("Schusszeiten"),
         "schwarzwild": MessageLookupByLibrary.simpleMessage("Schwarzwild"),
         "search": MessageLookupByLibrary.simpleMessage("Suchen"),
         "searchXKills": m2,
@@ -236,6 +241,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "time": MessageLookupByLibrary.simpleMessage("Uhrzeit"),
         "timeEmptyError":
             MessageLookupByLibrary.simpleMessage("Zeit darf nicht leer sein"),
+        "timeInLocal": MessageLookupByLibrary.simpleMessage(
+            "Die Uhrzeiten basieren auf UTC und werden in das Format des Geräts umgewandelt."),
         "tragzeit": MessageLookupByLibrary.simpleMessage("Tragzeit"),
         "trophaehenHirsch":
             MessageLookupByLibrary.simpleMessage("Trophäenhirsch"),

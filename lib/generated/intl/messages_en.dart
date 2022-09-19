@@ -130,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "jagdzeiten": MessageLookupByLibrary.simpleMessage("Hunting times"),
         "jahrlingsHirsch": MessageLookupByLibrary.simpleMessage("Young buck"),
         "jahrlingsbock": MessageLookupByLibrary.simpleMessage("Young buck"),
+        "jetztFestlegen": MessageLookupByLibrary.simpleMessage("Set now"),
         "kahlwild": MessageLookupByLibrary.simpleMessage("Deer"),
         "keiler": MessageLookupByLibrary.simpleMessage("Male boar"),
         "killer": MessageLookupByLibrary.simpleMessage("Hunter"),
@@ -169,6 +170,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "number": MessageLookupByLibrary.simpleMessage("Number"),
         "onlyShot": MessageLookupByLibrary.simpleMessage("Only shot"),
         "open": MessageLookupByLibrary.simpleMessage("Open"),
+        "ortFestlegen": MessageLookupByLibrary.simpleMessage(
+            "You must first set a location for the solar times."),
         "overseer": MessageLookupByLibrary.simpleMessage("Overseer"),
         "paarungszeiten": MessageLookupByLibrary.simpleMessage("Mating times"),
         "perMonth": MessageLookupByLibrary.simpleMessage("per Month"),
@@ -182,6 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "schmaltier": MessageLookupByLibrary.simpleMessage("Young doe"),
         "schneehase": MessageLookupByLibrary.simpleMessage("snow bunny"),
         "schneehuhn": MessageLookupByLibrary.simpleMessage("Grouse"),
+        "schusszeiten": MessageLookupByLibrary.simpleMessage("Shooting times"),
         "schwarzwild": MessageLookupByLibrary.simpleMessage("Wild boar"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "searchXKills": m2,
@@ -234,6 +238,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "time": MessageLookupByLibrary.simpleMessage("Time"),
         "timeEmptyError":
             MessageLookupByLibrary.simpleMessage("Time cannot be empty"),
+        "timeInLocal": MessageLookupByLibrary.simpleMessage(
+            "The times are based on UTC and are converted to the format of the device."),
         "tragzeit": MessageLookupByLibrary.simpleMessage("gestation period"),
         "trophaehenHirsch": MessageLookupByLibrary.simpleMessage("Trophy buck"),
         "ueberlaeuferBache":
