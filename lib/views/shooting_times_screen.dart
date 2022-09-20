@@ -26,7 +26,7 @@ class _ShootingTimesScreenState extends State<ShootingTimesScreen> {
       .inDays; // get start of year
   late PageController _pageController;
 
-  bool _isBetween = false;
+  final ValueNotifier<bool?> _isBetween = ValueNotifier(null);
 
   final TextStyle ts = const TextStyle(fontSize: 26, fontWeight: FontWeight.w400);
   final TextStyle tl = const TextStyle(fontSize: 44, fontWeight: FontWeight.w600);
@@ -55,6 +55,7 @@ class _ShootingTimesScreenState extends State<ShootingTimesScreen> {
       if (!mounted) return;
       await prefProvider.get.setDouble('shootingTimeLat', newLatLng.latitude);
       await prefProvider.get.setDouble('shootingTimeLon', newLatLng.longitude);
+      prefProvider.update();
       _showToday();
     }
   }
@@ -86,138 +87,168 @@ class _ShootingTimesScreenState extends State<ShootingTimesScreen> {
           ),
         ],
       ),
-      body: PageView.builder(
-          controller: _pageController,
-          itemBuilder: (context, index) {
-            final prefProvider = Provider.of<PrefProvider>(context);
-            double? lat = prefProvider.get.getDouble('shootingTimeLat');
-            double? lon = prefProvider.get.getDouble('shootingTimeLon');
-            LatLng? latLng = lat != null && lon != null ? LatLng(lat, lon) : null;
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+            flex: 5,
+            child: PageView.builder(
+                controller: _pageController,
+                itemBuilder: (context, index) {
+                  final prefProvider = Provider.of<PrefProvider>(context);
+                  double? lat = prefProvider.get.getDouble('shootingTimeLat');
+                  double? lon = prefProvider.get.getDouble('shootingTimeLon');
+                  LatLng? latLng = lat != null && lon != null ? LatLng(lat, lon) : null;
 
-            final selectedDate = DateTime.now().add(
-              Duration(days: index - _initialOffset),
-            );
+                  final selectedDate = DateTime.now().add(
+                    Duration(days: index - _initialOffset),
+                  );
 
-            return FutureBuilder<ShootingTime?>(
-                future: ShootingTimeApi.getFor(latLng, selectedDate),
-                builder: (context, snap) {
-                  bool isLoading = snap.connectionState != ConnectionState.done;
+                  return FutureBuilder<ShootingTime?>(
+                      future: ShootingTimeApi.getFor(latLng, selectedDate),
+                      builder: (context, snap) {
+                        bool isLoading = snap.connectionState != ConnectionState.done;
 
-                  if (!snap.hasData && !isLoading) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          NoDataFoundWidget(suffix: dg.ortFestlegen),
-                          ElevatedButton.icon(
-                            onPressed: () => _updateCoords(),
-                            icon: const Icon(Icons.settings_rounded),
-                            label: Text(dg.jetztFestlegen),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-
-                  ShootingTime? sTime = snap.data;
-
-                  _isBetween = sTime == null
-                      ? false
-                      : DateTime.now().isAfter(sTime.from) &&
-                          DateTime.now().isBefore(sTime.until);
-
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            DateFormat.yMd().format(selectedDate),
-                            style: ts,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            isLoading || sTime == null
-                                ? const Center(
-                                    child: CircularProgressIndicator(
-                                      color: rehwildFarbe,
-                                    ),
-                                  )
-                                : Flexible(
-                                    child: Text(
-                                      ShootingTime.format(sTime.sunrise),
-                                      style: ts,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                            const Flexible(
-                                child: Icon(
-                              Icons.sunny,
-                              size: 32,
-                              color: Colors.yellow,
-                            )),
-                            const Flexible(
-                                child: Icon(
-                              Icons.nightlight,
-                              size: 32,
-                              color: Colors.blueGrey,
-                            )),
-                            isLoading || sTime == null
-                                ? const Center(
-                                    child: CircularProgressIndicator(
-                                      color: rehwildFarbe,
-                                    ),
-                                  )
-                                : Flexible(
-                                    child: Text(
-                                      ShootingTime.format(sTime.sunset),
-                                      style: ts,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                          ],
-                        ),
-                        Visibility(
-                            visible: !isLoading,
-                            child: Text(
-                              sTime.toString(),
-                              style: tl,
-                              textAlign: TextAlign.center,
-                            )),
-                        Visibility(
-                          visible: !isLoading,
-                          child: Icon(
-                            _isBetween == true
-                                ? Icons.check_rounded
-                                : Icons.close_rounded,
-                            size: 44,
-                            color: _isBetween ? rehwildFarbe : rotwildFarbe,
-                          ),
-                        ),
-                        Visibility(
-                          visible: !isLoading,
-                          child: Text(
-                            dg.timeInLocal,
-                            style: TextStyle(
-                              color: secondaryColor,
-                              fontFamily: 'OpenSans',
-                              fontSize: 10,
+                        if (!snap.hasData && !isLoading) {
+                          _isBetween.value = null;
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                NoDataFoundWidget(suffix: dg.ortFestlegen),
+                                ElevatedButton.icon(
+                                  onPressed: () => _updateCoords(),
+                                  icon: const Icon(Icons.settings_rounded),
+                                  label: Text(dg.jetztFestlegen),
+                                ),
+                              ],
                             ),
-                            textAlign: TextAlign.justify,
-                          ),
-                        ),
-                      ],
+                          );
+                        }
+
+                        ShootingTime? sTime = snap.data;
+                        if (!isLoading && sTime != null) {
+                          // delay so both builders arent being built at the same time..
+                          Future.delayed(const Duration(milliseconds: 250)).then(
+                            (value) => _isBetween.value =
+                                DateTime.now().isAfter(sTime.from) &&
+                                    DateTime.now().isBefore(sTime.until),
+                          );
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                DateFormat.yMd().format(selectedDate),
+                                style: ts,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                isLoading || sTime == null
+                                    ? const Center(
+                                        child: CircularProgressIndicator(
+                                          color: rehwildFarbe,
+                                        ),
+                                      )
+                                    : Flexible(
+                                        child: Text(
+                                          ShootingTime.format(sTime.sunrise),
+                                          style: ts,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                const Flexible(
+                                    child: Icon(
+                                  Icons.sunny,
+                                  size: 32,
+                                  color: Colors.yellow,
+                                )),
+                                const Flexible(
+                                    child: Icon(
+                                  Icons.nightlight,
+                                  size: 32,
+                                  color: Colors.blueGrey,
+                                )),
+                                isLoading || sTime == null
+                                    ? const Center(
+                                        child: CircularProgressIndicator(
+                                          color: rehwildFarbe,
+                                        ),
+                                      )
+                                    : Flexible(
+                                        child: Text(
+                                          ShootingTime.format(sTime.sunset),
+                                          style: ts,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                              ],
+                            ),
+                            Visibility(
+                              visible: !isLoading,
+                              child: Text(
+                                sTime.toString(),
+                                style: tl,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        );
+                      });
+                }),
+          ),
+          Flexible(
+            child: ValueListenableBuilder<bool?>(
+                valueListenable: _isBetween,
+                builder: (context, value, child) {
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    child: Icon(
+                      _isBetween.value == true
+                          ? Icons.check_rounded
+                          : Icons.close_rounded,
+                      key: _isBetween.value == true
+                          ? const Key('checkIconShootingTime')
+                          : const Key('closeIconShootingTime'),
+                      size: 44,
+                      color: _isBetween.value == true
+                          ? rehwildFarbe
+                          : _isBetween.value == false
+                              ? rotwildFarbe
+                              : secondaryColor,
                     ),
                   );
-                });
-          }),
+                }),
+          ),
+          Flexible(
+            flex: 2,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: size.width * 0.1,
+                vertical: size.height * 0.015,
+              ),
+              child: Text(
+                dg.timeInLocal,
+                style: TextStyle(
+                  color: secondaryColor,
+                  fontFamily: 'OpenSans',
+                  fontSize: 10,
+                ),
+                textAlign: TextAlign.justify,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

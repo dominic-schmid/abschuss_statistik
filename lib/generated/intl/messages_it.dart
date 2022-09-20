@@ -179,7 +179,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "onlyShot": MessageLookupByLibrary.simpleMessage("Solo sparati"),
         "open": MessageLookupByLibrary.simpleMessage("Aperto"),
         "ortFestlegen": MessageLookupByLibrary.simpleMessage(
-            "Devi prima determinare una posizione per l\'ora solare."),
+            "È necessario prima impostare una posizione per l\'ora solare, altrimenti non è stato possibile stabilire una connessione a Internet."),
         "overseer": MessageLookupByLibrary.simpleMessage("Sorvegliante"),
         "paarungszeiten":
             MessageLookupByLibrary.simpleMessage("Tempi di accoppiamento"),

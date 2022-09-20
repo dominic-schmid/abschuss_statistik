@@ -1,0 +1,219 @@
+Date : 2022-09-20 22:05:30
+Directory : d:\Dokumente\Programming\Active Projects\jagdverband_scraper
+Total : 127 files,  25230 codes, 1003 comments, 3960 blanks, all 30193 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| Dart       |         59 |     12,120 |        607 |      1,169 |     13,896 |
+| CSS        |          2 |     10,195 |         49 |      2,460 |     12,704 |
+| JSON       |         12 |      1,000 |          0 |          6 |      1,006 |
+| XML        |         19 |        761 |         50 |         23 |        834 |
+| C++        |         16 |        512 |        107 |        170 |        789 |
+| HTML       |          2 |        319 |         58 |         13 |        390 |
+| Groovy     |          3 |        102 |          6 |         24 |        132 |
+| Markdown   |          4 |         73 |          0 |         61 |        134 |
+| YAML       |          2 |         59 |        112 |         14 |        185 |
+| Swift      |          4 |         50 |          3 |         12 |         65 |
+| JavaScript |          2 |         31 |         10 |          6 |         47 |
+| Properties |          2 |          8 |          1 |          2 |         11 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                            | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                               |        127 |     25,230 |      1,003 |      3,960 |     30,193 |
+| android                                                                                                                         |         18 |        230 |         53 |         40 |        323 |
+| android\app                                                                                                                     |         14 |        187 |         52 |         29 |        268 |
+| android\app\src                                                                                                                 |         13 |        120 |         46 |         14 |        180 |
+| android\app\src\debug                                                                                                           |          1 |          4 |          4 |          1 |          9 |
+| android\app\src\main                                                                                                            |         11 |        112 |         38 |         12 |        162 |
+| android\app\src\main\res                                                                                                        |         10 |         81 |         32 |          9 |        122 |
+| android\app\src\main\res\drawable                                                                                               |          1 |          6 |          0 |          1 |          7 |
+| android\app\src\main\res\drawable-night                                                                                         |          1 |          6 |          0 |          1 |          7 |
+| android\app\src\main\res\drawable-night-v21                                                                                     |          1 |          6 |          0 |          1 |          7 |
+| android\app\src\main\res\drawable-v21                                                                                           |          1 |          6 |          0 |          1 |          7 |
+| android\app\src\main\res\mipmap-anydpi-v26                                                                                      |          1 |          5 |          0 |          1 |          6 |
+| android\app\src\main\res\values                                                                                                 |          2 |         16 |          9 |          1 |         26 |
+| android\app\src\main\res\values-night                                                                                           |          1 |         12 |          9 |          1 |         22 |
+| android\app\src\main\res\values-night-v31                                                                                       |          1 |         12 |          7 |          1 |         20 |
+| android\app\src\main\res\values-v31                                                                                             |          1 |         12 |          7 |          1 |         20 |
+| android\app\src\profile                                                                                                         |          1 |          4 |          4 |          1 |          9 |
+| android\gradle                                                                                                                  |          1 |          5 |          1 |          1 |          7 |
+| android\gradle\wrapper                                                                                                          |          1 |          5 |          1 |          1 |          7 |
+| assets                                                                                                                          |          5 |        194 |          0 |         48 |        242 |
+| gh-pages                                                                                                                        |          7 |     10,672 |        103 |      2,467 |     13,242 |
+| gh-pages\assets                                                                                                                 |          3 |        230 |          2 |          6 |        238 |
+| gh-pages\assets\img                                                                                                             |          3 |        230 |          2 |          6 |        238 |
+| gh-pages\css                                                                                                                    |          1 |     10,142 |         49 |      2,449 |     12,640 |
+| gh-pages\js                                                                                                                     |          1 |         20 |         10 |          5 |         35 |
+| ios                                                                                                                             |          8 |        283 |          2 |         10 |        295 |
+| ios\Runner                                                                                                                      |          8 |        283 |          2 |         10 |        295 |
+| ios\Runner\Assets.xcassets                                                                                                      |          4 |        200 |          0 |          5 |        205 |
+| ios\Runner\Assets.xcassets\AppIcon.appiconset                                                                                   |          1 |        122 |          0 |          1 |        123 |
+| ios\Runner\Assets.xcassets\LaunchBackground.imageset                                                                            |          1 |         52 |          0 |          1 |         53 |
+| ios\Runner\Assets.xcassets\LaunchImage.imageset                                                                                 |          2 |         26 |          0 |          3 |         29 |
+| ios\Runner\Base.lproj                                                                                                           |          2 |         68 |          2 |          2 |         72 |
+| lib                                                                                                                             |         61 |     12,660 |        597 |      1,162 |     14,419 |
+| lib\charts                                                                                                                      |          6 |      2,235 |         64 |        213 |      2,512 |
+| lib\generated                                                                                                                   |          5 |      2,341 |        231 |        250 |      2,822 |
+| lib\generated\intl                                                                                                              |          4 |        817 |         40 |         52 |        909 |
+| lib\l10n                                                                                                                        |          3 |        555 |          0 |          0 |        555 |
+| lib\models                                                                                                                      |          9 |      1,375 |         61 |        107 |      1,543 |
+| lib\models\constants                                                                                                            |          4 |        718 |         31 |         25 |        774 |
+| lib\providers                                                                                                                   |          3 |         48 |          6 |         17 |         71 |
+| lib\utils                                                                                                                       |          5 |        493 |         21 |         70 |        584 |
+| lib\views                                                                                                                       |         18 |      4,208 |        134 |        369 |      4,711 |
+| lib\views\add_kill                                                                                                              |          7 |      1,036 |         33 |         96 |      1,165 |
+| lib\widgets                                                                                                                     |         11 |      1,182 |         62 |        108 |      1,352 |
+| linux                                                                                                                           |          5 |         98 |         27 |         38 |        163 |
+| linux\flutter                                                                                                                   |          2 |         12 |          9 |         11 |         32 |
+| macos                                                                                                                           |          5 |        447 |          3 |         12 |        462 |
+| macos\Flutter                                                                                                                   |          1 |         16 |          3 |          4 |         23 |
+| macos\Runner                                                                                                                    |          4 |        431 |          0 |          8 |        439 |
+| macos\Runner\Assets.xcassets                                                                                                    |          1 |         68 |          0 |          1 |         69 |
+| macos\Runner\Assets.xcassets\AppIcon.appiconset                                                                                 |          1 |         68 |          0 |          1 |         69 |
+| macos\Runner\Base.lproj                                                                                                         |          1 |        343 |          0 |          1 |        344 |
+| test                                                                                                                            |          1 |         15 |         10 |          7 |         32 |
+| web                                                                                                                             |          4 |        139 |         16 |         19 |        174 |
+| web\splash                                                                                                                      |          2 |         64 |          0 |         12 |         76 |
+| windows                                                                                                                         |         10 |        413 |         80 |        131 |        624 |
+| windows\flutter                                                                                                                 |          2 |         17 |          9 |         11 |         37 |
+| windows\runner                                                                                                                  |          8 |        396 |         71 |        120 |        587 |
++---------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                                        | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\README.md                                                          | Markdown   |         20 |          0 |         12 |         32 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\analysis_options.yaml                                              | YAML       |          3 |         23 |          4 |         30 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\build.gradle                                           | Groovy     |         67 |          6 |         15 |         88 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\debug\AndroidManifest.xml                          | XML        |          4 |          4 |          1 |          9 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\main\AndroidManifest.xml                           | XML        |         31 |          6 |          3 |         40 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\main\res\drawable-night-v21\launch_background.xml  | XML        |          6 |          0 |          1 |          7 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\main\res\drawable-night\launch_background.xml      | XML        |          6 |          0 |          1 |          7 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\main\res\drawable-v21\launch_background.xml        | XML        |          6 |          0 |          1 |          7 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\main\res\drawable\launch_background.xml            | XML        |          6 |          0 |          1 |          7 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\main\res\mipmap-anydpi-v26\ic_launcher.xml         | XML        |          5 |          0 |          1 |          6 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\main\res\values-night-v31\styles.xml               | XML        |         12 |          7 |          1 |         20 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\main\res\values-night\styles.xml                   | XML        |         12 |          9 |          1 |         22 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\main\res\values-v31\styles.xml                     | XML        |         12 |          7 |          1 |         20 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\main\res\values\colors.xml                         | XML        |          4 |          0 |          0 |          4 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\main\res\values\styles.xml                         | XML        |         12 |          9 |          1 |         22 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\app\src\profile\AndroidManifest.xml                        | XML        |          4 |          4 |          1 |          9 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\build.gradle                                               | Groovy     |         27 |          0 |          5 |         32 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\gradle.properties                                          | Properties |          3 |          0 |          1 |          4 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\gradle\wrapper\gradle-wrapper.properties                   | Properties |          5 |          1 |          1 |          7 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\android\settings.gradle                                            | Groovy     |          8 |          0 |          4 |         12 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\assets\dummydata.json                                              | JSON       |          0 |          0 |          1 |          1 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\assets\jagdzeiten_wildarten.json                                   | JSON       |         56 |          0 |          0 |         56 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\assets\privacy_policy.md                                           | Markdown   |         33 |          0 |         30 |         63 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\assets\seite_wildarten.json                                        | JSON       |         88 |          0 |          0 |         88 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\assets\terms_and_conditions.md                                     | Markdown   |         17 |          0 |         17 |         34 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\gh-pages\assets\img\app-store-badge.svg                            | XML        |        128 |          1 |          1 |        130 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\gh-pages\assets\img\google-play-badge.svg                          | XML        |        101 |          1 |          5 |        107 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\gh-pages\assets\img\tnw-logo.svg                                   | XML        |          1 |          0 |          0 |          1 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\gh-pages\css\styles.css                                            | CSS        |     10,142 |         49 |      2,449 |     12,640 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\gh-pages\index.html                                                | HTML       |        279 |         42 |          7 |        328 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\gh-pages\js\scripts.js                                             | JavaScript |         20 |         10 |          5 |         35 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\gh-pages\site.webmanifest                                          | JSON       |          1 |          0 |          0 |          1 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\ios\Runner\AppDelegate.swift                                       | Swift      |         14 |          0 |          2 |         16 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\ios\Runner\Assets.xcassets\AppIcon.appiconset\Contents.json        | JSON       |        122 |          0 |          1 |        123 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\ios\Runner\Assets.xcassets\LaunchBackground.imageset\Contents.json | JSON       |         52 |          0 |          1 |         53 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\ios\Runner\Assets.xcassets\LaunchImage.imageset\Contents.json      | JSON       |         23 |          0 |          1 |         24 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\ios\Runner\Assets.xcassets\LaunchImage.imageset\README.md          | Markdown   |          3 |          0 |          2 |          5 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\ios\Runner\Base.lproj\LaunchScreen.storyboard                      | XML        |         43 |          1 |          1 |         45 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\ios\Runner\Base.lproj\Main.storyboard                              | XML        |         25 |          1 |          1 |         27 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\ios\Runner\Runner-Bridging-Header.h                                | C++        |          1 |          0 |          1 |          2 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\charts\historic_bar_chart_screen.dart                          | Dart       |        423 |         15 |         41 |        479 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\charts\historic_line_chart_screen.dart                         | Dart       |        421 |          9 |         38 |        468 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\charts\historic_pie_chart_screen.dart                          | Dart       |        339 |         13 |         41 |        393 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\charts\yearly_bar_chart_screen.dart                            | Dart       |        364 |          9 |         31 |        404 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\charts\yearly_line_chart_screen.dart                           | Dart       |        408 |         15 |         36 |        459 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\charts\yearly_pie_chart_screen.dart                            | Dart       |        280 |          3 |         26 |        309 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\generated\intl\messages_all.dart                               | Dart       |         51 |         10 |         10 |         71 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\generated\intl\messages_de.dart                                | Dart       |        252 |         10 |         14 |        276 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\generated\intl\messages_en.dart                                | Dart       |        248 |         10 |         14 |        272 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\generated\intl\messages_it.dart                                | Dart       |        266 |         10 |         14 |        290 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\generated\l10n.dart                                            | Dart       |      1,524 |        191 |        198 |      1,913 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\l10n\intl_de.arb                                               | JSON       |        185 |          0 |          0 |        185 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\l10n\intl_en.arb                                               | JSON       |        185 |          0 |          0 |        185 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\l10n\intl_it.arb                                               | JSON       |        185 |          0 |          0 |        185 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\main.dart                                                      | Dart       |        223 |         18 |         28 |        269 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\models\constants\cause.dart                                    | Dart       |         55 |          0 |          5 |         60 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\models\constants\game_type.dart                                | Dart       |        245 |          0 |          7 |        252 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\models\constants\hunting_time.dart                             | Dart       |        369 |         31 |          8 |        408 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\models\constants\usage.dart                                    | Dart       |         49 |          0 |          5 |         54 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\models\filter_chip_data.dart                                   | Dart       |         31 |          1 |          9 |         41 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\models\kill_entry.dart                                         | Dart       |        307 |          4 |         29 |        340 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\models\kill_page.dart                                          | Dart       |        128 |          6 |         21 |        155 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\models\shooting_time.dart                                      | Dart       |         41 |          0 |         12 |         53 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\models\sorting.dart                                            | Dart       |        150 |         19 |         11 |        180 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\providers\locale_provider.dart                                 | Dart       |          9 |          0 |          4 |         13 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\providers\pref_provider.dart                                   | Dart       |         22 |          0 |          6 |         28 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\providers\theme_provider.dart                                  | Dart       |         17 |          6 |          7 |         30 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\utils\constants.dart                                           | Dart       |         14 |          2 |          3 |         19 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\utils\database_methods.dart                                    | Dart       |        151 |          4 |         23 |        178 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\utils\request_methods.dart                                     | Dart       |        115 |          7 |         24 |        146 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\utils\translation_helper.dart                                  | Dart       |         20 |          1 |          3 |         24 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\utils\utils.dart                                               | Dart       |        193 |          7 |         17 |        217 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\add_kill\add_details.dart                                | Dart       |        115 |          9 |         12 |        136 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\add_kill\add_erleger.dart                                | Dart       |        180 |          4 |         17 |        201 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\add_kill\add_gebiet.dart                                 | Dart       |        201 |          3 |         23 |        227 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\add_kill\add_jagdaufseher.dart                           | Dart       |        184 |          1 |         12 |        197 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\add_kill\add_map_coordinates.dart                        | Dart       |        159 |          2 |         14 |        175 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\add_kill\add_wild.dart                                   | Dart       |        148 |         11 |         13 |        172 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\add_kill\confirm_add.dart                                | Dart       |         49 |          3 |          5 |         57 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\add_kill_screen.dart                                     | Dart       |        328 |         15 |         32 |        375 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\all_map_screen.dart                                      | Dart       |        472 |         20 |         30 |        522 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\credentials_screen.dart                                  | Dart       |        269 |          1 |         24 |        294 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\home_screen.dart                                         | Dart       |         69 |          1 |          7 |         77 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\hunting_time_screen.dart                                 | Dart       |         96 |          4 |         14 |        114 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\kills_screen.dart                                        | Dart       |        875 |         20 |         84 |        979 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\map_screen.dart                                          | Dart       |        213 |          3 |         17 |        233 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\mating_time_screen.dart                                  | Dart       |         89 |          5 |         14 |        108 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\settings_screen.dart                                     | Dart       |        307 |         22 |         24 |        353 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\shooting_times_screen.dart                               | Dart       |        205 |          0 |         19 |        224 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\views\stats_screen.dart                                        | Dart       |        249 |         10 |          8 |        267 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\widgets\app_search_text_field.dart                             | Dart       |         59 |          1 |          7 |         67 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\widgets\app_text_field.dart                                    | Dart       |        170 |         10 |          8 |        188 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\widgets\chart_app_bar.dart                                     | Dart       |         21 |          0 |          4 |         25 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\widgets\chart_legend.dart                                      | Dart       |         59 |          0 |          8 |         67 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\widgets\chip_selector_modal.dart                               | Dart       |         92 |          0 |          7 |         99 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\widgets\custom_drop_down.dart                                  | Dart       |        199 |         34 |         33 |        266 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\widgets\expanded_child_kill_entry.dart                         | Dart       |         57 |          0 |          6 |         63 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\widgets\hunting_time_list_entry.dart                           | Dart       |        154 |          0 |          9 |        163 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\widgets\kill_list_entry.dart                                   | Dart       |        284 |         16 |         18 |        318 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\widgets\no_data_found.dart                                     | Dart       |         36 |          0 |          3 |         39 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\lib\widgets\value_selector_modal.dart                              | Dart       |         51 |          1 |          5 |         57 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\linux\flutter\generated_plugin_registrant.cc                       | C++        |          7 |          4 |          5 |         16 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\linux\flutter\generated_plugin_registrant.h                        | C++        |          5 |          5 |          6 |         16 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\linux\main.cc                                                      | C++        |          5 |          0 |          2 |          7 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\linux\my_application.cc                                            | C++        |         74 |         11 |         20 |        105 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\linux\my_application.h                                             | C++        |          7 |          7 |          5 |         19 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\macos\Flutter\GeneratedPluginRegistrant.swift                      | Swift      |         16 |          3 |          4 |         23 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\macos\Runner\AppDelegate.swift                                     | Swift      |          8 |          0 |          2 |         10 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\macos\Runner\Assets.xcassets\AppIcon.appiconset\Contents.json      | JSON       |         68 |          0 |          1 |         69 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\macos\Runner\Base.lproj\MainMenu.xib                               | XML        |        343 |          0 |          1 |        344 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\macos\Runner\MainFlutterWindow.swift                               | Swift      |         12 |          0 |          4 |         16 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\pubspec.yaml                                                       | YAML       |         56 |         89 |         10 |        155 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\test\widget_test.dart                                              | Dart       |         15 |         10 |          7 |         32 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\web\index.html                                                     | HTML       |         40 |         16 |          6 |         62 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\web\manifest.json                                                  | JSON       |         35 |          0 |          1 |         36 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\web\splash\splash.js                                               | JavaScript |         11 |          0 |          1 |         12 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\web\splash\style.css                                               | CSS        |         53 |          0 |         11 |         64 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\windows\flutter\generated_plugin_registrant.cc                     | C++        |         12 |          4 |          5 |         21 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\windows\flutter\generated_plugin_registrant.h                      | C++        |          5 |          5 |          6 |         16 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\windows\runner\flutter_window.cpp                                  | C++        |         45 |          4 |         13 |         62 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\windows\runner\flutter_window.h                                    | C++        |         20 |          5 |          9 |         34 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\windows\runner\main.cpp                                            | C++        |         30 |          4 |         10 |         44 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\windows\runner\resource.h                                          | C++        |          9 |          6 |          2 |         17 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\windows\runner\utils.cpp                                           | C++        |         53 |          2 |         10 |         65 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\windows\runner\utils.h                                             | C++        |          8 |          6 |          6 |         20 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\windows\runner\win32_window.cpp                                    | C++        |        183 |         15 |         48 |        246 |
+| d:\Dokumente\Programming\Active Projects\jagdverband_scraper\windows\runner\win32_window.h                                      | C++        |         48 |         29 |         22 |         99 |
+| Total                                                                                                                           |            |     25,230 |      1,003 |      3,960 |     30,193 |
++---------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

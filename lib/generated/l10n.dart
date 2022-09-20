@@ -1862,10 +1862,10 @@ class S {
     );
   }
 
-  /// `You must first set a location for the solar times.`
+  /// `You must first set a location for the sun times or an internet connection could not be established.`
   String get ortFestlegen {
     return Intl.message(
-      'You must first set a location for the solar times.',
+      'You must first set a location for the sun times or an internet connection could not be established.',
       name: 'ortFestlegen',
       desc: '',
       args: [],
