@@ -27,31 +27,3 @@ class ThemeProvider extends ChangeNotifier {
     print('Set dark mode $isDarkMode');
   }
 }
-
-class LocaleProvider extends ChangeNotifier {
-  Locale locale;
-
-  LocaleProvider({required this.locale});
-
-  void updateLocale(Locale locale) {
-    this.locale = locale;
-    notifyListeners();
-  }
-}
-
-class PrefProvider extends ChangeNotifier {
-  SharedPreferences prefInstance;
-
-  SharedPreferences get get => prefInstance;
-
-  bool get showPerson => prefInstance.getBool('showPerson') ?? false;
-  bool get betaMode => prefInstance.getBool('betaMode') ?? false;
-  String get login => prefInstance.getString('revierLogin') ?? "";
-  String get password => prefInstance.getString('revierPasswort') ?? "";
-
-  PrefProvider({required this.prefInstance});
-
-  void update() {
-    notifyListeners();
-  }
-}

@@ -13,6 +13,7 @@ class ChartAppBar extends StatelessWidget implements PreferredSizeWidget {
       foregroundColor: Theme.of(context).textTheme.headline1!.color,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       scrolledUnderElevation: 0,
+      iconTheme: IconThemeData(color: Theme.of(context).textTheme.headline1!.color),
       title: title,
       actions: actions,
     );

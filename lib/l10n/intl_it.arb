@@ -181,5 +181,5 @@
   "schusszeiten": "Tempi di caccia",
   "jetztFestlegen": "Imposta ora",
   "ortFestlegen": "Devi prima determinare una posizione per l'ora solare.",
-  "timeInLocal": "Gli orari si basano sull'UTC e vengono convertiti nel formato del dispositivo."
+  "timeInLocal": "Gli orari si basano sull'UTC e vengono convertiti nel formato del dispositivo.\nScorri verso destra o verso sinistra per cambiare il giorno."
 }

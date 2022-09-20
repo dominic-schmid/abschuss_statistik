@@ -181,5 +181,5 @@
   "schusszeiten": "Shooting times",
   "jetztFestlegen": "Set now",
   "ortFestlegen": "You must first set a location for the solar times.",
-  "timeInLocal": "The times are based on UTC and are converted to the format of the device."
+  "timeInLocal": "The times are based on UTC and are converted to the format of the device.\nSwipe left or right to change the date."
 }

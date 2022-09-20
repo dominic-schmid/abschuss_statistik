@@ -242,7 +242,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "timeEmptyError":
             MessageLookupByLibrary.simpleMessage("Zeit darf nicht leer sein"),
         "timeInLocal": MessageLookupByLibrary.simpleMessage(
-            "Die Uhrzeiten basieren auf UTC und werden in das Format des Geräts umgewandelt."),
+            "Die Uhrzeiten basieren auf UTC und werden in das Format des Geräts umgewandelt.\nWische nach rechts oder links um den Tag zu wechseln."),
         "tragzeit": MessageLookupByLibrary.simpleMessage("Tragzeit"),
         "trophaehenHirsch":
             MessageLookupByLibrary.simpleMessage("Trophäenhirsch"),

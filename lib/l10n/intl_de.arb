@@ -181,5 +181,5 @@
   "schusszeiten": "Schusszeiten",
   "jetztFestlegen": "Jetzt festlegen",
   "ortFestlegen": "Du musst zuerst einen Ort für die Sonnenzeiten festlegen.",
-  "timeInLocal": "Die Uhrzeiten basieren auf UTC und werden in das Format des Geräts umgewandelt."
+  "timeInLocal": "Die Uhrzeiten basieren auf UTC und werden in das Format des Geräts umgewandelt.\nWische nach rechts oder links um den Tag zu wechseln."
 }

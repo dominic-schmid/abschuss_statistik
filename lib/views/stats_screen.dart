@@ -1,7 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
-import 'package:jagdstatistik/utils/providers.dart';
+import 'package:jagdstatistik/providers/pref_provider.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/views/hunting_time_screen.dart';
 import 'package:jagdstatistik/views/mating_time_screen.dart';
@@ -190,25 +190,24 @@ class _StatsScreenState extends State<StatsScreen> {
                       ),
                     ),
                   ),
-                  prefProvider.betaMode
-                      ? ChartGridItem(
-                          title: dg.schusszeiten,
-                          assetImage: 'assets/sunrise.png',
-                          backgroundColor: hegeabschussFarbe.withAlpha(166),
-                          onTap: () async {
-                            if (await Connectivity()
-                                    .checkConnectivity()
-                                    .timeout(const Duration(seconds: 15)) ==
-                                ConnectivityResult.none) {
-                              showSnackBar(dg.noInternetError, context);
-                              return;
-                            }
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const ShootingTimesScreen(),
-                            ));
-                          },
-                        )
-                      : Container(),
+                  if (prefProvider.betaMode)
+                    ChartGridItem(
+                      title: dg.schusszeiten,
+                      assetImage: 'assets/sunrise.png',
+                      backgroundColor: hegeabschussFarbe.withAlpha(166),
+                      onTap: () async {
+                        if (await Connectivity()
+                                .checkConnectivity()
+                                .timeout(const Duration(seconds: 15)) ==
+                            ConnectivityResult.none) {
+                          showSnackBar(dg.noInternetError, context);
+                          return;
+                        }
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const ShootingTimesScreen(),
+                        ));
+                      },
+                    ),
                 ],
               ),
             ),

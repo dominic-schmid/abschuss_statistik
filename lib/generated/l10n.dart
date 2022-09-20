@@ -1872,10 +1872,10 @@ class S {
     );
   }
 
-  /// `The times are based on UTC and are converted to the format of the device.`
+  /// `The times are based on UTC and are converted to the format of the device.\nSwipe left or right to change the date.`
   String get timeInLocal {
     return Intl.message(
-      'The times are based on UTC and are converted to the format of the device.',
+      'The times are based on UTC and are converted to the format of the device.\nSwipe left or right to change the date.',
       name: 'timeInLocal',
       desc: '',
       args: [],

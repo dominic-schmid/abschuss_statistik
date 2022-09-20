@@ -2,12 +2,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
+import 'package:jagdstatistik/providers/pref_provider.dart';
+import 'package:jagdstatistik/utils/request_methods.dart';
 import 'package:jagdstatistik/views/home_screen.dart';
 import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../utils/request_methods.dart';
+import 'package:provider/provider.dart';
 
 class CredentialsScreen extends StatefulWidget {
   const CredentialsScreen({Key? key}) : super(key: key);
@@ -194,6 +194,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
 
   void login() async {
     final delegate = S.of(context);
+
     String revier = _revierController.text;
     String pass = _passwortController.text;
     if (revier.isEmpty || pass.isEmpty) {
@@ -219,10 +220,10 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
 
     bool login = await RequestMethods.tryLogin(revier, pass);
 
-    if (login) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('revierLogin', _revierController.text);
-      await prefs.setString('revierPasswort', _passwortController.text);
+    if (login && mounted) {
+      final pProv = Provider.of<PrefProvider>(context, listen: false);
+      await pProv.get.setString('revierLogin', _revierController.text);
+      await pProv.get.setString('revierPasswort', _passwortController.text);
 
       if (!mounted) return;
       Navigator.of(context).pushReplacement(

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:jagdstatistik/providers/locale_provider.dart';
+import 'package:jagdstatistik/providers/pref_provider.dart';
+import 'package:jagdstatistik/providers/theme_provider.dart';
+import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/views/credentials_screen.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/utils/constants.dart';
@@ -11,8 +15,6 @@ import 'package:requests/requests.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import '../utils/utils.dart';
-import '../utils/providers.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);

@@ -239,7 +239,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "timeEmptyError":
             MessageLookupByLibrary.simpleMessage("Time cannot be empty"),
         "timeInLocal": MessageLookupByLibrary.simpleMessage(
-            "The times are based on UTC and are converted to the format of the device."),
+            "The times are based on UTC and are converted to the format of the device.\nSwipe left or right to change the date."),
         "tragzeit": MessageLookupByLibrary.simpleMessage("gestation period"),
         "trophaehenHirsch": MessageLookupByLibrary.simpleMessage("Trophy buck"),
         "ueberlaeuferBache":

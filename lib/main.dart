@@ -2,23 +2,23 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:jagdstatistik/views/add_kill/add_map_coordinates.dart';
-import 'package:jagdstatistik/views/add_kill_screen.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:jagdstatistik/providers/locale_provider.dart';
+import 'package:jagdstatistik/providers/pref_provider.dart';
+import 'package:jagdstatistik/providers/theme_provider.dart';
 import 'package:jagdstatistik/views/credentials_screen.dart';
 import 'package:jagdstatistik/views/home_screen.dart';
-import 'package:jagdstatistik/utils/providers.dart';
 import 'package:jagdstatistik/utils/request_methods.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart'; // DO NOT REMOVE
 
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'utils/database_methods.dart';
 import 'models/kill_entry.dart';
 import 'models/kill_page.dart';
-import 'utils/providers.dart';
 
 const SEND_NOTIFICATIONS = false;
 
@@ -115,15 +115,19 @@ void main() async {
   String revierPasswort = prefs.getString('revierPasswort') ?? "";
   bool? isDarkMode = prefs.getBool('isDarkMode');
   String? language = prefs.getString('language');
+  double? lat = prefs.getDouble('shootingTimeLat');
+  double? lon = prefs.getDouble('shootingTimeLon');
+  LatLng? latLng = lat != null && lon != null ? LatLng(lat, lon) : null;
 
-  Map<String, dynamic> config = {
+  Map<String, dynamic> startConfig = {
     'login': revierLogin,
     'pass': revierPasswort,
     'isDarkMode': isDarkMode,
     'language': language,
+    'latLng': latLng,
   };
 
-  print('Read config: $config');
+  print('Read config: $startConfig');
 
   // Init database
   final db = SqliteDB();
@@ -151,7 +155,7 @@ void main() async {
     );
   }
 
-  runApp(MyApp(config: config, prefs: prefs));
+  runApp(MyApp(config: startConfig, prefs: prefs));
 }
 
 class MyApp extends StatelessWidget {
@@ -182,6 +186,11 @@ class MyApp extends StatelessWidget {
         config['language'] != null && (config['language'] as String).length == 2
             ? Locale(config['language'] as String)
             : const Locale('de'); // Default to German
+
+    ShootingTimeApi.getFor(
+      config['latLng'], // could be null
+      DateTime.now(),
+    ); // Always load shooting time for today on start up to be saved offline
 
     return FutureBuilder<void>(
         future: tryLoadLocale(locale),

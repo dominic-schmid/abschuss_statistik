@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
-import 'package:jagdstatistik/utils/providers.dart';
+import 'package:jagdstatistik/providers/locale_provider.dart';
 import 'package:jagdstatistik/views/kills_screen.dart';
 import 'package:jagdstatistik/views/stats_screen.dart';
 import 'package:jagdstatistik/utils/utils.dart';

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/utils/database_methods.dart';
-import 'package:jagdstatistik/utils/providers.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Map<String, dynamic> getDefaultPrefs() => {

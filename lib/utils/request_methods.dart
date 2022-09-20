@@ -1,4 +1,7 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:html/dom.dart' as dom;
+import 'package:intl/intl.dart';
+import 'package:jagdstatistik/models/shooting_time.dart';
 import 'package:jagdstatistik/utils/database_methods.dart';
 import 'package:jagdstatistik/models/kill_page.dart';
 import 'package:jagdstatistik/utils/utils.dart';
@@ -90,5 +93,53 @@ class RequestMethods {
     }
 
     return page;
+  }
+}
+
+class ShootingTimeApi {
+  //"https://api.sunrise-sunset.org/json?lat=36.7201600&lng=-4.4203400&date=2022-09-13";
+  static String baseUrl = "https://api.sunrise-sunset.org/json?";
+
+  static Future<ShootingTime?> forDate({required LatLng latLng, DateTime? day}) async {
+    day = day ?? DateTime.now();
+
+    final res = await Requests.get(
+      baseUrl,
+      queryParameters: {
+        'lat': latLng.latitude,
+        'lng': latLng.longitude,
+        'date': DateFormat('yyyy-MM-dd').format(day),
+        'formatted': 0, // force datetime to be in ISO
+      },
+      timeoutSeconds: 15,
+    );
+
+    try {
+      return ShootingTime.fromMap(latLng, res.json());
+    } catch (e) {
+      print("Error parsing shooting time: ${e.toString()}");
+      return null;
+    }
+  }
+
+  static Future<ShootingTime?> getFor(LatLng? latLng, DateTime day) async {
+    if (latLng == null) return null;
+
+    // try to find time from DB
+    ShootingTime? t = await SqliteDB().getShootingTimeFor(latLng, day);
+    print('DB returned $t');
+
+    if (t != null) return t;
+
+    // if time in db is not found (still null), get from API
+    t = await ShootingTimeApi.forDate(latLng: latLng, day: day);
+
+    // if API has found, insert to DB before notifying listeners and return
+    if (t != null) {
+      await SqliteDB().insertShootingTime(t);
+      print('Inserted shooting time $t to Database!');
+    }
+
+    return t;
   }
 }

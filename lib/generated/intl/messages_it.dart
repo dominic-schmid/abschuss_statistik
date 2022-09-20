@@ -254,7 +254,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "timeEmptyError": MessageLookupByLibrary.simpleMessage(
             "Il tempo non può essere vuoto"),
         "timeInLocal": MessageLookupByLibrary.simpleMessage(
-            "Gli orari si basano sull\'UTC e vengono convertiti nel formato del dispositivo."),
+            "Gli orari si basano sull\'UTC e vengono convertiti nel formato del dispositivo.\nScorri verso destra o verso sinistra per cambiare il giorno."),
         "tragzeit":
             MessageLookupByLibrary.simpleMessage("periodo di gestazione"),
         "trophaehenHirsch":
