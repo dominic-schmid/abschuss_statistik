@@ -180,6 +180,8 @@
   "search": "Cercare",
   "schusszeiten": "Tempi di caccia",
   "jetztFestlegen": "Imposta ora",
-  "ortFestlegen": "È necessario prima impostare una posizione per l'ora solare, altrimenti non è stato possibile stabilire una connessione a Internet.",
-  "timeInLocal": "Gli orari si basano sull'UTC e vengono convertiti nel formato del dispositivo.\nScorri verso destra o verso sinistra per cambiare il giorno."
+  "ortFestlegen": "È necessario prima impostare una posizione per l'ora solare.",
+  "timeInLocal": "Gli orari si basano sull'UTC e vengono convertiti nel formato del dispositivo.\nScorri verso destra o verso sinistra per cambiare il giorno.",
+  "defaultLocationTitle": "Imposta punto di partenza",
+  "defaultLocationDescription": "Visualizzazione predefinita quando si aggiunge un'uccisione o si calcolano i tempi di tiro."
 }

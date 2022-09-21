@@ -180,6 +180,8 @@
   "search": "Search",
   "schusszeiten": "Shooting times",
   "jetztFestlegen": "Set now",
-  "ortFestlegen": "You must first set a location for the sun times or an internet connection could not be established.",
-  "timeInLocal": "The times are based on UTC and are converted to the format of the device.\nSwipe left or right to change the date."
+  "ortFestlegen": "You must first set a location for the sun times.",
+  "timeInLocal": "The times are based on UTC and are converted to the format of the device.\nSwipe left or right to change the date.",
+  "defaultLocationTitle": "Select starting point",
+  "defaultLocationDescription": "Default view when adding a kill or calculating shot times."
 }

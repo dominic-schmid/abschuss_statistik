@@ -91,6 +91,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Datum darf nicht leer sein"),
         "dateInFutureError":
             MessageLookupByLibrary.simpleMessage("Zeitpunkt ungültig"),
+        "defaultLocationDescription": MessageLookupByLibrary.simpleMessage(
+            "Standard Ansicht beim Hinzufügen eines Abschusses oder der Berechnung der Schusszeiten."),
+        "defaultLocationTitle":
+            MessageLookupByLibrary.simpleMessage("Startpunkt festlegen"),
         "details": MessageLookupByLibrary.simpleMessage("Details"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Möchtest du dich wirklich abmelden?\nDeine Anmeldedaten und alle deiner Einstellungen werden dabei gelöscht!"),
@@ -171,7 +175,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "onlyShot": MessageLookupByLibrary.simpleMessage("Nur Erlegte"),
         "open": MessageLookupByLibrary.simpleMessage("Offen"),
         "ortFestlegen": MessageLookupByLibrary.simpleMessage(
-            "Du musst zuerst einen Ort für die Sonnenzeiten festlegen oder es konnte keine Internetverbindung hergestellt werden."),
+            "Du musst zuerst einen Ort für die Sonnenzeiten festlegen."),
         "overseer": MessageLookupByLibrary.simpleMessage("Aufseher"),
         "paarungszeiten":
             MessageLookupByLibrary.simpleMessage("Paarungszeiten"),

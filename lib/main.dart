@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jagdstatistik/providers/locale_provider.dart';
 import 'package:jagdstatistik/providers/pref_provider.dart';
+import 'package:jagdstatistik/providers/shooting_time_provider.dart';
 import 'package:jagdstatistik/providers/theme_provider.dart';
 import 'package:jagdstatistik/views/credentials_screen.dart';
 import 'package:jagdstatistik/views/home_screen.dart';
@@ -115,8 +116,8 @@ void main() async {
   String revierPasswort = prefs.getString('revierPasswort') ?? "";
   bool? isDarkMode = prefs.getBool('isDarkMode');
   String? language = prefs.getString('language');
-  double? lat = prefs.getDouble('shootingTimeLat');
-  double? lon = prefs.getDouble('shootingTimeLon');
+  double? lat = prefs.getDouble('defaultLat');
+  double? lon = prefs.getDouble('defaultLng');
   LatLng? latLng = lat != null && lon != null ? LatLng(lat, lon) : null;
 
   Map<String, dynamic> startConfig = {
@@ -187,11 +188,6 @@ class MyApp extends StatelessWidget {
             ? Locale(config['language'] as String)
             : const Locale('de'); // Default to German
 
-    ShootingTimeApi.getFor(
-      config['latLng'], // could be null
-      DateTime.now(),
-    ); // Always load shooting time for today on start up to be saved offline
-
     return FutureBuilder<void>(
         future: tryLoadLocale(locale),
         builder: (context, snap) {
@@ -213,8 +209,11 @@ class MyApp extends StatelessWidget {
                   ),
                 ),
                 ChangeNotifierProvider(
-                  create: (BuildContext context) => PrefProvider(
-                    prefInstance: prefs,
+                  create: (BuildContext context) => PrefProvider(prefs),
+                ),
+                ChangeNotifierProvider(
+                  create: (BuildContext context) => ShootingTimeProvider(
+                    config['latLng'],
                   ),
                 ),
               ],

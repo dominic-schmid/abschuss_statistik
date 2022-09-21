@@ -96,6 +96,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "La data non può essere vuota"),
         "dateInFutureError":
             MessageLookupByLibrary.simpleMessage("Tempo invalido"),
+        "defaultLocationDescription": MessageLookupByLibrary.simpleMessage(
+            "Visualizzazione predefinita quando si aggiunge un\'uccisione o si calcolano i tempi di tiro."),
+        "defaultLocationTitle":
+            MessageLookupByLibrary.simpleMessage("Imposta punto di partenza"),
         "details": MessageLookupByLibrary.simpleMessage("Detagli"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Vuoi davvero fare il log-out?\nI tuoi dati di accesso e tutte le tue impostazioni verranno cancellate!"),
@@ -179,7 +183,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "onlyShot": MessageLookupByLibrary.simpleMessage("Solo sparati"),
         "open": MessageLookupByLibrary.simpleMessage("Aperto"),
         "ortFestlegen": MessageLookupByLibrary.simpleMessage(
-            "È necessario prima impostare una posizione per l\'ora solare, altrimenti non è stato possibile stabilire una connessione a Internet."),
+            "È necessario prima impostare una posizione per l\'ora solare."),
         "overseer": MessageLookupByLibrary.simpleMessage("Sorvegliante"),
         "paarungszeiten":
             MessageLookupByLibrary.simpleMessage("Tempi di accoppiamento"),

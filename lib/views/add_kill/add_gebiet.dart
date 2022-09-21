@@ -169,7 +169,7 @@ class _AddGebietState extends State<AddGebiet> {
                         MaterialPageRoute<LatLng>(
                           builder: (context) => AddMapCoordsScreen(
                             initCoords: _latLng ?? widget.initialLatLng,
-                            zoom: _latLng == null && !widget.isLatLngPreset ? 10 : 15,
+                            zoom: _latLng == null && !widget.isLatLngPreset ? 12 : 15,
                           ),
                         ), // Bolzano default
                       );

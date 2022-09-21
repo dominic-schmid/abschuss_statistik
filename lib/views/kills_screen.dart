@@ -959,7 +959,7 @@ class CustomFab extends StatelessWidget {
           duration: const Duration(milliseconds: 150),
           child: value
               ? FloatingActionButton(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                  onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
                     builder: (context) => const AddKillScreen(),
                     fullscreenDialog: true,
                   )),

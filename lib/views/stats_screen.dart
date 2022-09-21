@@ -1,7 +1,7 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/providers/pref_provider.dart';
+import 'package:jagdstatistik/providers/shooting_time_provider.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/views/hunting_time_screen.dart';
 import 'package:jagdstatistik/views/mating_time_screen.dart';
@@ -196,16 +196,17 @@ class _StatsScreenState extends State<StatsScreen> {
                       assetImage: 'assets/sunrise.png',
                       backgroundColor: hegeabschussFarbe.withAlpha(166),
                       onTap: () async {
-                        if (await Connectivity()
-                                .checkConnectivity()
-                                .timeout(const Duration(seconds: 15)) ==
-                            ConnectivityResult.none) {
-                          showSnackBar(dg.noInternetError, context);
-                          return;
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const ShootingTimesScreen(),
+                          ),
+                        );
+                        if (mounted) {
+                          Provider.of<ShootingTimeProvider>(context, listen: false)
+                              .setDay(
+                            DateTime.now(),
+                          );
                         }
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const ShootingTimesScreen(),
-                        ));
                       },
                     ),
                 ],

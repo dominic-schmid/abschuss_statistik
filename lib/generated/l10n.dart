@@ -1862,10 +1862,10 @@ class S {
     );
   }
 
-  /// `You must first set a location for the sun times or an internet connection could not be established.`
+  /// `You must first set a location for the sun times.`
   String get ortFestlegen {
     return Intl.message(
-      'You must first set a location for the sun times or an internet connection could not be established.',
+      'You must first set a location for the sun times.',
       name: 'ortFestlegen',
       desc: '',
       args: [],
@@ -1877,6 +1877,26 @@ class S {
     return Intl.message(
       'The times are based on UTC and are converted to the format of the device.\nSwipe left or right to change the date.',
       name: 'timeInLocal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select starting point`
+  String get defaultLocationTitle {
+    return Intl.message(
+      'Select starting point',
+      name: 'defaultLocationTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Default view when adding a kill or calculating shot times.`
+  String get defaultLocationDescription {
+    return Intl.message(
+      'Default view when adding a kill or calculating shot times.',
+      name: 'defaultLocationDescription',
       desc: '',
       args: [],
     );

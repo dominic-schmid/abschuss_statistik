@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jagdstatistik/providers/locale_provider.dart';
 import 'package:jagdstatistik/providers/pref_provider.dart';
+import 'package:jagdstatistik/providers/shooting_time_provider.dart';
 import 'package:jagdstatistik/providers/theme_provider.dart';
 import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/views/add_kill/add_map_coordinates.dart';
 import 'package:jagdstatistik/views/credentials_screen.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/utils/constants.dart';
@@ -16,14 +19,59 @@ import 'package:settings_ui/settings_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+enum SettingsInitStep {
+  setDefaultPos,
+}
+
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  final SettingsInitStep? initStep;
+  const SettingsScreen({Key? key, this.initStep}) : super(key: key);
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (widget.initStep != null) {
+        switch (widget.initStep) {
+          case SettingsInitStep.setDefaultPos:
+            await Future.delayed(const Duration(milliseconds: 250));
+            _updateLatLng(closeOnSet: true);
+            break;
+          default:
+            break;
+        }
+      }
+    });
+  }
+
+  void _updateLatLng({bool closeOnSet = false}) async {
+    final prefProvider = Provider.of<PrefProvider>(context, listen: false);
+    final shootingTimeProvider =
+        Provider.of<ShootingTimeProvider>(context, listen: false);
+    // Get device stored coords for default view position
+    final latLng = prefProvider.latLng;
+
+    LatLng? newLatLng = await Navigator.of(context).push(
+      MaterialPageRoute<LatLng>(
+        builder: (context) => AddMapCoordsScreen(
+          initCoords: latLng ?? Constants.bolzanoCoords,
+          zoom: latLng == null ? 10 : 12.5,
+        ),
+      ), // Bolzano default
+    );
+
+    if (newLatLng != null && mounted) {
+      await prefProvider.setLatLng(newLatLng);
+      await shootingTimeProvider.setLatLng(newLatLng);
+      if (mounted && closeOnSet) Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // listen for locale changes
@@ -84,7 +132,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                         SettingsTile.switchTile(
                           onToggle: (value) {
-                            prefProvider.prefInstance.setBool('showPerson', value);
+                            prefProvider.get.setBool('showPerson', value);
                             prefProvider.update();
                           },
                           description: Text(dg.settingsShowNamesBody),
@@ -101,6 +149,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           initialValue: prefProvider.betaMode,
                           leading: const Icon(Icons.construction_rounded),
                           title: Text(dg.betaModeTitle),
+                        ),
+                        SettingsTile(
+                          onPressed: (context) => _updateLatLng(),
+                          title: Text(dg.defaultLocationTitle),
+                          description: Text(dg.defaultLocationDescription),
+                          leading: const Icon(Icons.map_rounded),
                         ),
                       ],
                     ),

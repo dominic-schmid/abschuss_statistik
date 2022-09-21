@@ -7,6 +7,7 @@ import 'package:jagdstatistik/models/constants/cause.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/constants/usage.dart';
 import 'package:jagdstatistik/models/kill_entry.dart';
+import 'package:jagdstatistik/providers/pref_provider.dart';
 import 'package:jagdstatistik/utils/constants.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/views/add_kill/add_details.dart';
@@ -16,6 +17,7 @@ import 'package:jagdstatistik/views/add_kill/add_wild.dart';
 import 'package:jagdstatistik/views/add_kill/confirm_add.dart';
 import 'package:jagdstatistik/widgets/chart_app_bar.dart';
 import 'package:jagdstatistik/widgets/custom_drop_down.dart';
+import 'package:provider/provider.dart';
 
 class AddKillScreen extends StatefulWidget {
   final KillEntry? killEntry;
@@ -122,9 +124,9 @@ class _AddKillScreenState extends State<AddKillScreen> {
     // Pre-set all controller-only values
     if (widget.killEntry != null) {
       _dateTime = widget.killEntry!.datetime;
-      _latLng = widget.killEntry!.gpsLat == null || widget.killEntry!.gpsLon == null
-          ? null // Default bolzano if none selected yet,
-          : LatLng(widget.killEntry!.gpsLat!, widget.killEntry!.gpsLon!);
+      _latLng = widget.killEntry!.gpsLat != null || widget.killEntry!.gpsLon != null
+          ? LatLng(widget.killEntry!.gpsLat!, widget.killEntry!.gpsLon!)
+          : null; // Default bolzano if none selected yet,
       _alterController.text = widget.killEntry!.alter;
       _alterWController.text = widget.killEntry!.alterw;
       _gewichtController.text = widget.killEntry!.gewicht.toString();
@@ -171,6 +173,8 @@ class _AddKillScreenState extends State<AddKillScreen> {
         _geschlechtController.text = ges.name;
         _ursacheController.text = cause.name;
         _verwendungController.text = usage.name;
+        // try to get the default latLng for the google map if there is not a kill given
+
       }
     });
   }
@@ -178,6 +182,8 @@ class _AddKillScreenState extends State<AddKillScreen> {
   @override
   Widget build(BuildContext context) {
     final dg = S.of(context);
+    final defaultLatLng = Provider.of<PrefProvider>(context).latLng;
+
     Size size = MediaQuery.of(context).size;
 
     // Translate names in case of context change
@@ -248,10 +254,12 @@ class _AddKillScreenState extends State<AddKillScreen> {
           isLatLngPreset:
               widget.killEntry?.gpsLat != null && widget.killEntry?.gpsLon != null,
           initialLatLng:
-              widget.killEntry?.gpsLat == null || widget.killEntry?.gpsLon == null
-                  ? _latLng ??
+              widget.killEntry?.gpsLat != null || widget.killEntry?.gpsLon != null
+                  ? LatLng(widget.killEntry!.gpsLat!, widget.killEntry!.gpsLon!)
+                  : _latLng ??
+                      defaultLatLng ??
                       Constants.bolzanoCoords // Default bolzano if none selected yet,
-                  : LatLng(widget.killEntry!.gpsLat!, widget.killEntry!.gpsLon!),
+          ,
           onLatLngSelect: (pos) {
             setState(() {
               _latLng = pos;

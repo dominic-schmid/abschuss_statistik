@@ -1,14 +1,11 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/shooting_time.dart';
-import 'package:jagdstatistik/providers/pref_provider.dart';
-import 'package:jagdstatistik/utils/constants.dart';
-import 'package:jagdstatistik/utils/database_methods.dart';
-import 'package:jagdstatistik/utils/request_methods.dart';
+import 'package:jagdstatistik/providers/shooting_time_provider.dart';
 import 'package:jagdstatistik/utils/utils.dart';
-import 'package:jagdstatistik/views/add_kill/add_map_coordinates.dart';
+import 'package:jagdstatistik/views/settings_screen.dart';
 import 'package:jagdstatistik/widgets/chart_app_bar.dart';
 import 'package:jagdstatistik/widgets/no_data_found.dart';
 import 'package:provider/provider.dart';
@@ -24,43 +21,39 @@ class _ShootingTimesScreenState extends State<ShootingTimesScreen> {
   final int _initialOffset = DateTime.now()
       .difference(DateTime(DateTime.now().year))
       .inDays; // get start of year
+
   late PageController _pageController;
-
-  final ValueNotifier<bool?> _isBetween = ValueNotifier(null);
-
-  final TextStyle ts = const TextStyle(fontSize: 26, fontWeight: FontWeight.w400);
-  final TextStyle tl = const TextStyle(fontSize: 44, fontWeight: FontWeight.w600);
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _initialOffset);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (await Connectivity().checkConnectivity().timeout(const Duration(seconds: 10)) ==
+          ConnectivityResult.none) {
+        final dg = S.of(context);
+        showSnackBar(dg.noInternetError, context);
+        return;
+      }
+    });
   }
 
-  Future<void> _updateCoords() async {
-    final prefProvider = Provider.of<PrefProvider>(context, listen: false);
-    final latLng = prefProvider.shootingLatLng;
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
-    LatLng? newLatLng = await Navigator.of(context).push(
-      MaterialPageRoute<LatLng>(
-        builder: (context) => AddMapCoordsScreen(
-          initCoords: latLng ?? Constants.bolzanoCoords,
-          zoom: latLng == null ? 10 : 12.5,
+  /// Update coordinate by pushing settings page and then the map and updating providers
+  Future<void> _updateCoords() => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const SettingsScreen(
+            initStep: SettingsInitStep.setDefaultPos,
+          ),
         ),
-      ), // Bolzano default
-    );
+      );
 
-    if (newLatLng != null) {
-      print('NewLatLng: %$newLatLng');
-      if (!mounted) return;
-      await prefProvider.get.setDouble('shootingTimeLat', newLatLng.latitude);
-      await prefProvider.get.setDouble('shootingTimeLon', newLatLng.longitude);
-      prefProvider.update();
-      _showToday();
-    }
-  }
-
-  Future<void> _showToday() async {
+  Future<void> _animateToToday() async {
     await _pageController.animateToPage(
       _initialOffset,
       duration: const Duration(milliseconds: 666),
@@ -78,12 +71,8 @@ class _ShootingTimesScreenState extends State<ShootingTimesScreen> {
         title: Text(dg.schusszeiten),
         actions: [
           IconButton(
-            onPressed: _showToday,
+            onPressed: _animateToToday,
             icon: const Icon(Icons.today_rounded),
-          ),
-          IconButton(
-            onPressed: () => _updateCoords(),
-            icon: const Icon(Icons.map_rounded),
           ),
         ],
       ),
@@ -95,139 +84,51 @@ class _ShootingTimesScreenState extends State<ShootingTimesScreen> {
             flex: 5,
             child: PageView.builder(
                 controller: _pageController,
-                itemBuilder: (context, index) {
-                  final prefProvider = Provider.of<PrefProvider>(context);
-                  double? lat = prefProvider.get.getDouble('shootingTimeLat');
-                  double? lon = prefProvider.get.getDouble('shootingTimeLon');
-                  LatLng? latLng = lat != null && lon != null ? LatLng(lat, lon) : null;
-
-                  final selectedDate = DateTime.now().add(
+                onPageChanged: (index) {
+                  final sTime = Provider.of<ShootingTimeProvider>(context, listen: false);
+                  sTime.setDay(DateTime.now().add(
                     Duration(days: index - _initialOffset),
-                  );
+                  ));
+                },
+                itemBuilder: (context, index) {
+                  final sTime = Provider.of<ShootingTimeProvider>(context);
+                  if (sTime.latLng == null) return _notFound(dg.ortFestlegen);
+                  if (sTime.shootingTime == null) _notFound(dg.noInternetError, false);
 
-                  return FutureBuilder<ShootingTime?>(
-                      future: ShootingTimeApi.getFor(latLng, selectedDate),
-                      builder: (context, snap) {
-                        bool isLoading = snap.connectionState != ConnectionState.done;
-
-                        if (!snap.hasData && !isLoading) {
-                          _isBetween.value = null;
-                          return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                NoDataFoundWidget(suffix: dg.ortFestlegen),
-                                ElevatedButton.icon(
-                                  onPressed: () => _updateCoords(),
-                                  icon: const Icon(Icons.settings_rounded),
-                                  label: Text(dg.jetztFestlegen),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-
-                        ShootingTime? sTime = snap.data;
-                        if (!isLoading && sTime != null) {
-                          // delay so both builders arent being built at the same time..
-                          Future.delayed(const Duration(milliseconds: 250)).then(
-                            (value) => _isBetween.value =
-                                DateTime.now().isAfter(sTime.from) &&
-                                    DateTime.now().isBefore(sTime.until),
-                          );
-                        }
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                DateFormat.yMd().format(selectedDate),
-                                style: ts,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                isLoading || sTime == null
-                                    ? const Center(
-                                        child: CircularProgressIndicator(
-                                          color: rehwildFarbe,
-                                        ),
-                                      )
-                                    : Flexible(
-                                        child: Text(
-                                          ShootingTime.format(sTime.sunrise),
-                                          style: ts,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                const Flexible(
-                                    child: Icon(
-                                  Icons.sunny,
-                                  size: 32,
-                                  color: Colors.yellow,
-                                )),
-                                const Flexible(
-                                    child: Icon(
-                                  Icons.nightlight,
-                                  size: 32,
-                                  color: Colors.blueGrey,
-                                )),
-                                isLoading || sTime == null
-                                    ? const Center(
-                                        child: CircularProgressIndicator(
-                                          color: rehwildFarbe,
-                                        ),
-                                      )
-                                    : Flexible(
-                                        child: Text(
-                                          ShootingTime.format(sTime.sunset),
-                                          style: ts,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                              ],
-                            ),
-                            Visibility(
-                              visible: !isLoading,
-                              child: Text(
-                                sTime.toString(),
-                                style: tl,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        );
-                      });
-                }),
-          ),
-          Flexible(
-            child: ValueListenableBuilder<bool?>(
-                valueListenable: _isBetween,
-                builder: (context, value, child) {
-                  return AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 500),
-                    child: Icon(
-                      _isBetween.value == true
-                          ? Icons.check_rounded
-                          : Icons.close_rounded,
-                      key: _isBetween.value == true
-                          ? const Key('checkIconShootingTime')
-                          : const Key('closeIconShootingTime'),
-                      size: 44,
-                      color: _isBetween.value == true
-                          ? rehwildFarbe
-                          : _isBetween.value == false
-                              ? rotwildFarbe
-                              : secondaryColor,
+                  return ShootingTimeDayDisplay(
+                    key: Key("sTime-${index.toString()}"),
+                    sTime: sTime.shootingTime,
+                    day: DateTime.now().add(
+                      Duration(days: index - _initialOffset),
                     ),
                   );
                 }),
+          ),
+          Flexible(
+            child: Consumer<ShootingTimeProvider>(
+              builder: (context, prov, child) {
+                bool? between = prov.isBetween;
+                return AnimatedSwitcher(
+                  switchInCurve: Curves.easeIn,
+                  switchOutCurve: Curves.easeOut,
+                  duration: const Duration(milliseconds: 500),
+                  child: Icon(
+                    between == true ? Icons.check_rounded : Icons.close_rounded,
+                    key: between == true
+                        ? const Key('checkIconShootingTime')
+                        : between == false
+                            ? const Key('closeIconShootingTime')
+                            : const Key('noIconShootingTime'),
+                    size: 44,
+                    color: between == true
+                        ? rehwildFarbe
+                        : between == false
+                            ? rotwildFarbe
+                            : Colors.transparent,
+                  ),
+                );
+              },
+            ),
           ),
           Flexible(
             flex: 2,
@@ -249,6 +150,158 @@ class _ShootingTimesScreenState extends State<ShootingTimesScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _notFound(String suffix, [bool showButton = true]) {
+    final dg = S.of(context);
+    Size size = MediaQuery.of(context).size;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          NoDataFoundWidget(suffix: suffix),
+          Visibility(
+            visible: showButton,
+            child: ElevatedButton.icon(
+              onPressed: _updateCoords,
+              icon: const Icon(Icons.settings_rounded),
+              label: Text(dg.jetztFestlegen),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ShootingTimeDayDisplay extends StatefulWidget {
+  final ShootingTime? sTime;
+  final DateTime day;
+
+  const ShootingTimeDayDisplay({
+    Key? key,
+    required this.sTime,
+    required this.day,
+  }) : super(key: key);
+
+  @override
+  State<ShootingTimeDayDisplay> createState() => _ShootingTimeDayDisplayState();
+}
+
+class _ShootingTimeDayDisplayState extends State<ShootingTimeDayDisplay> {
+  final TextStyle ts = const TextStyle(fontSize: 26, fontWeight: FontWeight.w400);
+  final TextStyle tl = const TextStyle(fontSize: 44, fontWeight: FontWeight.w600);
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.sTime == null ? _buildNullTime() : _buildShootingTime(widget.sTime!);
+  }
+
+  Widget _buildNullTime() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Flexible(
+          child: Text(
+            DateFormat.yMd().format(widget.day),
+            style: ts,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Flexible(
+              child: Text(
+                '-',
+                style: ts,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const Flexible(
+                child: Icon(
+              Icons.sunny,
+              size: 32,
+              color: Colors.yellow,
+            )),
+            const Flexible(
+                child: Icon(
+              Icons.nightlight,
+              size: 32,
+              color: Colors.blueGrey,
+            )),
+            Flexible(
+              child: Text(
+                '-',
+                style: ts,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+        Text(
+          '',
+          style: tl,
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildShootingTime(ShootingTime sTime) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Flexible(
+          child: Text(
+            DateFormat.yMd().format(widget.day),
+            style: ts,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Flexible(
+              child: Text(
+                ShootingTime.format(sTime.sunrise),
+                style: ts,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const Flexible(
+                child: Icon(
+              Icons.sunny,
+              size: 32,
+              color: Colors.yellow,
+            )),
+            const Flexible(
+                child: Icon(
+              Icons.nightlight,
+              size: 32,
+              color: Colors.blueGrey,
+            )),
+            Flexible(
+              child: Text(
+                ShootingTime.format(sTime.sunset),
+                style: ts,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+        Text(
+          sTime.toString(),
+          style: tl,
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

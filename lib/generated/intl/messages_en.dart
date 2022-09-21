@@ -92,6 +92,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Date cannot be empty"),
         "dateInFutureError":
             MessageLookupByLibrary.simpleMessage("Time invalid"),
+        "defaultLocationDescription": MessageLookupByLibrary.simpleMessage(
+            "Default view when adding a kill or calculating shot times."),
+        "defaultLocationTitle":
+            MessageLookupByLibrary.simpleMessage("Select starting point"),
         "details": MessageLookupByLibrary.simpleMessage("Details"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Do you really want to log out?\nYour login data and all your settings will be deleted!"),
@@ -171,7 +175,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "onlyShot": MessageLookupByLibrary.simpleMessage("Only shot"),
         "open": MessageLookupByLibrary.simpleMessage("Open"),
         "ortFestlegen": MessageLookupByLibrary.simpleMessage(
-            "You must first set a location for the sun times or an internet connection could not be established."),
+            "You must first set a location for the sun times."),
         "overseer": MessageLookupByLibrary.simpleMessage("Overseer"),
         "paarungszeiten": MessageLookupByLibrary.simpleMessage("Mating times"),
         "perMonth": MessageLookupByLibrary.simpleMessage("per Month"),

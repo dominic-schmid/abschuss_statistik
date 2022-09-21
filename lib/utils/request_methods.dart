@@ -100,21 +100,21 @@ class ShootingTimeApi {
   //"https://api.sunrise-sunset.org/json?lat=36.7201600&lng=-4.4203400&date=2022-09-13";
   static String baseUrl = "https://api.sunrise-sunset.org/json?";
 
-  static Future<ShootingTime?> forDate({required LatLng latLng, DateTime? day}) async {
+  static Future<ShootingTime?> _makeRequest(
+      {required LatLng latLng, DateTime? day}) async {
     day = day ?? DateTime.now();
-
-    final res = await Requests.get(
-      baseUrl,
-      queryParameters: {
-        'lat': latLng.latitude,
-        'lng': latLng.longitude,
-        'date': DateFormat('yyyy-MM-dd').format(day),
-        'formatted': 0, // force datetime to be in ISO
-      },
-      timeoutSeconds: 15,
-    );
-
     try {
+      final res = await Requests.get(
+        baseUrl,
+        queryParameters: {
+          'lat': latLng.latitude,
+          'lng': latLng.longitude,
+          'date': DateFormat('yyyy-MM-dd').format(day),
+          'formatted': 0, // force datetime to be in ISO
+        },
+        timeoutSeconds: 15,
+      );
+
       return ShootingTime.fromMap(latLng, res.json());
     } catch (e) {
       print("Error parsing shooting time: ${e.toString()}");
@@ -127,17 +127,16 @@ class ShootingTimeApi {
 
     // try to find time from DB
     ShootingTime? t = await SqliteDB().getShootingTimeFor(latLng, day);
-    print('DB returned $t');
 
     if (t != null) return t;
 
     // if time in db is not found (still null), get from API
-    t = await ShootingTimeApi.forDate(latLng: latLng, day: day);
+    t = await ShootingTimeApi._makeRequest(latLng: latLng, day: day);
 
     // if API has found, insert to DB before notifying listeners and return
     if (t != null) {
       await SqliteDB().insertShootingTime(t);
-      print('Inserted shooting time $t to Database!');
+      print('Inserted new shooting time $t to Database!');
     }
 
     return t;
