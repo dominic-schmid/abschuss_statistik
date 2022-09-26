@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/kill_entry.dart';
+import 'package:jagdstatistik/utils/constants.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -151,7 +152,7 @@ class _AllMapScreenState extends State<AllMapScreen> {
     } else {
       // Fallback default position: Bolzano
       originCamPosition = const CameraPosition(
-        target: LatLng(46.500000, 11.350000),
+        target: Constants.bolzanoCoords,
         bearing: cameraBearing,
         tilt: cameraTilt,
         zoom: cameraZoom,

@@ -40,15 +40,17 @@ class _HomeScreenState extends State<HomeScreen> {
           const Duration(milliseconds: 500),
           () async {
             bool shouldEnable = await showAlertDialog(
-              title: " ${dg.biometrics}",
-              description: dg.shouldUseLocalAuth,
-              yesOption: dg.dialogYes,
-              noOption: dg.dialogNo,
-              onYes: () {},
-              icon: Icons.fingerprint_rounded,
-              context: context,
-            );
+                  title: " ${dg.biometrics}",
+                  description: dg.shouldUseLocalAuth,
+                  yesOption: dg.dialogYes,
+                  noOption: dg.dialogNo,
+                  onYes: () {},
+                  icon: Icons.fingerprint_rounded,
+                  context: context,
+                ) ??
+                false;
             await prefProvider.get.setBool('localAuth', shouldEnable);
+            _isAuthenticated = true;
           },
         );
       } else if (hasSetLocalAuth == true) {

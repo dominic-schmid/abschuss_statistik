@@ -16,6 +16,14 @@ class ChipSelectorModal extends StatefulWidget {
 }
 
 class _ChipSelectorModalState extends State<ChipSelectorModal> {
+  bool _selectAll = false;
+
+  @override
+  void initState() {
+    _selectAll = widget.chips.every((element) => element.isSelected);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -31,11 +39,30 @@ class _ChipSelectorModalState extends State<ChipSelectorModal> {
         child: Column(
           children: [
             _buildHandle(context),
-            Text(
-              widget.title,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+            InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () {
+                if (_selectAll) {
+                  widget.chips.forEach((element) => element.isSelected = false);
+                } else {
+                  widget.chips.forEach((element) => element.isSelected = true);
+                }
+                setState(() => _selectAll = !_selectAll);
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.title,
+                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             Wrap(
               alignment: WrapAlignment.spaceEvenly,
               children: widget.chips
