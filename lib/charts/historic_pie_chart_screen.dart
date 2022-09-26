@@ -36,7 +36,9 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
   List<FilterChipData> filterChips = [];
 
   bool _isLoading = true;
+  List<FilterChipData> configurationChips = [];
   bool _showLegend = false;
+  bool _showOnlyErlegt = true;
 
   Map<String, String> groupBy = {};
 
@@ -70,6 +72,12 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       groupBys = getBaseGroupBys(context).toList();
       groupBy = groupBys.first;
+      final dg = S.of(context);
+      configurationChips.addAll([
+        FilterChipData(
+            label: dg.onlyShot, color: Colors.red, isSelected: _showOnlyErlegt),
+        FilterChipData(label: dg.legend, color: Colors.orange, isSelected: _showLegend),
+      ]);
     });
   }
 
@@ -101,13 +109,14 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
 
   getData() async {
     Database db = await SqliteDB().db;
+    String erlegtQuery = _showOnlyErlegt ? "ursache = 'erlegt'" : "1 = 1";
 
     List<Map<String, Object?>> res = await db.rawQuery("""
     SELECT
     COUNT(*) AS Anzahl,
     ${groupBy['value']} AS Gruppierung
     FROM Kill
-    WHERE year >= ${yearRange.start.toInt()} AND year <= ${yearRange.end.toInt()}
+    WHERE year >= ${yearRange.start.toInt()} AND year <= ${yearRange.end.toInt()} AND $erlegtQuery
     GROUP BY ${groupBy['value']}    
     """);
 
@@ -216,8 +225,39 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
     return Scaffold(
       appBar: ChartAppBar(title: Text(groupBy['key'] as String), actions: [
         IconButton(
-          onPressed: () => setState(() => _showLegend = !_showLegend),
-          icon: const Icon(Icons.legend_toggle_rounded),
+          onPressed: () async {
+            await showModalBottomSheet(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                builder: (BuildContext context) {
+                  return ChipSelectorModal(
+                      padding: EdgeInsets.only(
+                        top: size.height * 0.01,
+                        left: size.width * 0.05,
+                        right: size.width * 0.05,
+                        bottom: size.height * 0.015,
+                      ),
+                      title: dg.configuration,
+                      chips: configurationChips);
+                });
+            setState(() {
+              _showOnlyErlegt = configurationChips
+                  .where((element) => element.label == dg.onlyShot)
+                  .first
+                  .isSelected;
+              _showLegend = configurationChips
+                  .where((element) => element.label == dg.legend)
+                  .first
+                  .isSelected;
+            });
+            getData();
+          },
+          icon: const Icon(Icons.settings),
         ),
       ]),
       body: ListView(
@@ -363,7 +403,6 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
                           swapAnimationCurve: Curves.decelerate, // Optional
                           PieChartData(
                             startDegreeOffset: 180,
-
                             pieTouchData: PieTouchData(
                                 touchCallback: (FlTouchEvent event, pieTouchResponse) {
                               setState(() {

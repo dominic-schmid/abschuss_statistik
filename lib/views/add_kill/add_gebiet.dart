@@ -145,11 +145,14 @@ class _AddGebietState extends State<AddGebiet> {
                 Flexible(
                   child: AppTextField(
                     onSelect: (_) {
-                      setState(() {
-                        _latLng = _oertlichkeitTypesSelect!
-                            .firstWhere((element) => element.isSelected ?? false)
-                            .value as LatLng;
-                      });
+                      _latLng = _oertlichkeitTypesSelect!
+                          .firstWhere((element) => element.isSelected ?? false)
+                          .value as LatLng;
+                      if (_latLng != null) {
+                        // should always be true
+                        setState(() {});
+                        widget.onLatLngSelect(_latLng!);
+                      }
                     },
                     textEditingController: widget.oertlichkeitController,
                     title: dg.sortPlace,

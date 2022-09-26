@@ -5,6 +5,7 @@ import 'package:jagdstatistik/providers/locale_provider.dart';
 import 'package:jagdstatistik/providers/pref_provider.dart';
 import 'package:jagdstatistik/providers/shooting_time_provider.dart';
 import 'package:jagdstatistik/providers/theme_provider.dart';
+import 'package:jagdstatistik/utils/local_auth_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/views/add_kill/add_map_coordinates.dart';
 import 'package:jagdstatistik/views/credentials_screen.dart';
@@ -59,10 +60,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     LatLng? newLatLng = await Navigator.of(context).push(
       MaterialPageRoute<LatLng>(
         builder: (context) => AddMapCoordsScreen(
-          initCoords: latLng ?? Constants.bolzanoCoords,
+          initCoords: latLng ?? Constants.bolzanoCoords, // Bolzano default if none set
           zoom: latLng == null ? 10 : 12.5,
         ),
-      ), // Bolzano default
+      ),
     );
 
     if (newLatLng != null && mounted) {
@@ -149,6 +150,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           initialValue: prefProvider.betaMode,
                           leading: const Icon(Icons.construction_rounded),
                           title: Text(dg.betaModeTitle),
+                        ),
+                      ],
+                    ),
+                    SettingsSection(
+                      title: Text(
+                        dg.appSettings,
+                        style: const TextStyle(color: rehwildFarbe),
+                      ),
+                      tiles: <SettingsTile>[
+                        SettingsTile.switchTile(
+                          onToggle: (value) async {
+                            bool hasBiometrics = await LocalAuthApi.hasBiometrics();
+                            // If trying to enable biometrics when there are none found => error
+                            if (value == true && !hasBiometrics && mounted) {
+                              await showSnackBar(dg.noBiometricsFound, context);
+                              return;
+                            }
+                            prefProvider.get.setBool('localAuth', value);
+                            prefProvider.update();
+                          },
+                          description: Text(dg.empfohlen),
+                          initialValue: prefProvider.localAuth,
+                          leading: const Icon(Icons.fingerprint_rounded),
+                          title: Text(dg.useLocalAuth),
                         ),
                         SettingsTile(
                           onPressed: (context) => _updateLatLng(),
@@ -270,9 +295,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                               size: size.width * 0.1,
                             ),
-                            applicationName: 'Jagdstatistik',
+                            applicationName: dg.appTitle,
                             applicationVersion: 'Version ${Constants.appVersion}',
-                            applicationLegalese: 'Dominic Schmid © 2022',
+                            applicationLegalese: Constants.appLegalese,
                           ),
                           leading: const Icon(Icons.app_registration_rounded),
                           title: Text(dg.settingsAbout),
@@ -294,12 +319,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               noOption: dg.dialogNo,
                               onYes: () {
                                 deletePrefs().then(
-                                    (value) => Navigator.of(context).pushAndRemoveUntil(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const CredentialsScreen()),
-                                          (route) => false,
-                                        ));
+                                  (value) => Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) => const CredentialsScreen()),
+                                    (route) => false,
+                                  ),
+                                );
                               },
                               icon: Icons.warning,
                               context: context,
@@ -313,15 +338,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
               ),
-              // const Center(
-              //   child: Padding(
-              //     padding: EdgeInsets.all(8.0),
-              //     child: Text(
-              //       'Version $appVersion © 2022',
-              //       style: TextStyle(color: Colors.grey),
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -355,6 +371,7 @@ class _JagdverbandWebViewState extends State<JagdverbandWebView> {
 
   @override
   Widget build(BuildContext context) {
+    final dg = S.of(context);
     print('Opening WebView for ${widget.url}');
     for (var c in widget.cookies) {
       print('Using Cookie: ${c.domain} ${c.name} ${c.value}');
@@ -369,7 +386,7 @@ class _JagdverbandWebViewState extends State<JagdverbandWebView> {
         onWebViewCreated: (controller) {
           ctrl = controller;
           // controller.loadUrl(widget.url, headers: RequestMethods.baseHeaders);
-          showSnackBar('Du wirst jetzt angemeldet...', context);
+          showSnackBar(dg.willBeLoggedInAuto, context);
         },
         onPageFinished: (page) async {
           if (ctrl != null) {

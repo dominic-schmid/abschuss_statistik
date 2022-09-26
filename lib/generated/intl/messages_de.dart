@@ -44,19 +44,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "altgeiss": MessageLookupByLibrary.simpleMessage("Altgeiß"),
         "alttier": MessageLookupByLibrary.simpleMessage("Alttier"),
         "andereWildart": MessageLookupByLibrary.simpleMessage("Andere Wildart"),
+        "appSettings": MessageLookupByLibrary.simpleMessage("App"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Jagdstatistik"),
         "area": MessageLookupByLibrary.simpleMessage("Gebiet"),
         "bache": MessageLookupByLibrary.simpleMessage("Bache"),
         "betaModeDescription": MessageLookupByLibrary.simpleMessage(
             "Einige Features funktionieren möglicherweise nicht richtig."),
         "betaModeTitle": MessageLookupByLibrary.simpleMessage("Beta Modus"),
+        "biometrics": MessageLookupByLibrary.simpleMessage("Biometrie"),
         "bockjahrling": MessageLookupByLibrary.simpleMessage("Bockjährling"),
         "bockkitz": MessageLookupByLibrary.simpleMessage("Bockkitz"),
+        "border": MessageLookupByLibrary.simpleMessage("Grenze"),
         "both": MessageLookupByLibrary.simpleMessage("Beide"),
         "brutzeit": MessageLookupByLibrary.simpleMessage("Brutzeit"),
         "causes": MessageLookupByLibrary.simpleMessage("Ursachen"),
         "chartBasedOnDownloaded": MessageLookupByLibrary.simpleMessage(
-            "Die Diagramme basieren auf deinen heruntergeladenen Daten. Falls ein Jahr fehlt, kannst du es auf der Startseite auswählen und heruntergeladen.\n\nDiese Diagramme bieten Aufschluss über die historische Entwicklung des Wilds in deinem Revier und wurden so gestaltet, dass du dir den Aufbau selbst konfigurieren kannst!"),
+            "Die Diagramme basieren auf deinen heruntergeladenen Daten. Falls ein Jahr fehlt, kannst du es auf der Startseite auswählen und herunterladen.\n\nDiese Diagramme bieten Aufschluss über die historische Entwicklung des Wilds in deinem Revier und wurden so gestaltet, dass du dir den Aufbau selbst konfigurieren kannst!"),
         "checkOutThisKillXY": m0,
         "close": MessageLookupByLibrary.simpleMessage("Schließen"),
         "companion": MessageLookupByLibrary.simpleMessage("Begleiter"),
@@ -106,6 +109,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "eigengebrauch": MessageLookupByLibrary.simpleMessage("Eigengebrauch"),
         "eigengebrauchAbgabe": MessageLookupByLibrary.simpleMessage(
             "Eigengebrauch - Abgabe zur Weiterverarbeitung"),
+        "empfohlen": MessageLookupByLibrary.simpleMessage("Empfohlen"),
         "erlegt": MessageLookupByLibrary.simpleMessage("Erlegt"),
         "error": MessageLookupByLibrary.simpleMessage("Fehler"),
         "fallwild": MessageLookupByLibrary.simpleMessage("Fallwild"),
@@ -147,6 +151,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Nur die angezeigten Abschüsse werden exportiert."),
         "ksShowXFromYProgressBar": m1,
         "ksTerritoryTitle": MessageLookupByLibrary.simpleMessage("Revier"),
+        "legend": MessageLookupByLibrary.simpleMessage("Legende"),
         "loginDataInvalid": MessageLookupByLibrary.simpleMessage(
             "Deine Anmeldedaten sind nicht mehr gültig!"),
         "maennlich": MessageLookupByLibrary.simpleMessage("Männlich"),
@@ -157,12 +162,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "monthlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Monatsverlauf"),
         "murmeltier": MessageLookupByLibrary.simpleMessage("Murmeltier"),
+        "needLogin": MessageLookupByLibrary.simpleMessage(
+            "Da du die biometrische Authentifizierung aktiviert hast, musst du angemeldet sein, um Abschüsse zu sehen!"),
         "newKills": MessageLookupByLibrary.simpleMessage("Neue Abschüsse"),
         "nichtBekannt": MessageLookupByLibrary.simpleMessage("Nicht bekannt"),
         "nichtGefunden": MessageLookupByLibrary.simpleMessage(
             "Nicht gefunden / Nachsuche erfolglos"),
         "nichtVerwertbar":
             MessageLookupByLibrary.simpleMessage("Nicht verwertbar"),
+        "noBiometricsFound": MessageLookupByLibrary.simpleMessage(
+            "Fehler: Keine biometrischen Daten gefunden!"),
         "noDataFoundText": MessageLookupByLibrary.simpleMessage(
             "Hier gibt es nichts zu sehen..."),
         "noInternetError":
@@ -220,8 +229,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsTitle": MessageLookupByLibrary.simpleMessage("Einstellungen"),
         "settingsWebsite": MessageLookupByLibrary.simpleMessage("Webseite"),
         "sexes": MessageLookupByLibrary.simpleMessage("Geschlechter"),
+        "shouldUseLocalAuth": MessageLookupByLibrary.simpleMessage(
+            "Wenn du die Biometrische authentifizierung aktivierst, wirst du beim Start der App nach den auf deinem Gerät gespeicherten Anmeldedaten gefragt.\nMöchtest du Biometrie aktivieren? (empfohlen)"),
         "signOfOrigin":
             MessageLookupByLibrary.simpleMessage("Ursprungszeichen"),
+        "signOutResetAll": MessageLookupByLibrary.simpleMessage(
+            "Wenn du Probleme bei der Anmeldung hast kannst du alle Einstellungen zurücksetzen.\nAchtung: Dadurch wirst du abgemeldet und musst die Revieranmeldung erneut durchführen!"),
         "sortCause": MessageLookupByLibrary.simpleMessage("Ursache"),
         "sortDate": MessageLookupByLibrary.simpleMessage("Datum"),
         "sortGameType": MessageLookupByLibrary.simpleMessage("Wildart"),
@@ -256,6 +269,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Überläuferkeiler"),
         "usage": MessageLookupByLibrary.simpleMessage("Verwendung"),
         "usages": MessageLookupByLibrary.simpleMessage("Verwendungen"),
+        "useLocalAuth":
+            MessageLookupByLibrary.simpleMessage("Biometrische Anmeldung"),
         "verkauf": MessageLookupByLibrary.simpleMessage("Verkauf"),
         "vomZug": MessageLookupByLibrary.simpleMessage("Vom Zug überfahren"),
         "weiblich": MessageLookupByLibrary.simpleMessage("Weiblich"),
@@ -264,6 +279,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "weightInKg": MessageLookupByLibrary.simpleMessage("Gewicht in kg"),
         "wild": MessageLookupByLibrary.simpleMessage("Wild"),
         "wildkalb": MessageLookupByLibrary.simpleMessage("Wildkalb"),
+        "willBeLoggedInAuto": MessageLookupByLibrary.simpleMessage(
+            "Du wirst gleich automatisch angemeldet..."),
         "wochen": MessageLookupByLibrary.simpleMessage("Wochen"),
         "xJagdzeiten": m4,
         "xKill_s": m5,

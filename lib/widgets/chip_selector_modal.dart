@@ -6,7 +6,9 @@ import '../models/filter_chip_data.dart';
 class ChipSelectorModal extends StatefulWidget {
   final List<FilterChipData> chips;
   final String title;
-  const ChipSelectorModal({Key? key, required this.title, required this.chips})
+  final EdgeInsets? padding;
+  const ChipSelectorModal(
+      {Key? key, required this.title, required this.chips, this.padding})
       : super(key: key);
 
   @override
@@ -19,12 +21,13 @@ class _ChipSelectorModalState extends State<ChipSelectorModal> {
     Size size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.only(
-          top: size.height * 0.01,
-          left: size.width * 0.075,
-          right: size.width * 0.075,
-          bottom: size.height * 0.015,
-        ),
+        padding: widget.padding ??
+            EdgeInsets.only(
+              top: size.height * 0.01,
+              left: size.width * 0.075,
+              right: size.width * 0.075,
+              bottom: size.height * 0.015,
+            ),
         child: Column(
           children: [
             _buildHandle(context),

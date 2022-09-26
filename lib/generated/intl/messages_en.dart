@@ -45,14 +45,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "alttier": MessageLookupByLibrary.simpleMessage("Adult female"),
         "andereWildart":
             MessageLookupByLibrary.simpleMessage("Other wild species"),
+        "appSettings": MessageLookupByLibrary.simpleMessage("App"),
         "appTitle": MessageLookupByLibrary.simpleMessage("Hunting statistics"),
         "area": MessageLookupByLibrary.simpleMessage("Area"),
         "bache": MessageLookupByLibrary.simpleMessage("Female boar"),
         "betaModeDescription": MessageLookupByLibrary.simpleMessage(
             "Some features may not work correctly."),
         "betaModeTitle": MessageLookupByLibrary.simpleMessage("Beta mode"),
+        "biometrics": MessageLookupByLibrary.simpleMessage("Biometrics"),
         "bockjahrling": MessageLookupByLibrary.simpleMessage("Young buck"),
         "bockkitz": MessageLookupByLibrary.simpleMessage("Buck fawn"),
+        "border": MessageLookupByLibrary.simpleMessage("Border"),
         "both": MessageLookupByLibrary.simpleMessage("Both"),
         "brutzeit": MessageLookupByLibrary.simpleMessage("breeding season"),
         "causes": MessageLookupByLibrary.simpleMessage("Causes"),
@@ -107,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "eigengebrauch": MessageLookupByLibrary.simpleMessage("Personal use"),
         "eigengebrauchAbgabe": MessageLookupByLibrary.simpleMessage(
             "Personal use - delivery for further processing"),
+        "empfohlen": MessageLookupByLibrary.simpleMessage("Recommended"),
         "erlegt": MessageLookupByLibrary.simpleMessage("Killed"),
         "error": MessageLookupByLibrary.simpleMessage("Error"),
         "fallwild": MessageLookupByLibrary.simpleMessage("Found dead"),
@@ -148,6 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Only visible kills are exported."),
         "ksShowXFromYProgressBar": m1,
         "ksTerritoryTitle": MessageLookupByLibrary.simpleMessage("Territory"),
+        "legend": MessageLookupByLibrary.simpleMessage("Legend"),
         "loginDataInvalid": MessageLookupByLibrary.simpleMessage(
             "Your login credentials are no longer valid!"),
         "maennlich": MessageLookupByLibrary.simpleMessage("Male"),
@@ -158,11 +163,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "monthlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Monthly breakdown"),
         "murmeltier": MessageLookupByLibrary.simpleMessage("Marmot"),
+        "needLogin": MessageLookupByLibrary.simpleMessage(
+            "Since you have biometric authentication enabled, you must be logged in to see kills!"),
         "newKills": MessageLookupByLibrary.simpleMessage("New kills"),
         "nichtBekannt": MessageLookupByLibrary.simpleMessage("Unknown"),
         "nichtGefunden": MessageLookupByLibrary.simpleMessage(
             "Not found / search unsuccessful"),
         "nichtVerwertbar": MessageLookupByLibrary.simpleMessage("Not usable"),
+        "noBiometricsFound": MessageLookupByLibrary.simpleMessage(
+            "Error: No biometric data found!"),
         "noDataFoundText":
             MessageLookupByLibrary.simpleMessage("Nothing to see here.."),
         "noInternetError":
@@ -218,7 +227,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsTitle": MessageLookupByLibrary.simpleMessage("Settings"),
         "settingsWebsite": MessageLookupByLibrary.simpleMessage("Website"),
         "sexes": MessageLookupByLibrary.simpleMessage("Sexes"),
+        "shouldUseLocalAuth": MessageLookupByLibrary.simpleMessage(
+            "If you activate biometric authentication, you will be asked for the login data stored on your device when you start the app.\nDo you want to enable biometrics? (recommended)"),
         "signOfOrigin": MessageLookupByLibrary.simpleMessage("Sign of origin"),
+        "signOutResetAll": MessageLookupByLibrary.simpleMessage(
+            "If you have problems logging in, you can reset all settings.\nAttention: This will deregister you and you will have to register again!"),
         "sortCause": MessageLookupByLibrary.simpleMessage("Cause"),
         "sortDate": MessageLookupByLibrary.simpleMessage("Date"),
         "sortGameType": MessageLookupByLibrary.simpleMessage("Species"),
@@ -252,6 +265,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Young male boar"),
         "usage": MessageLookupByLibrary.simpleMessage("Usage"),
         "usages": MessageLookupByLibrary.simpleMessage("Usages"),
+        "useLocalAuth":
+            MessageLookupByLibrary.simpleMessage("Biometric authentication"),
         "verkauf": MessageLookupByLibrary.simpleMessage("Sale"),
         "vomZug": MessageLookupByLibrary.simpleMessage("Killed by train"),
         "weiblich": MessageLookupByLibrary.simpleMessage("Female"),
@@ -260,6 +275,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "weightInKg": MessageLookupByLibrary.simpleMessage("Weight in kg"),
         "wild": MessageLookupByLibrary.simpleMessage("Species"),
         "wildkalb": MessageLookupByLibrary.simpleMessage("Female fawn"),
+        "willBeLoggedInAuto": MessageLookupByLibrary.simpleMessage(
+            "You will be automatically logged in..."),
         "wochen": MessageLookupByLibrary.simpleMessage("weeks"),
         "xJagdzeiten": m4,
         "xKill_s": m5,

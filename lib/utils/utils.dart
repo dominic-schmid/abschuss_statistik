@@ -30,8 +30,9 @@ Future<Map<String, String>?> loadCredentialsFromPrefs() async {
 Future<void> deletePrefs() async {
   try {
     await SharedPreferences.getInstance().then((prefs) async {
-      await prefs.remove('revierLogin');
-      await prefs.remove('revierPasswort');
+      for (String key in prefs.getKeys()) {
+        await prefs.remove(key);
+      }
     });
     await SqliteDB().delteDb();
   } catch (e) {

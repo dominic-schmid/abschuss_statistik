@@ -2,9 +2,11 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
+import 'package:jagdstatistik/models/filter_chip_data.dart';
 import 'package:jagdstatistik/utils/database_methods.dart';
 import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/widgets/chip_selector_modal.dart';
 import 'package:jagdstatistik/widgets/no_data_found.dart';
 import 'package:jagdstatistik/widgets/value_selector_modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,7 +35,11 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
   List<ChartItem> chartItems = [];
   List<BarChartGroupData> groupData = [];
   bool _isLoading = true;
+
+  List<FilterChipData> configurationChips = [];
   bool _showLegend = false;
+  bool _showGrid = false;
+  bool _showOnlyErlegt = true;
 
   Map<String, String> groupBy = {};
 
@@ -74,6 +80,13 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       groupBys = getBaseGroupBys(context).toList();
       groupBy = groupBys.first;
+      final dg = S.of(context);
+      configurationChips.addAll([
+        FilterChipData(label: dg.grid, color: Colors.blue, isSelected: _showGrid),
+        FilterChipData(
+            label: dg.onlyShot, color: Colors.red, isSelected: _showOnlyErlegt),
+        FilterChipData(label: dg.legend, color: Colors.orange, isSelected: _showLegend),
+      ]);
     });
   }
 
@@ -106,12 +119,14 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
     Database db = await SqliteDB().db;
     String sorting = _asc ? 'ASC' : 'DESC';
 
+    String erlegtQuery = _showOnlyErlegt ? "ursache = 'erlegt'" : "1 = 1";
+
     List<Map<String, Object?>> res = groupBy['value'] == 'gewicht' ? await db.rawQuery("""
     SELECT
     CAST(AVG(gewicht) AS int) AS Anzahl,
     wildart AS Gruppierung
     FROM Kill
-    WHERE year = $year AND gewicht IS NOT NULL AND gewicht <> 0
+    WHERE year = $year AND gewicht IS NOT NULL AND gewicht <> 0 AND $erlegtQuery
     GROUP BY wildart HAVING AVG(gewicht) > 0
     ORDER BY Anzahl $sorting   
     """) : await db.rawQuery("""
@@ -119,7 +134,7 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
     COUNT(*) AS Anzahl,
     ${groupBy['value']} AS Gruppierung
     FROM Kill
-    WHERE year = $year
+    WHERE year = $year AND $erlegtQuery
     GROUP BY ${groupBy['value']}
     ORDER BY Anzahl $sorting   
     """);
@@ -193,15 +208,50 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
     return Scaffold(
       appBar: ChartAppBar(title: Text(groupBy['key'] as String), actions: [
         IconButton(
-          onPressed: () => setState(() => _showLegend = !_showLegend),
-          icon: const Icon(Icons.legend_toggle_rounded),
-        ),
-        IconButton(
           onPressed: () => setState(() {
             _asc = !_asc;
             getData();
           }),
           icon: const Icon(Icons.sort_by_alpha_rounded),
+        ),
+        IconButton(
+          onPressed: () async {
+            await showModalBottomSheet(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                builder: (BuildContext context) {
+                  return ChipSelectorModal(
+                      padding: EdgeInsets.only(
+                        top: size.height * 0.01,
+                        left: size.width * 0.05,
+                        right: size.width * 0.05,
+                        bottom: size.height * 0.015,
+                      ),
+                      title: dg.configuration,
+                      chips: configurationChips);
+                });
+            setState(() {
+              _showGrid = configurationChips
+                  .where((element) => element.label == dg.grid)
+                  .first
+                  .isSelected;
+              _showOnlyErlegt = configurationChips
+                  .where((element) => element.label == dg.onlyShot)
+                  .first
+                  .isSelected;
+              _showLegend = configurationChips
+                  .where((element) => element.label == dg.legend)
+                  .first
+                  .isSelected;
+            });
+            getData();
+          },
+          icon: const Icon(Icons.settings),
         ),
       ]),
       body: ListView(
@@ -320,7 +370,7 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
                             maxY: maxDisplayValue.toDouble() + (maxDisplayValue * 0.05),
                             minY: 0,
                             borderData: FlBorderData(show: false),
-                            gridData: FlGridData(show: false),
+                            gridData: FlGridData(show: _showGrid),
                             barGroups: groupData,
                             titlesData: FlTitlesData(
                               rightTitles: AxisTitles(),

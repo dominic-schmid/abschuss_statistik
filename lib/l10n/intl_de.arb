@@ -106,7 +106,7 @@
   "points": "Punkte",
   "configuration": "Konfiguration",
   "perMonth": "pro Monat",
-  "chartBasedOnDownloaded": "Die Diagramme basieren auf deinen heruntergeladenen Daten. Falls ein Jahr fehlt, kannst du es auf der Startseite auswählen und heruntergeladen.\n\nDiese Diagramme bieten Aufschluss über die historische Entwicklung des Wilds in deinem Revier und wurden so gestaltet, dass du dir den Aufbau selbst konfigurieren kannst!",
+  "chartBasedOnDownloaded": "Die Diagramme basieren auf deinen heruntergeladenen Daten. Falls ein Jahr fehlt, kannst du es auf der Startseite auswählen und herunterladen.\n\nDiese Diagramme bieten Aufschluss über die historische Entwicklung des Wilds in deinem Revier und wurden so gestaltet, dass du dir den Aufbau selbst konfigurieren kannst!",
   "yearly": "Jährlich",
   "historic": "Historisch",
   "sum": "Summe",
@@ -183,5 +183,16 @@
   "ortFestlegen": "Du musst zuerst einen Ort für die Sonnenzeiten festlegen.",
   "timeInLocal": "Die Uhrzeiten basieren auf UTC und werden in das Format des Geräts umgewandelt.\nWische nach rechts oder links um den Tag zu wechseln.",
   "defaultLocationTitle": "Startpunkt festlegen",
-  "defaultLocationDescription": "Standard Ansicht beim Hinzufügen eines Abschusses oder der Berechnung der Schusszeiten."
+  "defaultLocationDescription": "Standard Ansicht beim Hinzufügen eines Abschusses oder der Berechnung der Schusszeiten.",
+  "useLocalAuth": "Biometrische Anmeldung",
+  "appSettings": "App",
+  "shouldUseLocalAuth": "Wenn du die Biometrische authentifizierung aktivierst, wirst du beim Start der App nach den auf deinem Gerät gespeicherten Anmeldedaten gefragt.\nMöchtest du Biometrie aktivieren? (empfohlen)",
+  "biometrics": "Biometrie",
+  "needLogin": "Da du die biometrische Authentifizierung aktiviert hast, musst du angemeldet sein, um Abschüsse zu sehen!",
+  "noBiometricsFound": "Fehler: Keine biometrischen Daten gefunden!",
+  "empfohlen": "Empfohlen",
+  "willBeLoggedInAuto": "Du wirst gleich automatisch angemeldet...",
+  "legend": "Legende",
+  "border": "Grenze",
+  "signOutResetAll": "Wenn du Probleme bei der Anmeldung hast kannst du alle Einstellungen zurücksetzen.\nAchtung: Dadurch wirst du abgemeldet und musst die Revieranmeldung erneut durchführen!"
 }

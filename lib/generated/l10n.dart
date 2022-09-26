@@ -1901,6 +1901,116 @@ class S {
       args: [],
     );
   }
+
+  /// `Biometric authentication`
+  String get useLocalAuth {
+    return Intl.message(
+      'Biometric authentication',
+      name: 'useLocalAuth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App`
+  String get appSettings {
+    return Intl.message(
+      'App',
+      name: 'appSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If you activate biometric authentication, you will be asked for the login data stored on your device when you start the app.\nDo you want to enable biometrics? (recommended)`
+  String get shouldUseLocalAuth {
+    return Intl.message(
+      'If you activate biometric authentication, you will be asked for the login data stored on your device when you start the app.\nDo you want to enable biometrics? (recommended)',
+      name: 'shouldUseLocalAuth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Biometrics`
+  String get biometrics {
+    return Intl.message(
+      'Biometrics',
+      name: 'biometrics',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Since you have biometric authentication enabled, you must be logged in to see kills!`
+  String get needLogin {
+    return Intl.message(
+      'Since you have biometric authentication enabled, you must be logged in to see kills!',
+      name: 'needLogin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error: No biometric data found!`
+  String get noBiometricsFound {
+    return Intl.message(
+      'Error: No biometric data found!',
+      name: 'noBiometricsFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recommended`
+  String get empfohlen {
+    return Intl.message(
+      'Recommended',
+      name: 'empfohlen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You will be automatically logged in...`
+  String get willBeLoggedInAuto {
+    return Intl.message(
+      'You will be automatically logged in...',
+      name: 'willBeLoggedInAuto',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Legend`
+  String get legend {
+    return Intl.message(
+      'Legend',
+      name: 'legend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Border`
+  String get border {
+    return Intl.message(
+      'Border',
+      name: 'border',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If you have problems logging in, you can reset all settings.\nAttention: This will deregister you and you will have to register again!`
+  String get signOutResetAll {
+    return Intl.message(
+      'If you have problems logging in, you can reset all settings.\nAttention: This will deregister you and you will have to register again!',
+      name: 'signOutResetAll',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

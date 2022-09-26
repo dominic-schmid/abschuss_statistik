@@ -183,5 +183,16 @@
   "ortFestlegen": "È necessario prima impostare una posizione per l'ora solare.",
   "timeInLocal": "Gli orari si basano sull'UTC e vengono convertiti nel formato del dispositivo.\nScorri verso destra o verso sinistra per cambiare il giorno.",
   "defaultLocationTitle": "Imposta punto di partenza",
-  "defaultLocationDescription": "Visualizzazione predefinita quando si aggiunge un'uccisione o si calcolano i tempi di tiro."
+  "defaultLocationDescription": "Visualizzazione predefinita quando si aggiunge un'uccisione o si calcolano i tempi di tiro.",
+  "useLocalAuth": "Autenticazione biometrica",
+  "appSettings": "App",
+  "shouldUseLocalAuth": "Se attivi l'autenticazione biometrica, all'avvio dell'app ti verranno richiesti i dati di accesso memorizzati sul tuo dispositivo.\nVuoi abilitare la biometria? (consigliato)",
+  "biometrics": "Biometrica",
+  "needLogin": "Poiché hai abilitato l'autenticazione biometrica, devi essere loggato per vedere le uccisioni!",
+  "noBiometricsFound": "Errore: nessun dato biometrico trovato!",
+  "empfohlen": "Consigliato",
+  "willBeLoggedInAuto": "Verrai registrato automaticamente...",
+  "legend": "Leggenda",
+  "border": "Confine",
+  "signOutResetAll": "In caso di problemi di accesso, è possibile ripristinare tutte le impostazioni.\nAttenzione: Questo annullerà la tua registrazione e dovrai registrarti di nuovo!"
 }

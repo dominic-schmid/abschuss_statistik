@@ -21,10 +21,22 @@ class ShootingTimeProvider extends ChangeNotifier {
   Future<void> setDay(DateTime newDay) async {
     _day = newDay;
     _shootingTime = await ShootingTimeApi.getFor(_latLng, newDay);
-    if (_shootingTime != null) {
+    // Dates must be the same for a shooting time to be between
+    if (DateTime(
+              newDay.year,
+              newDay.month,
+              newDay.day,
+            ) !=
+            DateTime(
+              DateTime.now().year,
+              DateTime.now().month,
+              DateTime.now().day,
+            ) ||
+        _shootingTime == null) {
+      _isBetween = null;
+    } else {
       _isBetween = DateTime.now().isAfter(_shootingTime!.from) &&
           DateTime.now().isBefore(_shootingTime!.until);
-      if (DateTime.now().day == _day.day) _isBetween = true;
     }
 
     notifyListeners();

@@ -46,6 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "alttier": MessageLookupByLibrary.simpleMessage("Femmina adulta"),
         "andereWildart":
             MessageLookupByLibrary.simpleMessage("Altre specie selvatiche"),
+        "appSettings": MessageLookupByLibrary.simpleMessage("App"),
         "appTitle":
             MessageLookupByLibrary.simpleMessage("Statistiche sulla caccia"),
         "area": MessageLookupByLibrary.simpleMessage("Zona"),
@@ -53,9 +54,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "betaModeDescription": MessageLookupByLibrary.simpleMessage(
             "Alcune funzioni potrebbero non funzionare correttamente."),
         "betaModeTitle": MessageLookupByLibrary.simpleMessage("Modo beta"),
+        "biometrics": MessageLookupByLibrary.simpleMessage("Biometrica"),
         "bockjahrling":
             MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
         "bockkitz": MessageLookupByLibrary.simpleMessage("Piccolo maschio"),
+        "border": MessageLookupByLibrary.simpleMessage("Confine"),
         "both": MessageLookupByLibrary.simpleMessage("Tutti e due"),
         "brutzeit": MessageLookupByLibrary.simpleMessage(
             "stagione degli accoppiamenti"),
@@ -111,6 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "eigengebrauch": MessageLookupByLibrary.simpleMessage("Uso personale"),
         "eigengebrauchAbgabe": MessageLookupByLibrary.simpleMessage(
             "Uso personale - consegna per ulteriore elaborazione"),
+        "empfohlen": MessageLookupByLibrary.simpleMessage("Consigliato"),
         "erlegt": MessageLookupByLibrary.simpleMessage("Abbattuto"),
         "error": MessageLookupByLibrary.simpleMessage("Errore"),
         "fallwild": MessageLookupByLibrary.simpleMessage("Trovato morto"),
@@ -155,6 +159,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Verranno esportate solo le uccisioni visualizzate."),
         "ksShowXFromYProgressBar": m1,
         "ksTerritoryTitle": MessageLookupByLibrary.simpleMessage("Territorio"),
+        "legend": MessageLookupByLibrary.simpleMessage("Leggenda"),
         "loginDataInvalid": MessageLookupByLibrary.simpleMessage(
             "I tuoi dati di accesso non sono più validi!"),
         "maennlich": MessageLookupByLibrary.simpleMessage("Maschile"),
@@ -165,12 +170,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "monthlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Ripartizione mensile"),
         "murmeltier": MessageLookupByLibrary.simpleMessage("Marmotta"),
+        "needLogin": MessageLookupByLibrary.simpleMessage(
+            "Poiché hai abilitato l\'autenticazione biometrica, devi essere loggato per vedere le uccisioni!"),
         "newKills": MessageLookupByLibrary.simpleMessage("Nuovi uccisioni"),
         "nichtBekannt": MessageLookupByLibrary.simpleMessage("Non conosciuto"),
         "nichtGefunden": MessageLookupByLibrary.simpleMessage(
             "Non trovato/ricerca non riuscita"),
         "nichtVerwertbar":
             MessageLookupByLibrary.simpleMessage("Non utilizzabile"),
+        "noBiometricsFound": MessageLookupByLibrary.simpleMessage(
+            "Errore: nessun dato biometrico trovato!"),
         "noDataFoundText": MessageLookupByLibrary.simpleMessage(
             "Non c\'è niente da vedere qui..."),
         "noInternetError":
@@ -228,8 +237,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsTitle": MessageLookupByLibrary.simpleMessage("Impostazioni"),
         "settingsWebsite": MessageLookupByLibrary.simpleMessage("Sito web"),
         "sexes": MessageLookupByLibrary.simpleMessage("Sessi"),
+        "shouldUseLocalAuth": MessageLookupByLibrary.simpleMessage(
+            "Se attivi l\'autenticazione biometrica, all\'avvio dell\'app ti verranno richiesti i dati di accesso memorizzati sul tuo dispositivo.\nVuoi abilitare la biometria? (consigliato)"),
         "signOfOrigin":
             MessageLookupByLibrary.simpleMessage("Certificato d\'origine"),
+        "signOutResetAll": MessageLookupByLibrary.simpleMessage(
+            "In caso di problemi di accesso, è possibile ripristinare tutte le impostazioni.\nAttenzione: Questo annullerà la tua registrazione e dovrai registrarti di nuovo!"),
         "sortCause": MessageLookupByLibrary.simpleMessage("Causa"),
         "sortDate": MessageLookupByLibrary.simpleMessage("Data"),
         "sortGameType":
@@ -269,6 +282,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
         "usage": MessageLookupByLibrary.simpleMessage("Destinazione"),
         "usages": MessageLookupByLibrary.simpleMessage("Destinazioni"),
+        "useLocalAuth":
+            MessageLookupByLibrary.simpleMessage("Autenticazione biometrica"),
         "verkauf": MessageLookupByLibrary.simpleMessage("Vendita"),
         "vomZug": MessageLookupByLibrary.simpleMessage("Abbatuto del treno"),
         "weiblich": MessageLookupByLibrary.simpleMessage("Femmina"),
@@ -278,6 +293,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "weightInKg": MessageLookupByLibrary.simpleMessage("Peso in kg"),
         "wild": MessageLookupByLibrary.simpleMessage("Specie"),
         "wildkalb": MessageLookupByLibrary.simpleMessage("Non noto"),
+        "willBeLoggedInAuto": MessageLookupByLibrary.simpleMessage(
+            "Verrai registrato automaticamente..."),
         "wochen": MessageLookupByLibrary.simpleMessage("settimane"),
         "xJagdzeiten": m4,
         "xKill_s": m5,

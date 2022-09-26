@@ -183,5 +183,16 @@
   "ortFestlegen": "You must first set a location for the sun times.",
   "timeInLocal": "The times are based on UTC and are converted to the format of the device.\nSwipe left or right to change the date.",
   "defaultLocationTitle": "Select starting point",
-  "defaultLocationDescription": "Default view when adding a kill or calculating shot times."
+  "defaultLocationDescription": "Default view when adding a kill or calculating shot times.",
+  "useLocalAuth": "Biometric authentication",
+  "appSettings": "App",
+  "shouldUseLocalAuth": "If you activate biometric authentication, you will be asked for the login data stored on your device when you start the app.\nDo you want to enable biometrics? (recommended)",
+  "biometrics": "Biometrics",
+  "needLogin": "Since you have biometric authentication enabled, you must be logged in to see kills!",
+  "noBiometricsFound": "Error: No biometric data found!",
+  "empfohlen": "Recommended",
+  "willBeLoggedInAuto": "You will be automatically logged in...",
+  "legend": "Legend",
+  "border": "Border",
+  "signOutResetAll": "If you have problems logging in, you can reset all settings.\nAttention: This will deregister you and you will have to register again!"
 }

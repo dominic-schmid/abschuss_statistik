@@ -9,6 +9,7 @@ class PrefProvider extends ChangeNotifier {
 
   bool get showPerson => _prefInstance.getBool('showPerson') ?? false;
   bool get betaMode => _prefInstance.getBool('betaMode') ?? false;
+  bool? get localAuth => _prefInstance.getBool('localAuth');
   String get login => _prefInstance.getString('revierLogin') ?? "";
   String get password => _prefInstance.getString('revierPasswort') ?? "";
   LatLng? get latLng => _prefInstance.getDouble('defaultLat') != null &&

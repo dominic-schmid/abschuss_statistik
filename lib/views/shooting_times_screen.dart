@@ -139,8 +139,8 @@ class _ShootingTimesScreenState extends State<ShootingTimesScreen> {
               ),
               child: Text(
                 dg.timeInLocal,
-                style: TextStyle(
-                  color: secondaryColor,
+                style: const TextStyle(
+                  color: Colors.grey,
                   fontFamily: 'OpenSans',
                   fontSize: 10,
                 ),
