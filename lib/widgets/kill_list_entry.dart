@@ -208,7 +208,7 @@ class KillListEntryState extends State<KillListEntry> {
             subtitle: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Flexible(
+                Expanded(
                   child: Text(
                     GameType.translateGeschlecht(context, k.geschlecht),
                     style: TextStyle(
@@ -217,11 +217,12 @@ class KillListEntryState extends State<KillListEntry> {
                     ),
                   ),
                 ),
-                Flexible(
-                  child: Text(
-                    date,
-                    style: TextStyle(color: secondaryColor),
-                  ),
+                Text(
+                  date,
+                  overflow: TextOverflow.fade,
+                  maxLines: 10,
+                  softWrap: true,
+                  style: TextStyle(color: secondaryColor),
                 ),
               ],
             ),

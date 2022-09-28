@@ -89,7 +89,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   ChartGridItem(
                     title: dg.monthlyBreakdown,
                     assetImage: 'assets/increase-line.png',
-                    backgroundColor: erlegtFarbe.withGreen(150),
+                    backgroundColor: erlegtFarbe.withGreen(150).withOpacity(0.8),
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const YearlyLineChartScreen(),
@@ -190,25 +190,23 @@ class _StatsScreenState extends State<StatsScreen> {
                       ),
                     ),
                   ),
-                  if (prefProvider.betaMode)
-                    ChartGridItem(
-                      title: dg.schusszeiten,
-                      assetImage: 'assets/sunrise.png',
-                      backgroundColor: hegeabschussFarbe.withAlpha(166),
-                      onTap: () async {
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const ShootingTimesScreen(),
-                          ),
+                  ChartGridItem(
+                    title: dg.schusszeiten,
+                    assetImage: 'assets/sunrise.png',
+                    backgroundColor: hegeabschussFarbe.withAlpha(166),
+                    onTap: () async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ShootingTimesScreen(),
+                        ),
+                      );
+                      if (mounted) {
+                        Provider.of<ShootingTimeProvider>(context, listen: false).setDay(
+                          DateTime.now(),
                         );
-                        if (mounted) {
-                          Provider.of<ShootingTimeProvider>(context, listen: false)
-                              .setDay(
-                            DateTime.now(),
-                          );
-                        }
-                      },
-                    ),
+                      }
+                    },
+                  ),
                 ],
               ),
             ),

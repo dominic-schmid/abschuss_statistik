@@ -46,6 +46,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
 
   bool _isLoading = true;
   ValueNotifier<bool>? _isFabVisible;
+  bool _showSearch = false;
 
   late int _currentYear;
   List<int> _yearList = [];
@@ -357,14 +358,11 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
     filteredKills = _currentSorting.sort(filteredKills);
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        foregroundColor: Theme.of(context).textTheme.headline1!.color,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        scrolledUnderElevation: 0,
+      appBar: ChartAppBar(
         title: _showSearch
             ? buildToolbarSearchbar()
             : InkWell(
+                borderRadius: BorderRadius.circular(20),
                 onTap: () async {
                   if (await Connectivity()
                           .checkConnectivity()
@@ -380,7 +378,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                 child: Row(
                   children: [
                     const Icon(Icons.map_rounded),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 5),
                     Text(page == null ? delegate.ksTerritoryTitle : page!.revierName),
                   ],
                 ),
@@ -406,9 +404,7 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                   children: buildActionChips(),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
-              ),
+              Padding(padding: EdgeInsets.symmetric(vertical: size.height * 0.01)),
               _isLoading
                   ? const Center(child: CircularProgressIndicator(color: Colors.green))
                   : filteredKills.isEmpty
@@ -421,8 +417,6 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
       floatingActionButton: CustomFab(isVisible: _isFabVisible ?? ValueNotifier(false)),
     );
   }
-
-  bool _showSearch = false;
 
   List<Widget> buildActionButtons() {
     return <Widget>[
