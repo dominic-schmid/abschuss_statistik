@@ -194,5 +194,13 @@
   "willBeLoggedInAuto": "Verrai registrato automaticamente...",
   "legend": "Leggenda",
   "border": "Confine",
-  "signOutResetAll": "In caso di problemi di accesso, è possibile ripristinare tutte le impostazioni.\nAttenzione: Questo annullerà la tua registrazione e dovrai registrarti di nuovo!"
+  "signOutResetAll": "In caso di problemi di accesso, è possibile ripristinare tutte le impostazioni.\nAttenzione: Questo annullerà la tua registrazione e dovrai registrarti di nuovo!",
+  "loslegen": "Iniziare",
+  "sjvPublikation": "Una pubblicazione dell'Associazione Cacciatori Alto Adige",
+  "onboardStatDesc": "Che impatto hanno le malattie della fauna selvatica sul tuo terreno di caccia?\nNegli ultimi anni sono stati uccisi più caprioli rispetto a quest'anno?\nE altro ancora...",
+  "onboardUtilDesc": "Controlla i tempi di caccia delle diverse specie di selvaggina e l'ora di ripresa della giornata",
+  "jagdbegleiter": "Compagno di caccia",
+  "skip": "Saltare",
+  "onboardTerritoryDesc": "Tutte le uccisioni visualizzate e mappate in modo moderno!\nInserisci le uccisioni direttamente nell'app",
+  "yourTerritory": "Il tuo territorio"
 }

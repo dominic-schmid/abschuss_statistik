@@ -132,6 +132,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hirschkalb": MessageLookupByLibrary.simpleMessage("Hirschkalb"),
         "historic": MessageLookupByLibrary.simpleMessage("Historisch"),
         "hunter": MessageLookupByLibrary.simpleMessage("Jäger"),
+        "jagdbegleiter": MessageLookupByLibrary.simpleMessage("Jagdbegleiter"),
         "jagdzeiten": MessageLookupByLibrary.simpleMessage("Jagdzeiten"),
         "jahrlingsHirsch":
             MessageLookupByLibrary.simpleMessage("Jährlingshirsch"),
@@ -154,6 +155,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "legend": MessageLookupByLibrary.simpleMessage("Legende"),
         "loginDataInvalid": MessageLookupByLibrary.simpleMessage(
             "Deine Anmeldedaten sind nicht mehr gültig!"),
+        "loslegen": MessageLookupByLibrary.simpleMessage("Loslegen"),
         "maennlich": MessageLookupByLibrary.simpleMessage("Männlich"),
         "mapInitialPosition":
             MessageLookupByLibrary.simpleMessage("Anfangsposition"),
@@ -181,6 +183,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "noKillsLoadedError": MessageLookupByLibrary.simpleMessage(
             "Fehler: Abschüsse konnten nicht geladen werden!"),
         "number": MessageLookupByLibrary.simpleMessage("Nummer"),
+        "onboardStatDesc": MessageLookupByLibrary.simpleMessage(
+            "Welchen Einfluss haben Wildkrankheiten in deinem Revier?\nWurde in den letzten Jahren mehr Rehwild erlegt als dieses Jahr?\nUnd noch viel mehr..."),
+        "onboardTerritoryDesc": MessageLookupByLibrary.simpleMessage(
+            "Alle Abschüsse modern visualisiert und kartographisiert!\nAbschüsse direkt in die App eintragen"),
+        "onboardUtilDesc": MessageLookupByLibrary.simpleMessage(
+            "Prüfe die Jagdzeiten verschiedener Wildarten und die Schusszeit des Tages"),
         "onlyShot": MessageLookupByLibrary.simpleMessage("Nur Erlegte"),
         "open": MessageLookupByLibrary.simpleMessage("Offen"),
         "ortFestlegen": MessageLookupByLibrary.simpleMessage(
@@ -235,6 +243,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ursprungszeichen"),
         "signOutResetAll": MessageLookupByLibrary.simpleMessage(
             "Wenn du Probleme bei der Anmeldung hast kannst du alle Einstellungen zurücksetzen.\nAchtung: Dadurch wirst du abgemeldet und musst die Revieranmeldung erneut durchführen!"),
+        "sjvPublikation": MessageLookupByLibrary.simpleMessage(
+            "Eine Publikation des Südtiroler Jagdverbands"),
+        "skip": MessageLookupByLibrary.simpleMessage("Überspringen"),
         "sortCause": MessageLookupByLibrary.simpleMessage("Ursache"),
         "sortDate": MessageLookupByLibrary.simpleMessage("Datum"),
         "sortGameType": MessageLookupByLibrary.simpleMessage("Wildart"),
@@ -288,6 +299,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "yearly": MessageLookupByLibrary.simpleMessage("Jährlich"),
         "yearlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Jahresverlauf"),
+        "yourTerritory": MessageLookupByLibrary.simpleMessage("Dein Revier"),
         "zahlNegativError":
             MessageLookupByLibrary.simpleMessage("Keine negativen Zahlen"),
         "zahlNichtGelesenError": MessageLookupByLibrary.simpleMessage(

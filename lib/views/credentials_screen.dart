@@ -226,11 +226,15 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
       await pProv.get.setString('revierPasswort', _passwortController.text);
 
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
-        ),
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        (route) => false,
       );
+      // Navigator.of(context).pushReplacement(
+      //   MaterialPageRoute(
+      //     builder: (context) => const HomeScreen(),
+      //   ),
+      // );
     } else {
       if (!mounted) return;
       showSnackBar(delegate.credsLoginErrorSnackbar, context);

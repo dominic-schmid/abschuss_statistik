@@ -194,5 +194,13 @@
   "willBeLoggedInAuto": "Du wirst gleich automatisch angemeldet...",
   "legend": "Legende",
   "border": "Grenze",
-  "signOutResetAll": "Wenn du Probleme bei der Anmeldung hast kannst du alle Einstellungen zurücksetzen.\nAchtung: Dadurch wirst du abgemeldet und musst die Revieranmeldung erneut durchführen!"
+  "signOutResetAll": "Wenn du Probleme bei der Anmeldung hast kannst du alle Einstellungen zurücksetzen.\nAchtung: Dadurch wirst du abgemeldet und musst die Revieranmeldung erneut durchführen!",
+  "loslegen": "Loslegen",
+  "sjvPublikation": "Eine Publikation des Südtiroler Jagdverbands",
+  "onboardStatDesc": "Welchen Einfluss haben Wildkrankheiten in deinem Revier?\nWurde in den letzten Jahren mehr Rehwild erlegt als dieses Jahr?\nUnd noch viel mehr...",
+  "onboardUtilDesc": "Prüfe die Jagdzeiten verschiedener Wildarten und die Schusszeit des Tages",
+  "jagdbegleiter": "Jagdbegleiter",
+  "skip": "Überspringen",
+  "onboardTerritoryDesc": "Alle Abschüsse modern visualisiert und kartographisiert!\nAbschüsse direkt in die App eintragen",
+  "yourTerritory": "Dein Revier"
 }

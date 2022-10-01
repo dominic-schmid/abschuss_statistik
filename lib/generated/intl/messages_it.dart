@@ -140,6 +140,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "hirschkalb": MessageLookupByLibrary.simpleMessage("Piccolo maschile"),
         "historic": MessageLookupByLibrary.simpleMessage("Storico"),
         "hunter": MessageLookupByLibrary.simpleMessage("Cacciatore"),
+        "jagdbegleiter":
+            MessageLookupByLibrary.simpleMessage("Compagno di caccia"),
         "jagdzeiten": MessageLookupByLibrary.simpleMessage("Tempi caccia"),
         "jahrlingsHirsch":
             MessageLookupByLibrary.simpleMessage("Maschio di un anno"),
@@ -162,6 +164,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "legend": MessageLookupByLibrary.simpleMessage("Leggenda"),
         "loginDataInvalid": MessageLookupByLibrary.simpleMessage(
             "I tuoi dati di accesso non sono più validi!"),
+        "loslegen": MessageLookupByLibrary.simpleMessage("Iniziare"),
         "maennlich": MessageLookupByLibrary.simpleMessage("Maschile"),
         "mapInitialPosition":
             MessageLookupByLibrary.simpleMessage("Posizione iniziale"),
@@ -189,6 +192,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "noKillsLoadedError": MessageLookupByLibrary.simpleMessage(
             "Errore: caricamento delle uccisioni non riuscito!"),
         "number": MessageLookupByLibrary.simpleMessage("Numero"),
+        "onboardStatDesc": MessageLookupByLibrary.simpleMessage(
+            "Che impatto hanno le malattie della fauna selvatica sul tuo terreno di caccia?\nNegli ultimi anni sono stati uccisi più caprioli rispetto a quest\'anno?\nE altro ancora..."),
+        "onboardTerritoryDesc": MessageLookupByLibrary.simpleMessage(
+            "Tutte le uccisioni visualizzate e mappate in modo moderno!\nInserisci le uccisioni direttamente nell\'app"),
+        "onboardUtilDesc": MessageLookupByLibrary.simpleMessage(
+            "Controlla i tempi di caccia delle diverse specie di selvaggina e l\'ora di ripresa della giornata"),
         "onlyShot": MessageLookupByLibrary.simpleMessage("Solo sparati"),
         "open": MessageLookupByLibrary.simpleMessage("Aperto"),
         "ortFestlegen": MessageLookupByLibrary.simpleMessage(
@@ -243,6 +252,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Certificato d\'origine"),
         "signOutResetAll": MessageLookupByLibrary.simpleMessage(
             "In caso di problemi di accesso, è possibile ripristinare tutte le impostazioni.\nAttenzione: Questo annullerà la tua registrazione e dovrai registrarti di nuovo!"),
+        "sjvPublikation": MessageLookupByLibrary.simpleMessage(
+            "Una pubblicazione dell\'Associazione Cacciatori Alto Adige"),
+        "skip": MessageLookupByLibrary.simpleMessage("Saltare"),
         "sortCause": MessageLookupByLibrary.simpleMessage("Causa"),
         "sortDate": MessageLookupByLibrary.simpleMessage("Data"),
         "sortGameType":
@@ -302,6 +314,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "yearly": MessageLookupByLibrary.simpleMessage("Annuale"),
         "yearlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Ripartizione annuale"),
+        "yourTerritory":
+            MessageLookupByLibrary.simpleMessage("Il tuo territorio"),
         "zahlNegativError":
             MessageLookupByLibrary.simpleMessage("Nessun numero negativo"),
         "zahlNichtGelesenError": MessageLookupByLibrary.simpleMessage(

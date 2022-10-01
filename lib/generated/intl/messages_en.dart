@@ -135,6 +135,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "hirschkalb": MessageLookupByLibrary.simpleMessage("Male fawn"),
         "historic": MessageLookupByLibrary.simpleMessage("Historic"),
         "hunter": MessageLookupByLibrary.simpleMessage("Hunter"),
+        "jagdbegleiter":
+            MessageLookupByLibrary.simpleMessage("Hunting companion"),
         "jagdzeiten": MessageLookupByLibrary.simpleMessage("Hunting times"),
         "jahrlingsHirsch": MessageLookupByLibrary.simpleMessage("Young buck"),
         "jahrlingsbock": MessageLookupByLibrary.simpleMessage("Young buck"),
@@ -155,6 +157,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "legend": MessageLookupByLibrary.simpleMessage("Legend"),
         "loginDataInvalid": MessageLookupByLibrary.simpleMessage(
             "Your login credentials are no longer valid!"),
+        "loslegen": MessageLookupByLibrary.simpleMessage("Get started"),
         "maennlich": MessageLookupByLibrary.simpleMessage("Male"),
         "mapInitialPosition":
             MessageLookupByLibrary.simpleMessage("Initial position"),
@@ -181,6 +184,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "noKillsLoadedError": MessageLookupByLibrary.simpleMessage(
             "Error: Kills could not be loaded!"),
         "number": MessageLookupByLibrary.simpleMessage("Number"),
+        "onboardStatDesc": MessageLookupByLibrary.simpleMessage(
+            "What impact do wildlife diseases have on your hunting ground?\nHas more roe deer been shot in recent years than this year?\nAnd much more..."),
+        "onboardTerritoryDesc": MessageLookupByLibrary.simpleMessage(
+            "All kills visualized and mapped in a modern way!\nEnter kills directly into the app"),
+        "onboardUtilDesc": MessageLookupByLibrary.simpleMessage(
+            "Check the hunting times of different game species and the shooting time of the day"),
         "onlyShot": MessageLookupByLibrary.simpleMessage("Only shot"),
         "open": MessageLookupByLibrary.simpleMessage("Open"),
         "ortFestlegen": MessageLookupByLibrary.simpleMessage(
@@ -232,6 +241,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "signOfOrigin": MessageLookupByLibrary.simpleMessage("Sign of origin"),
         "signOutResetAll": MessageLookupByLibrary.simpleMessage(
             "If you have problems logging in, you can reset all settings.\nAttention: This will deregister you and you will have to register again!"),
+        "sjvPublikation": MessageLookupByLibrary.simpleMessage(
+            "A publication of the South Tyrolean Hunting Association"),
+        "skip": MessageLookupByLibrary.simpleMessage("Skip"),
         "sortCause": MessageLookupByLibrary.simpleMessage("Cause"),
         "sortDate": MessageLookupByLibrary.simpleMessage("Date"),
         "sortGameType": MessageLookupByLibrary.simpleMessage("Species"),
@@ -284,6 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "yearly": MessageLookupByLibrary.simpleMessage("Yearly"),
         "yearlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Yearly breakdown"),
+        "yourTerritory": MessageLookupByLibrary.simpleMessage("Your territory"),
         "zahlNegativError":
             MessageLookupByLibrary.simpleMessage("No negative numbers"),
         "zahlNichtGelesenError":

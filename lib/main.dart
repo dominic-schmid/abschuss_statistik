@@ -10,6 +10,7 @@ import 'package:jagdstatistik/providers/theme_provider.dart';
 import 'package:jagdstatistik/views/credentials_screen.dart';
 import 'package:jagdstatistik/views/home_screen.dart';
 import 'package:jagdstatistik/utils/request_methods.dart';
+import 'package:jagdstatistik/views/onboarding_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
@@ -119,6 +120,7 @@ void main() async {
   double? lat = prefs.getDouble('defaultLat');
   double? lon = prefs.getDouble('defaultLng');
   LatLng? latLng = lat != null && lon != null ? LatLng(lat, lon) : null;
+  bool onboardingComplete = prefs.getBool('onboardingComplete') ?? false;
 
   Map<String, dynamic> startConfig = {
     'login': revierLogin,
@@ -126,6 +128,7 @@ void main() async {
     'isDarkMode': isDarkMode,
     'language': language,
     'latLng': latLng,
+    'onboardingComplete': onboardingComplete,
   };
 
   print('Read config: $startConfig');
@@ -187,6 +190,7 @@ class MyApp extends StatelessWidget {
         config['language'] != null && (config['language'] as String).length == 2
             ? Locale(config['language'] as String)
             : const Locale('de'); // Default to German
+    bool onboardingComplete = config['onboardingComplete'];
 
     return FutureBuilder<void>(
         future: tryLoadLocale(locale),
@@ -257,9 +261,11 @@ class MyApp extends StatelessWidget {
                     //primaryColor: Color.fromRGBO(56, 142, 60, 1),
                   ),
                   themeMode: themeProvider.themeMode,
-                  home: login.isEmpty || pass.isEmpty
-                      ? const CredentialsScreen()
-                      : const HomeScreen(),
+                  home: !onboardingComplete
+                      ? const OnboardingScreen()
+                      : login.isEmpty || pass.isEmpty
+                          ? const CredentialsScreen()
+                          : const HomeScreen(),
                 );
               });
         });

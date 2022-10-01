@@ -2011,6 +2011,86 @@ class S {
       args: [],
     );
   }
+
+  /// `Get started`
+  String get loslegen {
+    return Intl.message(
+      'Get started',
+      name: 'loslegen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A publication of the South Tyrolean Hunting Association`
+  String get sjvPublikation {
+    return Intl.message(
+      'A publication of the South Tyrolean Hunting Association',
+      name: 'sjvPublikation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What impact do wildlife diseases have on your hunting ground?\nHas more roe deer been shot in recent years than this year?\nAnd much more...`
+  String get onboardStatDesc {
+    return Intl.message(
+      'What impact do wildlife diseases have on your hunting ground?\nHas more roe deer been shot in recent years than this year?\nAnd much more...',
+      name: 'onboardStatDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check the hunting times of different game species and the shooting time of the day`
+  String get onboardUtilDesc {
+    return Intl.message(
+      'Check the hunting times of different game species and the shooting time of the day',
+      name: 'onboardUtilDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hunting companion`
+  String get jagdbegleiter {
+    return Intl.message(
+      'Hunting companion',
+      name: 'jagdbegleiter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get skip {
+    return Intl.message(
+      'Skip',
+      name: 'skip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All kills visualized and mapped in a modern way!\nEnter kills directly into the app`
+  String get onboardTerritoryDesc {
+    return Intl.message(
+      'All kills visualized and mapped in a modern way!\nEnter kills directly into the app',
+      name: 'onboardTerritoryDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your territory`
+  String get yourTerritory {
+    return Intl.message(
+      'Your territory',
+      name: 'yourTerritory',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
