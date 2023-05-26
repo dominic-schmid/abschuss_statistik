@@ -72,6 +72,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirm": MessageLookupByLibrary.simpleMessage("Confirmare"),
         "confirmAddKillCancel": MessageLookupByLibrary.simpleMessage(
             "Sei sicuro di voler annullare l\'elaborazione della nuova uccisione?"),
+        "confirmDeleteDatabase": MessageLookupByLibrary.simpleMessage(
+            "Sei sicuro di voler resettare il database?"),
         "copiedToClipboardSnackbar":
             MessageLookupByLibrary.simpleMessage("Copiato negli appunti!"),
         "credentialsScreen":
@@ -103,6 +105,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Visualizzazione predefinita quando si aggiunge un\'uccisione o si calcolano i tempi di tiro."),
         "defaultLocationTitle":
             MessageLookupByLibrary.simpleMessage("Imposta punto di partenza"),
+        "deleteDatabaseDescription": MessageLookupByLibrary.simpleMessage(
+            "Elimina le uccisioni e scaricale nuovamente. Eseguire questa operazione per correggere eventuali errori."),
+        "deleteDatabaseTitle":
+            MessageLookupByLibrary.simpleMessage("Reimposta database"),
         "details": MessageLookupByLibrary.simpleMessage("Detagli"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Vuoi davvero fare il log-out?\nI tuoi dati di accesso e tutte le tue impostazioni verranno cancellate!"),
@@ -210,6 +216,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "points": MessageLookupByLibrary.simpleMessage("Punti"),
         "protokollBeschlagnahmt":
             MessageLookupByLibrary.simpleMessage("Protocollo / confiscato"),
+        "refreshListConfirmation": MessageLookupByLibrary.simpleMessage(
+            "L\'elenco è stato aggiornato."),
         "rehwild": MessageLookupByLibrary.simpleMessage("Capriolo"),
         "rotwild": MessageLookupByLibrary.simpleMessage("Cervo"),
         "schmalreh": MessageLookupByLibrary.simpleMessage("Femmina sottile"),

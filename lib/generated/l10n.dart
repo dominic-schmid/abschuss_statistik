@@ -2091,6 +2091,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Reset database`
+  String get deleteDatabaseTitle {
+    return Intl.message(
+      'Reset database',
+      name: 'deleteDatabaseTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete kills and re-download them. Run this operation to fix any errors.`
+  String get deleteDatabaseDescription {
+    return Intl.message(
+      'Delete kills and re-download them. Run this operation to fix any errors.',
+      name: 'deleteDatabaseDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to reset the database?`
+  String get confirmDeleteDatabase {
+    return Intl.message(
+      'Are you sure you want to reset the database?',
+      name: 'confirmDeleteDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `List refreshed.`
+  String get refreshListConfirmation {
+    return Intl.message(
+      'List refreshed.',
+      name: 'refreshListConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

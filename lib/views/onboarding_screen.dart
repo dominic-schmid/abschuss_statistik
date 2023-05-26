@@ -58,10 +58,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             },
             child: Text(
               languages[Intl.getCurrentLocale()]!['nativeName']!,
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
-                fontSize: 14,
-              ),
+              style: const TextStyle(fontSize: 14),
             ),
           ),
         ),
@@ -122,7 +119,6 @@ class OnboardingDataItem extends StatelessWidget {
               title,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                // color: kDarkBlueColor,
                 fontSize: 24.0,
                 fontWeight: FontWeight.w600,
               ),
@@ -134,8 +130,8 @@ class OnboardingDataItem extends StatelessWidget {
             child: Text(
               description,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: secondaryColor,
+              style: const TextStyle(
+                color: Colors.grey,
                 fontSize: 18.0,
                 fontWeight: FontWeight.w600,
               ),

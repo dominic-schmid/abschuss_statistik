@@ -5,6 +5,7 @@ import 'package:jagdstatistik/providers/locale_provider.dart';
 import 'package:jagdstatistik/providers/pref_provider.dart';
 import 'package:jagdstatistik/providers/shooting_time_provider.dart';
 import 'package:jagdstatistik/providers/theme_provider.dart';
+import 'package:jagdstatistik/utils/database_methods.dart';
 import 'package:jagdstatistik/utils/local_auth_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/views/add_kill/add_map_coordinates.dart';
@@ -60,7 +61,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     LatLng? newLatLng = await Navigator.of(context).push(
       MaterialPageRoute<LatLng>(
         builder: (context) => AddMapCoordsScreen(
-          initCoords: latLng ?? Constants.bolzanoCoords, // Bolzano default if none set
+          initCoords:
+              latLng ?? Constants.bolzanoCoords, // Bolzano default if none set
           zoom: latLng == null ? 10 : 12.5,
         ),
       ),
@@ -94,16 +96,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Container(
           width: double.infinity,
           alignment: Alignment.center,
-          constraints: const BoxConstraints(minWidth: 100, maxWidth: 600, minHeight: 400),
+          constraints: const BoxConstraints(
+              minWidth: 100, maxWidth: 600, minHeight: 400),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Flexible(
                 child: SettingsList(
-                  darkTheme:
-                      const SettingsThemeData().copyWith(settingsListBackground: bg),
-                  lightTheme:
-                      const SettingsThemeData().copyWith(settingsListBackground: bg),
+                  darkTheme: const SettingsThemeData()
+                      .copyWith(settingsListBackground: bg),
+                  lightTheme: const SettingsThemeData()
+                      .copyWith(settingsListBackground: bg),
                   sections: [
                     SettingsSection(
                       title: Text(
@@ -113,7 +116,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       tiles: <SettingsTile>[
                         SettingsTile.navigation(
                           onPressed: (context) async {
-                            Locale? newLocale = await showLanguagePicker(context);
+                            Locale? newLocale =
+                                await showLanguagePicker(context);
                             // await prefs.setString('language', );
                             if (newLocale != null && mounted) {
                               localeProvider.updateLocale(newLocale);
@@ -121,7 +125,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           },
                           leading: const Icon(Icons.language),
                           title: Text(dg.settingsLanguage),
-                          value: Text(languages[Intl.getCurrentLocale()]!['nativeName']!),
+                          value: Text(languages[Intl.getCurrentLocale()]![
+                              'nativeName']!),
                         ),
                         SettingsTile.switchTile(
                           onToggle: (value) {
@@ -141,16 +146,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           leading: const Icon(Icons.person),
                           title: Text(dg.settingsShowNamesTitle),
                         ),
-                        SettingsTile.switchTile(
-                          onToggle: (value) {
-                            prefProvider.get.setBool('betaMode', value);
-                            prefProvider.update();
-                          },
-                          description: Text(dg.betaModeDescription),
-                          initialValue: prefProvider.betaMode,
-                          leading: const Icon(Icons.construction_rounded),
-                          title: Text(dg.betaModeTitle),
-                        ),
+                        if (false) // Disable Beta Mode for release globally for now
+                          SettingsTile.switchTile(
+                            onToggle: (value) {
+                              prefProvider.get.setBool('betaMode', value);
+                              prefProvider.update();
+                            },
+                            description: Text(dg.betaModeDescription),
+                            initialValue: prefProvider.betaMode,
+                            leading: const Icon(Icons.construction_rounded),
+                            title: Text(dg.betaModeTitle),
+                          ),
                       ],
                     ),
                     SettingsSection(
@@ -161,7 +167,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       tiles: <SettingsTile>[
                         SettingsTile.switchTile(
                           onToggle: (value) async {
-                            bool hasBiometrics = await LocalAuthApi.hasBiometrics();
+                            bool hasBiometrics =
+                                await LocalAuthApi.hasBiometrics();
                             // If trying to enable biometrics when there are none found => error
                             if (value == true && !hasBiometrics && mounted) {
                               await showSnackBar(dg.noBiometricsFound, context);
@@ -181,6 +188,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           description: Text(dg.defaultLocationDescription),
                           leading: const Icon(Icons.map_rounded),
                         ),
+                        SettingsTile(
+                          onPressed: (value) async {
+                            await showAlertDialog(
+                              title: ' ${dg.confirm}',
+                              description: dg.confirmDeleteDatabase,
+                              yesOption: dg.dialogYes,
+                              noOption: dg.dialogNo,
+                              onYes: () async {
+                                await SqliteDB().clearKillData();
+                                // Return need to refresh: true
+                                if (mounted) Navigator.of(context).pop(true);
+                              },
+                              icon: Icons.warning,
+                              context: context,
+                            );
+                          },
+                          title: Text(dg.deleteDatabaseTitle),
+                          description: Text(dg.deleteDatabaseDescription),
+                          leading: const Icon(Icons.storage_rounded),
+                        ),
                       ],
                     ),
                     SettingsSection(
@@ -196,7 +223,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 path: 'buymeacoffee.com/dominic.schmid',
                               );
 
-                              await launchUrl(uri, mode: LaunchMode.externalApplication)
+                              await launchUrl(uri,
+                                      mode: LaunchMode.externalApplication)
                                   .timeout(const Duration(seconds: 10));
                             },
                             leading: Icon(
@@ -231,8 +259,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           SettingsTile(
                             onPressed: (value) async {
-                              var cookies =
-                                  await Requests.getStoredCookies('stat.jagdverband.it');
+                              var cookies = await Requests.getStoredCookies(
+                                  'stat.jagdverband.it');
 
                               List<WebViewCookie> wvCookies = [];
 
@@ -278,10 +306,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Uri uri = Uri(
                               scheme: 'mailto',
                               path: 'feedback@jagdstatistik.com',
-                              queryParameters: {'subject': dg.feedbackMailSubject},
+                              queryParameters: {
+                                'subject': dg.feedbackMailSubject
+                              },
                             );
 
-                            await launchUrl(uri).timeout(const Duration(seconds: 10));
+                            await launchUrl(uri)
+                                .timeout(const Duration(seconds: 10));
                           },
                           leading: const Icon(Icons.mail),
                           title: Text(dg.settingsKontakt),
@@ -296,7 +327,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               size: size.width * 0.1,
                             ),
                             applicationName: dg.appTitle,
-                            applicationVersion: 'Version ${Constants.appVersion}',
+                            applicationVersion:
+                                'Version ${Constants.appVersion}',
                             applicationLegalese: Constants.appLegalese,
                           ),
                           leading: const Icon(Icons.app_registration_rounded),
@@ -319,9 +351,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               noOption: dg.dialogNo,
                               onYes: () {
                                 deletePrefs().then(
-                                  (value) => Navigator.of(context).pushAndRemoveUntil(
+                                  (value) =>
+                                      Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
-                                        builder: (context) => const CredentialsScreen()),
+                                        builder: (context) =>
+                                            const CredentialsScreen()),
                                     (route) => false,
                                   ),
                                 );

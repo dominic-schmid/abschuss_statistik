@@ -34,7 +34,7 @@ Future<void> deletePrefs() async {
         await prefs.remove(key);
       }
     });
-    await SqliteDB().delteDb();
+    await SqliteDB().deleteDb();
   } catch (e) {
     print('Error deleting preferences! ${e.toString()}');
   }
@@ -111,7 +111,8 @@ const spielhahnFarbe = Color.fromRGBO(255, 87, 34, 1);
 const steinhuhnFarbe = Color.fromRGBO(0, 137, 123, 1);
 const schneehuhnFarbe = Color.fromRGBO(116, 77, 169, 1);
 const murmeltierFarbe = Color.fromRGBO(136, 14, 79, 1);
-const dachsFarbe = Color.fromRGBO(144, 164, 174, 1); // Color.fromRGBO(66, 66, 66, 1);
+const dachsFarbe =
+    Color.fromRGBO(144, 164, 174, 1); // Color.fromRGBO(66, 66, 66, 1);
 const fuchsFarbe = Color.fromRGBO(255, 140, 0, 1);
 const schneehaseFarbe = Color.fromRGBO(107, 105, 214, 1);
 const wildFarbe = Color.fromRGBO(16, 137, 62, 1);

@@ -67,6 +67,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirm": MessageLookupByLibrary.simpleMessage("Bestätigen"),
         "confirmAddKillCancel": MessageLookupByLibrary.simpleMessage(
             "Willst du die Bearbeitung des neuen Abschusses wirklich abbrechen?"),
+        "confirmDeleteDatabase": MessageLookupByLibrary.simpleMessage(
+            "Bist du sicher, dass du die Datenbank zurücksetzen möchtest?"),
         "copiedToClipboardSnackbar":
             MessageLookupByLibrary.simpleMessage("In Zwischenablage kopiert!"),
         "credentialsScreen":
@@ -98,6 +100,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Standard Ansicht beim Hinzufügen eines Abschusses oder der Berechnung der Schusszeiten."),
         "defaultLocationTitle":
             MessageLookupByLibrary.simpleMessage("Startpunkt festlegen"),
+        "deleteDatabaseDescription": MessageLookupByLibrary.simpleMessage(
+            "Lösche Abschüsse und lade sie neu herunter. Führe diese Operation aus, um eventuelle Fehler zu beheben."),
+        "deleteDatabaseTitle":
+            MessageLookupByLibrary.simpleMessage("Datenbank zurücksetzen"),
         "details": MessageLookupByLibrary.simpleMessage("Details"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Möchtest du dich wirklich abmelden?\nDeine Anmeldedaten und alle deiner Einstellungen werden dabei gelöscht!"),
@@ -201,6 +207,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "points": MessageLookupByLibrary.simpleMessage("Punkte"),
         "protokollBeschlagnahmt":
             MessageLookupByLibrary.simpleMessage("Protokoll / beschlagnahmt"),
+        "refreshListConfirmation":
+            MessageLookupByLibrary.simpleMessage("Liste wurde aktualisiert."),
         "rehwild": MessageLookupByLibrary.simpleMessage("Rehwild"),
         "rotwild": MessageLookupByLibrary.simpleMessage("Rotwild"),
         "schmalreh": MessageLookupByLibrary.simpleMessage("Schmalreh"),

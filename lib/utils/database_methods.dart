@@ -99,9 +99,12 @@ class SqliteDB {
             'gpsLat': k.gpsLat,
             'gpsLon': k.gpsLon,
             'datetime': k.datetime.toIso8601String(),
-            'aufseherDatum': k.jagdaufseher == null ? null : k.jagdaufseher!['datum'],
-            'aufseherZeit': k.jagdaufseher == null ? null : k.jagdaufseher!['zeit'],
-            'aufseher': k.jagdaufseher == null ? null : k.jagdaufseher!['aufseher'],
+            'aufseherDatum':
+                k.jagdaufseher == null ? null : k.jagdaufseher!['datum'],
+            'aufseherZeit':
+                k.jagdaufseher == null ? null : k.jagdaufseher!['zeit'],
+            'aufseher':
+                k.jagdaufseher == null ? null : k.jagdaufseher!['aufseher'],
           },
           conflictAlgorithm: ConflictAlgorithm.ignore,
         ),
@@ -163,12 +166,19 @@ class SqliteDB {
   Future<void> deleteYear(int year) async {
     var database = await db;
 
-    await database
-        .transaction((txn) async => await txn.delete('Kill', where: 'year = $year'));
+    await database.transaction(
+        (txn) async => await txn.delete('Kill', where: 'year = $year'));
     return;
   }
 
-  delteDb() async {
+  Future<void> clearKillData() async {
+    var database = await db;
+
+    await database.transaction((txn) async => await txn.delete('Kill'));
+    return;
+  }
+
+  Future<void> deleteDb() async {
     if (_db != null) {
       await _db!.delete('Kill');
       _db = null;

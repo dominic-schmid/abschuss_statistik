@@ -202,18 +202,28 @@ class HuntingTime {
           von: DateTime(year, 10, 1),
           bis: DateTime(year, 12, 15),
         ),
+        /**
+         * Bug fix because it crosses over years. This should really be handled better though
+         */
         HuntingTime(
           wildart: "Fuchs",
           geschlecht: "",
-          von:
-              _getXDayOfWeekIn(year, weekday: DateTime.sunday, month: DateTime.september),
+          von: _getXDayOfWeekIn(year,
+              weekday: DateTime.sunday, month: DateTime.september),
           bis: DateTime(year + 1, 1, 31), // 31st January next year
+        ),
+        HuntingTime(
+          wildart: "Fuchs",
+          geschlecht: "",
+          von: _getXDayOfWeekIn(year - 1,
+              weekday: DateTime.sunday, month: DateTime.september),
+          bis: DateTime(year, 1, 31), // 31st January next year
         ),
         HuntingTime(
           wildart: "Feldhase",
           geschlecht: "",
-          von:
-              _getXDayOfWeekIn(year, weekday: DateTime.sunday, month: DateTime.september),
+          von: _getXDayOfWeekIn(year,
+              weekday: DateTime.sunday, month: DateTime.september),
           bis: DateTime(year, 12, 15),
         ),
         HuntingTime(

@@ -28,18 +28,20 @@ class KillPage {
     List<String> wildarten = kills.map((e) => e.wildart).toSet().toList();
     List<String> ursachen = kills.map((e) => e.ursache).toSet().toList();
     List<String> verwendungen = kills.map((e) => e.verwendung).toSet().toList();
-    List<String> oertlichkeiten = kills.map((e) => e.oertlichkeit).toSet().toList();
+    List<String> oertlichkeiten =
+        kills.map((e) => e.oertlichkeit).toSet().toList();
     List<String> geschlechter = kills.map((e) => e.geschlecht).toSet().toList();
 
-    this.wildarten.addAll(
-        FilterChipData.allWild.where((element) => wildarten.contains(element.label)));
+    this.wildarten.addAll(FilterChipData.allWild
+        .where((element) => wildarten.contains(element.label)));
 
-    this.ursachen.addAll(
-        FilterChipData.allUrsache.where((element) => ursachen.contains(element.label)));
+    this.ursachen.addAll(FilterChipData.allUrsache
+        .where((element) => ursachen.contains(element.label)));
     this.verwendungen.addAll(FilterChipData.allVerwendung
         .where((element) => verwendungen.contains(element.label)));
     this.oertlichkeiten.addAll(oertlichkeiten.map((o) {
-      return FilterChipData(label: o, color: const Color.fromRGBO(0, 160, 83, 1));
+      return FilterChipData(
+          label: o, color: const Color.fromRGBO(0, 160, 83, 1));
     }));
     for (int i = 0; i < geschlechter.length; i++) {
       this.geschlechter.add(FilterChipData(
@@ -59,16 +61,17 @@ class KillPage {
       int revierNummer = 0;
       if (titel != null) {
         revierName = titel.text.substring(titel.text.indexOf('-') + 2);
-        revierNummer =
-            int.tryParse(titel.text.substring(0, titel.text.indexOf('-') - 1)) ?? 0;
+        revierNummer = int.tryParse(
+                titel.text.substring(0, titel.text.indexOf('-') - 1)) ??
+            0;
       }
 
       List<KillEntry> kills = [];
       dom.Element? table = page.querySelector('#dataTables');
       if (table != null) {
-        final entries =
-            table.querySelectorAll('tr'); //.map((e) => e.innerHtml.trim()).toList();
-        print('${entries.length} kill entries loaded');
+        final entries = table
+            .querySelectorAll('tr'); //.map((e) => e.innerHtml.trim()).toList();
+        print('${entries.length - 1} kill entries loaded from website');
 
         // Sublist 1 because the first element is the table header
         for (dom.Element e in entries.sublist(1)) {

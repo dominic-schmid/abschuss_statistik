@@ -68,6 +68,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "confirmAddKillCancel": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to cancel editing the new kill?"),
+        "confirmDeleteDatabase": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to reset the database?"),
         "copiedToClipboardSnackbar":
             MessageLookupByLibrary.simpleMessage("Copied to clipboard!"),
         "credentialsScreen":
@@ -99,6 +101,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Default view when adding a kill or calculating shot times."),
         "defaultLocationTitle":
             MessageLookupByLibrary.simpleMessage("Select starting point"),
+        "deleteDatabaseDescription": MessageLookupByLibrary.simpleMessage(
+            "Delete kills and re-download them. Run this operation to fix any errors."),
+        "deleteDatabaseTitle":
+            MessageLookupByLibrary.simpleMessage("Reset database"),
         "details": MessageLookupByLibrary.simpleMessage("Details"),
         "dialogLogoutBody": MessageLookupByLibrary.simpleMessage(
             "Do you really want to log out?\nYour login data and all your settings will be deleted!"),
@@ -201,6 +207,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "points": MessageLookupByLibrary.simpleMessage("Point"),
         "protokollBeschlagnahmt":
             MessageLookupByLibrary.simpleMessage("Protocol / confiscated"),
+        "refreshListConfirmation":
+            MessageLookupByLibrary.simpleMessage("List refreshed."),
         "rehwild": MessageLookupByLibrary.simpleMessage("Roe deer"),
         "rotwild": MessageLookupByLibrary.simpleMessage("Deer"),
         "schmalreh": MessageLookupByLibrary.simpleMessage("Young doe"),

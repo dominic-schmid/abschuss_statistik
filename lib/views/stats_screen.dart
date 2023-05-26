@@ -28,6 +28,7 @@ class _StatsScreenState extends State<StatsScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final dg = S.of(context);
+    // ignore: unused_local_variable
     final prefProvider = Provider.of<PrefProvider>(context);
 
     return Scaffold(
@@ -69,7 +70,8 @@ class _StatsScreenState extends State<StatsScreen> {
                   ChartGridItem(
                     title: dg.sum,
                     assetImage: 'assets/pie-chart.png',
-                    backgroundColor: gamswildFarbe.withAlpha(215).withOpacity(0.66),
+                    backgroundColor:
+                        gamswildFarbe.withAlpha(215).withOpacity(0.66),
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const YearlyPieChartScreen(),
@@ -89,7 +91,8 @@ class _StatsScreenState extends State<StatsScreen> {
                   ChartGridItem(
                     title: dg.monthlyBreakdown,
                     assetImage: 'assets/increase-line.png',
-                    backgroundColor: erlegtFarbe.withGreen(150).withOpacity(0.8),
+                    backgroundColor:
+                        erlegtFarbe.withGreen(150).withOpacity(0.8),
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const YearlyLineChartScreen(),
@@ -201,7 +204,9 @@ class _StatsScreenState extends State<StatsScreen> {
                         ),
                       );
                       if (mounted) {
-                        Provider.of<ShootingTimeProvider>(context, listen: false).setDay(
+                        Provider.of<ShootingTimeProvider>(context,
+                                listen: false)
+                            .setDay(
                           DateTime.now(),
                         );
                       }

@@ -40,9 +40,11 @@ class KillsScreen extends StatefulWidget {
   State<KillsScreen> createState() => _KillsScreenState();
 }
 
-class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClientMixin {
+class _KillsScreenState extends State<KillsScreen>
+    with AutomaticKeepAliveClientMixin {
   final TextEditingController controller = TextEditingController();
-  final ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
+  final ScrollController _scrollController =
+      ScrollController(initialScrollOffset: 0);
 
   bool _isLoading = true;
   ValueNotifier<bool>? _isFabVisible;
@@ -73,8 +75,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
       (index) => index + 2015,
     ).reversed.toList();
 
-    _lastRefresh = DateTime.now()
-        .subtract(const Duration(seconds: 60)); // first refresh can happen instantly
+    _lastRefresh = DateTime.now().subtract(
+        const Duration(seconds: 60)); // first refresh can happen instantly
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final dg = S.of(context);
       _sortings = (Sorting.generateDefault(context));
@@ -222,7 +224,10 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
 
     // Find all selected chips and see if contains
     for (KillEntry k in kills) {
-      if (wildChips.where((e) => e.isSelected).map((e) => e.label).contains(k.wildart) &&
+      if (wildChips
+              .where((e) => e.isSelected)
+              .map((e) => e.label)
+              .contains(k.wildart) &&
           ursacheChips
               .where((e) => e.isSelected)
               .map((e) => e.label)
@@ -246,7 +251,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
     KillPage? page;
     try {
       await SqliteDB().db.then((d) async {
-        List<Map<String, Object?>> kills = await d.query('Kill', where: 'year = $year');
+        List<Map<String, Object?>> kills =
+            await d.query('Kill', where: 'year = $year');
 
         print('SQL found ${kills.length} entries for year $year');
         List<KillEntry> killList = [];
@@ -259,7 +265,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
         }
         try {
           // Return new kill page. Throws BadState: No Element for kills.first if kills is null
-          page = KillPage.fromList(kills.first['revier'] as String, year, killList);
+          page = KillPage.fromList(
+              kills.first['revier'] as String, year, killList);
         } catch (e) {
           print('Error parsing KillPage: ${e.toString()}');
         }
@@ -290,7 +297,9 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
 
   Future<KillPage?> refresh(int year) async {
     final dg = S.of(context);
-    if (await Connectivity().checkConnectivity().timeout(const Duration(seconds: 15)) ==
+    if (await Connectivity()
+            .checkConnectivity()
+            .timeout(const Duration(seconds: 15)) ==
         ConnectivityResult.none) {
       showSnackBar(dg.noInternetError, context);
       return null;
@@ -371,15 +380,17 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                     showSnackBar(delegate.noInternetError, context);
                     return;
                   }
-                  await Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AllMapScreen(page: page!)));
+                  await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AllMapScreen(page: page!)));
                   setState(() {});
                 },
                 child: Row(
                   children: [
                     const Icon(Icons.map_rounded),
                     const SizedBox(width: 5),
-                    Text(page == null ? delegate.ksTerritoryTitle : page!.revierName),
+                    Text(page == null
+                        ? delegate.ksTerritoryTitle
+                        : page!.revierName),
                   ],
                 ),
               ),
@@ -390,8 +401,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
         child: Container(
           width: double.infinity,
           alignment: Alignment.center,
-          constraints:
-              const BoxConstraints(minWidth: 100, maxWidth: 1000, minHeight: 400),
+          constraints: const BoxConstraints(
+              minWidth: 100, maxWidth: 1000, minHeight: 400),
           child: Column(
             // mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -404,21 +415,26 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                   children: buildActionChips(),
                 ),
               ),
-              Padding(padding: EdgeInsets.symmetric(vertical: size.height * 0.01)),
+              Padding(
+                  padding: EdgeInsets.symmetric(vertical: size.height * 0.01)),
               _isLoading
-                  ? const Center(child: CircularProgressIndicator(color: Colors.green))
+                  ? const Center(
+                      child: CircularProgressIndicator(color: Colors.green))
                   : filteredKills.isEmpty
                       ? const Expanded(child: NoDataFoundWidget())
-                      : Expanded(flex: 9, child: buildKillEntries(filteredKills)),
+                      : Expanded(
+                          flex: 9, child: buildKillEntries(filteredKills)),
             ],
           ),
         ),
       ),
-      floatingActionButton: CustomFab(isVisible: _isFabVisible ?? ValueNotifier(false)),
+      floatingActionButton:
+          CustomFab(isVisible: _isFabVisible ?? ValueNotifier(false)),
     );
   }
 
   List<Widget> buildActionButtons() {
+    final dg = S.of(context);
     return <Widget>[
       IconButton(
         onPressed: () {
@@ -428,9 +444,16 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
         icon: Icon(_showSearch ? Icons.close : Icons.search),
       ),
       IconButton(
-        onPressed: () => Navigator.of(context).push(
-          CupertinoPageRoute(builder: (context) => const SettingsScreen()),
-        ),
+        onPressed: () async {
+          bool needToRefresh = await Navigator.of(context).push(
+            CupertinoPageRoute(builder: (context) => const SettingsScreen()),
+          );
+          if (needToRefresh) {
+            await refresh(_currentYear);
+            if (!mounted) return;
+            await showSnackBar(dg.refreshListConfirmation, context);
+          }
+        },
         icon: const Icon(Icons.settings),
       ),
     ];
@@ -462,12 +485,15 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
         topRight: Radius.circular(20),
       ),
     );
-    EdgeInsets chipPadding = const EdgeInsets.symmetric(horizontal: 6, vertical: 0);
+    EdgeInsets chipPadding =
+        const EdgeInsets.symmetric(horizontal: 6, vertical: 0);
 
     int selectedWildChips = wildChips.where((e) => e.isSelected).length;
     int selectedUrsachenChips = ursacheChips.where((e) => e.isSelected).length;
-    int selectedVerwendungenChips = verwendungChips.where((e) => e.isSelected).length;
-    int selectedGeschlechterChips = geschlechterChips.where((e) => e.isSelected).length;
+    int selectedVerwendungenChips =
+        verwendungChips.where((e) => e.isSelected).length;
+    int selectedGeschlechterChips =
+        geschlechterChips.where((e) => e.isSelected).length;
 
     //bool darkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
@@ -670,7 +696,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
     ];
   }
 
-  Future<void> _saveAndShareFile({String csvDelimiter = ";", bool isJson = false}) async {
+  Future<void> _saveAndShareFile(
+      {String csvDelimiter = ";", bool isJson = false}) async {
     final dg = S.of(context);
     if (filteredKills.isEmpty || page == null) {
       showSnackBar(dg.ksExportErrorSnackbar, context);
@@ -683,10 +710,11 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
     }
     // ONLY AVAILABLE ON ANDROID
     final dir =
-        (await getExternalStorageDirectories(type: StorageDirectory.downloads))!.first;
+        (await getExternalStorageDirectories(type: StorageDirectory.downloads))!
+            .first;
 
-    final filteredPage =
-        KillPage(jahr: page!.jahr, revierName: page!.revierName, kills: filteredKills);
+    final filteredPage = KillPage(
+        jahr: page!.jahr, revierName: page!.revierName, kills: filteredKills);
 
     String filename =
         '${dir.path}/${filteredPage.revierName}-${DateTime.now().toIso8601String()}';
@@ -697,7 +725,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
 
     if (!mounted) return;
     if (isJson) {
-      f.writeAsStringSync(jsonEncode(filteredPage.toJson(context)), encoding: utf8);
+      f.writeAsStringSync(jsonEncode(filteredPage.toJson(context)),
+          encoding: utf8);
     } else {
       f.writeAsStringSync(
           ListToCsvConverter(fieldDelimiter: csvDelimiter)
@@ -827,7 +856,9 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
                 s.label,
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: s == _currentSorting ? FontWeight.bold : FontWeight.normal,
+                  fontWeight: s == _currentSorting
+                      ? FontWeight.bold
+                      : FontWeight.normal,
                   color: s == _currentSorting
                       ? Colors.green
                       : Theme.of(context).textTheme.headline1!.color,
@@ -917,7 +948,8 @@ class _KillsScreenState extends State<KillsScreen> with AutomaticKeepAliveClient
               return KillListEntry(
                 key: Key(k.key),
                 kill: k,
-                initiallyExpanded: newKills.isEmpty ? false : newKills.contains(k),
+                initiallyExpanded:
+                    newKills.isEmpty ? false : newKills.contains(k),
                 showPerson: prefs.showPerson,
                 showEdit: prefs.betaMode,
                 revier: page!.revierName,
@@ -953,7 +985,8 @@ class CustomFab extends StatelessWidget {
           duration: const Duration(milliseconds: 150),
           child: value
               ? FloatingActionButton(
-                  onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
+                  onPressed: () =>
+                      Navigator.of(context).push(CupertinoPageRoute(
                     builder: (context) => const AddKillScreen(),
                     fullscreenDialog: true,
                   )),

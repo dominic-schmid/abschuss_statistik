@@ -202,5 +202,9 @@
   "jagdbegleiter": "Hunting companion",
   "skip": "Skip",
   "onboardTerritoryDesc": "All kills visualized and mapped in a modern way!\nEnter kills directly into the app",
-  "yourTerritory": "Your territory"
+  "yourTerritory": "Your territory",
+  "deleteDatabaseTitle": "Reset database",
+  "deleteDatabaseDescription": "Delete kills and re-download them. Run this operation to fix any errors.",
+  "confirmDeleteDatabase": "Are you sure you want to reset the database?",
+  "refreshListConfirmation": "List refreshed."
 }
