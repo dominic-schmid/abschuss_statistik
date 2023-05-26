@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
@@ -26,7 +24,8 @@ class HuntingTimeListEntry extends StatelessWidget {
     DateFormat df = DateFormat.MMMMd();
     DateFormat dfNxt = DateFormat.yMMMMd();
 
-    bool isOpen = DateTime.now().isAfter(time.von) && DateTime.now().isBefore(time.bis);
+    bool isOpen =
+        DateTime.now().isAfter(time.von) && DateTime.now().isBefore(time.bis);
 
     double progress = time.von.difference(DateTime.now()).inDays.toDouble() /
         time.von.difference(time.bis).inDays.toDouble();
@@ -38,7 +37,7 @@ class HuntingTimeListEntry extends StatelessWidget {
       child: Card(
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: Theme.of(context).textTheme.headline1!.color ?? Colors.red,
+            color: Theme.of(context).textTheme.displayLarge!.color ?? Colors.red,
             style: isOpen ? BorderStyle.solid : BorderStyle.none,
             width: 3.5,
           ),
@@ -132,7 +131,8 @@ class HuntingTimeListEntry extends StatelessWidget {
                 time.note == null
                     ? Container()
                     : Padding(
-                        padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
+                        padding:
+                            EdgeInsets.symmetric(vertical: size.height * 0.01),
                         child: Text(
                           time.note!,
                           textAlign: TextAlign.center,
@@ -144,7 +144,8 @@ class HuntingTimeListEntry extends StatelessWidget {
                       ),
                 isOpen
                     ? Padding(
-                        padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
+                        padding:
+                            EdgeInsets.symmetric(vertical: size.height * 0.01),
                         child: LinearProgressIndicator(
                           value: progress,
                           backgroundColor: secondaryColor,

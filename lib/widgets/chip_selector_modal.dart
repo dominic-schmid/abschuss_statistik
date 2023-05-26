@@ -43,9 +43,13 @@ class _ChipSelectorModalState extends State<ChipSelectorModal> {
               borderRadius: BorderRadius.circular(20),
               onTap: () {
                 if (_selectAll) {
-                  widget.chips.forEach((element) => element.isSelected = false);
+                  for (var element in widget.chips) {
+                    element.isSelected = false;
+                  }
                 } else {
-                  widget.chips.forEach((element) => element.isSelected = true);
+                  for (var element in widget.chips) {
+                    element.isSelected = true;
+                  }
                 }
                 setState(() => _selectAll = !_selectAll);
               },

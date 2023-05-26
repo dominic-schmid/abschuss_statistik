@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
-import 'package:jagdstatistik/models/constants/cause.dart';
-import 'package:jagdstatistik/models/constants/usage.dart';
 import 'package:jagdstatistik/views/add_kill/add_jagdaufseher.dart';
 import 'package:jagdstatistik/widgets/app_text_field.dart';
 import 'package:jagdstatistik/widgets/custom_drop_down.dart';

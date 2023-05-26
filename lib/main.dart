@@ -7,6 +7,7 @@ import 'package:jagdstatistik/providers/locale_provider.dart';
 import 'package:jagdstatistik/providers/pref_provider.dart';
 import 'package:jagdstatistik/providers/shooting_time_provider.dart';
 import 'package:jagdstatistik/providers/theme_provider.dart';
+import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/views/credentials_screen.dart';
 import 'package:jagdstatistik/views/home_screen.dart';
 import 'package:jagdstatistik/utils/request_methods.dart';
@@ -14,7 +15,7 @@ import 'package:jagdstatistik/views/onboarding_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
+// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart'; // DO NOT REMOVE
 
 import 'package:jagdstatistik/generated/l10n.dart';
@@ -24,6 +25,7 @@ import 'models/kill_page.dart';
 
 const SEND_NOTIFICATIONS = false;
 
+/* HOTFIX: Notifications disabled due to dependency errors
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     await _showNotification();
@@ -108,6 +110,7 @@ void initNotifications() async {
     }
   });
 }
+*/
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -137,6 +140,7 @@ void main() async {
   final db = SqliteDB();
   await db.initDb();
 
+/* HOTFIX: Notifications disabled due to dependency errors
   if (SEND_NOTIFICATIONS) {
     initNotifications();
     //print(await db.countTable() + ' tables');
@@ -158,6 +162,7 @@ void main() async {
       ),
     );
   }
+  */
 
   runApp(MyApp(config: startConfig, prefs: prefs));
 }
@@ -167,7 +172,8 @@ class MyApp extends StatelessWidget {
   final Map<String, dynamic> config;
   final SharedPreferences prefs;
 
-  const MyApp({Key? key, required this.config, required this.prefs}) : super(key: key);
+  const MyApp({Key? key, required this.config, required this.prefs})
+      : super(key: key);
 
   Future<void> tryLoadLocale(Locale locale) async {
     Locale toLoad = locale;
@@ -240,25 +246,30 @@ class MyApp extends StatelessWidget {
                           displayColor: Colors.black,
                         ),
                     brightness: Brightness.light,
-                    primarySwatch: Colors.lightGreen,
+                    colorScheme: ColorScheme.fromSeed(
+                      seedColor: rehwildFarbe,
+                      brightness: Brightness.light,
+                    ),
                     appBarTheme: const AppBarTheme().copyWith(
                       foregroundColor: Colors.white,
                     ),
                     useMaterial3: true,
-                    //primaryColor: Color.fromRGBO(56, 142, 60, 1),
                   ),
                   darkTheme: ThemeData(
                     textTheme: Theme.of(context).textTheme.apply(
                           bodyColor: Colors.white,
                           displayColor: Colors.white,
                         ),
+                    brightness: Brightness.dark,
+                    colorScheme: ColorScheme.fromSeed(
+                      seedColor: rehwildFarbe,
+                      brightness: Brightness.dark,
+                    ),
                     appBarTheme: const AppBarTheme().copyWith(
                       foregroundColor: Colors.white,
                     ),
-                    brightness: Brightness.dark,
-                    primarySwatch: Colors.lightGreen,
+                    //primarySwatch: Colors.lightGreen,
                     useMaterial3: true,
-                    //primaryColor: Color.fromRGBO(56, 142, 60, 1),
                   ),
                   themeMode: themeProvider.themeMode,
                   home: !onboardingComplete

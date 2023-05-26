@@ -27,34 +27,34 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  awesome_notifications: ^0.6.21
-  connectivity_plus: ^2.3.6
+  #awesome_notifications: ^0.6.21
+  connectivity_plus: ^4.0.1
   csv: ^5.0.1
   enhance_stepper: ^0.1.1
-  fl_chart: ^0.55.0
+  fl_chart: ^0.62.0
   flutter:
     sdk: flutter
-  flutter_launcher_icons: ^0.9.3
+  flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.2.5
   flutter_onboarding_slider: ^1.0.8
   google_maps_flutter: ^2.1.10
   html: ^0.15.0
   http: ^0.13.4
-  intl: ^0.17.0
+  intl: ^0.18.0
   local_auth: ^2.1.2
-  modal_bottom_sheet: ^2.1.0
+  modal_bottom_sheet: ^3.0.0-pre
   path: ^1.8.0
   path_provider: ^2.0.11
   permission_handler: ^10.0.0
   provider: ^6.0.3
   requests: ^4.4.1
   settings_ui: ^2.0.2
-  share_plus: ^4.0.10
+  share_plus: ^7.0.1
   shared_preferences: ^2.0.15
   smooth_page_indicator: ^1.0.0+2
   sqflite: ^2.0.3
   url_launcher: ^6.1.5
-  webview_flutter: ^3.0.4
+  webview_flutter: ^4.2.1
   workmanager: ^0.5.0
 
 dev_dependencies:

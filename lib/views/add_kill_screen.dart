@@ -187,16 +187,16 @@ class _AddKillScreenState extends State<AddKillScreen> {
     Size size = MediaQuery.of(context).size;
 
     // Translate names in case of context change
-    _gameTypeSelectList.forEach((element) {
+    for (var element in _gameTypeSelectList) {
       element.name = GameType.translate(context, element.value);
-    });
+    }
 
-    _ursacheSelectList.forEach((element) {
+    for (var element in _ursacheSelectList) {
       element.name = Cause.translate(context, element.value);
-    });
-    _verwendungSelectList.forEach((element) {
+    }
+    for (var element in _verwendungSelectList) {
       element.name = Usage.translate(context, element.value);
-    });
+    }
 
     _steps = <EnhanceStep>[
       EnhanceStep(

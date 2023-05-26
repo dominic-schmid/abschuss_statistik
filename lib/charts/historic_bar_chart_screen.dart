@@ -83,10 +83,12 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
       groupBy = groupBys.first;
       final dg = S.of(context);
       configurationChips.addAll([
-        FilterChipData(label: dg.grid, color: Colors.blue, isSelected: _showGrid),
+        FilterChipData(
+            label: dg.grid, color: Colors.blue, isSelected: _showGrid),
         FilterChipData(
             label: dg.onlyShot, color: Colors.red, isSelected: _showOnlyErlegt),
-        FilterChipData(label: dg.legend, color: Colors.orange, isSelected: _showLegend),
+        FilterChipData(
+            label: dg.legend, color: Colors.orange, isSelected: _showLegend),
       ]);
     });
   }
@@ -123,7 +125,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
     String sorting = _asc ? 'ASC' : 'DESC';
     String erlegtQuery = _showOnlyErlegt ? "ursache = 'erlegt'" : "1 = 1";
 
-    List<Map<String, Object?>> res = groupBy['value'] == 'gewicht' ? await db.rawQuery("""
+    List<Map<String, Object?>> res = groupBy['value'] == 'gewicht'
+        ? await db.rawQuery("""
     SELECT
     CAST(AVG(gewicht) AS int) AS Anzahl,
     wildart AS Gruppierung
@@ -131,7 +134,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
     WHERE year >= ${years.start.toInt()} AND year <= ${years.end.toInt()} AND gewicht IS NOT NULL AND gewicht <> 0 AND $erlegtQuery
     GROUP BY wildart HAVING AVG(gewicht) > 0
     ORDER BY Anzahl $sorting   
-    """) : await db.rawQuery("""
+    """)
+        : await db.rawQuery("""
     SELECT
     COUNT(*) AS Anzahl,
     ${groupBy['value']} AS Gruppierung
@@ -148,7 +152,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
   }
 
   void resetChips() {
-    Set<String> gruppierungen = res.map((e) => e['Gruppierung'] as String).toSet();
+    Set<String> gruppierungen =
+        res.map((e) => e['Gruppierung'] as String).toSet();
 
     filterChips = [];
     for (int i = 0; i < gruppierungen.length; i++) {
@@ -174,8 +179,9 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
     Iterable<String> selectedLabels =
         filterChips.where((e) => e.isSelected).map((e) => e.label);
 
-    var toBuild =
-        res.where((e) => selectedLabels.contains(e['Gruppierung'] as String)).toList();
+    var toBuild = res
+        .where((e) => selectedLabels.contains(e['Gruppierung'] as String))
+        .toList();
 
     for (int i = 0; i < toBuild.length; i++) {
       String label = toBuild.elementAt(i)['Gruppierung'] as String;
@@ -186,8 +192,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
           ? GameType.all.firstWhere((e) => e.wildart == label).color
           : Colors.primaries[i % Colors.primaries.length];
 
-      chartItems
-          .add(ChartItem(label: translateValue(context, label), value: value, color: c));
+      chartItems.add(ChartItem(
+          label: translateValue(context, label), value: value, color: c));
     }
 
     rebuildMaxValue();
@@ -209,7 +215,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
             ),
             borderSide: isTouched
                 ? BorderSide(
-                    color: Theme.of(context).textTheme.headline1!.color ?? Colors.yellow,
+                    color: Theme.of(context).textTheme.displayLarge!.color ??
+                        Colors.yellow,
                     width: size.width * 0.005,
                   )
                 : const BorderSide(color: Colors.white, width: 0),
@@ -227,7 +234,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
       if (e.value > maxValue) maxValue = e.value.toInt(); // Get largest value
     }
 
-    maxDisplayValue = ((maxValue) % 5 == 0 ? maxValue : 5 - maxValue % 5 + maxValue);
+    maxDisplayValue =
+        ((maxValue) % 5 == 0 ? maxValue : 5 - maxValue % 5 + maxValue);
 
     setState(() {});
   }
@@ -235,7 +243,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator(color: rehwildFarbe));
+      return const Center(
+          child: CircularProgressIndicator(color: rehwildFarbe));
     }
     final dg = S.of(context);
 
@@ -326,8 +335,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
               ),
               child: RangeSlider(
                 values: years,
-                labels: RangeLabels(
-                    years.start.toInt().toString(), years.end.toInt().toString()),
+                labels: RangeLabels(years.start.toInt().toString(),
+                    years.end.toInt().toString()),
                 min: _minYear.toDouble(),
                 max: _maxYear.toDouble(),
                 divisions: _maxYear - _minYear == 0 ? 1 : _maxYear - _minYear,
@@ -345,6 +354,10 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
             children: [
               Expanded(
                 child: ActionChip(
+                    side: BorderSide.none,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
                     avatar: const CircleAvatar(
                       backgroundColor: Colors.transparent,
                       child: Icon(
@@ -369,7 +382,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
                             return ValueSelectorModal<String>(
                               items: List.generate(
                                 groupBys.length,
-                                (index) => groupBys.elementAt(index)['key'] as String,
+                                (index) =>
+                                    groupBys.elementAt(index)['key'] as String,
                               ),
                               selectedItem: groupBy['key'] as String,
                               padding: false,
@@ -377,8 +391,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
                                 if (groupBy !=
                                     groupBys.firstWhere((element) =>
                                         element['key'] as String == selected)) {
-                                  groupBy = groupBys.firstWhere(
-                                      (element) => element['key'] as String == selected);
+                                  groupBy = groupBys.firstWhere((element) =>
+                                      element['key'] as String == selected);
                                   await getData();
                                   resetChips();
                                   setState(() {});
@@ -420,7 +434,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
           ),
           SizedBox(height: size.height * 0.05),
           _isLoading
-              ? const Center(child: CircularProgressIndicator(color: rehwildFarbe))
+              ? const Center(
+                  child: CircularProgressIndicator(color: rehwildFarbe))
               : groupData.isEmpty
                   ? const NoDataFoundWidget()
                   : ConstrainedBox(
@@ -439,7 +454,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
                           swapAnimationCurve: Curves.decelerate, // Optional
                           BarChartData(
                             alignment: BarChartAlignment.spaceEvenly,
-                            maxY: maxDisplayValue.toDouble() + (maxDisplayValue * 0.05),
+                            maxY: maxDisplayValue.toDouble() +
+                                (maxDisplayValue * 0.05),
                             minY: 0,
                             borderData: FlBorderData(show: false),
                             gridData: FlGridData(show: _showGrid),
@@ -453,13 +469,16 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
                                   showTitles: true,
                                   reservedSize: 28,
                                   getTitlesWidget: (value, meta) {
-                                    String g = chartItems.elementAt(value.toInt()).label;
+                                    String g = chartItems
+                                        .elementAt(value.toInt())
+                                        .label;
                                     // g = res.length > 15
                                     //     ? g.substring(0, 1)
                                     //     : g.length < 3
                                     //         ? g
                                     //         : g.substring(0, 3);
-                                    double w = size.width / chartItems.length * 0.08;
+                                    double w =
+                                        size.width / chartItems.length * 0.08;
                                     num endIndex = g.length > w ? w : g.length;
 
                                     g = g.isEmpty
@@ -487,19 +506,23 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
                                   tooltipPadding: const EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 6),
                                   tooltipMargin: 0,
-                                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                                  getTooltipItem:
+                                      (group, groupIndex, rod, rodIndex) {
                                     //print('Working $groupIndex');
                                     return BarTooltipItem(
                                       rod.toY.toStringAsFixed(0),
                                       TextStyle(
-                                        color:
-                                            Theme.of(context).textTheme.headline1!.color,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .displayLarge!
+                                            .color,
                                       ),
                                     );
                                   },
                                 ),
                                 enabled: true,
-                                touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                                touchCallback:
+                                    (FlTouchEvent event, pieTouchResponse) {
                                   setState(() {
                                     if (!event.isInterestedForInteractions ||
                                         pieTouchResponse == null ||
@@ -507,8 +530,8 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
                                       touchedIndex = -1;
                                       return;
                                     }
-                                    touchedIndex =
-                                        pieTouchResponse.spot!.touchedBarGroupIndex;
+                                    touchedIndex = pieTouchResponse
+                                        .spot!.touchedBarGroupIndex;
                                   });
                                 }),
                             // centerSpaceRadius: size.width * 0.15,

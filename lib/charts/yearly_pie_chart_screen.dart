@@ -135,7 +135,9 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
     Size size = MediaQuery.of(context).size;
 
     int sum = 0;
-    chartItems.forEach((e) => sum += e.value.toInt());
+    for (var e in chartItems) {
+      sum += e.value.toInt();
+    }
 
     return chartItems.map((e) {
       String percentage = (e.value / sum * 100).toStringAsFixed(0);
@@ -154,7 +156,7 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
           '${e.label}\n(${e.value.toInt()})',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Theme.of(context).textTheme.headline1!.color,
+            color: Theme.of(context).textTheme.displayLarge!.color,
             fontWeight: FontWeight.bold,
           ),
         ),

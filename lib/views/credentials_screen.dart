@@ -27,7 +27,9 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
   @override
   Widget build(BuildContext context) {
     final dg = S.of(context);
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.center,
         children: <Widget>[
@@ -39,34 +41,46 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color(0xFF66BB6A),
-                    Color(0xFF4CAF50),
-                    Color(0xFF43A047),
+                    // Color(0xFF66BB6A),
+                    // Color(0xFF4CAF50),
+                    // Color(0xFF43A047),
+                    // Color(0xFF388E3C),
+                    Color.fromARGB(255, 160, 233, 153),
+                    Color.fromARGB(255, 117, 206, 120),
+                    Color.fromARGB(255, 81, 186, 86),
                     Color(0xFF388E3C),
                   ],
                   stops: [
-                    0.1,
-                    0.4,
-                    0.7,
-                    0.9
+                    0.025,
+                    0.2,
+                    0.5,
+                    0.8
                   ]),
             ),
           ),
           Container(
             alignment: Alignment.center,
-            constraints: const BoxConstraints(minWidth: 100, maxWidth: 500),
-            height: double.infinity,
+            constraints: BoxConstraints(
+              minWidth: size.width,
+              maxWidth: size.height,
+            ),
+            height: size.height,
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.only(
-                top: 120,
-                left: 40,
-                right: 40,
-                bottom: 20,
+              padding: EdgeInsets.only(
+                top: size.height * 0.05,
+                left: size.width * 0.1,
+                right: size.width * 0.1,
+                bottom: size.height * 0.05,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(size.shortestSide * 0.05),
+                    child: Image.asset('assets/SJV-Logo.png',
+                        height: size.height * 0.1),
+                  ),
                   Text(
                     dg.credsLoginTitle,
                     style: const TextStyle(
@@ -105,7 +119,8 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
                         fontSize: 10,
                       ),
                     ),
-                  )
+                  ),
+                  //Spacer(),
                 ],
               ),
             ),
@@ -133,6 +148,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
           child: TextField(
             controller: _revierController,
             keyboardType: TextInputType.text,
+            cursorColor: Colors.white,
             style: const TextStyle(
               color: Colors.white,
               fontFamily: 'OpenSans',
@@ -173,6 +189,7 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
             onSubmitted: (_) => login(),
             controller: _passwortController,
             obscureText: true,
+            cursorColor: Colors.white,
             style: const TextStyle(
               color: Colors.white,
               fontFamily: 'OpenSans',
@@ -202,13 +219,16 @@ class _CredentialsScreenState extends State<CredentialsScreen> {
       return;
     }
 
-    if (await Connectivity().checkConnectivity().timeout(const Duration(seconds: 15)) ==
+    if (await Connectivity()
+            .checkConnectivity()
+            .timeout(const Duration(seconds: 15)) ==
         ConnectivityResult.none) {
       showSnackBar(delegate.noInternetError, context);
       return;
     }
 
-    if (_loginAttempts > 5 && DateTime.now().difference(_lastRefresh).inSeconds < 60) {
+    if (_loginAttempts > 5 &&
+        DateTime.now().difference(_lastRefresh).inSeconds < 60) {
       showSnackBar(delegate.credsTooManySigninsSnackbar, context);
       return;
     }

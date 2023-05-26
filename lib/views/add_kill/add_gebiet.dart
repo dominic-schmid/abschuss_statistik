@@ -106,7 +106,8 @@ class _AddGebietState extends State<AddGebiet> {
 
     // -------------
 
-    List<Map<String, Object?>> ursprungszeichenRows = await database.transaction(
+    List<Map<String, Object?>> ursprungszeichenRows =
+        await database.transaction(
       (txn) async => await txn.rawQuery('''
         SELECT
         trim(ursprungszeichen) as ursprungszeichen,
@@ -119,8 +120,8 @@ class _AddGebietState extends State<AddGebiet> {
 
     _ursprungszeichenTypesSelect = ursprungszeichenRows
         .map(
-          (r) =>
-              SelectorHelper(r['ursprungszeichen'] as String, r['anzahl'] as int, null),
+          (r) => SelectorHelper(
+              r['ursprungszeichen'] as String, r['anzahl'] as int, null),
         )
         .map((e) => SelectedListItem(name: e.name, value: e.value))
         .toList();
@@ -132,7 +133,6 @@ class _AddGebietState extends State<AddGebiet> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     final dg = S.of(context);
 
     return _isLoading
@@ -172,13 +172,16 @@ class _AddGebietState extends State<AddGebiet> {
                         MaterialPageRoute<LatLng>(
                           builder: (context) => AddMapCoordsScreen(
                             initCoords: _latLng ?? widget.initialLatLng,
-                            zoom: _latLng == null && !widget.isLatLngPreset ? 12 : 15,
+                            zoom: _latLng == null && !widget.isLatLngPreset
+                                ? 12
+                                : 15,
                           ),
                         ), // Bolzano default
                       );
                       if (newLatLng != null) {
                         setState(() {
-                          _latLng = newLatLng; // don't need this except for icon below
+                          _latLng =
+                              newLatLng; // don't need this except for icon below
                         });
                         widget.onLatLngSelect(newLatLng);
                       }

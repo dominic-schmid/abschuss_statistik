@@ -183,7 +183,7 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
             ),
             borderSide: isTouched
                 ? BorderSide(
-                    color: Theme.of(context).textTheme.headline1!.color ?? Colors.yellow,
+                    color: Theme.of(context).textTheme.displayLarge!.color ?? Colors.yellow,
                     width: size.width * 0.005,
                   )
                 : const BorderSide(color: Colors.white, width: 0),
@@ -421,7 +421,7 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
                                       rod.toY.toStringAsFixed(0),
                                       TextStyle(
                                         color:
-                                            Theme.of(context).textTheme.headline1!.color,
+                                            Theme.of(context).textTheme.displayLarge!.color,
                                       ),
                                     );
                                   },

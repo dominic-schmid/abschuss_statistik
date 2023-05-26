@@ -23,16 +23,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final prefProvider = Provider.of<PrefProvider>(context);
     return OnBoardingSlider(
       imageVerticalOffset: size.height * 0.03,
-      middle: Text(
-        dg.appTitle,
-        style: TextStyle(
-          color: Theme.of(context).appBarTheme.foregroundColor,
-          fontSize: 22,
-        ),
-      ),
-      //imageHorizontalOffset: size.width * 0.2,
       background: [
-        Image.asset('assets/SJV-Logo.png', height: size.height * 0.4),
+        Container(
+          padding: EdgeInsets.only(top: size.height * 0.025),
+          width: size.width,
+          alignment: Alignment.center,
+          child: Image.asset(
+            'assets/SJV-Logo.png',
+            height: size.height * 0.3,
+          ),
+        ),
         Image.asset('assets/manager-tasks-t.png', height: size.height * 0.4),
         Image.asset('assets/people-charts.png', height: size.height * 0.5),
         Image.asset('assets/time-management.png', height: size.height * 0.5),
@@ -49,6 +49,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       headerBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
       pageBodies: [
         OnboardingDataItem(
+          topFlex: 7,
           title: dg.appTitle,
           description: dg.sjvPublikation,
           trailing: ElevatedButton(
@@ -77,6 +78,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           topFlex: 11,
         ),
       ],
+      finishButtonStyle: FinishButtonStyle(
+        backgroundColor: rehwildFarbe,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
       speed: 1.5,
       totalPage: 4,
       onFinish: () async {

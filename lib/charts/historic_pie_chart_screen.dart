@@ -195,7 +195,7 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
           '${e.label}\n(${e.value.toInt()})',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Theme.of(context).textTheme.headline1!.color,
+            color: Theme.of(context).textTheme.displayLarge!.color,
             fontWeight: FontWeight.bold,
           ),
         ),

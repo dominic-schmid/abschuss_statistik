@@ -55,7 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       } else if (hasSetLocalAuth == true) {
         // Try authenticate if a user has set biometric login to enabled
-        _isAuthenticated = await LocalAuthApi.authentiate(subtitle: dg.useLocalAuth);
+        _isAuthenticated =
+            await LocalAuthApi.authentiate(subtitle: dg.useLocalAuth);
       } else if (hasSetLocalAuth == false) {
         _isAuthenticated = true;
       }
@@ -146,7 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ElevatedButton.icon(
           onPressed: () async {
             setState(() => _isLoading = true);
-            _isAuthenticated = await LocalAuthApi.authentiate(subtitle: dg.useLocalAuth);
+            _isAuthenticated =
+                await LocalAuthApi.authentiate(subtitle: dg.useLocalAuth);
             setState(() => _isLoading = false);
           },
           icon: const Icon(Icons.fingerprint_rounded),
@@ -178,7 +180,8 @@ class _HomeScreenState extends State<HomeScreen> {
               onYes: () {
                 deletePrefs().then(
                   (value) => Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => const CredentialsScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const CredentialsScreen()),
                     (route) => false,
                   ),
                 );

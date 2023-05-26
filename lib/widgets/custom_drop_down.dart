@@ -244,9 +244,9 @@ class _MainBodyState extends State<MainBody> {
   }
 
   void _setSearchWidgetListener() {
-    TextFormField? _searchField = (widget.dropDown.searchWidget as TextFormField?);
-    _searchField?.controller?.addListener(() {
-      _buildSearchList(_searchField.controller?.text ?? '');
+    TextFormField? searchField = widget.dropDown.searchWidget;
+    searchField?.controller?.addListener(() {
+      _buildSearchList(searchField.controller?.text ?? '');
     });
   }
 }

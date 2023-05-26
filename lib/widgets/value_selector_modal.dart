@@ -40,7 +40,7 @@ class ValueSelectorModal<T> extends StatelessWidget {
               fontWeight: i == selectedItem ? FontWeight.bold : FontWeight.normal,
               color: i == selectedItem
                   ? Colors.green
-                  : Theme.of(context).textTheme.headline1!.color, // secondaryColor,
+                  : Theme.of(context).textTheme.displayLarge!.color, // secondaryColor,
             ),
           ),
         ),

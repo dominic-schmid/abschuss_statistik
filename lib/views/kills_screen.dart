@@ -125,10 +125,18 @@ class _KillsScreenState extends State<KillsScreen>
     _scrollController.dispose();
     // On logout, re-select all chips to make sure that on login you arent filtering anything
     // This probably doesn't even do much but eh
-    wildChips.forEach((element) => element.isSelected = true);
-    ursacheChips.forEach((element) => element.isSelected = true);
-    verwendungChips.forEach((element) => element.isSelected = true);
-    geschlechterChips.forEach((element) => element.isSelected = true);
+    for (var element in wildChips) {
+      element.isSelected = true;
+    }
+    for (var element in ursacheChips) {
+      element.isSelected = true;
+    }
+    for (var element in verwendungChips) {
+      element.isSelected = true;
+    }
+    for (var element in geschlechterChips) {
+      element.isSelected = true;
+    }
 
     super.dispose();
   }
@@ -329,6 +337,7 @@ class _KillsScreenState extends State<KillsScreen>
   @override
   Widget build(BuildContext context) {
     // listen for locale changes
+    // ignore: unused_local_variable
     final localeProvider = Provider.of<LocaleProvider>(context);
     final prefs = Provider.of<PrefProvider>(context);
     _isFabVisible = prefs.betaMode ? ValueNotifier(true) : null;
@@ -445,10 +454,10 @@ class _KillsScreenState extends State<KillsScreen>
       ),
       IconButton(
         onPressed: () async {
-          bool needToRefresh = await Navigator.of(context).push(
+          bool? needToRefresh = await Navigator.of(context).push(
             CupertinoPageRoute(builder: (context) => const SettingsScreen()),
           );
-          if (needToRefresh) {
+          if (needToRefresh == true) {
             await refresh(_currentYear);
             if (!mounted) return;
             await showSnackBar(dg.refreshListConfirmation, context);
@@ -465,7 +474,8 @@ class _KillsScreenState extends State<KillsScreen>
       child: TextField(
         autofocus: true,
         onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-        style: TextStyle(color: Theme.of(context).textTheme.headline1!.color),
+        style:
+            TextStyle(color: Theme.of(context).textTheme.displayLarge!.color),
         controller: controller,
         decoration: InputDecoration(
           enabledBorder: InputBorder.none,
@@ -861,7 +871,7 @@ class _KillsScreenState extends State<KillsScreen>
                       : FontWeight.normal,
                   color: s == _currentSorting
                       ? Colors.green
-                      : Theme.of(context).textTheme.headline1!.color,
+                      : Theme.of(context).textTheme.displayLarge!.color,
                 ),
               ),
               const SizedBox(width: 12),
@@ -873,7 +883,7 @@ class _KillsScreenState extends State<KillsScreen>
                           : Icons.arrow_downward_rounded,
                       color: s == _currentSorting
                           ? Colors.green
-                          : Theme.of(context).textTheme.headline1!.color,
+                          : Theme.of(context).textTheme.displayLarge!.color,
                     ),
             ],
           ),
@@ -990,7 +1000,8 @@ class CustomFab extends StatelessWidget {
                     builder: (context) => const AddKillScreen(),
                     fullscreenDialog: true,
                   )),
-                  backgroundColor: Theme.of(context).textTheme.headline1!.color,
+                  backgroundColor:
+                      Theme.of(context).textTheme.displayLarge!.color,
                   foregroundColor: Theme.of(context).scaffoldBackgroundColor,
                   isExtended: true,
                   elevation: 5,

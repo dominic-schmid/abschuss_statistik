@@ -88,7 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        foregroundColor: Theme.of(context).textTheme.headline1!.color,
+        foregroundColor: Theme.of(context).textTheme.displayLarge!.color,
         backgroundColor: bg,
         title: Text(dg.settingsTitle),
       ),
@@ -147,6 +147,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           title: Text(dg.settingsShowNamesTitle),
                         ),
                         if (false) // Disable Beta Mode for release globally for now
+                          // ignore: dead_code
                           SettingsTile.switchTile(
                             onToggle: (value) {
                               prefProvider.get.setBool('betaMode', value);
@@ -401,7 +402,30 @@ class JagdverbandWebView extends StatefulWidget {
 }
 
 class _JagdverbandWebViewState extends State<JagdverbandWebView> {
-  WebViewController? ctrl;
+  WebViewController ctrl = WebViewController()
+    ..setJavaScriptMode(JavaScriptMode.unrestricted);
+  WebViewCookieManager cookieManager = WebViewCookieManager();
+
+  @override
+  void initState() {
+    for (WebViewCookie c in widget.cookies) {
+      cookieManager.setCookie(c);
+    }
+
+    var delegate = NavigationDelegate(
+      onPageFinished: (page) async {
+        await ctrl.runJavaScript(
+            "document.getElementById('login-username').value = '${widget.login}'");
+        await ctrl.runJavaScript(
+            "document.getElementById('login-password').value = '${widget.pass}'");
+        await ctrl.runJavaScript(
+            " document.querySelectorAll('input[type=submit]')[0].click();");
+      },
+    );
+    ctrl.setNavigationDelegate(delegate);
+    ctrl.loadRequest(Uri.parse(widget.url));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -413,34 +437,19 @@ class _JagdverbandWebViewState extends State<JagdverbandWebView> {
 
     return Scaffold(
       appBar: const ChartAppBar(title: Text('Jagdverband'), actions: []),
-      body: WebView(
-        initialCookies: widget.cookies,
-        javascriptMode: JavascriptMode.unrestricted,
-        initialUrl: widget.url,
-        onWebViewCreated: (controller) {
-          ctrl = controller;
-          // controller.loadUrl(widget.url, headers: RequestMethods.baseHeaders);
-          showSnackBar(dg.willBeLoggedInAuto, context);
-        },
-        onPageFinished: (page) async {
-          if (ctrl != null) {
-            await ctrl!.runJavascript(
-                "document.getElementById('login-username').value = '${widget.login}'");
-            await ctrl!.runJavascript(
-                "document.getElementById('login-password').value = '${widget.pass}'");
-            await ctrl!.runJavascript(
-                " document.querySelectorAll('input[type=submit]')[0].click();");
-          }
-        },
-      ),
+      body: WebViewWidget(controller: ctrl),
     );
   }
 }
 
 class MyStatistikWebView extends StatelessWidget {
   final String url;
+  final WebViewController ctrl = WebViewController();
 
-  const MyStatistikWebView({Key? key, required this.url}) : super(key: key);
+  MyStatistikWebView({Key? key, required this.url}) {
+    ctrl.setJavaScriptMode(JavaScriptMode.unrestricted);
+    ctrl.loadRequest(Uri.parse(url));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -448,10 +457,7 @@ class MyStatistikWebView extends StatelessWidget {
 
     return Scaffold(
       appBar: const ChartAppBar(title: Text('Jagdstatistik'), actions: []),
-      body: WebView(
-        initialUrl: url,
-        javascriptMode: JavascriptMode.unrestricted,
-      ),
+      body: WebViewWidget(controller: ctrl),
     );
   }
 }

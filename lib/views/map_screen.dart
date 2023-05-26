@@ -51,8 +51,8 @@ class _MapScreenState extends State<MapScreen> {
     if (path == null || width == null) return Uint8List(0);
 
     ByteData data = await rootBundle.load(path);
-    ui.Codec codec =
-        await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
     ui.FrameInfo fi = await codec.getNextFrame();
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
         .buffer
@@ -60,10 +60,11 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void createMarkerIcon() async {
-    var bytes = await getBytesFromAsset(path: 'assets/location-marker.png', width: 125);
+    //var bytes = await getBytesFromAsset(path: 'assets/location-marker.png', width: 125);
 
     if (!mounted) return;
-    GameType gt = GameType.all.firstWhere((e) => e.wildart == widget.kill.wildart);
+    GameType gt =
+        GameType.all.firstWhere((e) => e.wildart == widget.kill.wildart);
     _markers.add(
       Marker(
         markerId: MarkerId(widget.kill.key),
@@ -153,8 +154,8 @@ class _MapScreenState extends State<MapScreen> {
                                     color: Colors.black.withOpacity(0.2),
                                     spreadRadius: 2,
                                     blurRadius: 14,
-                                    offset:
-                                        const Offset(0, 0), // changes position of shadow
+                                    offset: const Offset(
+                                        0, 0), // changes position of shadow
                                   ),
                                 ],
                                 color: Theme.of(context)
@@ -165,11 +166,14 @@ class _MapScreenState extends State<MapScreen> {
                                 child: Row(
                                   children: [
                                     IconButton(
-                                      onPressed: () => Navigator.of(context).pop(),
-                                      icon: const Icon(Icons.arrow_back_rounded),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      icon:
+                                          const Icon(Icons.arrow_back_rounded),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(right: size.width * 0.05),
+                                      padding: EdgeInsets.only(
+                                          right: size.width * 0.05),
                                       child: Text('#${widget.kill.nummer}'),
                                     ),
                                   ],
@@ -191,14 +195,15 @@ class _MapScreenState extends State<MapScreen> {
                           ? Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                color: Theme.of(context).scaffoldBackgroundColor,
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor,
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.2),
                                     spreadRadius: 2,
                                     blurRadius: 14,
-                                    offset:
-                                        const Offset(0, 0), // changes position of shadow
+                                    offset: const Offset(
+                                        0, 0), // changes position of shadow
                                   ),
                                 ],
                               ),

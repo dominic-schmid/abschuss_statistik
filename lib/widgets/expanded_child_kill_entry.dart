@@ -25,7 +25,7 @@ class ExpandedChildKillEntry extends StatelessWidget {
         ? Container()
         : ListTile(
             onLongPress: () {
-              Clipboard.setData(ClipboardData(text: value));
+              Clipboard.setData(ClipboardData(text: value ?? ""));
               showSnackBar(dg.copiedToClipboardSnackbar, context);
             },
             visualDensity: const VisualDensity(horizontal: 4, vertical: -3.5),
@@ -41,7 +41,8 @@ class ExpandedChildKillEntry extends StatelessWidget {
               children: [
                 Flexible(
                   child: Padding(
-                      padding: const EdgeInsets.only(left: 5), child: Text(title)),
+                      padding: const EdgeInsets.only(left: 5),
+                      child: Text(title)),
                 ),
                 Flexible(
                   child: Text(
