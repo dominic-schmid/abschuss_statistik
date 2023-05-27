@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -10,18 +8,14 @@ import 'package:jagdstatistik/providers/theme_provider.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/views/credentials_screen.dart';
 import 'package:jagdstatistik/views/home_screen.dart';
-import 'package:jagdstatistik/utils/request_methods.dart';
 import 'package:jagdstatistik/views/onboarding_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:workmanager/workmanager.dart';
 // import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart'; // DO NOT REMOVE
 
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'utils/database_methods.dart';
-import 'models/kill_entry.dart';
-import 'models/kill_page.dart';
 
 const SEND_NOTIFICATIONS = false;
 

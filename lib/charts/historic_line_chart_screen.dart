@@ -11,7 +11,6 @@ import 'package:jagdstatistik/widgets/chip_selector_modal.dart';
 import 'package:jagdstatistik/models/filter_chip_data.dart';
 import 'package:jagdstatistik/widgets/no_data_found.dart';
 import 'package:jagdstatistik/widgets/value_selector_modal.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 

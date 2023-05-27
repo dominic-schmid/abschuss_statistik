@@ -9,7 +9,6 @@ import 'package:jagdstatistik/widgets/chart_app_bar.dart';
 import 'package:jagdstatistik/widgets/chip_selector_modal.dart';
 import 'package:jagdstatistik/widgets/hunting_time_list_entry.dart';
 import 'package:jagdstatistik/widgets/no_data_found.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class HuntingTimeScreen extends StatefulWidget {
   const HuntingTimeScreen({Key? key}) : super(key: key);

@@ -1,16 +1,13 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/kill_entry.dart';
 import 'package:jagdstatistik/providers/pref_provider.dart';
-import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/widgets/kill_list_entry.dart';
 import 'package:provider/provider.dart';
 
@@ -93,7 +90,6 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final dg = S.of(context);
     final showPerson = Provider.of<PrefProvider>(context).showPerson;
 
     return Scaffold(
@@ -221,10 +217,5 @@ class _MapScreenState extends State<MapScreen> {
               ),
       ),
     );
-  }
-
-  Future<void> _goToOrigin() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(kCamPosition));
   }
 }
