@@ -9,9 +9,11 @@ import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/kill_entry.dart';
+import 'package:jagdstatistik/providers/pref_provider.dart';
 import 'package:jagdstatistik/utils/constants.dart';
 import 'package:jagdstatistik/utils/utils.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:jagdstatistik/widgets/kill_list_entry.dart';
+import 'package:provider/provider.dart';
 
 import '../models/filter_chip_data.dart';
 import '../models/kill_page.dart';
@@ -47,6 +49,8 @@ class _AllMapScreenState extends State<AllMapScreen> {
   MapType _currentMapType = MapType.hybrid;
   Uint8List markerBytes = Uint8List(0);
 
+  ValueNotifier<KillEntry?> selectedKill = ValueNotifier(null);
+
   @override
   void initState() {
     super.initState();
@@ -54,15 +58,17 @@ class _AllMapScreenState extends State<AllMapScreen> {
     geschlechterChips = widget.page.geschlechter;
     ursacheChips = widget.page.ursachen;
     verwendungChips = widget.page.verwendungen;
-    initMap();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      initMap();
+    });
   }
 
   Future<Uint8List> getBytesFromAsset({String? path, int? width}) async {
     if (path == null || width == null) return Uint8List(0);
 
     ByteData data = await rootBundle.load(path);
-    ui.Codec codec =
-        await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
     ui.FrameInfo fi = await codec.getNextFrame();
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
         .buffer
@@ -70,7 +76,8 @@ class _AllMapScreenState extends State<AllMapScreen> {
   }
 
   void initMap() async {
-    markerBytes = await getBytesFromAsset(path: 'assets/location-marker.png', width: 125);
+    markerBytes =
+        await getBytesFromAsset(path: 'assets/location-marker.png', width: 125);
     rebuildMarkers();
     setState(() => _isLoading = false);
   }
@@ -84,7 +91,10 @@ class _AllMapScreenState extends State<AllMapScreen> {
     for (KillEntry k in widget.page.kills) {
       if (k.gpsLat != null &&
           k.gpsLon != null &&
-          wildChips.where((e) => e.isSelected).map((e) => e.label).contains(k.wildart) &&
+          wildChips
+              .where((e) => e.isSelected)
+              .map((e) => e.label)
+              .contains(k.wildart) &&
           geschlechterChips
               .where((e) => e.isSelected)
               .map((e) => e.label)
@@ -107,22 +117,22 @@ class _AllMapScreenState extends State<AllMapScreen> {
           Marker(
             markerId: MarkerId(k.key),
             position: LatLng(k.gpsLat!, k.gpsLon!),
-            //icon: BitmapDescriptor.fromBytes(markerBytes),
             icon: BitmapDescriptor.defaultMarkerWithHue(gt.bitmapDescriptor),
-            infoWindow: InfoWindow(
-                title:
-                    '${GameType.translate(context, k.wildart)} (${GameType.translateGeschlecht(context, k.geschlecht)})',
-                onTap: () => showAlertDialog(
-                      title: '',
-                      description: k.localizedToString(context),
-                      yesOption: '',
-                      noOption: 'Ok',
-                      onYes: () {},
-                      icon: k.icon,
-                      context: context,
-                    ),
-                snippet:
-                    '${DateFormat('dd.MM.yy').format(k.datetime)} ${DateFormat('kk:mm').format(k.datetime)}'),
+            onTap: () => selectedKill.value = k,
+            // infoWindow: InfoWindow(
+            //     title:
+            //         '${GameType.translate(context, k.wildart)} (${GameType.translateGeschlecht(context, k.geschlecht)})',
+            //     onTap: () => showAlertDialog(
+            //           title: '',
+            //           description: k.localizedToString(context),
+            //           yesOption: '',
+            //           noOption: 'Ok',
+            //           onYes: () {},
+            //           icon: k.icon,
+            //           context: context,
+            //         ),
+            //     snippet:
+            //         '${DateFormat('dd.MM.yy').format(k.datetime)} ${DateFormat('kk:mm').format(k.datetime)}'),
           ),
         );
       }
@@ -137,7 +147,8 @@ class _AllMapScreenState extends State<AllMapScreen> {
       );
     } else if (widget.page.kills.isNotEmpty &&
         widget.page.kills
-            .where((element) => element.gpsLat != null && element.gpsLat != null)
+            .where(
+                (element) => element.gpsLat != null && element.gpsLat != null)
             .isNotEmpty) {
       var kill = widget.page.kills
           .where((element) => element.gpsLat != null && element.gpsLat != null)
@@ -173,10 +184,12 @@ class _AllMapScreenState extends State<AllMapScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final showPerson = Provider.of<PrefProvider>(context).showPerson;
 
     final dg = S.of(context);
 
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(
@@ -205,6 +218,7 @@ class _AllMapScreenState extends State<AllMapScreen> {
                         compassEnabled: _showButtons ? false : true,
                         initialCameraPosition: originCamPosition,
                         markers: _markers,
+                        onTap: (_) => selectedKill.value = null,
                         // onCameraMoveStarted: () {
                         //   if (_showButtons) setState(() => _showButtons = false);
                         // },
@@ -222,7 +236,6 @@ class _AllMapScreenState extends State<AllMapScreen> {
                         // },
                         onMapCreated: (GoogleMapController controller) {
                           _controller.complete(controller);
-                          //createMarkerIcon();
                         },
                       ),
                     ),
@@ -258,8 +271,8 @@ class _AllMapScreenState extends State<AllMapScreen> {
                                     color: Colors.black.withOpacity(0.2),
                                     spreadRadius: 2,
                                     blurRadius: 14,
-                                    offset:
-                                        const Offset(0, 0), // changes position of shadow
+                                    offset: const Offset(
+                                        0, 0), // changes position of shadow
                                   ),
                                 ],
                                 color: Theme.of(context)
@@ -270,11 +283,14 @@ class _AllMapScreenState extends State<AllMapScreen> {
                                 child: Row(
                                   children: [
                                     IconButton(
-                                      onPressed: () => Navigator.of(context).pop(),
-                                      icon: const Icon(Icons.arrow_back_rounded),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      icon:
+                                          const Icon(Icons.arrow_back_rounded),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(right: size.width * 0.05),
+                                      padding: EdgeInsets.only(
+                                          right: size.width * 0.05),
                                       child: Text(dg.xKill_s(_markers.length)),
                                     ),
                                   ],
@@ -297,7 +313,10 @@ class _AllMapScreenState extends State<AllMapScreen> {
                       child: _showButtons
                           ? MapFilterButton(
                               iconColor: _showFilter
-                                  ? Theme.of(context).primaryTextTheme.bodyMedium!.color!
+                                  ? Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .color!
                                   : primaryColor,
                               color: _showFilter
                                   ? Theme.of(context).scaffoldBackgroundColor
@@ -338,9 +357,10 @@ class _AllMapScreenState extends State<AllMapScreen> {
                                 color: rehwildFarbe,
                                 title: dg.gameTypes,
                                 onTap: () async {
-                                  await showMaterialModalBottomSheet(
+                                  await showModalBottomSheet(
+                                      showDragHandle: true,
                                       context: context,
-                                      shape: modalShape,
+                                      shape: Constants.modalShape,
                                       builder: (BuildContext context) {
                                         return ChipSelectorModal(
                                           title: dg.gameTypes,
@@ -357,9 +377,10 @@ class _AllMapScreenState extends State<AllMapScreen> {
                                 color: protokollFarbe,
                                 title: dg.sexes,
                                 onTap: () async {
-                                  await showMaterialModalBottomSheet(
+                                  await showModalBottomSheet(
+                                      showDragHandle: true,
                                       context: context,
-                                      shape: modalShape,
+                                      shape: Constants.modalShape,
                                       builder: (BuildContext context) {
                                         return ChipSelectorModal(
                                           title: dg.sexes,
@@ -376,9 +397,10 @@ class _AllMapScreenState extends State<AllMapScreen> {
                                 color: hegeabschussFarbe,
                                 title: dg.causes,
                                 onTap: () async {
-                                  await showMaterialModalBottomSheet(
+                                  await showModalBottomSheet(
+                                      showDragHandle: true,
                                       context: context,
-                                      shape: modalShape,
+                                      shape: Constants.modalShape,
                                       builder: (BuildContext context) {
                                         return ChipSelectorModal(
                                           title: dg.causes,
@@ -395,9 +417,10 @@ class _AllMapScreenState extends State<AllMapScreen> {
                                 color: nichtBekanntFarbe,
                                 title: dg.usages,
                                 onTap: () async {
-                                  await showMaterialModalBottomSheet(
+                                  await showModalBottomSheet(
+                                      showDragHandle: true,
                                       context: context,
-                                      shape: modalShape,
+                                      shape: Constants.modalShape,
                                       builder: (BuildContext context) {
                                         return ChipSelectorModal(
                                           title: dg.usages,
@@ -426,14 +449,15 @@ class _AllMapScreenState extends State<AllMapScreen> {
                           ? Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                color: Theme.of(context).scaffoldBackgroundColor,
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor,
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.2),
                                     spreadRadius: 2,
                                     blurRadius: 14,
-                                    offset:
-                                        const Offset(0, 0), // changes position of shadow
+                                    offset: const Offset(
+                                        0, 0), // changes position of shadow
                                   ),
                                 ],
                               ),
@@ -448,21 +472,46 @@ class _AllMapScreenState extends State<AllMapScreen> {
                 ],
               ),
             ),
-      floatingActionButton: _isLoading
-          ? Container()
-          : FloatingActionButton.extended(
-              onPressed: _goToOrigin,
-              backgroundColor: rehwildFarbe,
-              foregroundColor: Colors.white,
-              label: Text(dg.mapInitialPosition),
-              icon: const Icon(Icons.restore_rounded),
-            ),
+      // floatingActionButton: _isLoading
+      //     ? Container()
+      //     : FloatingActionButton.extended(
+      //         onPressed: _goToOrigin,
+      //         backgroundColor: rehwildFarbe,
+      //         foregroundColor: Colors.white,
+      //         label: Text(dg.mapInitialPosition),
+      //         icon: const Icon(Icons.restore_rounded),
+      //       ),
+      floatingActionButton: ValueListenableBuilder(
+        valueListenable: selectedKill,
+        builder: (context, KillEntry? kill, child) {
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+            child: _isLoading
+                ? Container()
+                : kill == null
+                    ? FloatingActionButton.extended(
+                        onPressed: _goToOrigin,
+                        backgroundColor: rehwildFarbe,
+                        foregroundColor: Colors.white,
+                        label: Text(dg.mapInitialPosition),
+                        icon: const Icon(Icons.restore_rounded),
+                      )
+                    : KillListEntry(
+                        kill: kill,
+                        showPerson: showPerson,
+                        backgroundOpacity: 0.9,
+                        showMap: false,
+                      ),
+          );
+        },
+      ),
     );
   }
 
   Future<void> _goToOrigin() async {
     final GoogleMapController controller = await _controller.future;
-    await controller.animateCamera(CameraUpdate.newCameraPosition(originCamPosition));
+    await controller
+        .animateCamera(CameraUpdate.newCameraPosition(originCamPosition));
   }
 }
 

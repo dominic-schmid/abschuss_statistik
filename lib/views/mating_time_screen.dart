@@ -3,6 +3,7 @@ import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/constants/hunting_time.dart';
 import 'package:jagdstatistik/models/filter_chip_data.dart';
+import 'package:jagdstatistik/utils/constants.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/widgets/chart_app_bar.dart';
 import 'package:jagdstatistik/widgets/chip_selector_modal.dart';
@@ -40,7 +41,8 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
     }
 
     bool showOpen = _filters.firstWhere((e) => e.label == dg.open).isSelected;
-    bool showClosed = _filters.firstWhere((e) => e.label == dg.geschlossen).isSelected;
+    bool showClosed =
+        _filters.firstWhere((e) => e.label == dg.geschlossen).isSelected;
 
     List<HuntingTime> filteredList = huntingTimes
         .where((ht) => ht.open && showOpen || !ht.open && showClosed)
@@ -52,10 +54,9 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-              await showMaterialModalBottomSheet(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-                ),
+              await showModalBottomSheet(
+                showDragHandle: true,
+                shape: Constants.modalShape,
                 context: context,
                 builder: (context) =>
                     ChipSelectorModal(title: dg.filter, chips: _filters),
@@ -82,10 +83,14 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
                 // Not in map, need to generate it first
                 if (!_colors.containsKey(t.wildart)) {
                   // If is translatable game (-> has a color)
-                  if (GameType.translate(context, t.wildart, false).isNotEmpty) {
-                    c = GameType.all.firstWhere((e) => e.wildart == t.wildart).color;
+                  if (GameType.translate(context, t.wildart, false)
+                      .isNotEmpty) {
+                    c = GameType.all
+                        .firstWhere((e) => e.wildart == t.wildart)
+                        .color;
                   } else {
-                    c = Colors.primaries[_colors.length % Colors.primaries.length];
+                    c = Colors
+                        .primaries[_colors.length % Colors.primaries.length];
                   }
 
                   _colors.addAll({t.wildart: c});

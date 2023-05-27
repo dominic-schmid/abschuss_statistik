@@ -17,8 +17,11 @@ class Constants {
   ];
 
   static const bolzanoCoords = LatLng(46.500000, 11.350000);
-  static const modalRadius = BorderRadius.only(
-    topLeft: Radius.circular(20),
-    topRight: Radius.circular(20),
+
+  static const ShapeBorder modalShape = RoundedRectangleBorder(
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(20),
+      topRight: Radius.circular(20),
+    ),
   );
 }

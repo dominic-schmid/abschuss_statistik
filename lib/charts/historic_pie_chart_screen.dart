@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
+import 'package:jagdstatistik/utils/constants.dart';
 import 'package:jagdstatistik/utils/database_methods.dart';
 import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
@@ -76,7 +77,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
       configurationChips.addAll([
         FilterChipData(
             label: dg.onlyShot, color: Colors.red, isSelected: _showOnlyErlegt),
-        FilterChipData(label: dg.legend, color: Colors.orange, isSelected: _showLegend),
+        FilterChipData(
+            label: dg.legend, color: Colors.orange, isSelected: _showLegend),
       ]);
     });
   }
@@ -126,7 +128,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
   }
 
   void resetChips() {
-    Set<String> gruppierungen = res.map((e) => e['Gruppierung'] as String).toSet();
+    Set<String> gruppierungen =
+        res.map((e) => e['Gruppierung'] as String).toSet();
 
     filterChips = [];
     for (int i = 0; i < gruppierungen.length; i++) {
@@ -161,8 +164,9 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
     Iterable<String> selectedLabels =
         filterChips.where((e) => e.isSelected).map((e) => e.label);
 
-    var toBuild =
-        res.where((e) => selectedLabels.contains(e['Gruppierung'] as String)).toList();
+    var toBuild = res
+        .where((e) => selectedLabels.contains(e['Gruppierung'] as String))
+        .toList();
 
     for (int i = 0; i < toBuild.length; i++) {
       String label = toBuild.elementAt(i)['Gruppierung'] as String;
@@ -174,8 +178,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
 
       sum += value;
 
-      chartItems
-          .add(ChartItem(label: translateValue(context, label), value: value, color: c));
+      chartItems.add(ChartItem(
+          label: translateValue(context, label), value: value, color: c));
     }
 
     return chartItems.map((e) {
@@ -205,7 +209,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
         //color: KillEntry.getColorFromWildart(e['Gruppierung'] as String),
         color: e.color,
         title: '$percentage%',
-        titleStyle: const TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+        titleStyle:
+            const TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
         value: e.value,
       );
     }).toList();
@@ -214,7 +219,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator(color: rehwildFarbe));
+      return const Center(
+          child: CircularProgressIndicator(color: rehwildFarbe));
     }
 
     Size size = MediaQuery.of(context).size;
@@ -227,13 +233,9 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
         IconButton(
           onPressed: () async {
             await showModalBottomSheet(
+                showDragHandle: true,
                 context: context,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                ),
+                shape: Constants.modalShape,
                 builder: (BuildContext context) {
                   return ChipSelectorModal(
                       padding: EdgeInsets.only(
@@ -293,8 +295,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
               ),
               child: RangeSlider(
                 values: yearRange,
-                labels: RangeLabels(
-                    yearRange.start.toInt().toString(), yearRange.end.toInt().toString()),
+                labels: RangeLabels(yearRange.start.toInt().toString(),
+                    yearRange.end.toInt().toString()),
                 min: _minYear.toDouble(),
                 max: _maxYear.toDouble(),
                 divisions: _maxYear - _minYear == 0 ? 1 : _maxYear - _minYear,
@@ -323,18 +325,15 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
                     label: Text(dg.display),
                     onPressed: () async {
                       await showModalBottomSheet(
+                          showDragHandle: true,
                           context: context,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            ),
-                          ),
+                          shape: Constants.modalShape,
                           builder: (BuildContext context) {
                             return ValueSelectorModal<String>(
                               items: List.generate(
                                 groupBys.length,
-                                (index) => groupBys.elementAt(index)['key'] as String,
+                                (index) =>
+                                    groupBys.elementAt(index)['key'] as String,
                               ),
                               selectedItem: groupBy['key'] as String,
                               padding: false,
@@ -342,8 +341,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
                                 if (groupBy !=
                                     groupBys.firstWhere((element) =>
                                         element['key'] as String == selected)) {
-                                  groupBy = groupBys.firstWhere(
-                                      (element) => element['key'] as String == selected);
+                                  groupBy = groupBys.firstWhere((element) =>
+                                      element['key'] as String == selected);
                                   await getData();
                                   resetChips();
                                   setState(() {});
@@ -367,9 +366,10 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
                   labelStyle: const TextStyle(color: protokollFarbe),
                   label: Text(groupBy['key'] as String),
                   onPressed: () async {
-                    await showMaterialModalBottomSheet(
+                    await showModalBottomSheet(
+                        showDragHandle: true,
                         context: context,
-                        shape: modalShape,
+                        shape: Constants.modalShape,
                         builder: (BuildContext context) {
                           return ChipSelectorModal(
                             title: groupBy['key'] as String,
@@ -384,7 +384,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
           ),
           SizedBox(height: size.height * 0.05),
           _isLoading
-              ? const Center(child: CircularProgressIndicator(color: rehwildFarbe))
+              ? const Center(
+                  child: CircularProgressIndicator(color: rehwildFarbe))
               : sections.isEmpty
                   ? const NoDataFoundWidget()
                   : ConstrainedBox(
@@ -403,8 +404,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
                           swapAnimationCurve: Curves.decelerate, // Optional
                           PieChartData(
                             startDegreeOffset: 180,
-                            pieTouchData: PieTouchData(
-                                touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                            pieTouchData: PieTouchData(touchCallback:
+                                (FlTouchEvent event, pieTouchResponse) {
                               setState(() {
                                 if (!event.isInterestedForInteractions ||
                                     pieTouchResponse == null ||
@@ -412,8 +413,8 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
                                   touchedIndex = -1;
                                   return;
                                 }
-                                touchedIndex =
-                                    pieTouchResponse.touchedSection!.touchedSectionIndex;
+                                touchedIndex = pieTouchResponse
+                                    .touchedSection!.touchedSectionIndex;
                               });
                             }),
                             sectionsSpace: 2,

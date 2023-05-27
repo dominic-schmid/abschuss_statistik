@@ -20,6 +20,8 @@ class KillListEntry extends StatefulWidget {
   final bool showEdit;
   final String revier;
   final bool initiallyExpanded;
+  final double backgroundOpacity;
+  final bool showMap;
 
   const KillListEntry({
     Key? key,
@@ -28,6 +30,8 @@ class KillListEntry extends StatefulWidget {
     this.showEdit = false,
     this.revier = "",
     this.initiallyExpanded = false,
+    this.backgroundOpacity = 0.8,
+    this.showMap = true,
   }) : super(key: key);
 
   @override
@@ -41,7 +45,8 @@ class KillListEntryState extends State<KillListEntry> {
     final keyContext = expansionTileKey.currentContext;
     if (keyContext != null) {
       Future.delayed(const Duration(milliseconds: 200)).then((value) {
-        Scrollable.ensureVisible(keyContext, duration: const Duration(milliseconds: 200));
+        Scrollable.ensureVisible(keyContext,
+            duration: const Duration(milliseconds: 200));
       });
     }
   }
@@ -75,7 +80,8 @@ class KillListEntryState extends State<KillListEntry> {
       ),
       IconButton(
         onPressed: () async {
-          final box = context.findRenderObject() as RenderBox?; // Needed for iPad
+          final box =
+              context.findRenderObject() as RenderBox?; // Needed for iPad
 
           await Share.share(
             dg.checkOutThisKillXY(widget.revier, k.localizedToString(context)),
@@ -87,7 +93,7 @@ class KillListEntryState extends State<KillListEntry> {
       ),
     ];
 
-    if (k.gpsLat != null && k.gpsLon != null) {
+    if (k.gpsLat != null && k.gpsLon != null && widget.showMap) {
       iconButtons.add(
         IconButton(
           onPressed: () async {
@@ -98,6 +104,8 @@ class KillListEntryState extends State<KillListEntry> {
               showSnackBar(dg.noInternetError, context);
               return;
             }
+            if (!mounted) return;
+            print('Opening map for kill ${k.gpsLat} ${k.gpsLon}');
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => MapScreen(kill: k),
@@ -141,7 +149,7 @@ class KillListEntryState extends State<KillListEntry> {
             Radius.circular(20),
           ),
         ),
-        color: k.color.withOpacity(0.8),
+        color: k.color.withOpacity(widget.backgroundOpacity),
         elevation: 7,
         clipBehavior: Clip.hardEdge,
         child: Theme(
@@ -302,7 +310,8 @@ class KillListEntryState extends State<KillListEntry> {
                   : ExpandedChildKillEntry(
                       icon: Icons.admin_panel_settings_outlined,
                       title: k.jagdaufseher!['aufseher']!,
-                      value: "${k.jagdaufseher!['datum']}\n${k.jagdaufseher!['zeit']}",
+                      value:
+                          "${k.jagdaufseher!['datum']}\n${k.jagdaufseher!['zeit']}",
                     ),
               SizedBox(width: double.infinity, height: size.height * 0.0025),
               Row(

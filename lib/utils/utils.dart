@@ -163,13 +163,6 @@ List<Map<String, String>> getBaseGroupBys(BuildContext ctx) {
   ];
 }
 
-const ShapeBorder modalShape = RoundedRectangleBorder(
-  borderRadius: BorderRadius.only(
-    topLeft: Radius.circular(20),
-    topRight: Radius.circular(20),
-  ),
-);
-
 Future<Locale?> showLanguagePicker(BuildContext context) async {
   final dg = S.of(context);
   SharedPreferences prefs = await SharedPreferences.getInstance();

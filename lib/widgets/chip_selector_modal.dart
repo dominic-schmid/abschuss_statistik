@@ -7,9 +7,13 @@ class ChipSelectorModal extends StatefulWidget {
   final List<FilterChipData> chips;
   final String title;
   final EdgeInsets? padding;
-  const ChipSelectorModal(
-      {Key? key, required this.title, required this.chips, this.padding})
-      : super(key: key);
+
+  const ChipSelectorModal({
+    Key? key,
+    required this.title,
+    required this.chips,
+    this.padding,
+  }) : super(key: key);
 
   @override
   State<ChipSelectorModal> createState() => _ChipSelectorModalState();
@@ -38,7 +42,6 @@ class _ChipSelectorModalState extends State<ChipSelectorModal> {
             ),
         child: Column(
           children: [
-            _buildHandle(context),
             InkWell(
               borderRadius: BorderRadius.circular(20),
               onTap: () {
@@ -60,7 +63,8 @@ class _ChipSelectorModalState extends State<ChipSelectorModal> {
                   children: [
                     Text(
                       widget.title,
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -72,8 +76,8 @@ class _ChipSelectorModalState extends State<ChipSelectorModal> {
               children: widget.chips
                   .map((c) => StatefulBuilder(builder: (context, setState) {
                         return Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 5.0, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5.0, vertical: 2),
                           child: FilterChip(
                             checkmarkColor: c.color,
                             selectedColor: c.color.withOpacity(0.25),
@@ -87,7 +91,8 @@ class _ChipSelectorModalState extends State<ChipSelectorModal> {
                                 ? Text(translateValue(context, c.label))
                                 : Row(
                                     mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(translateValue(context, c.label)),
                                       const SizedBox(width: 4),
@@ -105,26 +110,6 @@ class _ChipSelectorModalState extends State<ChipSelectorModal> {
                   .toList(),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHandle(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return FractionallySizedBox(
-      widthFactor: 0.25,
-      child: Container(
-        margin: const EdgeInsets.symmetric(
-          vertical: 12.0,
-        ),
-        child: Container(
-          height: 5.0,
-          decoration: BoxDecoration(
-            color: theme.dividerColor,
-            borderRadius: const BorderRadius.all(Radius.circular(2.5)),
-          ),
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
+import 'package:jagdstatistik/utils/constants.dart';
 import 'package:jagdstatistik/utils/database_methods.dart';
 import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
@@ -265,13 +266,9 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
         IconButton(
           onPressed: () async {
             await showModalBottomSheet(
+                showDragHandle: true,
                 context: context,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                ),
+                shape: Constants.modalShape,
                 builder: (BuildContext context) {
                   return ChipSelectorModal(
                       padding: EdgeInsets.only(
@@ -371,13 +368,9 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
                     label: Text(dg.display),
                     onPressed: () async {
                       await showModalBottomSheet(
+                          showDragHandle: true,
                           context: context,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            ),
-                          ),
+                          shape: Constants.modalShape,
                           builder: (BuildContext context) {
                             return ValueSelectorModal<String>(
                               items: List.generate(
@@ -416,9 +409,10 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
                   labelStyle: const TextStyle(color: protokollFarbe),
                   label: Text(groupBy['key'] as String),
                   onPressed: () async {
-                    await showMaterialModalBottomSheet(
+                    await showModalBottomSheet(
+                        showDragHandle: true,
                         context: context,
-                        shape: modalShape,
+                        shape: Constants.modalShape,
                         builder: (BuildContext context) {
                           return ChipSelectorModal(
                             title: groupBy['key'] as String,

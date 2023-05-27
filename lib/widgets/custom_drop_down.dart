@@ -54,12 +54,10 @@ class DropDownState {
   DropDownState(this.dropDown);
 
   /// This gives the bottom sheet widget.
-  void showModal(context) {
-    showModalBottomSheet(
+  Future<void> showModal(context) async {
+    await showModalBottomSheet(
+      showDragHandle: true,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-      ),
       context: context,
       builder: (context) {
         return StatefulBuilder(
@@ -104,7 +102,8 @@ class _MainBodyState extends State<MainBody> {
         return Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+              padding:
+                  const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -121,7 +120,8 @@ class _MainBodyState extends State<MainBody> {
                   //   ],
                   // ),
 
-                  Expanded(child: widget.dropDown.bottomSheetTitle ?? Container()),
+                  Expanded(
+                      child: widget.dropDown.bottomSheetTitle ?? Container()),
 
                   /// Done button
                   Visibility(
@@ -131,7 +131,8 @@ class _MainBodyState extends State<MainBody> {
                       child: Material(
                         child: ElevatedButton(
                           onPressed: () {
-                            List<SelectedListItem> selectedList = widget.dropDown.data
+                            List<SelectedListItem> selectedList = widget
+                                .dropDown.data
                                 .where((element) => element.isSelected == true)
                                 .toList();
                             List<dynamic> selectedNameList = [];
@@ -140,10 +141,12 @@ class _MainBodyState extends State<MainBody> {
                               selectedNameList.add(element);
                             }
 
-                            widget.dropDown.selectedItems?.call(selectedNameList);
+                            widget.dropDown.selectedItems
+                                ?.call(selectedNameList);
                             _onUnFocusKeyboardAndPop();
                           },
-                          child: widget.dropDown.submitButtonChild ?? const Text('Done'),
+                          child: widget.dropDown.submitButtonChild ??
+                              const Text('Done'),
                         ),
                       ),
                     ),
@@ -183,7 +186,8 @@ class _MainBodyState extends State<MainBody> {
                               }
                             }
 
-                            widget.dropDown.selectedItems?.call([mainList[index]]);
+                            widget.dropDown.selectedItems
+                                ?.call([mainList[index]]);
                             _onUnFocusKeyboardAndPop();
                           },
                     child: Container(
@@ -204,7 +208,8 @@ class _MainBodyState extends State<MainBody> {
                                   },
                                   child: isSelected
                                       ? const Icon(Icons.check_box)
-                                      : const Icon(Icons.check_box_outline_blank),
+                                      : const Icon(
+                                          Icons.check_box_outline_blank),
                                 )
                               : const SizedBox(
                                   height: 0.0,

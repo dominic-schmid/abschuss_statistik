@@ -1,15 +1,18 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/kill_entry.dart';
+import 'package:jagdstatistik/providers/pref_provider.dart';
 import 'package:jagdstatistik/utils/utils.dart';
+import 'package:jagdstatistik/widgets/kill_list_entry.dart';
+import 'package:provider/provider.dart';
 
 class MapScreen extends StatefulWidget {
   final KillEntry kill;
@@ -29,7 +32,7 @@ class _MapScreenState extends State<MapScreen> {
   bool _isLoading = true;
   bool _showButtons = true;
 
-  late LatLng kLocation;
+  LatLng kLocation = const LatLng(0, 0);
   late CameraPosition kCamPosition;
   final Set<Marker> _markers = <Marker>{};
   MapType _currentMapType = MapType.hybrid;
@@ -37,7 +40,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    createMarkerIcon();
+
     kLocation = LatLng(widget.kill.gpsLat!, widget.kill.gpsLon!);
     kCamPosition = CameraPosition(
       target: kLocation,
@@ -45,6 +48,9 @@ class _MapScreenState extends State<MapScreen> {
       tilt: cameraTilt,
       zoom: cameraZoom,
     );
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      createMarkerIcon();
+    });
   }
 
   Future<Uint8List> getBytesFromAsset({String? path, int? width}) async {
@@ -60,8 +66,6 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void createMarkerIcon() async {
-    //var bytes = await getBytesFromAsset(path: 'assets/location-marker.png', width: 125);
-
     if (!mounted) return;
     GameType gt =
         GameType.all.firstWhere((e) => e.wildart == widget.kill.wildart);
@@ -69,22 +73,7 @@ class _MapScreenState extends State<MapScreen> {
       Marker(
         markerId: MarkerId(widget.kill.key),
         position: kLocation,
-        // icon: BitmapDescriptor.fromBytes(bytes),
         icon: BitmapDescriptor.defaultMarkerWithHue(gt.bitmapDescriptor),
-        infoWindow: InfoWindow(
-            title:
-                '${GameType.translate(context, widget.kill.wildart)} (${GameType.translateGeschlecht(context, widget.kill.geschlecht)})',
-            onTap: () => showAlertDialog(
-                  title: '',
-                  description: widget.kill.localizedToString(context),
-                  yesOption: '',
-                  noOption: 'Ok',
-                  onYes: () {},
-                  icon: widget.kill.icon,
-                  context: context,
-                ),
-            snippet:
-                '${DateFormat('dd.MM.yy').format(widget.kill.datetime)} ${DateFormat('kk:mm').format(widget.kill.datetime)}'),
       ),
     );
 
@@ -105,7 +94,10 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final dg = S.of(context);
+    final showPerson = Provider.of<PrefProvider>(context).showPerson;
+
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(
@@ -131,7 +123,6 @@ class _MapScreenState extends State<MapScreen> {
                         markers: _markers,
                         onMapCreated: (GoogleMapController controller) {
                           _controller.complete(controller);
-                          //createMarkerIcon();
                         },
                       ),
                     ),
@@ -218,15 +209,17 @@ class _MapScreenState extends State<MapScreen> {
                 ],
               ),
             ),
-      floatingActionButton: _isLoading
-          ? Container()
-          : FloatingActionButton.extended(
-              onPressed: _goToOrigin,
-              backgroundColor: rehwildFarbe,
-              foregroundColor: Colors.white,
-              label: Text(dg.mapInitialPosition),
-              icon: const Icon(Icons.restore_rounded),
-            ),
+      floatingActionButton: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        child: _isLoading
+            ? Container()
+            : KillListEntry(
+                kill: widget.kill,
+                showPerson: showPerson,
+                backgroundOpacity: 0.9,
+                showMap: false,
+              ),
+      ),
     );
   }
 

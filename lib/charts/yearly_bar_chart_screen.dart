@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jagdstatistik/generated/l10n.dart';
 import 'package:jagdstatistik/models/constants/game_type.dart';
 import 'package:jagdstatistik/models/filter_chip_data.dart';
+import 'package:jagdstatistik/utils/constants.dart';
 import 'package:jagdstatistik/utils/database_methods.dart';
 import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/utils/utils.dart';
@@ -82,10 +83,12 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
       groupBy = groupBys.first;
       final dg = S.of(context);
       configurationChips.addAll([
-        FilterChipData(label: dg.grid, color: Colors.blue, isSelected: _showGrid),
+        FilterChipData(
+            label: dg.grid, color: Colors.blue, isSelected: _showGrid),
         FilterChipData(
             label: dg.onlyShot, color: Colors.red, isSelected: _showOnlyErlegt),
-        FilterChipData(label: dg.legend, color: Colors.orange, isSelected: _showLegend),
+        FilterChipData(
+            label: dg.legend, color: Colors.orange, isSelected: _showLegend),
       ]);
     });
   }
@@ -121,7 +124,8 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
 
     String erlegtQuery = _showOnlyErlegt ? "ursache = 'erlegt'" : "1 = 1";
 
-    List<Map<String, Object?>> res = groupBy['value'] == 'gewicht' ? await db.rawQuery("""
+    List<Map<String, Object?>> res = groupBy['value'] == 'gewicht'
+        ? await db.rawQuery("""
     SELECT
     CAST(AVG(gewicht) AS int) AS Anzahl,
     wildart AS Gruppierung
@@ -129,7 +133,8 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
     WHERE year = $year AND gewicht IS NOT NULL AND gewicht <> 0 AND $erlegtQuery
     GROUP BY wildart HAVING AVG(gewicht) > 0
     ORDER BY Anzahl $sorting   
-    """) : await db.rawQuery("""
+    """)
+        : await db.rawQuery("""
     SELECT
     COUNT(*) AS Anzahl,
     ${groupBy['value']} AS Gruppierung
@@ -154,11 +159,12 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
 
       if (value > maxValue) maxValue = value.toInt(); // Get largest value
       if (!mounted) return;
-      chartItems
-          .add(ChartItem(label: translateValue(context, label), value: value, color: c));
+      chartItems.add(ChartItem(
+          label: translateValue(context, label), value: value, color: c));
     }
 
-    maxDisplayValue = ((maxValue) % 5 == 0 ? maxValue : 5 - maxValue % 5 + maxValue);
+    maxDisplayValue =
+        ((maxValue) % 5 == 0 ? maxValue : 5 - maxValue % 5 + maxValue);
 
     if (mounted) setState(() => _isLoading = false);
   }
@@ -183,7 +189,8 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
             ),
             borderSide: isTouched
                 ? BorderSide(
-                    color: Theme.of(context).textTheme.displayLarge!.color ?? Colors.yellow,
+                    color: Theme.of(context).textTheme.displayLarge!.color ??
+                        Colors.yellow,
                     width: size.width * 0.005,
                   )
                 : const BorderSide(color: Colors.white, width: 0),
@@ -196,7 +203,8 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator(color: rehwildFarbe));
+      return const Center(
+          child: CircularProgressIndicator(color: rehwildFarbe));
     }
 
     final dg = S.of(context);
@@ -217,13 +225,9 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
         IconButton(
           onPressed: () async {
             await showModalBottomSheet(
+                showDragHandle: true,
                 context: context,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                ),
+                shape: Constants.modalShape,
                 builder: (BuildContext context) {
                   return ChipSelectorModal(
                       padding: EdgeInsets.only(
@@ -314,18 +318,15 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
                   label: Text(dg.display),
                   onPressed: () async {
                     await showModalBottomSheet(
+                        showDragHandle: true,
                         context: context,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                        ),
+                        shape: Constants.modalShape,
                         builder: (BuildContext context) {
                           return ValueSelectorModal<String>(
                             items: List.generate(
                               groupBys.length,
-                              (index) => groupBys.elementAt(index)['key'] as String,
+                              (index) =>
+                                  groupBys.elementAt(index)['key'] as String,
                             ),
                             selectedItem: groupBy['key'] as String,
                             padding: false,
@@ -333,8 +334,8 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
                               if (groupBy !=
                                   groupBys.firstWhere((element) =>
                                       element['key'] as String == selected)) {
-                                groupBy = groupBys.firstWhere(
-                                    (element) => element['key'] as String == selected);
+                                groupBy = groupBys.firstWhere((element) =>
+                                    element['key'] as String == selected);
                                 await getData();
                                 setState(() {});
                               }
@@ -348,7 +349,8 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
           ),
           SizedBox(height: size.height * 0.05),
           _isLoading
-              ? const Center(child: CircularProgressIndicator(color: rehwildFarbe))
+              ? const Center(
+                  child: CircularProgressIndicator(color: rehwildFarbe))
               : chartItems.isEmpty
                   ? const NoDataFoundWidget()
                   : ConstrainedBox(
@@ -367,7 +369,8 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
                           swapAnimationCurve: Curves.decelerate, // Optional
                           BarChartData(
                             alignment: BarChartAlignment.spaceEvenly,
-                            maxY: maxDisplayValue.toDouble() + (maxDisplayValue * 0.05),
+                            maxY: maxDisplayValue.toDouble() +
+                                (maxDisplayValue * 0.05),
                             minY: 0,
                             borderData: FlBorderData(show: false),
                             gridData: FlGridData(show: _showGrid),
@@ -381,13 +384,16 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
                                   showTitles: true,
                                   reservedSize: 28,
                                   getTitlesWidget: (value, meta) {
-                                    String g = chartItems.elementAt(value.toInt()).label;
+                                    String g = chartItems
+                                        .elementAt(value.toInt())
+                                        .label;
                                     // g = res.length > 15
                                     //     ? g.substring(0, 1)
                                     //     : g.length < 3
                                     //         ? g
                                     //         : g.substring(0, 3);
-                                    double w = size.width / chartItems.length * 0.08;
+                                    double w =
+                                        size.width / chartItems.length * 0.08;
                                     num endIndex = g.length > w ? w : g.length;
 
                                     g = g.isEmpty
@@ -415,19 +421,23 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
                                   tooltipPadding: const EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 6),
                                   tooltipMargin: 0,
-                                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                                  getTooltipItem:
+                                      (group, groupIndex, rod, rodIndex) {
                                     //print('Working $groupIndex');
                                     return BarTooltipItem(
                                       rod.toY.toStringAsFixed(0),
                                       TextStyle(
-                                        color:
-                                            Theme.of(context).textTheme.displayLarge!.color,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .displayLarge!
+                                            .color,
                                       ),
                                     );
                                   },
                                 ),
                                 enabled: true,
-                                touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                                touchCallback:
+                                    (FlTouchEvent event, pieTouchResponse) {
                                   setState(() {
                                     if (!event.isInterestedForInteractions ||
                                         pieTouchResponse == null ||
@@ -435,8 +445,8 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
                                       touchedIndex = -1;
                                       return;
                                     }
-                                    touchedIndex =
-                                        pieTouchResponse.spot!.touchedBarGroupIndex;
+                                    touchedIndex = pieTouchResponse
+                                        .spot!.touchedBarGroupIndex;
                                   });
                                 }),
                             // centerSpaceRadius: size.width * 0.15,

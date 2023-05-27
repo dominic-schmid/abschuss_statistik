@@ -1,8 +1,4 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -18,15 +14,14 @@ import 'package:jagdstatistik/utils/request_methods.dart';
 import 'package:jagdstatistik/views/settings_screen.dart';
 import 'package:jagdstatistik/utils/utils.dart';
 import 'package:jagdstatistik/widgets/chart_app_bar.dart';
-import 'package:jagdstatistik/widgets/chip_selector_modal.dart';
 import 'package:jagdstatistik/models/filter_chip_data.dart';
+import 'package:jagdstatistik/widgets/kills_screen/export_popup.dart';
+import 'package:jagdstatistik/widgets/kills_screen/kill_list_filter_chip.dart';
+import 'package:jagdstatistik/widgets/kills_screen/kill_list_progress_bar.dart';
+import 'package:jagdstatistik/widgets/kills_screen/kill_list_sorting_modal.dart';
 import 'package:jagdstatistik/widgets/no_data_found.dart';
 import 'package:jagdstatistik/widgets/value_selector_modal.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../models/kill_entry.dart';
 
@@ -43,8 +38,9 @@ class KillsScreen extends StatefulWidget {
 class _KillsScreenState extends State<KillsScreen>
     with AutomaticKeepAliveClientMixin {
   final TextEditingController controller = TextEditingController();
-  final ScrollController _scrollController =
-      ScrollController(initialScrollOffset: 0);
+  final ScrollController _scrollController = ScrollController(
+    initialScrollOffset: 0,
+  );
 
   bool _isLoading = true;
   ValueNotifier<bool>? _isFabVisible;
@@ -389,6 +385,7 @@ class _KillsScreenState extends State<KillsScreen>
                     showSnackBar(delegate.noInternetError, context);
                     return;
                   }
+                  if (!mounted) return;
                   await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => AllMapScreen(page: page!)));
                   setState(() {});
@@ -489,14 +486,6 @@ class _KillsScreenState extends State<KillsScreen>
 
   List<Widget> buildActionChips() {
     final dg = S.of(context);
-    ShapeBorder modalShape = const RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(20),
-        topRight: Radius.circular(20),
-      ),
-    );
-    EdgeInsets chipPadding =
-        const EdgeInsets.symmetric(horizontal: 6, vertical: 0);
 
     int selectedWildChips = wildChips.where((e) => e.isSelected).length;
     int selectedUrsachenChips = ursacheChips.where((e) => e.isSelected).length;
@@ -505,189 +494,92 @@ class _KillsScreenState extends State<KillsScreen>
     int selectedGeschlechterChips =
         geschlechterChips.where((e) => e.isSelected).length;
 
-    //bool darkMode = Provider.of<ThemeProvider>(context).isDarkMode;
-
     return [
-      Padding(
-        padding: chipPadding,
-        child: ActionChip(
-            avatar: const CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Icon(
-                Icons.filter_list_alt,
-                color: schneehaseFarbe,
-                size: 18,
-              ),
-            ),
-            backgroundColor: schneehaseFarbe.withOpacity(0.25),
-            labelStyle: const TextStyle(color: schneehaseFarbe),
-            label: Text('$_currentYear'),
-            onPressed: () async {
-              await showModalBottomSheet(
-                  context: context,
-                  shape: modalShape,
-                  builder: (BuildContext context) {
-                    return ValueSelectorModal<int>(
-                      items: _yearList,
-                      selectedItem: _currentYear,
-                      onSelect: (selectedYear) async {
-                        if (selectedYear != _currentYear) {
-                          await loadYear(selectedYear);
-                          setState(() {});
-                          _currentYear = selectedYear;
-                          _scrollToTop();
-                        }
-                      },
-                    );
-                    //return buildYearModalSheet();
-                  });
-            }),
+      KillListFilterChip(
+        chipLabel: '$_currentYear',
+        modalLabel: '$_currentYear',
+        iconColor: schneehaseFarbe,
+        iconData: Icons.filter_list_alt,
+        chips: const [],
+        modalBuilder: (BuildContext context) {
+          return ValueSelectorModal<int>(
+            items: _yearList,
+            selectedItem: _currentYear,
+            onSelect: (selectedYear) async {
+              if (selectedYear != _currentYear) {
+                await loadYear(selectedYear);
+                setState(() {});
+                _currentYear = selectedYear;
+                _scrollToTop();
+              }
+            },
+          );
+          //return buildYearModalSheet();
+        },
+        onClose: () => setState(() {}),
+      ),
+      KillListFilterChip(
+        chipLabel: dg.sortTitle,
+        modalLabel: dg.sortTitle,
+        iconColor: steinhuhnFarbe,
+        iconData: Icons.sort,
+        chips: const [],
+        modalBuilder: (BuildContext context) {
+          return KillListSortingModal(
+            currentSorting: _currentSorting,
+            onTap: (newSorting) {
+              setState(() {
+                _currentSorting = newSorting;
+                _scrollToTop();
+              });
+            },
+            sortings: _sortings,
+          );
+        },
+        onClose: () => setState(() {}),
+      ),
+      KillListFilterChip(
+        chips: wildChips,
+        modalLabel: '$selectedWildChips ${dg.gameTypes}',
+        chipLabel: dg.gameTypes,
+        iconColor: wildFarbe,
+        iconData: selectedWildChips < wildChips.length
+            ? Icons.filter_list_rounded
+            : Icons.checklist_rtl_sharp,
+        onClose: () => setState(() {}),
+      ),
+      KillListFilterChip(
+        chips: geschlechterChips,
+        modalLabel: '$selectedGeschlechterChips ${dg.sexes}',
+        chipLabel: dg.sexes,
+        iconColor: protokollFarbe,
+        iconData: selectedGeschlechterChips < geschlechterChips.length
+            ? Icons.filter_list_rounded
+            : Icons.checklist_rtl_sharp,
+        onClose: () => setState(() {}),
+      ),
+      KillListFilterChip(
+        chips: ursacheChips,
+        modalLabel: '$selectedUrsachenChips ${dg.causes}',
+        chipLabel: dg.causes,
+        iconColor: hegeabschussFarbe,
+        iconData: selectedGeschlechterChips < geschlechterChips.length
+            ? Icons.filter_list_rounded
+            : Icons.checklist_rtl_sharp,
+        onClose: () => setState(() {}),
+      ),
+      KillListFilterChip(
+        chips: verwendungChips,
+        modalLabel: '$selectedVerwendungenChips ${dg.usages}',
+        chipLabel: dg.usages,
+        iconColor: nichtBekanntFarbe,
+        iconData: selectedVerwendungenChips < verwendungChips.length
+            ? Icons.filter_list_rounded
+            : Icons.checklist_rtl_sharp,
+        onClose: () => setState(() {}),
       ),
       Padding(
-        padding: chipPadding,
-        child: ActionChip(
-            avatar: const CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Icon(
-                Icons.sort,
-                color: steinhuhnFarbe,
-                size: 18,
-              ),
-            ),
-            backgroundColor: steinhuhnFarbe.withOpacity(0.25),
-            labelStyle: const TextStyle(color: steinhuhnFarbe),
-            label: Text(dg.sortTitle),
-            onPressed: () async {
-              await showMaterialModalBottomSheet(
-                  context: context,
-                  shape: modalShape,
-                  builder: (BuildContext context) {
-                    return buildSortierungModalSheet();
-                  });
-              if (mounted) setState(() {});
-            }),
-      ),
-      Padding(
-        padding: chipPadding,
-        child: ActionChip(
-            avatar: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Icon(
-                selectedWildChips < wildChips.length
-                    ? Icons.filter_list_rounded
-                    : Icons.checklist_rtl_sharp,
-                color: wildFarbe,
-                size: 18,
-              ),
-            ),
-            backgroundColor: wildFarbe.withOpacity(0.25),
-            labelStyle: const TextStyle(color: wildFarbe),
-            label: Text('$selectedWildChips ${dg.gameTypes}'),
-            onPressed: () async {
-              await showMaterialModalBottomSheet(
-                  context: context,
-                  shape: modalShape,
-                  builder: (BuildContext context) {
-                    return ChipSelectorModal(
-                      key: const Key('GameSelectorModal'),
-                      title: dg.gameTypes,
-                      chips: wildChips,
-                    );
-                  });
-              if (mounted) setState(() {});
-            }),
-      ),
-      Padding(
-        padding: chipPadding,
-        child: ActionChip(
-            avatar: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Icon(
-                selectedGeschlechterChips < geschlechterChips.length
-                    ? Icons.filter_list_rounded
-                    : Icons.checklist_rtl_sharp,
-                color: protokollFarbe,
-                size: 18,
-              ),
-            ),
-            backgroundColor: protokollFarbe.withOpacity(0.25),
-            labelStyle: const TextStyle(color: protokollFarbe),
-            label: Text('$selectedGeschlechterChips ${dg.sexes}'),
-            onPressed: () async {
-              await showMaterialModalBottomSheet(
-                  context: context,
-                  shape: modalShape,
-                  builder: (BuildContext context) {
-                    return ChipSelectorModal(
-                      key: const Key('SexSelectorModal'),
-                      title: dg.sexes,
-                      chips: geschlechterChips,
-                    );
-                  });
-              if (mounted) setState(() {});
-            }),
-      ),
-      Padding(
-        padding: chipPadding,
-        child: ActionChip(
-            avatar: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Icon(
-                selectedUrsachenChips < ursacheChips.length
-                    ? Icons.filter_list_rounded
-                    : Icons.checklist_rtl_sharp,
-                color: hegeabschussFarbe,
-                size: 18,
-              ),
-            ),
-            backgroundColor: hegeabschussFarbe.withOpacity(0.25),
-            labelStyle: const TextStyle(color: hegeabschussFarbe),
-            label: Text('$selectedUrsachenChips ${dg.causes}'),
-            onPressed: () async {
-              await showMaterialModalBottomSheet(
-                  context: context,
-                  shape: modalShape,
-                  builder: (BuildContext context) {
-                    return ChipSelectorModal(
-                      key: const Key('CauseSelectorModal'),
-                      title: dg.causes,
-                      chips: ursacheChips,
-                    );
-                  });
-              if (mounted) setState(() {});
-            }),
-      ),
-      Padding(
-        padding: chipPadding,
-        child: ActionChip(
-            avatar: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              child: Icon(
-                selectedVerwendungenChips < verwendungChips.length
-                    ? Icons.filter_list_rounded
-                    : Icons.checklist_rtl_sharp,
-                color: nichtBekanntFarbe,
-                size: 18,
-              ),
-            ),
-            backgroundColor: nichtBekanntFarbe.withOpacity(0.25),
-            labelStyle: const TextStyle(color: nichtBekanntFarbe),
-            label: Text('$selectedVerwendungenChips ${dg.usages}'),
-            onPressed: () async {
-              await showMaterialModalBottomSheet(
-                  context: context,
-                  shape: modalShape,
-                  builder: (BuildContext context) {
-                    return ChipSelectorModal(
-                        key: const Key('UsageSelectorModal'),
-                        title: dg.usages,
-                        chips: verwendungChips);
-                  });
-              if (mounted) setState(() {});
-            }),
-      ),
-      Padding(
-        padding: chipPadding,
+        padding: KillListFilterChip.chipPadding,
         child: ActionChip(
           avatar: CircleAvatar(
             backgroundColor: Colors.transparent,
@@ -700,237 +592,22 @@ class _KillsScreenState extends State<KillsScreen>
           backgroundColor: Colors.lightBlue[700]!.withOpacity(0.3),
           labelStyle: TextStyle(color: Colors.lightBlue[700]),
           label: Text(dg.ksExport),
-          onPressed: () => _selectExport(context),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (context) => KillListExport(
+              page: page,
+              filteredKills: filteredKills,
+            ),
+          ),
         ),
       ),
     ];
   }
 
-  Future<void> _saveAndShareFile(
-      {String csvDelimiter = ";", bool isJson = false}) async {
-    final dg = S.of(context);
-    if (filteredKills.isEmpty || page == null) {
-      showSnackBar(dg.ksExportErrorSnackbar, context);
-      return;
-    }
-
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
-    }
-    // ONLY AVAILABLE ON ANDROID
-    final dir =
-        (await getExternalStorageDirectories(type: StorageDirectory.downloads))!
-            .first;
-
-    final filteredPage = KillPage(
-        jahr: page!.jahr, revierName: page!.revierName, kills: filteredKills);
-
-    String filename =
-        '${dir.path}/${filteredPage.revierName}-${DateTime.now().toIso8601String()}';
-
-    filename = isJson ? '$filename.json' : '$filename.csv';
-
-    File f = await File(filename).create(recursive: true);
-
-    if (!mounted) return;
-    if (isJson) {
-      f.writeAsStringSync(jsonEncode(filteredPage.toJson(context)),
-          encoding: utf8);
-    } else {
-      f.writeAsStringSync(
-          ListToCsvConverter(fieldDelimiter: csvDelimiter)
-              .convert(filteredPage.toCSV(context)),
-          encoding: utf8);
-    }
-
-    await Share.shareFiles([filename]);
-
-    f.delete(); // Delete after sharing
-    return;
-  }
-
-  _selectExport(BuildContext context) async {
-    final dg = S.of(context);
-    Size size = MediaQuery.of(context).size;
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text(dg.ksExportDialogTitle, textAlign: TextAlign.center),
-            children: [
-              SimpleDialogOption(
-                padding: const EdgeInsets.all(20),
-                child: const Text('CSV (;)', textAlign: TextAlign.center),
-                onPressed: () async {
-                  if (page == null || page!.kills.isEmpty) {
-                    showSnackBar(dg.noKillsFoundError, context);
-                    return;
-                  }
-                  _saveAndShareFile(csvDelimiter: ';');
-
-                  if (!mounted) return;
-                  Navigator.of(context).pop();
-                },
-              ),
-              SimpleDialogOption(
-                padding: const EdgeInsets.all(20),
-                child: const Text('CSV (,)', textAlign: TextAlign.center),
-                onPressed: () async {
-                  if (page == null || page!.kills.isEmpty) {
-                    showSnackBar(dg.noKillsFoundError, context);
-                    return;
-                  }
-                  _saveAndShareFile(csvDelimiter: ',');
-
-                  if (!mounted) return;
-                  Navigator.of(context).pop();
-                },
-              ),
-              SimpleDialogOption(
-                padding: const EdgeInsets.all(20),
-                child: const Text('JSON', textAlign: TextAlign.center),
-                onPressed: () {
-                  if (page == null || page!.kills.isEmpty) {
-                    showSnackBar(dg.noKillsFoundError, context);
-                    return;
-                  }
-                  _saveAndShareFile(isJson: true);
-
-                  if (!mounted) return;
-                  Navigator.of(context).pop();
-                },
-              ),
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
-                  child: Text(
-                    dg.ksExportSubtitle,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                ),
-              ),
-            ],
-          );
-        });
-  }
-
-  Widget _buildHandle(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return FractionallySizedBox(
-      widthFactor: 0.25,
-      child: Container(
-        margin: const EdgeInsets.symmetric(
-          vertical: 12.0,
-        ),
-        child: Container(
-          height: 5.0,
-          decoration: BoxDecoration(
-            color: theme.dividerColor,
-            borderRadius: const BorderRadius.all(Radius.circular(2.5)),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildSortierungModalSheet() {
-    List<Widget> buttonList = [];
-    buttonList.add(_buildHandle(context));
-    Size size = MediaQuery.of(context).size;
-
-    _sortings = Sorting.generateDefault(context);
-
-    for (Sorting s in _sortings) {
-      buttonList.add(
-        MaterialButton(
-          minWidth: size.width,
-          onPressed: () {
-            if (_currentSorting == s) {
-              _currentSorting.toggleDirection();
-            } else {
-              _currentSorting = s;
-            }
-            Navigator.of(context).pop();
-            _scrollToTop();
-          },
-          elevation: 2,
-          padding: EdgeInsets.symmetric(
-              horizontal: size.width * 0.1, vertical: size.height * 0.01),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                s.label,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: s == _currentSorting
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: s == _currentSorting
-                      ? Colors.green
-                      : Theme.of(context).textTheme.displayLarge!.color,
-                ),
-              ),
-              const SizedBox(width: 12),
-              s.sortType == SortType.kein || s != _currentSorting
-                  ? Container()
-                  : Icon(
-                      _currentSorting.ascending
-                          ? Icons.arrow_upward_rounded
-                          : Icons.arrow_downward_rounded,
-                      color: s == _currentSorting
-                          ? Colors.green
-                          : Theme.of(context).textTheme.displayLarge!.color,
-                    ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return SingleChildScrollView(
-      child: Column(
-        children: buttonList,
-      ),
-    );
-  }
-
-  Widget buildProgressBar(List<KillEntry> kills) {
-    final dg = S.of(context);
-    double percentage = kills.length / page!.kills.length;
-    double w = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: EdgeInsets.only(
-        left: w * 0.1,
-        right: w * 0.1,
-        top: 0,
-        bottom: 15,
-      ),
-      child: Column(
-        children: [
-          //#c4 > h1
-          const SizedBox(height: 10),
-          Text(
-            dg.ksShowXFromYProgressBar(kills.length, page!.kills.length),
-            style: const TextStyle(fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(height: 12),
-          LinearProgressIndicator(
-            color: rehwildFarbe,
-            value: percentage,
-          )
-        ],
-      ),
-    );
-  }
-
   Widget buildKillEntries(List<KillEntry> kills) {
-    final prefs = Provider.of<PrefProvider>(context);
+    final showPerson = Provider.of<PrefProvider>(context).showPerson;
+    final betaMode = Provider.of<PrefProvider>(context).betaMode;
     return RefreshIndicator(
-      color: Theme.of(context).colorScheme.primary,
       child: NotificationListener<UserScrollNotification>(
         onNotification: (notification) {
           if (_isFabVisible != null) {
@@ -952,7 +629,10 @@ class _KillsScreenState extends State<KillsScreen>
             cacheExtent: 1250, // pixels both directions
             itemCount: kills.length + 1,
             itemBuilder: ((context, index) {
-              if (index == 0) return buildProgressBar(kills);
+              if (index == 0) {
+                return KillListProgressBar(
+                    showing: kills.length, total: page!.kills.length);
+              }
 
               KillEntry k = kills.elementAt(index - 1);
               return KillListEntry(
@@ -960,8 +640,8 @@ class _KillsScreenState extends State<KillsScreen>
                 kill: k,
                 initiallyExpanded:
                     newKills.isEmpty ? false : newKills.contains(k),
-                showPerson: prefs.showPerson,
-                showEdit: prefs.betaMode,
+                showPerson: showPerson,
+                showEdit: betaMode,
                 revier: page!.revierName,
               );
             }),

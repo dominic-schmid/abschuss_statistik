@@ -79,7 +79,8 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
       configurationChips.addAll([
         FilterChipData(
             label: dg.onlyShot, color: Colors.red, isSelected: _showOnlyErlegt),
-        FilterChipData(label: dg.legend, color: Colors.orange, isSelected: _showLegend),
+        FilterChipData(
+            label: dg.legend, color: Colors.orange, isSelected: _showLegend),
       ]);
     });
   }
@@ -121,11 +122,13 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
       double value = (e['Anzahl'] as int).toDouble();
 
       Color c = groupBy['value'] == 'wildart'
-          ? GameType.all.firstWhere((f) => f.wildart == e['Gruppierung'] as String).color
+          ? GameType.all
+              .firstWhere((f) => f.wildart == e['Gruppierung'] as String)
+              .color
           : Colors.primaries[i % Colors.primaries.length];
       if (!mounted) return;
-      chartItems
-          .add(ChartItem(label: translateValue(context, label), value: value, color: c));
+      chartItems.add(ChartItem(
+          label: translateValue(context, label), value: value, color: c));
     }
 
     if (mounted) setState(() => _isLoading = false);
@@ -166,7 +169,8 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
         //color: KillEntry.getColorFromWildart(e['Gruppierung'] as String),
         color: e.color,
         title: '$percentage%',
-        titleStyle: const TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+        titleStyle:
+            const TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
         value: e.value,
       );
     }).toList();
@@ -175,7 +179,8 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator(color: rehwildFarbe));
+      return const Center(
+          child: CircularProgressIndicator(color: rehwildFarbe));
     }
 
     Size size = MediaQuery.of(context).size;
@@ -186,8 +191,9 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
         IconButton(
           onPressed: () async {
             await showModalBottomSheet(
+                showDragHandle: true,
                 context: context,
-                shape: const RoundedRectangleBorder(borderRadius: Constants.modalRadius),
+                shape: Constants.modalShape,
                 builder: (BuildContext context) {
                   return ChipSelectorModal(
                     padding: EdgeInsets.only(
@@ -271,13 +277,9 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
               label: Text(dg.display),
               onPressed: () async {
                 await showModalBottomSheet(
+                    showDragHandle: true,
                     context: context,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
-                    ),
+                    shape: Constants.modalShape,
                     builder: (BuildContext context) {
                       return ValueSelectorModal<String>(
                         items: List.generate(
@@ -288,10 +290,10 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
                         padding: false,
                         onSelect: (selected) async {
                           if (groupBy !=
-                              groupBys.firstWhere(
-                                  (element) => element['key'] as String == selected)) {
-                            groupBy = groupBys.firstWhere(
-                                (element) => element['key'] as String == selected);
+                              groupBys.firstWhere((element) =>
+                                  element['key'] as String == selected)) {
+                            groupBy = groupBys.firstWhere((element) =>
+                                element['key'] as String == selected);
                             await getData();
                             setState(() {});
                           }
@@ -301,7 +303,8 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
               }),
           SizedBox(height: size.height * 0.05),
           _isLoading
-              ? const Center(child: CircularProgressIndicator(color: rehwildFarbe))
+              ? const Center(
+                  child: CircularProgressIndicator(color: rehwildFarbe))
               : chartItems.isEmpty
                   ? const NoDataFoundWidget()
                   : ConstrainedBox(
@@ -321,8 +324,8 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
                           PieChartData(
                             startDegreeOffset: 180,
 
-                            pieTouchData: PieTouchData(
-                                touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                            pieTouchData: PieTouchData(touchCallback:
+                                (FlTouchEvent event, pieTouchResponse) {
                               setState(() {
                                 if (!event.isInterestedForInteractions ||
                                     pieTouchResponse == null ||
@@ -330,8 +333,8 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
                                   touchedIndex = -1;
                                   return;
                                 }
-                                touchedIndex =
-                                    pieTouchResponse.touchedSection!.touchedSectionIndex;
+                                touchedIndex = pieTouchResponse
+                                    .touchedSection!.touchedSectionIndex;
                               });
                             }),
                             sectionsSpace: 2,

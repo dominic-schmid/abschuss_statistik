@@ -241,6 +241,12 @@ class MyApp extends StatelessWidget {
                   locale: locale,
                   supportedLocales: S.delegate.supportedLocales,
                   theme: ThemeData(
+                    chipTheme: ChipThemeData(
+                      side: BorderSide.none,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
                     textTheme: Theme.of(context).textTheme.apply(
                           bodyColor: Colors.black,
                           displayColor: Colors.black,
@@ -256,6 +262,12 @@ class MyApp extends StatelessWidget {
                     useMaterial3: true,
                   ),
                   darkTheme: ThemeData(
+                    chipTheme: ChipThemeData(
+                      side: BorderSide.none,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
                     textTheme: Theme.of(context).textTheme.apply(
                           bodyColor: Colors.white,
                           displayColor: Colors.white,

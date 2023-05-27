@@ -27,7 +27,6 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  #awesome_notifications: ^0.6.21
   connectivity_plus: ^4.0.1
   csv: ^5.0.1
   enhance_stepper: ^0.1.1
