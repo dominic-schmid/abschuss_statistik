@@ -429,7 +429,6 @@ class _JagdverbandWebViewState extends State<JagdverbandWebView> {
 
   @override
   Widget build(BuildContext context) {
-    final dg = S.of(context);
     print('Opening WebView for ${widget.url}');
     for (var c in widget.cookies) {
       print('Using Cookie: ${c.domain} ${c.name} ${c.value}');
