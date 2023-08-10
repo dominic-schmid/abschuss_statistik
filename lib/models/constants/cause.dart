@@ -13,7 +13,8 @@ class Cause {
     required this.color,
   });
 
-  static String translate(BuildContext ctx, String cause, [bool forceReturn = true]) {
+  static String translate(BuildContext ctx, String cause,
+      [bool forceReturn = true]) {
     final dg = S.of(ctx);
     switch (cause) {
       case 'erlegt':
@@ -37,7 +38,8 @@ class Cause {
 
   static List<Cause> all = [
     const Cause(cause: "erlegt", icon: Icons.person, color: erlegtFarbe),
-    const Cause(cause: "Fallwild", icon: Icons.cloudy_snowing, color: fallwildFarbe),
+    const Cause(
+        cause: "Fallwild", icon: Icons.cloudy_snowing, color: fallwildFarbe),
     const Cause(
       cause: "Straßenunfall",
       icon: Icons.car_crash,
@@ -53,7 +55,13 @@ class Cause {
       icon: Icons.list_alt,
       color: protokollFarbe,
     ),
-    const Cause(cause: "vom Zug überfahren", icon: Icons.train, color: zugFarbe),
+    const Cause(
+        cause: "vom Zug überfahren", icon: Icons.train, color: zugFarbe),
     const Cause(cause: "Freizone", icon: Icons.forest, color: freizoneFarbe),
+    const Cause(
+      cause: "Offensichtliche Notwendigkeit",
+      icon: Icons.medical_services_rounded,
+      color: offensichtlichFarbe,
+    ),
   ];
 }

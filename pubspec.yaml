@@ -34,6 +34,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
+  flutter_localizations:
+    sdk: flutter
   flutter_native_splash: ^2.2.5
   flutter_onboarding_slider: ^1.0.8
   google_maps_flutter: ^2.1.10
@@ -58,8 +60,6 @@ dependencies:
 
 dev_dependencies:
   flutter_lints: ^2.0.0
-  flutter_localizations:
-    sdk: flutter
   flutter_test:
     sdk: flutter
 

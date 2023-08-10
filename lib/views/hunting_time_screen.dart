@@ -19,7 +19,7 @@ class HuntingTimeScreen extends StatefulWidget {
 
 class _HuntingTimeScreenState extends State<HuntingTimeScreen> {
   List<HuntingTime> huntingTimes = [];
-  List<FilterChipData> _filters = [];
+  Set<FilterChipData> _filters = {};
 
   final Map<String, Color> _colors = {};
 
@@ -37,13 +37,13 @@ class _HuntingTimeScreenState extends State<HuntingTimeScreen> {
 
     // Init first start
     if (_filters.isEmpty) {
-      _filters = [
+      _filters = {
         FilterChipData(label: dg.open, color: rehwildFarbe),
         FilterChipData(
             label: dg.geschlossen,
             color: rotwildFarbe,
             isSelected: false), // By default, closed filterings are hidden
-      ];
+      };
     }
 
     bool showOpen = _filters.firstWhere((e) => e.label == dg.open).isSelected;

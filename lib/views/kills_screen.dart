@@ -56,10 +56,10 @@ class _KillsScreenState extends State<KillsScreen>
   List<KillEntry> filteredKills = [];
   List<KillEntry> newKills = [];
 
-  List<FilterChipData> wildChips = [];
-  List<FilterChipData> ursacheChips = [];
-  List<FilterChipData> verwendungChips = [];
-  List<FilterChipData> geschlechterChips = [];
+  Set<FilterChipData> wildChips = {};
+  Set<FilterChipData> ursacheChips = {};
+  Set<FilterChipData> verwendungChips = {};
+  Set<FilterChipData> geschlechterChips = {};
 
   @override
   void initState() {
@@ -281,6 +281,27 @@ class _KillsScreenState extends State<KillsScreen>
     return page;
   }
 
+  Future<List<KillEntry>> readAllFromDb() async {
+    List<KillEntry> killList = [];
+    try {
+      await SqliteDB().db.then((d) async {
+        List<Map<String, Object?>> kills = await d.query('Kill');
+
+        print('SQL found ${kills.length} entries total');
+
+        for (Map<String, Object?> m in kills) {
+          KillEntry? k = KillEntry.fromMap(m);
+          if (k != null) {
+            killList.add(k);
+          }
+        }
+      });
+    } catch (e) {
+      print('Database exception ${e.toString()}');
+    }
+    return killList;
+  }
+
   void invalidCredentialsLogout() async {
     final dg = S.of(context);
     await showAlertDialog(
@@ -373,33 +394,24 @@ class _KillsScreenState extends State<KillsScreen>
 
     return Scaffold(
       appBar: ChartAppBar(
-        title: _showSearch
-            ? buildToolbarSearchbar()
-            : InkWell(
-                borderRadius: BorderRadius.circular(20),
-                onTap: () async {
-                  if (await Connectivity()
-                          .checkConnectivity()
-                          .timeout(const Duration(seconds: 15)) ==
-                      ConnectivityResult.none) {
-                    showSnackBar(delegate.noInternetError, context);
-                    return;
-                  }
-                  if (!mounted) return;
-                  await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => AllMapScreen(page: page!)));
-                  setState(() {});
-                },
-                child: Row(
-                  children: [
-                    const Icon(Icons.map_rounded),
-                    const SizedBox(width: 5),
-                    Text(page == null
+        title: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () async => _handleOpenMap(await readAllFromDb()),
+          child: Ink(
+            padding: const EdgeInsets.all(5),
+            child: Row(
+              children: [
+                const Icon(Icons.map_rounded),
+                const SizedBox(width: 5),
+                _showSearch
+                    ? buildToolbarSearchbar()
+                    : Text(page == null
                         ? delegate.ksTerritoryTitle
                         : page!.revierName),
-                  ],
-                ),
-              ),
+              ],
+            ),
+          ),
+        ),
         //backgroundColor: Colors.green,
         actions: buildActionButtons(),
       ),
@@ -467,7 +479,7 @@ class _KillsScreenState extends State<KillsScreen>
 
   Widget buildToolbarSearchbar() {
     final dg = S.of(context);
-    return Center(
+    return Expanded(
       child: TextField(
         autofocus: true,
         onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
@@ -484,6 +496,29 @@ class _KillsScreenState extends State<KillsScreen>
     );
   }
 
+  void _handleOpenMap(List<KillEntry> kills) async {
+    final delegate = S.of(context);
+    if (await Connectivity()
+            .checkConnectivity()
+            .timeout(const Duration(seconds: 15)) ==
+        ConnectivityResult.none) {
+      showSnackBar(delegate.noInternetError, context);
+      return;
+    }
+
+    if (!mounted) return;
+
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AllMapScreen(
+          kills: kills,
+          searchQuery: controller.text,
+        ),
+      ),
+    );
+    setState(() {});
+  }
+
   List<Widget> buildActionChips() {
     final dg = S.of(context);
 
@@ -495,12 +530,28 @@ class _KillsScreenState extends State<KillsScreen>
         geschlechterChips.where((e) => e.isSelected).length;
 
     return [
+      Padding(
+        padding: KillListFilterChip.chipPadding,
+        child: ActionChip(
+            avatar: CircleAvatar(
+              backgroundColor: Colors.transparent,
+              child: Icon(
+                Icons.map_rounded,
+                color: Theme.of(context).textTheme.labelLarge?.color ??
+                    Colors.grey,
+                size: 18,
+              ),
+            ),
+            backgroundColor: Theme.of(context).splashColor.withOpacity(0.3),
+            label: Text(dg.map),
+            onPressed: () => _handleOpenMap(page!.kills)),
+      ),
       KillListFilterChip(
         chipLabel: '$_currentYear',
         modalLabel: '$_currentYear',
         iconColor: schneehaseFarbe,
         iconData: Icons.filter_list_alt,
-        chips: const [],
+        chips: const {},
         modalBuilder: (BuildContext context) {
           return ValueSelectorModal<int>(
             items: _yearList,
@@ -523,7 +574,7 @@ class _KillsScreenState extends State<KillsScreen>
         modalLabel: dg.sortTitle,
         iconColor: steinhuhnFarbe,
         iconData: Icons.sort,
-        chips: const [],
+        chips: const {},
         modalBuilder: (BuildContext context) {
           return KillListSortingModal(
             currentSorting: _currentSorting,
@@ -543,9 +594,9 @@ class _KillsScreenState extends State<KillsScreen>
         modalLabel: '$selectedWildChips ${dg.gameTypes}',
         chipLabel: dg.gameTypes,
         iconColor: wildFarbe,
-        iconData: selectedWildChips < wildChips.length
-            ? Icons.filter_list_rounded
-            : Icons.checklist_rtl_sharp,
+        iconData: selectedWildChips == wildChips.length
+            ? Icons.filter_alt
+            : Icons.filter_alt_off_rounded,
         onClose: () => setState(() {}),
       ),
       KillListFilterChip(
@@ -553,9 +604,9 @@ class _KillsScreenState extends State<KillsScreen>
         modalLabel: '$selectedGeschlechterChips ${dg.sexes}',
         chipLabel: dg.sexes,
         iconColor: protokollFarbe,
-        iconData: selectedGeschlechterChips < geschlechterChips.length
-            ? Icons.filter_list_rounded
-            : Icons.checklist_rtl_sharp,
+        iconData: selectedGeschlechterChips == geschlechterChips.length
+            ? Icons.filter_alt
+            : Icons.filter_alt_off_rounded,
         onClose: () => setState(() {}),
       ),
       KillListFilterChip(
@@ -563,9 +614,9 @@ class _KillsScreenState extends State<KillsScreen>
         modalLabel: '$selectedUrsachenChips ${dg.causes}',
         chipLabel: dg.causes,
         iconColor: hegeabschussFarbe,
-        iconData: selectedGeschlechterChips < geschlechterChips.length
-            ? Icons.filter_list_rounded
-            : Icons.checklist_rtl_sharp,
+        iconData: selectedGeschlechterChips == geschlechterChips.length
+            ? Icons.filter_alt
+            : Icons.filter_alt_off_rounded,
         onClose: () => setState(() {}),
       ),
       KillListFilterChip(
@@ -573,9 +624,9 @@ class _KillsScreenState extends State<KillsScreen>
         modalLabel: '$selectedVerwendungenChips ${dg.usages}',
         chipLabel: dg.usages,
         iconColor: nichtBekanntFarbe,
-        iconData: selectedVerwendungenChips < verwendungChips.length
-            ? Icons.filter_list_rounded
-            : Icons.checklist_rtl_sharp,
+        iconData: selectedVerwendungenChips == verwendungChips.length
+            ? Icons.filter_alt
+            : Icons.filter_alt_off_rounded,
         onClose: () => setState(() {}),
       ),
       Padding(
@@ -607,6 +658,7 @@ class _KillsScreenState extends State<KillsScreen>
   Widget buildKillEntries(List<KillEntry> kills) {
     final showPerson = Provider.of<PrefProvider>(context).showPerson;
     final betaMode = Provider.of<PrefProvider>(context).betaMode;
+
     return RefreshIndicator(
       child: NotificationListener<UserScrollNotification>(
         onNotification: (notification) {

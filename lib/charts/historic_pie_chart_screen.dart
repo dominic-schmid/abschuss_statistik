@@ -33,10 +33,10 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
 
   List<Map<String, Object?>> res = [];
   List<ChartItem> chartItems = [];
-  List<FilterChipData> filterChips = [];
+  Set<FilterChipData> filterChips = {};
 
   bool _isLoading = true;
-  List<FilterChipData> configurationChips = [];
+  Set<FilterChipData> configurationChips = {};
   bool _showLegend = false;
   bool _showOnlyErlegt = true;
 
@@ -130,7 +130,7 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
     Set<String> gruppierungen =
         res.map((e) => e['Gruppierung'] as String).toSet();
 
-    filterChips = [];
+    filterChips = {};
     for (int i = 0; i < gruppierungen.length; i++) {
       String g = gruppierungen.elementAt(i);
       Color c = groupBy['value'] == 'wildart'

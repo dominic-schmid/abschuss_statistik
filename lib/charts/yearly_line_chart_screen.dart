@@ -31,7 +31,7 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
   int maxValue = 0;
 
   List<Map<String, Object?>> res = [];
-  List<FilterChipData> lineChips = [];
+  Set<FilterChipData> lineChips = {};
   List<ChartItem> chartItems = [];
 
   bool _isLoading = true;
@@ -39,7 +39,7 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
   bool _showOnlyErlegt = true;
   bool _showDots = true;
   int _barWidth = 2;
-  List<FilterChipData> configurationChips = [];
+  Set<FilterChipData> configurationChips = {};
 
   Map<String, String> groupBy = {};
 
@@ -153,7 +153,7 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
     Set<String> gruppierungen =
         res.map((e) => e['Gruppierung'] as String).toSet();
 
-    lineChips = [];
+    lineChips = {};
     for (int i = 0; i < gruppierungen.length; i++) {
       String g = gruppierungen.elementAt(i);
       Color c = groupBy['value'] == 'wildart' || groupBy['value'] == 'gewicht'
@@ -169,8 +169,8 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
     chartItems = [];
     // Hole einzelne gruppierungen (z.b. alle individuellen Wildarten und zeichne daraus dann eine Linie mit allen existierenden Werten)
 
-    List<FilterChipData> selectedChips =
-        lineChips.where((e) => e.isSelected).toList();
+    Set<FilterChipData> selectedChips =
+        lineChips.where((e) => e.isSelected).toSet();
 
     maxDisplayValue = 0;
     maxValue = 0;

@@ -8,7 +8,7 @@ class KillListFilterChip extends StatelessWidget {
   final Color? iconColor;
   final String chipLabel;
   final String modalLabel;
-  final List<FilterChipData> chips;
+  final Set<FilterChipData> chips;
   final VoidCallback onClose;
   final Widget Function(BuildContext)? modalBuilder;
 

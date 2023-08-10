@@ -206,5 +206,6 @@
   "deleteDatabaseTitle": "Reset database",
   "deleteDatabaseDescription": "Delete kills and re-download them. Run this operation to fix any errors.",
   "confirmDeleteDatabase": "Are you sure you want to reset the database?",
-  "refreshListConfirmation": "List refreshed."
+  "refreshListConfirmation": "List refreshed.",
+  "map": "Map"
 }

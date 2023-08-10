@@ -165,6 +165,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Your login credentials are no longer valid!"),
         "loslegen": MessageLookupByLibrary.simpleMessage("Get started"),
         "maennlich": MessageLookupByLibrary.simpleMessage("Male"),
+        "map": MessageLookupByLibrary.simpleMessage("Map"),
         "mapInitialPosition":
             MessageLookupByLibrary.simpleMessage("Initial position"),
         "mitKeimruhe": MessageLookupByLibrary.simpleMessage("with dormancy"),

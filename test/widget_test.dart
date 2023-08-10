@@ -15,11 +15,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    final def = getDefaultPrefs();
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp(
-      config: getDefaultPrefs(),
-      prefs: prefs,
-    ));
+    await tester.pumpWidget(
+        MyApp(config: def, prefs: prefs, locale: Locale(def["language"])));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

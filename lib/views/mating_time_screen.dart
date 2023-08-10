@@ -19,7 +19,7 @@ class MatingTimeScreen extends StatefulWidget {
 
 class _MatingTimeScreenState extends State<MatingTimeScreen> {
   List<HuntingTime> huntingTimes = [];
-  List<FilterChipData> _filters = [];
+  Set<FilterChipData> _filters = {};
 
   final Map<String, Color> _colors = {};
 
@@ -33,10 +33,10 @@ class _MatingTimeScreenState extends State<MatingTimeScreen> {
 
     // Init first start
     if (_filters.isEmpty) {
-      _filters = [
+      _filters = {
         FilterChipData(label: dg.open, color: rehwildFarbe),
         FilterChipData(label: dg.geschlossen, color: rotwildFarbe),
-      ];
+      };
     }
 
     bool showOpen = _filters.firstWhere((e) => e.label == dg.open).isSelected;

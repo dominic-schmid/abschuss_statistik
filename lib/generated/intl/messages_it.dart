@@ -172,6 +172,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "I tuoi dati di accesso non sono più validi!"),
         "loslegen": MessageLookupByLibrary.simpleMessage("Iniziare"),
         "maennlich": MessageLookupByLibrary.simpleMessage("Maschile"),
+        "map": MessageLookupByLibrary.simpleMessage("Carta geografica"),
         "mapInitialPosition":
             MessageLookupByLibrary.simpleMessage("Posizione iniziale"),
         "mitKeimruhe": MessageLookupByLibrary.simpleMessage("con dormienza"),
