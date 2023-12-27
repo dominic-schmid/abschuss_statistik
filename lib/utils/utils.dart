@@ -124,6 +124,7 @@ const strassenunfallFarbe = Color.fromRGBO(144, 144, 97, 1);
 const protokollFarbe = Color.fromRGBO(156, 39, 176, 1);
 const zugFarbe = Color.fromRGBO(175, 180, 43, 1);
 const freizoneFarbe = Color.fromRGBO(92, 107, 192, 1);
+const offensichtlichFarbe = Color.fromRGBO(164, 0, 85, 1);
 
 const eigengebrauchFarbe = Color.fromRGBO(76, 175, 80, 1);
 const weiterverarbeitungFarbe = Color.fromRGBO(245, 127, 23, 1);

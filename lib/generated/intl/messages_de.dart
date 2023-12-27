@@ -163,6 +163,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Deine Anmeldedaten sind nicht mehr gültig!"),
         "loslegen": MessageLookupByLibrary.simpleMessage("Loslegen"),
         "maennlich": MessageLookupByLibrary.simpleMessage("Männlich"),
+        "map": MessageLookupByLibrary.simpleMessage("Karte"),
         "mapInitialPosition":
             MessageLookupByLibrary.simpleMessage("Anfangsposition"),
         "mitKeimruhe": MessageLookupByLibrary.simpleMessage("mit Keimruhe"),

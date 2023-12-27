@@ -134,6 +134,17 @@ void main() async {
   final db = SqliteDB();
   await db.initDb();
 
+  // Try to get locale from prefs. If it isnt supported default to the first supported locale
+  Locale locale = language != null && language.length == 2
+      ? Locale(language)
+      : const Locale('de'); // Default to German
+
+  if (!S.delegate.supportedLocales.contains(locale)) {
+    locale = S.delegate.supportedLocales.first;
+  }
+
+  await S.load(locale);
+
 /* HOTFIX: Notifications disabled due to dependency errors
   if (SEND_NOTIFICATIONS) {
     initNotifications();
@@ -158,26 +169,25 @@ void main() async {
   }
   */
 
-  runApp(MyApp(config: startConfig, prefs: prefs));
+  runApp(MyApp(
+    config: startConfig,
+    prefs: prefs,
+    locale: locale,
+  ));
 }
 
 class MyApp extends StatelessWidget {
   // Default config
   final Map<String, dynamic> config;
   final SharedPreferences prefs;
+  final Locale locale;
 
-  const MyApp({Key? key, required this.config, required this.prefs})
-      : super(key: key);
-
-  Future<void> tryLoadLocale(Locale locale) async {
-    Locale toLoad = locale;
-    if (!S.delegate.supportedLocales.contains(locale)) {
-      toLoad = S.delegate.supportedLocales.first;
-    }
-
-    await S.load(toLoad);
-    return;
-  }
+  const MyApp({
+    Key? key,
+    required this.config,
+    required this.prefs,
+    required this.locale,
+  }) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -185,106 +195,95 @@ class MyApp extends StatelessWidget {
     String login = config['login'];
     String pass = config['pass'];
     bool isDarkMode = config['isDarkMode'] ??
-        SchedulerBinding.instance.window.platformBrightness == Brightness.dark;
-    Locale locale =
-        config['language'] != null && (config['language'] as String).length == 2
-            ? Locale(config['language'] as String)
-            : const Locale('de'); // Default to German
+        SchedulerBinding.instance.platformDispatcher.platformBrightness ==
+            Brightness.dark;
+
     bool onboardingComplete = config['onboardingComplete'];
 
-    return FutureBuilder<void>(
-        future: tryLoadLocale(locale),
-        builder: (context, snap) {
-          if (snap.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(color: Colors.green),
-            );
-          }
-          return MultiProvider(
-              providers: [
-                ChangeNotifierProvider(
-                  create: (BuildContext context) => ThemeProvider(
-                    themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-                  ),
-                ),
-                ChangeNotifierProvider(
-                  create: (BuildContext context) => LocaleProvider(
-                    locale: locale,
-                  ),
-                ),
-                ChangeNotifierProvider(
-                  create: (BuildContext context) => PrefProvider(prefs),
-                ),
-                ChangeNotifierProvider(
-                  create: (BuildContext context) => ShootingTimeProvider(
-                    config['latLng'],
-                  ),
-                ),
-              ],
-              builder: (context, _) {
-                final themeProvider = Provider.of<ThemeProvider>(context);
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (BuildContext context) => ThemeProvider(
+              themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            ),
+          ),
+          ChangeNotifierProvider(
+            create: (BuildContext context) => LocaleProvider(
+              locale: locale,
+            ),
+          ),
+          ChangeNotifierProvider(
+            create: (BuildContext context) => PrefProvider(prefs),
+          ),
+          ChangeNotifierProvider(
+            create: (BuildContext context) => ShootingTimeProvider(
+              config['latLng'],
+            ),
+          ),
+        ],
+        builder: (ctx, _) {
+          final themeProvider = Provider.of<ThemeProvider>(ctx);
 
-                return MaterialApp(
-                  onGenerateTitle: (context) => S.of(context).appTitle,
-                  localizationsDelegates: const [
-                    S.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                  ],
-                  locale: locale,
-                  supportedLocales: S.delegate.supportedLocales,
-                  theme: ThemeData(
-                    chipTheme: ChipThemeData(
-                      side: BorderSide.none,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    textTheme: Theme.of(context).textTheme.apply(
-                          bodyColor: Colors.black,
-                          displayColor: Colors.black,
-                        ),
-                    brightness: Brightness.light,
-                    colorScheme: ColorScheme.fromSeed(
-                      seedColor: rehwildFarbe,
-                      brightness: Brightness.light,
-                    ),
-                    appBarTheme: const AppBarTheme().copyWith(
-                      foregroundColor: Colors.white,
-                    ),
-                    useMaterial3: true,
+          return MaterialApp(
+            onGenerateTitle: (ctx) => S.of(ctx).appTitle,
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            locale: locale,
+            supportedLocales: S.delegate.supportedLocales,
+            theme: ThemeData(
+              chipTheme: ChipThemeData(
+                side: BorderSide.none,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+              textTheme: Theme.of(ctx).textTheme.apply(
+                    bodyColor: Colors.black,
+                    displayColor: Colors.black,
                   ),
-                  darkTheme: ThemeData(
-                    chipTheme: ChipThemeData(
-                      side: BorderSide.none,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    textTheme: Theme.of(context).textTheme.apply(
-                          bodyColor: Colors.white,
-                          displayColor: Colors.white,
-                        ),
-                    brightness: Brightness.dark,
-                    colorScheme: ColorScheme.fromSeed(
-                      seedColor: rehwildFarbe,
-                      brightness: Brightness.dark,
-                    ),
-                    appBarTheme: const AppBarTheme().copyWith(
-                      foregroundColor: Colors.white,
-                    ),
-                    //primarySwatch: Colors.lightGreen,
-                    useMaterial3: true,
+              brightness: Brightness.light,
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: rehwildFarbe,
+                brightness: Brightness.light,
+              ),
+              appBarTheme: const AppBarTheme().copyWith(
+                foregroundColor: Colors.white,
+              ),
+              useMaterial3: true,
+            ),
+            darkTheme: ThemeData(
+              chipTheme: ChipThemeData(
+                side: BorderSide.none,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+              textTheme: Theme.of(ctx).textTheme.apply(
+                    bodyColor: Colors.white,
+                    displayColor: Colors.white,
                   ),
-                  themeMode: themeProvider.themeMode,
-                  home: !onboardingComplete
-                      ? const OnboardingScreen()
-                      : login.isEmpty || pass.isEmpty
-                          ? const CredentialsScreen()
-                          : const HomeScreen(),
-                );
-              });
+              brightness: Brightness.dark,
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: rehwildFarbe,
+                brightness: Brightness.dark,
+              ),
+              appBarTheme: const AppBarTheme().copyWith(
+                foregroundColor: Colors.white,
+              ),
+              //primarySwatch: Colors.lightGreen,
+              useMaterial3: true,
+            ),
+            themeMode: themeProvider.themeMode,
+            home: !onboardingComplete
+                ? const OnboardingScreen()
+                : login.isEmpty || pass.isEmpty
+                    ? const CredentialsScreen()
+                    : const HomeScreen(),
+          );
         });
   }
 }

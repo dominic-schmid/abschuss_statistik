@@ -37,7 +37,7 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
   List<BarChartGroupData> groupData = [];
   bool _isLoading = true;
 
-  List<FilterChipData> configurationChips = [];
+  Set<FilterChipData> configurationChips = {};
   bool _showLegend = false;
   bool _showGrid = false;
   bool _showOnlyErlegt = true;

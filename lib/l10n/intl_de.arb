@@ -206,5 +206,6 @@
   "deleteDatabaseTitle": "Datenbank zurücksetzen",
   "deleteDatabaseDescription": "Lösche Abschüsse und lade sie neu herunter. Führe diese Operation aus, um eventuelle Fehler zu beheben.",
   "confirmDeleteDatabase": "Bist du sicher, dass du die Datenbank zurücksetzen möchtest?",
-  "refreshListConfirmation": "Liste wurde aktualisiert."
+  "refreshListConfirmation": "Liste wurde aktualisiert.",
+  "map": "Karte"
 }

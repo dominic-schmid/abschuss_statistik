@@ -9,8 +9,12 @@ class FilterChipData {
   IconData? icon;
   bool isSelected;
 
-  FilterChipData(
-      {required this.label, required this.color, this.isSelected = true, this.icon});
+  FilterChipData({
+    required this.label,
+    required this.color,
+    this.isSelected = true,
+    this.icon,
+  });
 
   @override
   bool operator ==(dynamic other) =>
@@ -23,15 +27,17 @@ class FilterChipData {
   @override
   int get hashCode => super.hashCode + Object.hash(label, '');
 
-  static List<FilterChipData> allUrsache = Cause.all
+  static Set<FilterChipData> allUrsache = Cause.all
       .map((e) => FilterChipData(label: e.cause, color: e.color, icon: e.icon))
-      .toList();
+      .toSet();
 
-  static List<FilterChipData> allWild =
-      GameType.all.map((e) => FilterChipData(label: e.wildart, color: e.color)).toList();
+  static Set<FilterChipData> allWild = GameType.all
+      .map((e) => FilterChipData(label: e.wildart, color: e.color))
+      .toSet();
 
-  static List<FilterChipData> allVerwendung =
-      Usage.all.map((e) => FilterChipData(label: e.usage, color: e.color)).toList();
+  static Set<FilterChipData> allVerwendung = Usage.all
+      .map((e) => FilterChipData(label: e.usage, color: e.color))
+      .toSet();
 
   @override
   String toString() {

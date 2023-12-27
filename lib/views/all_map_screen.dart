@@ -15,12 +15,17 @@ import 'package:jagdstatistik/widgets/kill_list_entry.dart';
 import 'package:provider/provider.dart';
 
 import '../models/filter_chip_data.dart';
-import '../models/kill_page.dart';
 import '../widgets/chip_selector_modal.dart';
 
 class AllMapScreen extends StatefulWidget {
-  final KillPage page;
-  const AllMapScreen({Key? key, required this.page}) : super(key: key);
+  // final KillPage page;
+  final List<KillEntry> kills;
+  final String searchQuery;
+  const AllMapScreen({
+    Key? key,
+    required this.kills,
+    this.searchQuery = "",
+  }) : super(key: key);
 
   @override
   State<AllMapScreen> createState() => _AllMapScreenState();
@@ -40,10 +45,14 @@ class _AllMapScreenState extends State<AllMapScreen> {
   late LatLng kLocation;
   late CameraPosition originCamPosition;
   final Set<Marker> _markers = <Marker>{};
-  List<FilterChipData> wildChips = [];
-  List<FilterChipData> geschlechterChips = [];
-  List<FilterChipData> ursacheChips = [];
-  List<FilterChipData> verwendungChips = [];
+
+// Maps of filter categories and whether or not they are enabled
+  final Set<String> geschlechter = {};
+
+  final Set<FilterChipData> wildChips = FilterChipData.allWild;
+  final Set<FilterChipData> geschlechterChips = {};
+  final Set<FilterChipData> ursacheChips = FilterChipData.allUrsache;
+  final Set<FilterChipData> verwendungChips = FilterChipData.allVerwendung;
 
   MapType _currentMapType = MapType.hybrid;
   Uint8List markerBytes = Uint8List(0);
@@ -53,10 +62,16 @@ class _AllMapScreenState extends State<AllMapScreen> {
   @override
   void initState() {
     super.initState();
-    wildChips = widget.page.wildarten;
-    geschlechterChips = widget.page.geschlechter;
-    ursacheChips = widget.page.ursachen;
-    verwendungChips = widget.page.verwendungen;
+
+    // Add kinds to be filterable and default to select all
+    var geschlechter = widget.kills.map((e) => e.geschlecht).toSet();
+
+    for (int i = 0; i < geschlechter.length; i++) {
+      geschlechterChips.add(FilterChipData(
+          label: geschlechter.elementAt(i),
+          color: Colors.primaries[i % Colors.primaries.length]));
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       initMap();
     });
@@ -87,7 +102,12 @@ class _AllMapScreenState extends State<AllMapScreen> {
     double avgLon = 0;
     int markerCount = 0;
 
-    for (KillEntry k in widget.page.kills) {
+    // wildarten[k.wildart] == true &&
+    // geschlechter[k.geschlecht] == true &&
+    // ursachen[k.ursache] == true &&
+    // verwendungen[k.verwendung] == true
+
+    for (KillEntry k in widget.kills) {
       if (k.gpsLat != null &&
           k.gpsLon != null &&
           wildChips
@@ -105,7 +125,8 @@ class _AllMapScreenState extends State<AllMapScreen> {
           verwendungChips
               .where((e) => e.isSelected)
               .map((e) => e.label)
-              .contains(k.verwendung)) {
+              .contains(k.verwendung) &&
+          (widget.searchQuery.isEmpty || k.contains(widget.searchQuery))) {
         avgLat += k.gpsLat!;
         avgLon += k.gpsLon!;
         markerCount++;
@@ -114,25 +135,10 @@ class _AllMapScreenState extends State<AllMapScreen> {
         GameType gt = GameType.all.firstWhere((e) => e.wildart == k.wildart);
         _markers.add(
           Marker(
-            markerId: MarkerId(k.key),
-            position: LatLng(k.gpsLat!, k.gpsLon!),
-            icon: BitmapDescriptor.defaultMarkerWithHue(gt.bitmapDescriptor),
-            onTap: () => selectedKill.value = k,
-            // infoWindow: InfoWindow(
-            //     title:
-            //         '${GameType.translate(context, k.wildart)} (${GameType.translateGeschlecht(context, k.geschlecht)})',
-            //     onTap: () => showAlertDialog(
-            //           title: '',
-            //           description: k.localizedToString(context),
-            //           yesOption: '',
-            //           noOption: 'Ok',
-            //           onYes: () {},
-            //           icon: k.icon,
-            //           context: context,
-            //         ),
-            //     snippet:
-            //         '${DateFormat('dd.MM.yy').format(k.datetime)} ${DateFormat('kk:mm').format(k.datetime)}'),
-          ),
+              markerId: MarkerId(k.key),
+              position: LatLng(k.gpsLat!, k.gpsLon!),
+              icon: BitmapDescriptor.defaultMarkerWithHue(gt.bitmapDescriptor),
+              onTap: () => selectedKill.value = k),
         );
       }
     }
@@ -144,12 +150,12 @@ class _AllMapScreenState extends State<AllMapScreen> {
         tilt: cameraTilt,
         zoom: cameraZoom,
       );
-    } else if (widget.page.kills.isNotEmpty &&
-        widget.page.kills
+    } else if (widget.kills.isNotEmpty &&
+        widget.kills
             .where(
                 (element) => element.gpsLat != null && element.gpsLat != null)
             .isNotEmpty) {
-      var kill = widget.page.kills
+      var kill = widget.kills
           .where((element) => element.gpsLat != null && element.gpsLat != null)
           .first;
 
@@ -218,21 +224,6 @@ class _AllMapScreenState extends State<AllMapScreen> {
                         initialCameraPosition: originCamPosition,
                         markers: _markers,
                         onTap: (_) => selectedKill.value = null,
-                        // onCameraMoveStarted: () {
-                        //   if (_showButtons) setState(() => _showButtons = false);
-                        // },
-                        // onCameraMove: (pos) {
-
-                        //   if (_showButtons || _showFilter) {
-                        //     setState(() {
-                        //       _showButtons = false;
-                        //       _showFilter = false;
-                        //     });
-                        //   }
-                        // },
-                        // onCameraIdle: () {
-                        //   if (!_showButtons) setState(() => _showButtons = true);
-                        // },
                         onMapCreated: (GoogleMapController controller) {
                           _controller.complete(controller);
                         },
@@ -327,18 +318,13 @@ class _AllMapScreenState extends State<AllMapScreen> {
                               },
                               iconData: _showFilter
                                   ? Icons.close
-                                  : widget.page.wildarten.length ==
-                                              wildChips
-                                                  .where((e) => e.isSelected)
-                                                  .length &&
-                                          widget.page.geschlechter.length ==
-                                              geschlechterChips
-                                                  .where((e) => e.isSelected)
-                                                  .length &&
-                                          widget.page.verwendungen.length ==
-                                              verwendungChips
-                                                  .where((e) => e.isSelected)
-                                                  .length
+                                  : wildChips.every((e) => e.isSelected) &&
+                                          geschlechterChips
+                                              .every((e) => e.isSelected) &&
+                                          verwendungChips
+                                              .every((e) => e.isSelected) &&
+                                          ursacheChips
+                                              .every((e) => e.isSelected)
                                       ? Icons.filter_alt
                                       : Icons.filter_alt_off_rounded,
                             )
@@ -471,15 +457,6 @@ class _AllMapScreenState extends State<AllMapScreen> {
                 ],
               ),
             ),
-      // floatingActionButton: _isLoading
-      //     ? Container()
-      //     : FloatingActionButton.extended(
-      //         onPressed: _goToOrigin,
-      //         backgroundColor: rehwildFarbe,
-      //         foregroundColor: Colors.white,
-      //         label: Text(dg.mapInitialPosition),
-      //         icon: const Icon(Icons.restore_rounded),
-      //       ),
       floatingActionButton: ValueListenableBuilder(
         valueListenable: selectedKill,
         builder: (context, KillEntry? kill, child) {

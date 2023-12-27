@@ -4,7 +4,7 @@ import 'package:jagdstatistik/utils/translation_helper.dart';
 import '../models/filter_chip_data.dart';
 
 class ChipSelectorModal extends StatefulWidget {
-  final List<FilterChipData> chips;
+  final Set<FilterChipData> chips;
   final String title;
   final EdgeInsets? padding;
 

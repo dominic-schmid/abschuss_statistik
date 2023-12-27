@@ -206,5 +206,6 @@
   "deleteDatabaseTitle": "Reimposta database",
   "deleteDatabaseDescription": "Elimina le uccisioni e scaricale nuovamente. Eseguire questa operazione per correggere eventuali errori.",
   "confirmDeleteDatabase": "Sei sicuro di voler resettare il database?",
-  "refreshListConfirmation": "L'elenco è stato aggiornato."
+  "refreshListConfirmation": "L'elenco è stato aggiornato.",
+  "map": "Carta geografica"
 }

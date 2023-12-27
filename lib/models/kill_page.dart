@@ -12,11 +12,11 @@ class KillPage {
 
   final List<KillEntry> kills;
 
-  List<FilterChipData> wildarten = [];
-  List<FilterChipData> geschlechter = [];
-  List<FilterChipData> ursachen = [];
-  List<FilterChipData> verwendungen = [];
-  List<FilterChipData> oertlichkeiten = [];
+  Set<FilterChipData> wildarten = {};
+  Set<FilterChipData> geschlechter = {};
+  Set<FilterChipData> ursachen = {};
+  Set<FilterChipData> verwendungen = {};
+  Set<FilterChipData> oertlichkeiten = {};
 
   KillPage({
     required this.jahr,
@@ -25,12 +25,11 @@ class KillPage {
     required this.kills,
   }) {
     // Select distinct
-    List<String> wildarten = kills.map((e) => e.wildart).toSet().toList();
-    List<String> ursachen = kills.map((e) => e.ursache).toSet().toList();
-    List<String> verwendungen = kills.map((e) => e.verwendung).toSet().toList();
-    List<String> oertlichkeiten =
-        kills.map((e) => e.oertlichkeit).toSet().toList();
-    List<String> geschlechter = kills.map((e) => e.geschlecht).toSet().toList();
+    Set<String> wildarten = kills.map((e) => e.wildart).toSet();
+    Set<String> ursachen = kills.map((e) => e.ursache).toSet();
+    Set<String> verwendungen = kills.map((e) => e.verwendung).toSet();
+    Set<String> oertlichkeiten = kills.map((e) => e.oertlichkeit).toSet();
+    Set<String> geschlechter = kills.map((e) => e.geschlecht).toSet();
 
     this.wildarten.addAll(FilterChipData.allWild
         .where((element) => wildarten.contains(element.label)));
@@ -48,9 +47,6 @@ class KillPage {
           label: geschlechter.elementAt(i),
           color: Colors.primaries[i % Colors.primaries.length]));
     }
-    // this.geschlechter.addAll(geschlechter.map((o) {
-    //   return FilterChipData(label: o, color: const Color.fromRGBO(0, 160, 83, 1));
-    // }));
   }
 
   static KillPage? fromPage(int year, dom.Document page) {

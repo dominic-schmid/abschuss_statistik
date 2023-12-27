@@ -32,7 +32,7 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
   List<ChartItem> chartItems = [];
   bool _isLoading = true;
 
-  List<FilterChipData> configurationChips = [];
+  Set<FilterChipData> configurationChips = {};
   bool _showLegend = false;
   bool _showOnlyErlegt = true;
 
