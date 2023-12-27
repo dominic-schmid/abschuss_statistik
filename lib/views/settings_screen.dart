@@ -118,7 +118,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           onPressed: (context) async {
                             Locale? newLocale =
                                 await showLanguagePicker(context);
-                            // await prefs.setString('language', );
+
                             if (newLocale != null && mounted) {
                               localeProvider.updateLocale(newLocale);
                             }
@@ -219,23 +219,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         tiles: <SettingsTile>[
                           SettingsTile(
                             onPressed: (value) async {
-                              Uri uri = Uri(
-                                scheme: 'https',
-                                path: 'buymeacoffee.com/dominic.schmid',
-                              );
-
-                              await launchUrl(uri,
-                                      mode: LaunchMode.externalApplication)
-                                  .timeout(const Duration(seconds: 10));
-                            },
-                            leading: Icon(
-                              Icons.favorite_rounded,
-                              color: Colors.red.withAlpha(180),
-                            ),
-                            title: Text(dg.settingsDonate),
-                          ),
-                          SettingsTile(
-                            onPressed: (value) async {
                               // Navigator.of(context).push(
                               //   MaterialPageRoute(
                               //     builder: (context) => const MyStatistikWebView(
@@ -294,6 +277,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               color: Colors.orange,
                             ),
                             title: Text(dg.settingsHuntersAssociationWebsite),
+                          ),
+                          SettingsTile(
+                            onPressed: (value) async {
+                              Uri uri = Uri(
+                                scheme: 'https',
+                                path:
+                                    'www.jagdstatistik.com/${Intl.getCurrentLocale()}/feedback',
+                              );
+
+                              await launchUrl(uri,
+                                      mode: LaunchMode.externalApplication)
+                                  .timeout(const Duration(seconds: 10));
+                            },
+                            leading: Icon(
+                              Icons.favorite_rounded,
+                              color: Colors.red.withAlpha(180),
+                            ),
+                            title: Text(dg.settingsDonate),
                           ),
                         ]),
                     SettingsSection(

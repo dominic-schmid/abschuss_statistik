@@ -232,7 +232,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Entwicklung"),
         "settingsDisplay": MessageLookupByLibrary.simpleMessage("Anzeige"),
         "settingsDonate":
-            MessageLookupByLibrary.simpleMessage("Speck spendieren"),
+            MessageLookupByLibrary.simpleMessage("Feedback geben"),
         "settingsHuntersAssociationWebsite":
             MessageLookupByLibrary.simpleMessage("Jagdverband Statistik"),
         "settingsKontakt": MessageLookupByLibrary.simpleMessage("Kontakt"),

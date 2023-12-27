@@ -230,7 +230,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsDevelopment":
             MessageLookupByLibrary.simpleMessage("Development"),
         "settingsDisplay": MessageLookupByLibrary.simpleMessage("Display"),
-        "settingsDonate": MessageLookupByLibrary.simpleMessage("Donate Speck"),
+        "settingsDonate": MessageLookupByLibrary.simpleMessage("Give feedback"),
         "settingsHuntersAssociationWebsite":
             MessageLookupByLibrary.simpleMessage(
                 "Hunter\'s association\'s statistics"),

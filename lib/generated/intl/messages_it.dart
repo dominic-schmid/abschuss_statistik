@@ -239,8 +239,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsDarkMode": MessageLookupByLibrary.simpleMessage("Tema scuro"),
         "settingsDevelopment": MessageLookupByLibrary.simpleMessage("Sviluppo"),
         "settingsDisplay": MessageLookupByLibrary.simpleMessage("Schermo"),
-        "settingsDonate":
-            MessageLookupByLibrary.simpleMessage("Donare la pancetta"),
+        "settingsDonate": MessageLookupByLibrary.simpleMessage("Dare feedback"),
         "settingsHuntersAssociationWebsite":
             MessageLookupByLibrary.simpleMessage(
                 "Statistiche dell\'associazione di caccia"),

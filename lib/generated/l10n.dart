@@ -280,10 +280,10 @@ class S {
     );
   }
 
-  /// `Donate Speck`
+  /// `Give feedback`
   String get settingsDonate {
     return Intl.message(
-      'Donate Speck',
+      'Give feedback',
       name: 'settingsDonate',
       desc: '',
       args: [],
