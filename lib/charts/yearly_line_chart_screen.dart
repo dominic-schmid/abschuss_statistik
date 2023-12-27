@@ -36,7 +36,7 @@ class _YearlyLineChartScreenState extends State<YearlyLineChartScreen> {
 
   bool _isLoading = true;
   bool _showGrid = false;
-  bool _showOnlyErlegt = true;
+  bool _showOnlyErlegt = false;
   bool _showDots = true;
   int _barWidth = 2;
   Set<FilterChipData> configurationChips = {};

@@ -43,7 +43,7 @@ class _HistoricBarChartScreenState extends State<HistoricBarChartScreen> {
   Set<FilterChipData> configurationChips = {};
   bool _showLegend = false;
   bool _showGrid = false;
-  bool _showOnlyErlegt = true;
+  bool _showOnlyErlegt = false;
 
   Map<String, String> groupBy = {};
 

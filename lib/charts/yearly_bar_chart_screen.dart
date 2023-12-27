@@ -40,7 +40,7 @@ class _YearlyBarChartScreenState extends State<YearlyBarChartScreen> {
   Set<FilterChipData> configurationChips = {};
   bool _showLegend = false;
   bool _showGrid = false;
-  bool _showOnlyErlegt = true;
+  bool _showOnlyErlegt = false;
 
   Map<String, String> groupBy = {};
 

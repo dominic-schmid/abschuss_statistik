@@ -34,7 +34,7 @@ class _YearlyPieChartScreenState extends State<YearlyPieChartScreen> {
 
   Set<FilterChipData> configurationChips = {};
   bool _showLegend = false;
-  bool _showOnlyErlegt = true;
+  bool _showOnlyErlegt = false;
 
   Map<String, String> groupBy = {};
 

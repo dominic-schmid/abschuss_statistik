@@ -38,7 +38,7 @@ class _HistoricPieChartScreenState extends State<HistoricPieChartScreen> {
   bool _isLoading = true;
   Set<FilterChipData> configurationChips = {};
   bool _showLegend = false;
-  bool _showOnlyErlegt = true;
+  bool _showOnlyErlegt = false;
 
   Map<String, String> groupBy = {};
 

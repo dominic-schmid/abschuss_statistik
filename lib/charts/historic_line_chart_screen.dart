@@ -38,7 +38,7 @@ class _HistoricLineChartScreenState extends State<HistoricLineChartScreen> {
   bool _isLoading = true;
   bool _showDots = false;
   bool _showGrid = false;
-  bool _showOnlyErlegt = true;
+  bool _showOnlyErlegt = false;
   int _barWidth = 2;
   Set<FilterChipData> configurationChips = {};
 
