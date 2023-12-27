@@ -220,18 +220,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         tiles: <SettingsTile>[
                           SettingsTile(
                             onPressed: (value) async {
-                              // Navigator.of(context).push(
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const MyStatistikWebView(
-                              //       url: 'https://jagdstatistik.com',
-                              //     ),
-                              //   ),
-                              // );
-
                               await launchUrl(
                                       Uri(
                                         scheme: 'https',
-                                        path: 'www.jagdstatistik.com',
+                                        path: 'www.${Constants.websiteUrl}',
                                       ),
                                       mode: LaunchMode.externalApplication)
                                   .timeout(const Duration(seconds: 10));
@@ -284,7 +276,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               Uri uri = Uri(
                                 scheme: 'https',
                                 path:
-                                    'www.jagdstatistik.com/${Intl.getCurrentLocale()}/feedback',
+                                    'www.${Constants.websiteUrl}/${Intl.getCurrentLocale()}/feedback',
                               );
 
                               await launchUrl(uri,
@@ -324,7 +316,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 as RenderBox?; // Needed for iPad
 
                             await Share.share(
-                              dg.shareAppText("https://jagdstatistik.com"),
+                              dg.shareAppText(
+                                  "https://${Constants.websiteUrl}"),
                               subject: dg.share,
                               sharePositionOrigin:
                                   box!.localToGlobal(Offset.zero) & box.size,
@@ -337,7 +330,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           onPressed: (value) async {
                             Uri uri = Uri(
                               scheme: 'mailto',
-                              path: 'feedback@jagdstatistik.com',
+                              path: Constants.feedbackEmail,
                               queryParameters: {
                                 'subject': dg.feedbackMailSubject
                               },
