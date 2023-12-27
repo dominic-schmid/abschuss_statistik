@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -629,29 +631,30 @@ class _KillsScreenState extends State<KillsScreen>
             : Icons.filter_alt_off_rounded,
         onClose: () => setState(() {}),
       ),
-      Padding(
-        padding: KillListFilterChip.chipPadding,
-        child: ActionChip(
-          avatar: CircleAvatar(
-            backgroundColor: Colors.transparent,
-            child: Icon(
-              Icons.download_rounded,
-              color: Colors.lightBlue[700],
-              size: 18,
+      if (!Platform.isIOS) // iOS export unsupported
+        Padding(
+          padding: KillListFilterChip.chipPadding,
+          child: ActionChip(
+            avatar: CircleAvatar(
+              backgroundColor: Colors.transparent,
+              child: Icon(
+                Icons.download_rounded,
+                color: Colors.lightBlue[700],
+                size: 18,
+              ),
             ),
-          ),
-          backgroundColor: Colors.lightBlue[700]!.withOpacity(0.3),
-          labelStyle: TextStyle(color: Colors.lightBlue[700]),
-          label: Text(dg.ksExport),
-          onPressed: () => showDialog(
-            context: context,
-            builder: (context) => KillListExport(
-              page: page,
-              filteredKills: filteredKills,
+            backgroundColor: Colors.lightBlue[700]!.withOpacity(0.3),
+            labelStyle: TextStyle(color: Colors.lightBlue[700]),
+            label: Text(dg.ksExport),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => KillListExport(
+                page: page,
+                filteredKills: filteredKills,
+              ),
             ),
           ),
         ),
-      ),
     ];
   }
 

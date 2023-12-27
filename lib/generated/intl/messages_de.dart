@@ -28,12 +28,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(x, y, z) => "Gesehen von ${x} am ${y} um ${z}";
 
-  static String m4(x) => "Jagdzeiten ${x} ";
+  static String m4(link) => "Schau dir die Jagdstatistik App an!\n\n${link}";
 
-  static String m5(howMany) =>
+  static String m5(x) => "Jagdzeiten ${x} ";
+
+  static String m6(howMany) =>
       "${Intl.plural(howMany, one: '1 Abschuss', other: '${howMany} Abschüsse')}";
 
-  static String m6(x) => "Es wurden ${x} neue Abschüsse gefunden!";
+  static String m7(x) => "Es wurden ${x} neue Abschüsse gefunden!";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -246,6 +248,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsTitle": MessageLookupByLibrary.simpleMessage("Einstellungen"),
         "settingsWebsite": MessageLookupByLibrary.simpleMessage("Webseite"),
         "sexes": MessageLookupByLibrary.simpleMessage("Geschlechter"),
+        "share": MessageLookupByLibrary.simpleMessage("App teilen"),
+        "shareAppText": m4,
         "shouldUseLocalAuth": MessageLookupByLibrary.simpleMessage(
             "Wenn du die Biometrische authentifizierung aktivierst, wirst du beim Start der App nach den auf deinem Gerät gespeicherten Anmeldedaten gefragt.\nMöchtest du Biometrie aktivieren? (empfohlen)"),
         "signOfOrigin":
@@ -302,9 +306,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "willBeLoggedInAuto": MessageLookupByLibrary.simpleMessage(
             "Du wirst gleich automatisch angemeldet..."),
         "wochen": MessageLookupByLibrary.simpleMessage("Wochen"),
-        "xJagdzeiten": m4,
-        "xKill_s": m5,
-        "xNewKillsFound": m6,
+        "xJagdzeiten": m5,
+        "xKill_s": m6,
+        "xNewKillsFound": m7,
         "yearly": MessageLookupByLibrary.simpleMessage("Jährlich"),
         "yearlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Jahresverlauf"),

@@ -87,10 +87,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       speed: 1.5,
       totalPage: 4,
       onFinish: () async {
+        await prefProvider.get.setBool('onboardingComplete', true);
+
+        if (!mounted) return;
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const CredentialsScreen()),
         );
-        await prefProvider.get.setBool('onboardingComplete', true);
       },
     );
   }

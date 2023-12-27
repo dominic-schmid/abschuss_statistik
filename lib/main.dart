@@ -117,7 +117,8 @@ void main() async {
   double? lat = prefs.getDouble('defaultLat');
   double? lon = prefs.getDouble('defaultLng');
   LatLng? latLng = lat != null && lon != null ? LatLng(lat, lon) : null;
-  bool onboardingComplete = prefs.getBool('onboardingComplete') ?? false;
+  bool onboardingComplete = prefs.getBool('onboardingComplete') ??
+      false || (revierLogin != "" && revierPasswort != "");
 
   Map<String, dynamic> startConfig = {
     'login': revierLogin,

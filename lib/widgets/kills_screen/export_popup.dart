@@ -26,6 +26,10 @@ class KillListExport extends StatelessWidget {
     final dg = S.of(context);
     Size size = MediaQuery.of(context).size;
 
+    if (Platform.isIOS) {
+      return SizedBox.shrink();
+    }
+
     return SimpleDialog(
       title: Text(dg.ksExportDialogTitle, textAlign: TextAlign.center),
       children: [

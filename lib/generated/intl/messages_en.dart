@@ -28,12 +28,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(x, y, z) => "Seen by ${x} on ${y} at ${z}";
 
-  static String m4(x) => "Hunting times ${x} ";
+  static String m4(link) => "Check out the hunting statistics app!\n\n${link}";
 
-  static String m5(howMany) =>
+  static String m5(x) => "Hunting times ${x} ";
+
+  static String m6(howMany) =>
       "${Intl.plural(howMany, one: '1 Kill', other: '${howMany} Kills')}";
 
-  static String m6(x) => "${x} new kills were found!";
+  static String m7(x) => "${x} new kills were found!";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -245,6 +247,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsTitle": MessageLookupByLibrary.simpleMessage("Settings"),
         "settingsWebsite": MessageLookupByLibrary.simpleMessage("Website"),
         "sexes": MessageLookupByLibrary.simpleMessage("Sexes"),
+        "share": MessageLookupByLibrary.simpleMessage("Share app"),
+        "shareAppText": m4,
         "shouldUseLocalAuth": MessageLookupByLibrary.simpleMessage(
             "If you activate biometric authentication, you will be asked for the login data stored on your device when you start the app.\nDo you want to enable biometrics? (recommended)"),
         "signOfOrigin": MessageLookupByLibrary.simpleMessage("Sign of origin"),
@@ -299,9 +303,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "willBeLoggedInAuto": MessageLookupByLibrary.simpleMessage(
             "You will be automatically logged in..."),
         "wochen": MessageLookupByLibrary.simpleMessage("weeks"),
-        "xJagdzeiten": m4,
-        "xKill_s": m5,
-        "xNewKillsFound": m6,
+        "xJagdzeiten": m5,
+        "xKill_s": m6,
+        "xNewKillsFound": m7,
         "yearly": MessageLookupByLibrary.simpleMessage("Yearly"),
         "yearlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Yearly breakdown"),

@@ -29,12 +29,15 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(x, y, z) => "Visto da ${x} il ${y} alle ${z}";
 
-  static String m4(x) => "Tempi caccia ${x} ";
+  static String m4(link) =>
+      "Guarda l\'app delle statistiche di caccia!\n\n${link}";
 
-  static String m5(howMany) =>
+  static String m5(x) => "Tempi caccia ${x} ";
+
+  static String m6(howMany) =>
       "${Intl.plural(howMany, one: '1 Uccisione', other: '${howMany} Uccisioni')}";
 
-  static String m6(x) => "${x} nuove uccisioni trovate!";
+  static String m7(x) => "${x} nuove uccisioni trovate!";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -254,6 +257,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsTitle": MessageLookupByLibrary.simpleMessage("Impostazioni"),
         "settingsWebsite": MessageLookupByLibrary.simpleMessage("Sito web"),
         "sexes": MessageLookupByLibrary.simpleMessage("Sessi"),
+        "share": MessageLookupByLibrary.simpleMessage("Condividere l\'app"),
+        "shareAppText": m4,
         "shouldUseLocalAuth": MessageLookupByLibrary.simpleMessage(
             "Se attivi l\'autenticazione biometrica, all\'avvio dell\'app ti verranno richiesti i dati di accesso memorizzati sul tuo dispositivo.\nVuoi abilitare la biometria? (consigliato)"),
         "signOfOrigin":
@@ -316,9 +321,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "willBeLoggedInAuto": MessageLookupByLibrary.simpleMessage(
             "Verrai registrato automaticamente..."),
         "wochen": MessageLookupByLibrary.simpleMessage("settimane"),
-        "xJagdzeiten": m4,
-        "xKill_s": m5,
-        "xNewKillsFound": m6,
+        "xJagdzeiten": m5,
+        "xKill_s": m6,
+        "xNewKillsFound": m7,
         "yearly": MessageLookupByLibrary.simpleMessage("Annuale"),
         "yearlyBreakdown":
             MessageLookupByLibrary.simpleMessage("Ripartizione annuale"),

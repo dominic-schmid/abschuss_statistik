@@ -18,6 +18,7 @@ import 'package:jagdstatistik/widgets/chart_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:requests/requests.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -303,6 +304,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         style: const TextStyle(color: rehwildFarbe),
                       ),
                       tiles: <SettingsTile>[
+                        //                   IconButton(
+                        //   onPressed: () async {
+                        //     final box =
+                        //         context.findRenderObject() as RenderBox?; // Needed for iPad
+
+                        //     await Share.share(
+                        //       dg.checkOutThisKillXY(widget.revier, k.localizedToString(context)),
+                        //       subject: dg.checkOutThisKillXY(widget.revier, ""),
+                        //       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+                        //     );
+                        //   },
+                        //   icon: const Icon(Icons.share, color: primaryColor),
+                        // ),
+
+                        SettingsTile(
+                          onPressed: (value) async {
+                            final box = context.findRenderObject()
+                                as RenderBox?; // Needed for iPad
+
+                            await Share.share(
+                              dg.shareAppText("https://jagdstatistik.com"),
+                              subject: dg.share,
+                              sharePositionOrigin:
+                                  box!.localToGlobal(Offset.zero) & box.size,
+                            );
+                          },
+                          leading: const Icon(Icons.share_rounded),
+                          title: Text(dg.share),
+                        ),
                         SettingsTile(
                           onPressed: (value) async {
                             Uri uri = Uri(

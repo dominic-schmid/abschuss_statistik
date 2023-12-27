@@ -2141,6 +2141,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Share app`
+  String get share {
+    return Intl.message(
+      'Share app',
+      name: 'share',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check out the hunting statistics app!\n\n{link}`
+  String shareAppText(Object link) {
+    return Intl.message(
+      'Check out the hunting statistics app!\n\n$link',
+      name: 'shareAppText',
+      desc: '',
+      args: [link],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
