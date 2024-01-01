@@ -209,5 +209,6 @@
   "refreshListConfirmation": "Liste wurde aktualisiert.",
   "map": "Karte",
   "share": "App teilen",
-  "shareAppText": "Schau dir die Jagdstatistik App an!\n\n{link}"
+  "shareAppText": "Schau dir die Jagdstatistik App an!\n\n{link}",
+  "settingsDefaultYear": "Zeige Abschüsse von"
 }

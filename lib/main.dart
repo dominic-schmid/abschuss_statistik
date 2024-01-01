@@ -119,6 +119,7 @@ void main() async {
   LatLng? latLng = lat != null && lon != null ? LatLng(lat, lon) : null;
   bool onboardingComplete = prefs.getBool('onboardingComplete') ??
       false || (revierLogin != "" && revierPasswort != "");
+  int defaultYear = prefs.getInt('defaultYear') ?? DateTime.now().year;
 
   Map<String, dynamic> startConfig = {
     'login': revierLogin,
@@ -127,6 +128,7 @@ void main() async {
     'language': language,
     'latLng': latLng,
     'onboardingComplete': onboardingComplete,
+    'defaultYear': defaultYear,
   };
 
   print('Read config: $startConfig');

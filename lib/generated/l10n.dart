@@ -2161,6 +2161,16 @@ class S {
       args: [link],
     );
   }
+
+  /// `Show harvests from`
+  String get settingsDefaultYear {
+    return Intl.message(
+      'Show harvests from',
+      name: 'settingsDefaultYear',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

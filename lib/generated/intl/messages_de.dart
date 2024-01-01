@@ -230,6 +230,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsAccount": MessageLookupByLibrary.simpleMessage("Konto"),
         "settingsDarkMode":
             MessageLookupByLibrary.simpleMessage("Dunkler Modus"),
+        "settingsDefaultYear":
+            MessageLookupByLibrary.simpleMessage("Zeige Abschüsse von"),
         "settingsDevelopment":
             MessageLookupByLibrary.simpleMessage("Entwicklung"),
         "settingsDisplay": MessageLookupByLibrary.simpleMessage("Anzeige"),

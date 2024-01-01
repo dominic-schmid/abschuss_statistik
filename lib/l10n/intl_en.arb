@@ -209,5 +209,6 @@
   "refreshListConfirmation": "List refreshed.",
   "map": "Map",
   "share": "Share app",
-  "shareAppText": "Check out the hunting statistics app!\n\n{link}"
+  "shareAppText": "Check out the hunting statistics app!\n\n{link}",
+  "settingsDefaultYear": "Show harvests from"
 }

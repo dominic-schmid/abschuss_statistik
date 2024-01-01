@@ -15,6 +15,7 @@ import 'package:jagdstatistik/utils/constants.dart';
 import 'package:jagdstatistik/utils/request_methods.dart';
 import 'package:jagdstatistik/utils/translation_helper.dart';
 import 'package:jagdstatistik/widgets/chart_app_bar.dart';
+import 'package:jagdstatistik/widgets/value_selector_modal.dart';
 import 'package:provider/provider.dart';
 import 'package:requests/requests.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -167,6 +168,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         style: const TextStyle(color: rehwildFarbe),
                       ),
                       tiles: <SettingsTile>[
+                        SettingsTile.navigation(
+                          onPressed: (context) async {
+                            final currentYear = prefProvider.defaultYear;
+                            await showModalBottomSheet(
+                                showDragHandle: true,
+                                context: context,
+                                shape: Constants.modalShape,
+                                builder: (context) => ValueSelectorModal<int>(
+                                      items: getYearsList(),
+                                      selectedItem: prefProvider.defaultYear,
+                                      onSelect: (selectedYear) async {
+                                        if (selectedYear != currentYear) {
+                                          prefProvider
+                                              .setDefaultYear(selectedYear);
+                                        }
+                                      },
+                                    ));
+                          },
+                          leading: const Icon(Icons.calendar_today_rounded),
+                          title: Text(dg.settingsDefaultYear),
+                          value: Text(prefProvider.defaultYear.toString()),
+                        ),
                         SettingsTile.switchTile(
                           onToggle: (value) async {
                             bool hasBiometrics =

@@ -19,12 +19,19 @@ class PrefProvider extends ChangeNotifier {
           _prefInstance.getDouble('defaultLng')!,
         )
       : null;
+  int get defaultYear =>
+      _prefInstance.getInt('defaultYear') ?? DateTime.now().year;
 
   PrefProvider(this._prefInstance);
 
   Future<void> setLatLng(LatLng latLng) async {
     await _prefInstance.setDouble('defaultLat', latLng.latitude);
     await _prefInstance.setDouble('defaultLng', latLng.longitude);
+    notifyListeners();
+  }
+
+  void setDefaultYear(int year) {
+    _prefInstance.setInt('defaultYear', year);
     notifyListeners();
   }
 

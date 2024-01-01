@@ -21,11 +21,11 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'it';
 
   static String m0(x, y) =>
-      "Dai un\'occhiata a quell\'uccisione in ${x}!\n${y}";
+      "Dai un\'occhiata a quell\'cacciagione in ${x}!\n${y}";
 
   static String m1(x, y) => "Mostrando ${x} di ${y}";
 
-  static String m2(x) => "Cerca tra ${x} uccisioni";
+  static String m2(x) => "Cerca tra ${x} dati della cacciagione";
 
   static String m3(x, y, z) => "Visto da ${x} il ${y} alle ${z}";
 
@@ -35,15 +35,15 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m5(x) => "Tempi caccia ${x} ";
 
   static String m6(howMany) =>
-      "${Intl.plural(howMany, one: '1 Uccisione', other: '${howMany} Uccisioni')}";
+      "${Intl.plural(howMany, one: '1 cacciagione', other: '${howMany} Cacciagioni')}";
 
-  static String m7(x) => "${x} nuove uccisioni trovate!";
+  static String m7(x) => "${x} nuove dati della cacciagione trovate!";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "M": MessageLookupByLibrary.simpleMessage("Maschile"),
         "W": MessageLookupByLibrary.simpleMessage("Femmina"),
-        "addKill": MessageLookupByLibrary.simpleMessage("Aggiungi uccisione"),
+        "addKill": MessageLookupByLibrary.simpleMessage("Aggiungi cacciagione"),
         "age": MessageLookupByLibrary.simpleMessage("Età"),
         "altgeiss": MessageLookupByLibrary.simpleMessage("Femmina adulta"),
         "alttier": MessageLookupByLibrary.simpleMessage("Femmina adulta"),
@@ -74,7 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "configuration": MessageLookupByLibrary.simpleMessage("Configurazione"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirmare"),
         "confirmAddKillCancel": MessageLookupByLibrary.simpleMessage(
-            "Sei sicuro di voler annullare l\'elaborazione della nuova uccisione?"),
+            "Sei sicuro di voler annullare l\'elaborazione della nuova cacciagione?"),
         "confirmDeleteDatabase": MessageLookupByLibrary.simpleMessage(
             "Sei sicuro di voler resettare il database?"),
         "copiedToClipboardSnackbar":
@@ -82,7 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "credentialsScreen":
             MessageLookupByLibrary.simpleMessage("Credenziali"),
         "credsDisclaimerText": MessageLookupByLibrary.simpleMessage(
-            "I tuoi dati di accesso vengono memorizzati solo localmente e utilizzati per scaricare le uccisioni dal sito dell\'associazione dei cacciatori.\nNon saranno mai ceduti a terzi!"),
+            "I tuoi dati di accesso vengono memorizzati solo localmente e utilizzati per scaricare le dati della cacciagione dal sito dell\'associazione dei cacciatori.\nNon saranno mai ceduti a terzi!"),
         "credsEmptySnackbar": MessageLookupByLibrary.simpleMessage(
             "Devi inserire entrambi i campi!"),
         "credsLoginButton": MessageLookupByLibrary.simpleMessage("REGISTRARE"),
@@ -105,11 +105,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "dateInFutureError":
             MessageLookupByLibrary.simpleMessage("Tempo invalido"),
         "defaultLocationDescription": MessageLookupByLibrary.simpleMessage(
-            "Visualizzazione predefinita quando si aggiunge un\'uccisione o si calcolano i tempi di tiro."),
+            "Visualizzazione predefinita quando si aggiunge un\'cacciagione o si calcolano i tempi di tiro."),
         "defaultLocationTitle":
             MessageLookupByLibrary.simpleMessage("Imposta punto di partenza"),
         "deleteDatabaseDescription": MessageLookupByLibrary.simpleMessage(
-            "Elimina le uccisioni e scaricale nuovamente. Eseguire questa operazione per correggere eventuali errori."),
+            "Elimina le dati della cacciagione e scaricale nuovamente. Eseguire questa operazione per correggere eventuali errori."),
         "deleteDatabaseTitle":
             MessageLookupByLibrary.simpleMessage("Reimposta database"),
         "details": MessageLookupByLibrary.simpleMessage("Detagli"),
@@ -119,7 +119,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "dialogYes": MessageLookupByLibrary.simpleMessage("Si"),
         "display": MessageLookupByLibrary.simpleMessage("Mostrare"),
         "distribution": MessageLookupByLibrary.simpleMessage("Distribuzione"),
-        "editKill": MessageLookupByLibrary.simpleMessage("Modifica uccisione"),
+        "editKill":
+            MessageLookupByLibrary.simpleMessage("Modifica cacciagione"),
         "eigengebrauch": MessageLookupByLibrary.simpleMessage("Uso personale"),
         "eigengebrauchAbgabe": MessageLookupByLibrary.simpleMessage(
             "Uso personale - consegna per ulteriore elaborazione"),
@@ -160,14 +161,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "kahlwild": MessageLookupByLibrary.simpleMessage("Cervo"),
         "keiler": MessageLookupByLibrary.simpleMessage("Maschio"),
         "killer": MessageLookupByLibrary.simpleMessage("Cacciatore"),
-        "kills": MessageLookupByLibrary.simpleMessage("Uccisioni"),
+        "kills": MessageLookupByLibrary.simpleMessage("Cacciagioni"),
         "ksExport": MessageLookupByLibrary.simpleMessage("Esport"),
         "ksExportDialogTitle":
             MessageLookupByLibrary.simpleMessage("Esporta come"),
         "ksExportErrorSnackbar": MessageLookupByLibrary.simpleMessage(
-            "Errore: nessuni uccisioni da esportare."),
+            "Errore: nessuni dati della cacciagione da esportare."),
         "ksExportSubtitle": MessageLookupByLibrary.simpleMessage(
-            "Verranno esportate solo le uccisioni visualizzate."),
+            "Verranno esportate solo le dati della cacciagione visualizzate."),
         "ksShowXFromYProgressBar": m1,
         "ksTerritoryTitle": MessageLookupByLibrary.simpleMessage("Territorio"),
         "legend": MessageLookupByLibrary.simpleMessage("Leggenda"),
@@ -184,8 +185,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ripartizione mensile"),
         "murmeltier": MessageLookupByLibrary.simpleMessage("Marmotta"),
         "needLogin": MessageLookupByLibrary.simpleMessage(
-            "Poiché hai abilitato l\'autenticazione biometrica, devi essere loggato per vedere le uccisioni!"),
-        "newKills": MessageLookupByLibrary.simpleMessage("Nuovi uccisioni"),
+            "Poiché hai abilitato l\'autenticazione biometrica, devi essere loggato per vedere le dati della cacciagione!"),
+        "newKills": MessageLookupByLibrary.simpleMessage(
+            "Nuovi dati della cacciagione"),
         "nichtBekannt": MessageLookupByLibrary.simpleMessage("Non conosciuto"),
         "nichtGefunden": MessageLookupByLibrary.simpleMessage(
             "Non trovato/ricerca non riuscita"),
@@ -198,14 +200,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "noInternetError":
             MessageLookupByLibrary.simpleMessage("Errore: niente internet"),
         "noKillsFoundError": MessageLookupByLibrary.simpleMessage(
-            "Errore: nessuna uccisione trovata!"),
+            "Errore: nessuna cacciagione trovata!"),
         "noKillsLoadedError": MessageLookupByLibrary.simpleMessage(
-            "Errore: caricamento delle uccisioni non riuscito!"),
+            "Errore: caricamento delle dati della cacciagione non riuscito!"),
         "number": MessageLookupByLibrary.simpleMessage("Numero"),
         "onboardStatDesc": MessageLookupByLibrary.simpleMessage(
-            "Che impatto hanno le malattie della fauna selvatica sul tuo terreno di caccia?\nNegli ultimi anni sono stati uccisi più caprioli rispetto a quest\'anno?\nE altro ancora..."),
+            "Qual è l\'impatto delle malattie della fauna selvatica sul tuo territorio di caccia?\nSono stati abbattuti più caprioli negli ultimi anni rispetto a quest\'anno?\nE molto altro..."),
         "onboardTerritoryDesc": MessageLookupByLibrary.simpleMessage(
-            "Tutte le uccisioni visualizzate e mappate in modo moderno!\nInserisci le uccisioni direttamente nell\'app"),
+            "Tutte le dati della cacciagione visualizzate e mappate in modo moderno!\nInserisci le dati della cacciagione direttamente nell\'app"),
         "onboardUtilDesc": MessageLookupByLibrary.simpleMessage(
             "Controlla i tempi di caccia delle diverse specie di selvaggina e l\'ora di ripresa della giornata"),
         "onlyShot": MessageLookupByLibrary.simpleMessage("Solo sparati"),
@@ -240,6 +242,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsAbout": MessageLookupByLibrary.simpleMessage("Informazioni"),
         "settingsAccount": MessageLookupByLibrary.simpleMessage("Account"),
         "settingsDarkMode": MessageLookupByLibrary.simpleMessage("Tema scuro"),
+        "settingsDefaultYear": MessageLookupByLibrary.simpleMessage(
+            "Mostra cacciagioni a partire dal"),
         "settingsDevelopment": MessageLookupByLibrary.simpleMessage("Sviluppo"),
         "settingsDisplay": MessageLookupByLibrary.simpleMessage("Schermo"),
         "settingsDonate": MessageLookupByLibrary.simpleMessage("Dare feedback"),

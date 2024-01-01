@@ -229,6 +229,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingsAbout": MessageLookupByLibrary.simpleMessage("About"),
         "settingsAccount": MessageLookupByLibrary.simpleMessage("Account"),
         "settingsDarkMode": MessageLookupByLibrary.simpleMessage("Dark theme"),
+        "settingsDefaultYear":
+            MessageLookupByLibrary.simpleMessage("Show harvests from"),
         "settingsDevelopment":
             MessageLookupByLibrary.simpleMessage("Development"),
         "settingsDisplay": MessageLookupByLibrary.simpleMessage("Display"),

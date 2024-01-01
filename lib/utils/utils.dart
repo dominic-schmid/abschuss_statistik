@@ -210,3 +210,12 @@ Future<Locale?> showLanguagePicker(BuildContext context) async {
         );
       });
 }
+
+/// Gets a list of years from 2015 to current year for the dropdown
+List<int> getYearsList() {
+  final _currentYear = DateTime.now().year;
+  return List.generate(
+    _currentYear - 2015 + 1,
+    (index) => index + 2015,
+  ).reversed.toList();
+}

@@ -24,6 +24,7 @@ import 'package:jagdstatistik/widgets/kills_screen/kill_list_sorting_modal.dart'
 import 'package:jagdstatistik/widgets/no_data_found.dart';
 import 'package:jagdstatistik/widgets/value_selector_modal.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/kill_entry.dart';
 
@@ -68,15 +69,15 @@ class _KillsScreenState extends State<KillsScreen>
     super.initState();
 
     _currentYear = DateTime.now().year;
-    _yearList = List.generate(
-      _currentYear - 2015 + 1,
-      (index) => index + 2015,
-    ).reversed.toList();
+    _yearList = getYearsList();
 
     _lastRefresh = DateTime.now().subtract(
         const Duration(seconds: 60)); // first refresh can happen instantly
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final dg = S.of(context);
+      final prefProvider = Provider.of<PrefProvider>(context, listen: false);
+      _currentYear = prefProvider.defaultYear;
+
       _sortings = (Sorting.generateDefault(context));
       _currentSorting =
           _sortings.firstWhere((element) => element.sortType == SortType.datum);
@@ -221,6 +222,7 @@ class _KillsScreenState extends State<KillsScreen>
 
   // This function is triggered when the user presses the back-to-top button
   void _scrollToTop() {
+    if (!_scrollController.hasClients) return;
     _scrollController.animateTo(0,
         duration: const Duration(milliseconds: 1500), curve: Curves.decelerate);
   }
